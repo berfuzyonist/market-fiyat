@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-12T15:14:32+00:00",
+ "updated": "2026-11-12T15:16:14+00:00",
  "migros": {
   "status": "tamam",
   "count": 72
@@ -28,20 +28,6 @@
    "url": "https://www.migros.com.tr/rest/search/screens/bulasik-makinesi-tuzu-c-28ed?sayfa=1",
    "status": 200,
    "bytes": 17125
-  },
-  {
-   "url": "https://www.sokmarket.com.tr/robots.txt",
-   "status": 200
-  },
-  {
-   "url": "https://www.sokmarket.com.tr/sitemap/market-category_1.xml",
-   "status": 200,
-   "bytes": 108636
-  },
-  {
-   "url": "https://www.sokmarket.com.tr/icecek-c-20505",
-   "status": 200,
-   "bytes": 986408
   }
  ]
 }
