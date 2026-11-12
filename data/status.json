@@ -1,8 +1,8 @@
 {
- "updated": "2026-11-12T15:16:14+00:00",
+ "updated": "2026-11-12T15:18:13+00:00",
  "migros": {
   "status": "tamam",
-  "count": 72
+  "count": 68
  },
  "requests": [
   {
@@ -12,7 +12,7 @@
   {
    "url": "https://www.migros.com.tr/rest/search/screens/dokme-cay-c-28c1?sayfa=1",
    "status": 200,
-   "bytes": 55666
+   "bytes": 55593
   },
   {
    "url": "https://www.migros.com.tr/rest/search/screens/dokme-cay-c-28c1?sayfa=2",
@@ -22,7 +22,7 @@
   {
    "url": "https://www.migros.com.tr/rest/search/screens/dokme-cay-c-28c1?sayfa=3",
    "status": 200,
-   "bytes": 17445
+   "bytes": 17014
   },
   {
    "url": "https://www.migros.com.tr/rest/search/screens/bulasik-makinesi-tuzu-c-28ed?sayfa=1",

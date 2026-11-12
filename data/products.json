@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-12T15:16:14+00:00",
+ "updated": "2026-11-12T15:18:13+00:00",
  "products": [
   {
    "id": "migros:03111315",
@@ -50,20 +50,6 @@
    "url": "https://www.migros.com.tr/lipton-dogu-karadeniz-cayi-500-g-p-2f79f4"
   },
   {
-   "id": "migros:03118645",
-   "market": "migros",
-   "name": "Migros Rize Siyah Çay 1 Kg",
-   "brand": "Migros",
-   "category": "Dökme Çay",
-   "price": 289.95,
-   "regular": 289.95,
-   "unit_price": null,
-   "in_stock": true,
-   "badges": [],
-   "image": "https://images.migrosone.com/sanalmarket/product/03118645/03118645-db6f7a.jpg",
-   "url": "https://www.migros.com.tr/migros-rize-siyah-cay-1-kg-p-2f9635"
-  },
-  {
    "id": "migros:03118647",
    "market": "migros",
    "name": "Migros Bergamot Aromalı Siyah Çay 500 G",
@@ -76,6 +62,20 @@
    "badges": [],
    "image": "https://images.migrosone.com/sanalmarket/product/03118647/03118647-9758f8.jpg",
    "url": "https://www.migros.com.tr/migros-bergamot-aromali-siyah-cay-500-g-p-2f9637"
+  },
+  {
+   "id": "migros:03118645",
+   "market": "migros",
+   "name": "Migros Rize Siyah Çay 1 Kg",
+   "brand": "Migros",
+   "category": "Dökme Çay",
+   "price": 289.95,
+   "regular": 289.95,
+   "unit_price": null,
+   "in_stock": true,
+   "badges": [],
+   "image": "https://images.migrosone.com/sanalmarket/product/03118645/03118645-db6f7a.jpg",
+   "url": "https://www.migros.com.tr/migros-rize-siyah-cay-1-kg-p-2f9635"
   },
   {
    "id": "migros:03118318",
@@ -126,20 +126,6 @@
    "url": "https://www.migros.com.tr/champion-pekoe-pure-ceylon-tea-500-g-p-2f74a5"
   },
   {
-   "id": "migros:03118004",
-   "market": "migros",
-   "name": "Doğuş Kırmızı Dem Çay 1 Kg",
-   "brand": "Doğuş",
-   "category": "Dökme Çay",
-   "price": 389.95,
-   "regular": 389.95,
-   "unit_price": null,
-   "in_stock": true,
-   "badges": [],
-   "image": "https://images.migrosone.com/sanalmarket/product/03118004/03118004_1-5a930b.jpg",
-   "url": "https://www.migros.com.tr/dogus-kirmizi-dem-cay-1-kg-p-2f93b4"
-  },
-  {
    "id": "migros:03118648",
    "market": "migros",
    "name": "Migros Filiz Siyah Çay 1 Kg",
@@ -152,6 +138,20 @@
    "badges": [],
    "image": "https://images.migrosone.com/sanalmarket/product/03118648/03118648-dbe15f.jpg",
    "url": "https://www.migros.com.tr/migros-filiz-siyah-cay-1-kg-p-2f9638"
+  },
+  {
+   "id": "migros:03118004",
+   "market": "migros",
+   "name": "Doğuş Kırmızı Dem Çay 1 Kg",
+   "brand": "Doğuş",
+   "category": "Dökme Çay",
+   "price": 389.95,
+   "regular": 389.95,
+   "unit_price": null,
+   "in_stock": true,
+   "badges": [],
+   "image": "https://images.migrosone.com/sanalmarket/product/03118004/03118004_1-5a930b.jpg",
+   "url": "https://www.migros.com.tr/dogus-kirmizi-dem-cay-1-kg-p-2f93b4"
   },
   {
    "id": "migros:03118272",
@@ -213,6 +213,37 @@
    "url": "https://www.migros.com.tr/caykur-tomurcuk-cayi-125-g-p-2f90f7"
   },
   {
+   "id": "migros:03110042",
+   "market": "migros",
+   "name": "Ofçay Tiryaki Dökme Çay 1 Kg",
+   "brand": "Ofçay",
+   "category": "Dökme Çay",
+   "price": 299.95,
+   "regular": 389.95,
+   "unit_price": null,
+   "in_stock": true,
+   "badges": [
+    "PRICE_PROMOTED",
+    "MIGROSKOP"
+   ],
+   "image": "https://images.migrosone.com/sanalmarket/product/03110042/3110042_1-45ec17.jpg",
+   "url": "https://www.migros.com.tr/ofcay-tiryaki-dokme-cay-1-kg-p-2f749a"
+  },
+  {
+   "id": "migros:03118425",
+   "market": "migros",
+   "name": "Karali Premium Filiz Çay 1 Kg",
+   "brand": "Karali",
+   "category": "Dökme Çay",
+   "price": 349.95,
+   "regular": 349.95,
+   "unit_price": null,
+   "in_stock": true,
+   "badges": [],
+   "image": "https://images.migrosone.com/sanalmarket/product/03118425/03118425-31abca.jpg",
+   "url": "https://www.migros.com.tr/karali-premium-filiz-cay-1-kg-p-2f9559"
+  },
+  {
    "id": "migros:03110044",
    "market": "migros",
    "name": "Migros Seylan Çayı 400 G",
@@ -239,20 +270,6 @@
    "badges": [],
    "image": "https://images.migrosone.com/sanalmarket/product/03118449/caykur-42-nolu-tirebolu-cayi-500-g-b8fd63.jpg",
    "url": "https://www.migros.com.tr/caykur-42-nolu-tirebolu-cayi-500-g-p-2f9571"
-  },
-  {
-   "id": "migros:03118425",
-   "market": "migros",
-   "name": "Karali Premium Filiz Çay 1 Kg",
-   "brand": "Karali",
-   "category": "Dökme Çay",
-   "price": 349.95,
-   "regular": 349.95,
-   "unit_price": null,
-   "in_stock": true,
-   "badges": [],
-   "image": "https://images.migrosone.com/sanalmarket/product/03118425/03118425-31abca.jpg",
-   "url": "https://www.migros.com.tr/karali-premium-filiz-cay-1-kg-p-2f9559"
   },
   {
    "id": "migros:03112974",
@@ -284,23 +301,6 @@
    ],
    "image": "https://images.migrosone.com/sanalmarket/product/03111403/3111403_1-9eaeed.jpg",
    "url": "https://www.migros.com.tr/lipton-yellow-label-dokme-cay-500-g-p-2f79eb"
-  },
-  {
-   "id": "migros:03110042",
-   "market": "migros",
-   "name": "Ofçay Tiryaki Dökme Çay 1 Kg",
-   "brand": "Ofçay",
-   "category": "Dökme Çay",
-   "price": 299.95,
-   "regular": 389.95,
-   "unit_price": null,
-   "in_stock": true,
-   "badges": [
-    "PRICE_PROMOTED",
-    "MIGROSKOP"
-   ],
-   "image": "https://images.migrosone.com/sanalmarket/product/03110042/3110042_1-45ec17.jpg",
-   "url": "https://www.migros.com.tr/ofcay-tiryaki-dokme-cay-1-kg-p-2f749a"
   },
   {
    "id": "migros:03111310",
@@ -390,6 +390,20 @@
    "url": "https://www.migros.com.tr/ahmad-tea-special-bergamotlu-siyah-dokme-cay-200-g-p-2faa9f"
   },
   {
+   "id": "migros:03110054",
+   "market": "migros",
+   "name": "Howdah Pure Ceylon Tea 500 G",
+   "brand": "Howdah",
+   "category": "Dökme Çay",
+   "price": 759.95,
+   "regular": 759.95,
+   "unit_price": "(1519,90 TL/Kg)",
+   "in_stock": true,
+   "badges": [],
+   "image": "https://images.migrosone.com/sanalmarket/product/03110054/03110054_1-ad8a36.jpg",
+   "url": "https://www.migros.com.tr/howdah-pure-ceylon-tea-500-g-p-2f74a6"
+  },
+  {
    "id": "migros:03110028",
    "market": "migros",
    "name": "Lipton Extra Yoğun Earl Grey 100 G",
@@ -418,34 +432,6 @@
    "badges": [],
    "image": "https://images.migrosone.com/sanalmarket/product/03118206/03118206_1-6f64d5.jpg",
    "url": "https://www.migros.com.tr/dogus-karadeniz-cayi-1-kg-p-2f947e"
-  },
-  {
-   "id": "migros:03112987",
-   "market": "migros",
-   "name": "Tazedem Teneke Kutu İlk Hasat Siyah Çay 100 G",
-   "brand": "Tazedem",
-   "category": "Dökme Çay",
-   "price": 174.95,
-   "regular": 174.95,
-   "unit_price": "(1749,50 TL/Kg)",
-   "in_stock": true,
-   "badges": [],
-   "image": "https://images.migrosone.com/sanalmarket/product/03112987/03112987_1-9df07a.jpg",
-   "url": "https://www.migros.com.tr/tazedem-teneke-kutu-ilk-hasat-siyah-cay-100-g-p-2f801b"
-  },
-  {
-   "id": "migros:03110054",
-   "market": "migros",
-   "name": "Howdah Pure Ceylon Tea 500 G",
-   "brand": "Howdah",
-   "category": "Dökme Çay",
-   "price": 759.95,
-   "regular": 759.95,
-   "unit_price": "(1519,90 TL/Kg)",
-   "in_stock": true,
-   "badges": [],
-   "image": "https://images.migrosone.com/sanalmarket/product/03110054/03110054_1-ad8a36.jpg",
-   "url": "https://www.migros.com.tr/howdah-pure-ceylon-tea-500-g-p-2f74a6"
   },
   {
    "id": "migros:03111303",
@@ -876,6 +862,34 @@
    "url": "https://www.migros.com.tr/efor-harman-siyah-cay-1-kg-p-2f962b"
   },
   {
+   "id": "migros:03112970",
+   "market": "migros",
+   "name": "Mevlana Sade Yaprak Çay 500 G",
+   "brand": "Reyondan",
+   "category": "Dökme Çay",
+   "price": 549.95,
+   "regular": 549.95,
+   "unit_price": "(1099,90 TL/Kg)",
+   "in_stock": true,
+   "badges": [],
+   "image": "https://images.migrosone.com/sanalmarket/product/03112970/03112970_1-11c54a.jpg",
+   "url": "https://www.migros.com.tr/mevlana-sade-yaprak-cay-500-g-p-2f800a"
+  },
+  {
+   "id": "migros:03123868",
+   "market": "migros",
+   "name": "Ahmad Tea Special Blend Dökme Çay 400 G",
+   "brand": "Ahmad Tea",
+   "category": "Dökme Çay",
+   "price": 719.95,
+   "regular": 719.95,
+   "unit_price": "(1799,87 TL/Kg)",
+   "in_stock": true,
+   "badges": [],
+   "image": "https://images.migrosone.com/sanalmarket/product/03123868/03123868-af3cac.jpg",
+   "url": "https://www.migros.com.tr/ahmad-tea-special-blend-dokme-cay-400-g-p-2faa9c"
+  },
+  {
    "id": "migros:03111410",
    "market": "migros",
    "name": "Lipton Yellow Label Çay 1 Kg",
@@ -904,76 +918,6 @@
    "badges": [],
    "image": "https://images.migrosone.com/sanalmarket/product/03111316/03111316_1-055ab6.jpg",
    "url": "https://www.migros.com.tr/caykur-tiryaki-500-g-p-2f7994"
-  },
-  {
-   "id": "migros:03111411",
-   "market": "migros",
-   "name": "Lipton Doğu Karadeniz Çayı 1 Kg",
-   "brand": "Lipton",
-   "category": "Dökme Çay",
-   "price": 439.95,
-   "regular": 439.95,
-   "unit_price": null,
-   "in_stock": true,
-   "badges": [],
-   "image": "https://images.migrosone.com/sanalmarket/product/03111411/3111411_1-2188d6.jpg",
-   "url": "https://www.migros.com.tr/lipton-dogu-karadeniz-cayi-1-kg-p-2f79f3"
-  },
-  {
-   "id": "migros:03118364",
-   "market": "migros",
-   "name": "Karali Organik Siyah Çay 500 G",
-   "brand": "Karali",
-   "category": "Dökme Çay",
-   "price": 449.95,
-   "regular": 449.95,
-   "unit_price": "(899,90 TL/Kg)",
-   "in_stock": true,
-   "badges": [],
-   "image": "https://images.migrosone.com/sanalmarket/product/03118364/03118364-16416c.jpg",
-   "url": "https://www.migros.com.tr/karali-organik-siyah-cay-500-g-p-2f951c"
-  },
-  {
-   "id": "migros:03118649",
-   "market": "migros",
-   "name": "Migros Filiz Siyah Çay 500 G",
-   "brand": "Migros",
-   "category": "Dökme Çay",
-   "price": 149.95,
-   "regular": 149.95,
-   "unit_price": "(299,90 TL/Kg)",
-   "in_stock": true,
-   "badges": [],
-   "image": "https://images.migrosone.com/sanalmarket/product/03118649/03118649-9ac492.jpg",
-   "url": "https://www.migros.com.tr/migros-filiz-siyah-cay-500-g-p-2f9639"
-  },
-  {
-   "id": "migros:03112970",
-   "market": "migros",
-   "name": "Mevlana Sade Yaprak Çay 500 G",
-   "brand": "Reyondan",
-   "category": "Dökme Çay",
-   "price": 549.95,
-   "regular": 549.95,
-   "unit_price": "(1099,90 TL/Kg)",
-   "in_stock": true,
-   "badges": [],
-   "image": "https://images.migrosone.com/sanalmarket/product/03112970/03112970_1-11c54a.jpg",
-   "url": "https://www.migros.com.tr/mevlana-sade-yaprak-cay-500-g-p-2f800a"
-  },
-  {
-   "id": "migros:03123868",
-   "market": "migros",
-   "name": "Ahmad Tea Special Blend Dökme Çay 400 G",
-   "brand": "Ahmad Tea",
-   "category": "Dökme Çay",
-   "price": 719.95,
-   "regular": 719.95,
-   "unit_price": "(1799,87 TL/Kg)",
-   "in_stock": true,
-   "badges": [],
-   "image": "https://images.migrosone.com/sanalmarket/product/03123868/03123868-af3cac.jpg",
-   "url": "https://www.migros.com.tr/ahmad-tea-special-blend-dokme-cay-400-g-p-2faa9c"
   },
   {
    "id": "migros:30441895",
