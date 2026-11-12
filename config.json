@@ -2,8 +2,8 @@
   "user_agent": "market-fiyat-kisisel/0.2 (+https://github.com/berfuzyonist/market-fiyat)",
   "delay_seconds": 3,
   "migros": {
-    "max_pages": 2,
-    "max_discovery": 5,
+    "max_pages": 400,
+    "max_discovery": 250,
     "seed_ids": [
       "2",
       "3",
@@ -18,7 +18,7 @@
     "sitemap": "https://www.migros.com.tr/hermes/api/sitemaps/sitemap-categories-1.xml"
   },
   "sok": {
-    "max_pages": 2,
+    "max_pages": 400,
     "categories": [
       "yemeklik-malzemeler-c-1770",
       "et-ve-tavuk-ve-sarkuteri-c-160",

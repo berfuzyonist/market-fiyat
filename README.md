@@ -1,10 +1,10 @@
 # Market Fiyat
 
-Kişisel kullanım için market fiyat karşılaştırma uygulaması.
+Kişisel kullanım için market fiyat karşılaştırma uygulaması: https://berfuzyonist.github.io/market-fiyat/
 
-- `index.html`: telefona kurulabilen uygulama (arama, indirimler, barkod, markete göre gruplanan liste).
-- `collector/collect.py`: fiyat toplayıcı. Yalnızca herkese açık ve `robots.txt` dosyasının izin verdiği sayfaları okur, istekler arasında bekler, kendini açıkça tanıtır.
-- `config.json`: hangi kategorilerin toplanacağı ve bekleme süresi.
-- `data/products.json`: toplanan fiyatlar. GitHub Actions günde üç kez günceller.
+- `index.html`: telefona kurulabilen uygulama (arama, indirimler, barkod, markete göre gruplanan liste). Aynı ürünü marketler arasında ad ve gramaja göre eşleştirir.
+- `collector/collect.py`: fiyat toplayıcı. Migros ve Şok'un tüm kategorilerini her gece bir kez tarar. Yalnızca herkese açık ve `robots.txt` dosyasının izin verdiği sayfaları okur, istekler arasında bekler, kendini açıkça tanıtır.
+- `config.json`: bekleme süresi, kategori listeleri ve sınırlar.
+- `data/products.json`: toplanan fiyatlar. `data/status.json`: son çalışmanın özeti (ürün sayısı, istek sayısı, hatalar).
 
-Durum: şu an yalnızca Migros'un iki kategorisi toplanıyor. Şok, BİM ve A101 henüz eklenmedi.
+Henüz yok: BİM ve A101.

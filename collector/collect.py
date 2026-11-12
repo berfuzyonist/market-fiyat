@@ -117,11 +117,14 @@ def migros(products, notes):
             return None
 
     def top_of(info):
-        items = (info or {}).get("storeProductInfos") or []
-        if not items:
-            return None
-        asc = items[0].get("categoryAscendants") or []
-        return (asc[-1] if asc else items[0].get("category") or {}).get("prettyName")
+        """Sayfadaki ürünlerin çoğunun bağlı olduğu üst kategori."""
+        votes = {}
+        for p in (info or {}).get("storeProductInfos") or []:
+            asc = p.get("categoryAscendants") or []
+            top = (asc[-1] if asc else p.get("category") or {}).get("prettyName")
+            if top:
+                votes[top] = votes.get(top, 0) + 1
+        return max(votes, key=votes.get) if votes else None
 
     def crawl(slug):
         page, pages, prev = 1, 1, None
@@ -131,7 +134,7 @@ def migros(products, notes):
             if not items or items[0].get("id") == prev:
                 break
             prev, pages = items[0].get("id"), info.get("pageCount", 1)
-            if page == 1 and pages * len(items) < info.get("hitCount", 0):
+            if page == 1 and pages * len(items) < 0.9 * info.get("hitCount", 0):
                 notes.append(f"{slug}: {info.get('hitCount')} üründen yalnızca {pages} sayfa sunuluyor")
             for p in items:
                 products[f"migros:{p.get('sku')}"] = migros_item(p)
@@ -156,7 +159,7 @@ def migros(products, notes):
         if slug in covered:
             continue
         if extra >= c["max_discovery"]:
-            notes.append(f"kategori keşfi sınırı ({c['max_discovery']}) doldu")
+            notes.append(f"kategori keşfi sınırı ({c['max_discovery']}) doldu, taranmamış kategori kalmış olabilir")
             break
         extra += 1
         visit(slug)
