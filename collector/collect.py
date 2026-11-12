@@ -101,21 +101,6 @@ def migros():
     return products, "tamam"
 
 
-def sok_probe():
-    """Geçici: Şok kategori sayfalarının yapısını öğrenmek için iki istek atar."""
-    res = {}
-    status, body = get("https://www.sokmarket.com.tr/sitemap/market-category_1.xml", "application/xml")
-    locs = re.findall(r"<loc>(.*?)</loc>", body)
-    res["categories"] = {"status": status, "count": len(locs), "sample": locs[:40]}
-    status, body = get("https://www.sokmarket.com.tr/icecek-c-20505", "text/html")
-    links = sorted(set(re.findall(r'href="(/[a-z0-9-]+-p-[0-9]+)"', body)))
-    info = {"status": status, "length": len(body), "product_links": len(links), "links_sample": links[:5], "ctx": []}
-    for m in list(re.finditer(r'price', body))[:400:80]:
-        info["ctx"].append(body[max(0, m.start() - 500): m.start() + 500])
-    res["category"] = info
-    return res
-
-
 def dump(path, obj):
     path.write_text(json.dumps(obj, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
 
@@ -126,12 +111,10 @@ def main():
     now = datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")
     products, mig_status = migros()
     uniq = list({p["id"]: p for p in products}.values())
-    probe = sok_probe()
     if uniq:  # boş sonuç eski veriyi silmesin
         dump(out / "products.json", {"updated": now, "products": uniq})
     status = {"updated": now, "migros": {"status": mig_status, "count": len(uniq)}, "requests": LOG}
     dump(out / "status.json", status)
-    dump(out / "probe.json", probe)
     print(json.dumps(status, ensure_ascii=False, indent=1))
 
 
