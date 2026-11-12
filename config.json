@@ -1,0 +1,8 @@
+{
+  "user_agent": "market-fiyat-kisisel/0.1 (+https://github.com/berfuzyonist/market-fiyat)",
+  "delay_seconds": 3,
+  "migros": {
+    "max_pages": 5,
+    "categories": ["dokme-cay-c-28c1", "bulasik-makinesi-tuzu-c-28ed"]
+  }
+}
