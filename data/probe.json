@@ -1,17 +1,63 @@
 {
- "sitemap": {
+ "categories": {
   "status": 200,
-  "length": 651,
-  "head": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n  <sitemap>\n    <loc>https://www.sokmarket.com.tr/sitemap/ekstra-product_1.xml</loc>\n    <lastmod>2026-11-12</lastmod>\n  </sitemap>\n  <sitemap>\n    <loc>https://www.sokmarket.com.tr/sitemap/ekstra-category_1.xml</loc>\n    <lastmod>2026-11-12</lastmod>\n  </sitemap>\n  <sitemap>\n    <loc>https://www.sokmarket.com.tr/sitemap/market-product_1.xml</loc>\n    <lastmod>2026-11-12</lastmod>\n  </sitemap>\n  <sitemap>\n    <loc>https://www.sokmarket.com.tr/sitemap/market-category_1.xml</loc>\n    <lastmod>2026-11-12</lastmod>\n  </sitemap>\n</sitemapindex>"
+  "count": 936,
+  "sample": [
+   "https://www.sokmarket.com.tr/ic-giyim-ve-pijama-c-24768",
+   "https://www.sokmarket.com.tr/canta-c-29615",
+   "https://www.sokmarket.com.tr/mouse-c-29250",
+   "https://www.sokmarket.com.tr/battaniye-c-32488",
+   "https://www.sokmarket.com.tr/pilic-sosis-c-31482",
+   "https://www.sokmarket.com.tr/su-isiticisi-c-29118",
+   "https://www.sokmarket.com.tr/dana-sucuklar-c-49603",
+   "https://www.sokmarket.com.tr/500-ml-c-50529",
+   "https://www.sokmarket.com.tr/kestane-c-52464",
+   "https://www.sokmarket.com.tr/baharat-c-2000",
+   "https://www.sokmarket.com.tr/kuru-fasulye-c-27308",
+   "https://www.sokmarket.com.tr/saglik-urunleri-c-29501",
+   "https://www.sokmarket.com.tr/cocuk-sut-urunleri-c-820",
+   "https://www.sokmarket.com.tr/genel-temizlik-malzemeleri-c-20521",
+   "https://www.sokmarket.com.tr/pizza-c-1520",
+   "https://www.sokmarket.com.tr/hazir-urunler-c-31352",
+   "https://www.sokmarket.com.tr/paket-margarin-c-31232",
+   "https://www.sokmarket.com.tr/masa-saati-c-29244",
+   "https://www.sokmarket.com.tr/sut-gunluk-c-600",
+   "https://www.sokmarket.com.tr/oyuncak-c-20644",
+   "https://www.sokmarket.com.tr/simit-c-53379",
+   "https://www.sokmarket.com.tr/cop-torbasi-c-32369",
+   "https://www.sokmarket.com.tr/dondurma-c-31102",
+   "https://www.sokmarket.com.tr/gece-lambasi-c-28497",
+   "https://www.sokmarket.com.tr/cam-bezi-c-32365",
+   "https://www.sokmarket.com.tr/katmer-lavas-ve-bazlama-c-1280",
+   "https://www.sokmarket.com.tr/esmer-bulgur-c-27310",
+   "https://www.sokmarket.com.tr/hesap-makinesi-c-29482",
+   "https://www.sokmarket.com.tr/dondurulmus-sebze-meyve-c-1570",
+   "https://www.sokmarket.com.tr/karisik-tursu-c-27572",
+   "https://www.sokmarket.com.tr/ev-ve-yasam-c-20898",
+   "https://www.sokmarket.com.tr/tost-ekmegi-c-1360",
+   "https://www.sokmarket.com.tr/agda-c-30111",
+   "https://www.sokmarket.com.tr/sinek-kovucu-c-28491",
+   "https://www.sokmarket.com.tr/hardal-c-107505",
+   "https://www.sokmarket.com.tr/dondurulmus-et-urunleri-c-1590",
+   "https://www.sokmarket.com.tr/bulasik-eldiveni-c-30983",
+   "https://www.sokmarket.com.tr/pudra-sekeri-c-28610",
+   "https://www.sokmarket.com.tr/klasik-camasir-suyu-c-30855",
+   "https://www.sokmarket.com.tr/mango-c-52467"
+  ]
  },
- "product": {
+ "category": {
   "status": 200,
-  "length": 829770,
-  "head": "<!DOCTYPE html><html lang=\"tr\" class=\"__className_d8f060\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no\"/><link rel=\"preload\" as=\"image\" href=\"https://images.ceptesok.com/cdn-cgi/image/width=49,height=49,fit=pad,quality=80,format=webp/logos/service-types/market-logo.svg\"/><link rel=\"preload\" as=\"image\" href=\"https://images.ceptesok.com/cdn-cgi/image/width=49,height=49,fit=pad,quality=80,format=webp/logos/service-types/dropshipping-logo-with-frame.svg\"/><link rel=\"preload\" as=\"image\" href=\"https://images.ceptesok.com/logos/service-types/g2m-logo.png\"/><link rel=\"preload\" as=\"image\" href=\"https://images.ceptesok.com/logos/service-types/market-logo.svg\"/><link rel=\"preload\" as=\"image\" href=\"https://images.ceptesok.com/cdn-cgi/image/width=600,height=600,fit=pad,quality=80,format=webp/product-assets/sub-folder/4631d54c-7495-4d78-9c8a-a5cc384a6972.jpg\"/><link rel=\"preload\" as=\"image\" href=\"https://images.ceptesok.com/cdn-cgi/image/width=216,height=216,fit=pad,quality=80,format=webp/product-assets/sub-folder/4631d54c-7495-4d78-9c8a-a5cc384a6972.jpg\"/><link rel=\"preload\" as=\"image\" href=\"https://images.cep",
-  "jsonld": [],
-  "barcode_ctx": null,
-  "price_ctx": " 11.1602 5.07537V16.8503C11.1582 17.0058 11.0955 17.1544 10.9856 17.2644C10.8756 17.3743 10.727 17.437 10.5715 17.4391ZM8.02053 16.2616H9.98284V5.66411H8.02053V16.2616Z\" fill=\"#ffe000\"></path><path d=\"M14.8877 17.4391H3.11385C2.75018 17.437 2.40199 17.2916 2.14484 17.0345C1.88768 16.7773 1.74229 16.4291 1.74023 16.0654V8.2154C1.74227 8.05988 1.80494 7.91131 1.91491 7.80134C2.02487 7.69136 2.17343 7.62868 2.32893 7.62665H7.43095C7.58708 7.62665 7.73681 7.68868 7.84721 7.79909C7.95762 7.9095 8.01964 8.05925 8.01964 8.2154C8.01964 8.37154 7.95762 8.52129 7.84721 8.6317C7.73681 8.74211 7.58708 8.8",
-  "next_data": false,
-  "next_flight": true
+  "length": 986408,
+  "product_links": 20,
+  "links_sample": [
+   "/altinkilic-kefirix-cilekli-250-ml-p-7385",
+   "/altinkilic-kefirix-orman-meyveli-250-ml-p-5903",
+   "/coca-cola-330-ml-p-4686",
+   "/coca-cola-zero-sugar-330-ml-p-8531",
+   "/crown-cola-330-ml-p-8"
+  ],
+  "ctx": [
+   "ageContainer__aTMdz\"><img src=\"https://images.ceptesok.com/cdn-cgi/image/width=216,height=216,fit=pad,quality=80,format=webp/product-assets/sub-folder/41647948-361d-49b8-865a-d6de1e350910.jpg\" alt=\"product-thumb\" style=\"width:108px;height:108px\"/></div><div class=\"CProductCard-module_infoContainer__F8uxY\"><h2 class=\"CProductCard-module_title__u8bMW\">Mis Ayran Tam Yağlı 200 ml</h2><div class=\"CPriceBox-module_cPriceBox__1OWBR CPriceBox-module_productCardPrice__yjBVO\"><div class=\"CPriceBox-module_priceContainer__ZROpc\" style=\"height:26px\"><span style=\"font-size:14px;line-height:16px;font-weight:800\" class=\"CPriceBox-module_price__bYk-c\" data-testid=\"discountedPrice\">10,50<!-- -->₺</span></div></div></div></div></div></div></a></div></div><div class=\"PLPProductListing_PLPCardParent__GC2qb\"><div><a href=\"/mis-ayran-tam-yagli-285-ml-p-6643\"><div class=\"CProductCard-module_productCardWrapper__okAmT CProductCard-module_PLPCard__rB4tw\"><div class=\"CQuantityChangerCapsule-module_buttonWrapper__"
+  ]
  }
 }

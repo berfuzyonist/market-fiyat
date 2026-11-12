@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-12T15:10:08+00:00",
+ "updated": "2026-11-12T15:14:32+00:00",
  "migros": {
   "status": "tamam",
   "count": 72
@@ -34,14 +34,14 @@
    "status": 200
   },
   {
-   "url": "https://www.sokmarket.com.tr/sitemap/sitemap.xml",
+   "url": "https://www.sokmarket.com.tr/sitemap/market-category_1.xml",
    "status": 200,
-   "bytes": 651
+   "bytes": 108636
   },
   {
-   "url": "https://www.sokmarket.com.tr/caykur-rize-turist-cay-1000-g-p-7545",
+   "url": "https://www.sokmarket.com.tr/icecek-c-20505",
    "status": 200,
-   "bytes": 829770
+   "bytes": 986408
   }
  ]
 }

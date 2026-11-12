@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-12T15:10:08+00:00",
+ "updated": "2026-11-12T15:14:32+00:00",
  "products": [
   {
    "id": "migros:03111315",
@@ -12,7 +12,6 @@
    "unit_price": null,
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03111315/03111315_1-32b3fe.jpg",
    "url": "https://www.migros.com.tr/caykur-tiryaki-cayi-1-kg-p-2f7993"
   },
@@ -30,7 +29,6 @@
     "PRICE_PROMOTED",
     "MIGROSKOP"
    ],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03118287/3118287_1-639900.jpg",
    "url": "https://www.migros.com.tr/lipton-dokme-cay-earl-grey-500-g-p-2f94cf"
   },
@@ -48,7 +46,6 @@
     "PRICE_PROMOTED",
     "MIGROSKOP"
    ],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03111412/3111412_1-db642a.jpg",
    "url": "https://www.migros.com.tr/lipton-dogu-karadeniz-cayi-500-g-p-2f79f4"
   },
@@ -63,7 +60,6 @@
    "unit_price": null,
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03118645/03118645-db6f7a.jpg",
    "url": "https://www.migros.com.tr/migros-rize-siyah-cay-1-kg-p-2f9635"
   },
@@ -78,7 +74,6 @@
    "unit_price": "(309,90 TL/Kg)",
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03118647/03118647-9758f8.jpg",
    "url": "https://www.migros.com.tr/migros-bergamot-aromali-siyah-cay-500-g-p-2f9637"
   },
@@ -96,7 +91,6 @@
     "PRICE_PROMOTED",
     "MIGROSKOP"
    ],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03118318/3118318_1-d217c9.jpg",
    "url": "https://www.migros.com.tr/lipton-extra-dem-siyah-cay-500-g-p-2f94ee"
   },
@@ -111,7 +105,6 @@
    "unit_price": "(539,50 TL/Kg)",
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03110068/03110068_1-4ccec6.jpg",
    "url": "https://www.migros.com.tr/migros-tomurcuk-bergamot-aromali-siyah-cay-100-g-p-2f74b4"
   },
@@ -129,7 +122,6 @@
     "PRICE_PROMOTED",
     "MIGROSKOP"
    ],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03110053/03110053_1-508f24.jpg",
    "url": "https://www.migros.com.tr/champion-pekoe-pure-ceylon-tea-500-g-p-2f74a5"
   },
@@ -144,7 +136,6 @@
    "unit_price": null,
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03118004/03118004_1-5a930b.jpg",
    "url": "https://www.migros.com.tr/dogus-kirmizi-dem-cay-1-kg-p-2f93b4"
   },
@@ -159,7 +150,6 @@
    "unit_price": null,
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03118648/03118648-dbe15f.jpg",
    "url": "https://www.migros.com.tr/migros-filiz-siyah-cay-1-kg-p-2f9638"
   },
@@ -177,7 +167,6 @@
     "GREAT_PRICE",
     "MIGROSKOP"
    ],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03118272/03118272_1-7941e6.jpg",
    "url": "https://www.migros.com.tr/caykur-filiz-cayi-1-kg-p-2f94c0"
   },
@@ -192,7 +181,6 @@
    "unit_price": "(629,90 TL/Kg)",
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03111312/03111312_1-38acb2.jpg",
    "url": "https://www.migros.com.tr/caykur-altinbas-cay-500-g-p-2f7990"
   },
@@ -207,7 +195,6 @@
    "unit_price": "(999,50 TL/Kg)",
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03118038/3118038-f6054e.jpg",
    "url": "https://www.migros.com.tr/dogus-tomurcuk-early-grey-karton-kutu-100-g-p-2f93d6"
   },
@@ -222,7 +209,6 @@
    "unit_price": "(967,60 TL/Kg)",
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03117303/caykur-tomurcuk-cayi-125-gr-9a0f8b.jpg",
    "url": "https://www.migros.com.tr/caykur-tomurcuk-cayi-125-g-p-2f90f7"
   },
@@ -237,7 +223,6 @@
    "unit_price": "(724,87 TL/Kg)",
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03110044/03110044_1-d683cc.jpg",
    "url": "https://www.migros.com.tr/migros-seylan-cayi-400-g-p-2f749c"
   },
@@ -252,7 +237,6 @@
    "unit_price": "(629,90 TL/Kg)",
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03118449/caykur-42-nolu-tirebolu-cayi-500-g-b8fd63.jpg",
    "url": "https://www.migros.com.tr/caykur-42-nolu-tirebolu-cayi-500-g-p-2f9571"
   },
@@ -267,7 +251,6 @@
    "unit_price": null,
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03118425/03118425-31abca.jpg",
    "url": "https://www.migros.com.tr/karali-premium-filiz-cay-1-kg-p-2f9559"
   },
@@ -282,7 +265,6 @@
    "unit_price": "(499,90 TL/Kg)",
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03112974/03112974_1-714baf.jpg",
    "url": "https://www.migros.com.tr/migros-ekstra-ilk-hasat-rize-cayi-500-g-p-2f800e"
   },
@@ -300,7 +282,6 @@
     "PRICE_PROMOTED",
     "MIGROSKOP"
    ],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03111403/3111403_1-9eaeed.jpg",
    "url": "https://www.migros.com.tr/lipton-yellow-label-dokme-cay-500-g-p-2f79eb"
   },
@@ -318,7 +299,6 @@
     "PRICE_PROMOTED",
     "MIGROSKOP"
    ],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03110042/3110042_1-45ec17.jpg",
    "url": "https://www.migros.com.tr/ofcay-tiryaki-dokme-cay-1-kg-p-2f749a"
   },
@@ -333,7 +313,6 @@
    "unit_price": "(469,90 TL/Kg)",
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03111310/03111310_1-50469d.jpg",
    "url": "https://www.migros.com.tr/caykur-cay-cicegi-500-g-p-2f798e"
   },
@@ -348,7 +327,6 @@
    "unit_price": "(443,90 TL/Kg)",
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03111304/03111304-7389d7.JPG",
    "url": "https://www.migros.com.tr/caykur-kamelya-cay-500-g-p-2f7988"
   },
@@ -363,7 +341,6 @@
    "unit_price": null,
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03111305/03111305_1-665bef.jpg",
    "url": "https://www.migros.com.tr/caykur-kamelya-cay-1-kg-p-2f7989"
   },
@@ -378,7 +355,6 @@
    "unit_price": "(624,75 TL/Kg)",
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03111325/03111325-2732cc.JPG",
    "url": "https://www.migros.com.tr/caykur-altinbas-200-g-p-2f799d"
   },
@@ -393,7 +369,6 @@
    "unit_price": null,
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03111651/03111651-3769ca.jpg",
    "url": "https://www.migros.com.tr/dogus-rize-cay-1-kg-p-2f7ae3"
   },
@@ -411,7 +386,6 @@
     "PRICE_PROMOTED",
     "MIGROSKOP"
    ],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03123871/03123871-b396df.jpg",
    "url": "https://www.migros.com.tr/ahmad-tea-special-bergamotlu-siyah-dokme-cay-200-g-p-2faa9f"
   },
@@ -428,7 +402,6 @@
    "badges": [
     "PRICE_PROMOTED"
    ],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03110028/03110028-2e0432.jpg",
    "url": "https://www.migros.com.tr/lipton-extra-yogun-earl-grey-100-g-p-2f748c"
   },
@@ -443,7 +416,6 @@
    "unit_price": null,
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03118206/03118206_1-6f64d5.jpg",
    "url": "https://www.migros.com.tr/dogus-karadeniz-cayi-1-kg-p-2f947e"
   },
@@ -458,7 +430,6 @@
    "unit_price": "(1749,50 TL/Kg)",
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03112987/03112987_1-9df07a.jpg",
    "url": "https://www.migros.com.tr/tazedem-teneke-kutu-ilk-hasat-siyah-cay-100-g-p-2f801b"
   },
@@ -473,7 +444,6 @@
    "unit_price": "(1519,90 TL/Kg)",
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03110054/03110054_1-ad8a36.jpg",
    "url": "https://www.migros.com.tr/howdah-pure-ceylon-tea-500-g-p-2f74a6"
   },
@@ -488,7 +458,6 @@
    "unit_price": null,
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03111303/03111303_1-c02541.jpg",
    "url": "https://www.migros.com.tr/caykur-rize-turist-cay-1-kg-p-2f7987"
   },
@@ -503,7 +472,6 @@
    "unit_price": null,
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03118646/3118646-a79b0e.jpg",
    "url": "https://www.migros.com.tr/migros-harman-siyah-cay-1-kg-p-2f9636"
   },
@@ -518,7 +486,6 @@
    "unit_price": "(1249,83 TL/Kg)",
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03112986/03112986_1-491699.jpg",
    "url": "https://www.migros.com.tr/tazedem-teneke-kutu-ilk-hasat-siyah-cay-300-g-p-2f801a"
   },
@@ -533,7 +500,6 @@
    "unit_price": null,
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03112988/03112988_1-01b4d3.jpg",
    "url": "https://www.migros.com.tr/tazedem-ilk-hasat-siyah-cay-1-kg-p-2f801c"
   },
@@ -548,7 +514,6 @@
    "unit_price": "(519,90 TL/Kg)",
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03112989/03112989_1-5c86ca.jpg",
    "url": "https://www.migros.com.tr/tazedem-ilk-hasat-siyah-cay-500-g-p-2f801d"
   },
@@ -563,7 +528,6 @@
    "unit_price": "(1799,87 TL/Kg)",
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03112961/03112961_1-e76736.jpg",
    "url": "https://www.migros.com.tr/ahmad-tea-cardamom-tea-400-g-p-2f8001"
   },
@@ -578,7 +542,6 @@
    "unit_price": "(259,90 TL/Kg)",
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03110040/03110040-15078c.jpg",
    "url": "https://www.migros.com.tr/efor-harman-siyah-cay-500-g-p-2f7498"
   },
@@ -593,7 +556,6 @@
    "unit_price": "(1199,90 TL/Kg)",
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03110055/03110055_1-08e050.jpg",
    "url": "https://www.migros.com.tr/bayce-pekoe-opp-ceylon-tea-500-g-p-2f74a7"
   },
@@ -608,7 +570,6 @@
    "unit_price": "(399,90 TL/Kg)",
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03118639/3118639-42b282.jpg",
    "url": "https://www.migros.com.tr/efor-filiz-yogun-dem-siyah-cay-500-g-p-2f962f"
   },
@@ -623,7 +584,6 @@
    "unit_price": "(469,90 TL/Kg)",
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03111302/03111302_1-a0add9.jpg",
    "url": "https://www.migros.com.tr/caykur-rize-turist-cay-500-g-p-2f7986"
   },
@@ -638,7 +598,6 @@
    "unit_price": "(1199,90 TL/Kg)",
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03110056/03110056_1-c16768.jpg",
    "url": "https://www.migros.com.tr/bayce-opa-opp-siyah-cay-500-g-p-2f74a8"
   },
@@ -653,7 +612,6 @@
    "unit_price": "(519,90 TL/Kg)",
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03111307/03111307_1-1eab0b.jpg",
    "url": "https://www.migros.com.tr/caykur-filiz-cay-500-g-p-2f798b"
   },
@@ -668,7 +626,6 @@
    "unit_price": "(399,90 TL/Kg)",
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/3118636/3118636-ff45cd.jpg",
    "url": "https://www.migros.com.tr/efor-bergamotlu-siyah-cay-500-g-p-2f962c"
   },
@@ -683,7 +640,6 @@
    "unit_price": "(599,90 TL/Kg)",
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03111604/03111604-b58442.jpg",
    "url": "https://www.migros.com.tr/dogus-karadeniz-export-cay-500-g-p-2f7ab4"
   },
@@ -698,7 +654,6 @@
    "unit_price": null,
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03118486/03118486_1-e51617.jpg",
    "url": "https://www.migros.com.tr/dogus-gurme-cay-1-kg-p-2f9596"
   },
@@ -713,7 +668,6 @@
    "unit_price": "(679,50 TL/Kg)",
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03118643/03118643-ea2390.jpg",
    "url": "https://www.migros.com.tr/efor-tomurcuk-bergamot-aromali-siyah-cay-100-g-p-2f9633"
   },
@@ -728,7 +682,6 @@
    "unit_price": null,
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/3118632/3118632-e88266.png",
    "url": "https://www.migros.com.tr/efor-camlica-siyah-cay-1-kg-p-2f9628"
   },
@@ -743,7 +696,6 @@
    "unit_price": "(549,75 TL/Kg)",
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03111309/03111309-559360.jpg",
    "url": "https://www.migros.com.tr/caykur-cay-cicegi-200-g-p-2f798d"
   },
@@ -761,7 +713,6 @@
     "PRICE_PROMOTED",
     "MIGROSKOP"
    ],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03123870/03123870-916c38.jpg",
    "url": "https://www.migros.com.tr/ahmad-tea-ceylon-dokme-cay-200-g-p-2faa9e"
   },
@@ -779,7 +730,6 @@
     "PRICE_PROMOTED",
     "MIGROSKOP"
    ],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03123872/03123872-cd5ff9.jpg",
    "url": "https://www.migros.com.tr/ahmad-tea-english-breakfast-siyah-dokme-cay-200-g-p-2faaa0"
   },
@@ -794,7 +744,6 @@
    "unit_price": "(1799,87 TL/Kg)",
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03123866/03123866-030aa8.jpg",
    "url": "https://www.migros.com.tr/ahmad-tea-ceylon-tea-dokme-cay-400-g-p-2faa9a"
   },
@@ -809,7 +758,6 @@
    "unit_price": "(1799,87 TL/Kg)",
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03123867/03123867-c43df4.jpg",
    "url": "https://www.migros.com.tr/ahmad-tea-english-breakfast-dokme-cay-400-g-p-2faa9b"
   },
@@ -824,7 +772,6 @@
    "unit_price": "(862,37 TL/Kg)",
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03118468/caykur-organik-hemsin-400-g-karton-kutu-24f535.jpg",
    "url": "https://www.migros.com.tr/caykur-organik-hemsin-karton-kutu-400-g-p-2f9584"
   },
@@ -839,7 +786,6 @@
    "unit_price": "(999,87 TL/Kg)",
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03118644/03118644_1-a8b5fe.jpg",
    "url": "https://www.migros.com.tr/efor-opa-ceylon-siyah-cay-400-g-p-2f9634"
   },
@@ -854,7 +800,6 @@
    "unit_price": null,
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03111650/3111650_1-a0bc82.jpg",
    "url": "https://www.migros.com.tr/dogus-siyah-cay-1-kg-p-2f7ae2"
   },
@@ -869,7 +814,6 @@
    "unit_price": null,
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03110029/3110029_1-e8c36f.jpg",
    "url": "https://www.migros.com.tr/lipton-earl-grey-dokme-cay-1-kg-p-2f748d"
   },
@@ -884,7 +828,6 @@
    "unit_price": null,
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/3118634/3118634-938102.jpg",
    "url": "https://www.migros.com.tr/efor-rize-siyah-cay-1-kg-p-2f962a"
   },
@@ -901,7 +844,6 @@
    "badges": [
     "PRICE_PROMOTED"
    ],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03110064/03110064_1-0e6373.jpg",
    "url": "https://www.migros.com.tr/ofcay-arhavi-cay-1-kg-p-2f74b0"
   },
@@ -916,7 +858,6 @@
    "unit_price": null,
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03110018/03110018-afee1f.jpg",
    "url": "https://www.migros.com.tr/ofcay-hazine-dokme-cay-1-kg-p-2f7482"
   },
@@ -931,7 +872,6 @@
    "unit_price": null,
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/3118635/3118635-b47107.jpg",
    "url": "https://www.migros.com.tr/efor-harman-siyah-cay-1-kg-p-2f962b"
   },
@@ -948,7 +888,6 @@
    "badges": [
     "PRICE_PROMOTED"
    ],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03111410/3111410_1-7bd7f8.jpg",
    "url": "https://www.migros.com.tr/lipton-yellow-label-cay-1-kg-p-2f79f2"
   },
@@ -963,7 +902,6 @@
    "unit_price": "(459,90 TL/Kg)",
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03111316/03111316_1-055ab6.jpg",
    "url": "https://www.migros.com.tr/caykur-tiryaki-500-g-p-2f7994"
   },
@@ -978,7 +916,6 @@
    "unit_price": null,
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03111411/3111411_1-2188d6.jpg",
    "url": "https://www.migros.com.tr/lipton-dogu-karadeniz-cayi-1-kg-p-2f79f3"
   },
@@ -993,7 +930,6 @@
    "unit_price": "(899,90 TL/Kg)",
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03118364/03118364-16416c.jpg",
    "url": "https://www.migros.com.tr/karali-organik-siyah-cay-500-g-p-2f951c"
   },
@@ -1008,7 +944,6 @@
    "unit_price": "(299,90 TL/Kg)",
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03118649/03118649-9ac492.jpg",
    "url": "https://www.migros.com.tr/migros-filiz-siyah-cay-500-g-p-2f9639"
   },
@@ -1023,7 +958,6 @@
    "unit_price": "(1099,90 TL/Kg)",
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03112970/03112970_1-11c54a.jpg",
    "url": "https://www.migros.com.tr/mevlana-sade-yaprak-cay-500-g-p-2f800a"
   },
@@ -1038,7 +972,6 @@
    "unit_price": "(1799,87 TL/Kg)",
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/03123868/03123868-af3cac.jpg",
    "url": "https://www.migros.com.tr/ahmad-tea-special-blend-dokme-cay-400-g-p-2faa9c"
   },
@@ -1053,7 +986,6 @@
    "unit_price": "(28,47 TL/Kg)",
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/30441895/30441895-1c34ab.jpg",
    "url": "https://www.migros.com.tr/migros-bulasik-makinesi-tuzu-2-kg-p-1d081a7"
   },
@@ -1071,7 +1003,6 @@
     "GREAT_PRICE",
     "MIGROSKOP"
    ],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/30441892/30441892_1-edb3a1.jpg",
    "url": "https://www.migros.com.tr/finish-bulasik-makinesi-tuzu-1500-g-p-1d081a4"
   },
@@ -1089,7 +1020,6 @@
     "PRICE_PROMOTED",
     "MIGROSKOP"
    ],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/30400974/30400974_1-a441c4.jpg",
    "url": "https://www.migros.com.tr/asperox-sparx-limon-kokulu-kaya-tuzu-15-kg-p-1cfe1ce"
   },
@@ -1107,7 +1037,6 @@
     "PRICE_PROMOTED",
     "MIGROSKOP"
    ],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/30980050/30980050_1-975b1c.jpg",
    "url": "https://www.migros.com.tr/bingo-bulasik-makinesi-tuzu-15-kg-p-1d8b7d2"
   },
@@ -1122,7 +1051,6 @@
    "unit_price": "(68,47 TL/Kg)",
    "in_stock": true,
    "badges": [],
-   "card_discount": false,
    "image": "https://images.migrosone.com/sanalmarket/product/30441897/30441897_1-4da336.jpg",
    "url": "https://www.migros.com.tr/pril-bulasik-makinesi-tuz-2-kg-p-1d081a9"
   }
