@@ -1,36 +1,35 @@
 {
- "updated": "2026-11-12T15:33:22+00:00",
- "total": 1164,
- "seconds": 167,
+ "updated": "2026-11-12T19:42:37+00:00",
+ "total": 19153,
+ "seconds": 2858,
  "markets": {
-  "migros": {
-   "status": "tamam",
-   "found": 475,
-   "seconds": 106,
-   "notes": [
-    "et-tavuk-balik-c-3: 558 üründen yalnızca 19 sayfa sunuluyor",
-    "kategori keşfi sınırı (5) doldu",
-    "8 üst kategori tarandı: et-tavuk-balik-c-3, ev-yasam-c-a, icecek-c-6, kagit-islak-mendil-c-8d, kisisel-bakim-kozmetik-saglik-c-8, meyve-sebze-c-2, sut-kahvaltilik-c-4, temel-gida-c-5"
-   ]
-  },
   "sok": {
    "status": "tamam",
-   "found": 689,
-   "seconds": 167,
+   "found": 2819,
+   "seconds": 685,
    "notes": [
     "19 üst kategori tarandı"
+   ]
+  },
+  "migros": {
+   "status": "tamam",
+   "found": 16334,
+   "seconds": 2858,
+   "notes": [
+    "kategori keşfi sınırı (250) doldu, taranmamış kategori kalmış olabilir",
+    "19 üst kategori tarandı: atistirmalik-c-113fb, bebek-c-9, cicek-c-502, deterjan-temizlik-c-7, dondurma-c-41b, dondurulmus-gida-c-7c, elektronik-c-a6, et-tavuk-balik-c-3, ev-yasam-c-a, evcil-hayvan-c-a0, firin-pastane-c-7e, hazir-yemek-meze-c-7d, icecek-c-6, kagit-islak-mendil-c-8d, kisisel-bakim-kozmetik-saglik-c-8, kitap-kirtasiye-oyuncak-c-118ec, meyve-sebze-c-2, sut-kahvaltilik-c-4, temel-gida-c-5"
    ]
   }
  },
  "traffic": {
   "www.migros.com.tr": {
-   "requests": 31,
-   "megabytes": 0.3,
+   "requests": 888,
+   "megabytes": 8.0,
    "errors": 0
   },
   "www.sokmarket.com.tr": {
-   "requests": 38,
-   "megabytes": 21.7,
+   "requests": 178,
+   "megabytes": 101.8,
    "errors": 0
   }
  },
