@@ -1,8 +1,44 @@
 {
-  "user_agent": "market-fiyat-kisisel/0.1 (+https://github.com/berfuzyonist/market-fiyat)",
+  "user_agent": "market-fiyat-kisisel/0.2 (+https://github.com/berfuzyonist/market-fiyat)",
   "delay_seconds": 3,
   "migros": {
-    "max_pages": 5,
-    "categories": ["dokme-cay-c-28c1", "bulasik-makinesi-tuzu-c-28ed"]
+    "max_pages": 400,
+    "max_discovery": 250,
+    "seed_ids": [
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "a"
+    ],
+    "sitemap": "https://www.migros.com.tr/hermes/api/sitemaps/sitemap-categories-1.xml"
+  },
+  "sok": {
+    "max_pages": 400,
+    "categories": [
+      "yemeklik-malzemeler-c-1770",
+      "et-ve-tavuk-ve-sarkuteri-c-160",
+      "meyve-ve-sebze-c-20",
+      "sut-ve-sut-urunleri-c-460",
+      "kahvaltilik-c-890",
+      "atistirmaliklar-c-20376",
+      "icecek-c-20505",
+      "ekmek-ve-pastane-c-1250",
+      "dondurulmus-urunler-c-1550",
+      "dondurma-c-31102",
+      "temizlik-c-20647",
+      "kagit-urunler-c-20875",
+      "kisisel-bakim-ve-kozmetik-c-20395",
+      "anne-bebek-ve-cocuk-c-20634",
+      "oyuncak-c-20644",
+      "ev-ve-yasam-c-20898",
+      "evcil-dostlar-c-20880",
+      "giyim-ve-ayakkabi-ve-aksesuar-c-20886",
+      "elektronik-c-22769"
+    ]
   }
 }
