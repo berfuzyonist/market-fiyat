@@ -1,0 +1,17 @@
+{
+ "sitemap": {
+  "status": 200,
+  "length": 651,
+  "head": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n  <sitemap>\n    <loc>https://www.sokmarket.com.tr/sitemap/ekstra-product_1.xml</loc>\n    <lastmod>2026-11-12</lastmod>\n  </sitemap>\n  <sitemap>\n    <loc>https://www.sokmarket.com.tr/sitemap/ekstra-category_1.xml</loc>\n    <lastmod>2026-11-12</lastmod>\n  </sitemap>\n  <sitemap>\n    <loc>https://www.sokmarket.com.tr/sitemap/market-product_1.xml</loc>\n    <lastmod>2026-11-12</lastmod>\n  </sitemap>\n  <sitemap>\n    <loc>https://www.sokmarket.com.tr/sitemap/market-category_1.xml</loc>\n    <lastmod>2026-11-12</lastmod>\n  </sitemap>\n</sitemapindex>"
+ },
+ "product": {
+  "status": 200,
+  "length": 829770,
+  "head": "<!DOCTYPE html><html lang=\"tr\" class=\"__className_d8f060\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no\"/><link rel=\"preload\" as=\"image\" href=\"https://images.ceptesok.com/cdn-cgi/image/width=49,height=49,fit=pad,quality=80,format=webp/logos/service-types/market-logo.svg\"/><link rel=\"preload\" as=\"image\" href=\"https://images.ceptesok.com/cdn-cgi/image/width=49,height=49,fit=pad,quality=80,format=webp/logos/service-types/dropshipping-logo-with-frame.svg\"/><link rel=\"preload\" as=\"image\" href=\"https://images.ceptesok.com/logos/service-types/g2m-logo.png\"/><link rel=\"preload\" as=\"image\" href=\"https://images.ceptesok.com/logos/service-types/market-logo.svg\"/><link rel=\"preload\" as=\"image\" href=\"https://images.ceptesok.com/cdn-cgi/image/width=600,height=600,fit=pad,quality=80,format=webp/product-assets/sub-folder/4631d54c-7495-4d78-9c8a-a5cc384a6972.jpg\"/><link rel=\"preload\" as=\"image\" href=\"https://images.ceptesok.com/cdn-cgi/image/width=216,height=216,fit=pad,quality=80,format=webp/product-assets/sub-folder/4631d54c-7495-4d78-9c8a-a5cc384a6972.jpg\"/><link rel=\"preload\" as=\"image\" href=\"https://images.cep",
+  "jsonld": [],
+  "barcode_ctx": null,
+  "price_ctx": " 11.1602 5.07537V16.8503C11.1582 17.0058 11.0955 17.1544 10.9856 17.2644C10.8756 17.3743 10.727 17.437 10.5715 17.4391ZM8.02053 16.2616H9.98284V5.66411H8.02053V16.2616Z\" fill=\"#ffe000\"></path><path d=\"M14.8877 17.4391H3.11385C2.75018 17.437 2.40199 17.2916 2.14484 17.0345C1.88768 16.7773 1.74229 16.4291 1.74023 16.0654V8.2154C1.74227 8.05988 1.80494 7.91131 1.91491 7.80134C2.02487 7.69136 2.17343 7.62868 2.32893 7.62665H7.43095C7.58708 7.62665 7.73681 7.68868 7.84721 7.79909C7.95762 7.9095 8.01964 8.05925 8.01964 8.2154C8.01964 8.37154 7.95762 8.52129 7.84721 8.6317C7.73681 8.74211 7.58708 8.8",
+  "next_data": false,
+  "next_flight": true
+ }
+}
