@@ -74,7 +74,6 @@ def migros_item(p):
         "unit_price": p.get("unitPrice"),
         "in_stock": p.get("status") == "IN_SALE",
         "badges": [b.get("name") for b in p.get("badges") or []],
-        "card_discount": bool(p.get("crmDiscountTags")),
         "image": img,
         "url": "https://www.migros.com.tr/" + (p.get("prettyName") or ""),
     }
@@ -103,22 +102,17 @@ def migros():
 
 
 def sok_probe():
-    """Geçici: Şok sayfalarının yapısını öğrenmek için iki istek atar."""
+    """Geçici: Şok kategori sayfalarının yapısını öğrenmek için iki istek atar."""
     res = {}
-    for name, url, acc in [
-        ("sitemap", "https://www.sokmarket.com.tr/sitemap/sitemap.xml", "application/xml"),
-        ("product", "https://www.sokmarket.com.tr/caykur-rize-turist-cay-1000-g-p-7545", "text/html"),
-    ]:
-        status, body = get(url, acc)
-        info = {"status": status, "length": len(body), "head": body[:1200]}
-        if name == "product" and body:
-            info["jsonld"] = re.findall(r'<script type="application/ld\+json"[^>]*>(.*?)</script>', body, re.S)[:3]
-            for key, needle in [("barcode_ctx", "8690105000115"), ("price_ctx", "429")]:
-                i = body.find(needle)
-                info[key] = body[max(0, i - 300): i + 300] if i >= 0 else None
-            info["next_data"] = "__NEXT_DATA__" in body
-            info["next_flight"] = "self.__next_f" in body
-        res[name] = info
+    status, body = get("https://www.sokmarket.com.tr/sitemap/market-category_1.xml", "application/xml")
+    locs = re.findall(r"<loc>(.*?)</loc>", body)
+    res["categories"] = {"status": status, "count": len(locs), "sample": locs[:40]}
+    status, body = get("https://www.sokmarket.com.tr/icecek-c-20505", "text/html")
+    links = sorted(set(re.findall(r'href="(/[a-z0-9-]+-p-[0-9]+)"', body)))
+    info = {"status": status, "length": len(body), "product_links": len(links), "links_sample": links[:5], "ctx": []}
+    for m in list(re.finditer(r'price', body))[:400:80]:
+        info["ctx"].append(body[max(0, m.start() - 500): m.start() + 500])
+    res["category"] = info
     return res
 
 

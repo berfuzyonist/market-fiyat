@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="tr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#059669">
+<title>Market Fiyat</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={theme:{extend:{fontFamily:{sans:['"Plus Jakarta Sans"','system-ui','sans-serif']}}}}</script>
+<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<style>.tabular{font-variant-numeric:tabular-nums}.noscroll::-webkit-scrollbar{display:none}</style>
+</head>
+<body class="bg-stone-100 text-stone-900 dark:bg-stone-950 dark:text-stone-100 font-sans antialiased">
+<header class="bg-gradient-to-br from-emerald-600 to-teal-700 text-white px-4 pt-6 pb-16">
+  <div class="max-w-xl mx-auto">
+    <div class="flex items-center gap-2 text-emerald-100 text-xs font-semibold uppercase tracking-wider"><i data-lucide="shopping-basket" class="w-4 h-4"></i>Market Fiyat</div>
+    <h1 class="text-2xl font-extrabold mt-1">En ucuzu nerede?</h1>
+    <p class="text-emerald-100 text-sm">Son güncelleme: <span id="upd">-</span></p>
+  </div>
+</header>
+<main class="max-w-xl mx-auto px-4 -mt-10 pb-28">
+  <div id="note" class="hidden mb-3 rounded-2xl bg-amber-100 text-amber-900 p-4 text-sm font-semibold"></div>
+
+  <div id="home" class="space-y-6">
+    <section class="bg-white dark:bg-stone-900 rounded-2xl ring-1 ring-stone-200 dark:ring-stone-800 shadow-lg shadow-stone-900/5 p-4">
+      <button id="scan" class="w-full flex items-center justify-center gap-2 py-4 rounded-xl font-bold bg-emerald-600 hover:bg-emerald-700 text-white active:scale-[.98] transition"><i data-lucide="scan-barcode" class="w-6 h-6"></i>Barkod okut</button>
+    </section>
+    <section>
+      <h2 class="font-extrabold text-lg flex items-center gap-2 mb-3"><i data-lucide="badge-percent" class="w-5 h-5 text-red-600"></i>İndirimler</h2>
+      <div id="deals" class="flex gap-3 overflow-x-auto snap-x noscroll -mx-4 px-4 pb-1"></div>
+    </section>
+    <section>
+      <h2 class="font-extrabold text-lg flex items-center gap-2 mb-3"><i data-lucide="history" class="w-5 h-5 text-emerald-600"></i>Son eklenenler</h2>
+      <div id="recent"></div>
+    </section>
+  </div>
+
+  <div id="search" class="hidden">
+    <label class="flex items-center gap-2 bg-white dark:bg-stone-900 rounded-2xl shadow-lg shadow-stone-900/5 px-4 py-3 ring-1 ring-stone-200 dark:ring-stone-800">
+      <i data-lucide="search" class="w-5 h-5 text-stone-400"></i>
+      <input id="q" class="flex-1 min-w-0 bg-transparent outline-none placeholder:text-stone-400" placeholder="Ürün adı ya da barkod" enterkeyhint="search">
+    </label>
+    <div id="res" class="mt-4 space-y-3"></div>
+  </div>
+
+  <div id="list" class="hidden space-y-3"></div>
+
+  <p class="text-xs text-stone-500 mt-6 leading-relaxed">Fiyatlar marketlerin online satış fiyatıdır; şube rafındaki fiyat ve stok farklı olabilir. Kişisel kullanım içindir.</p>
+</main>
+
+<div id="scanner" class="hidden fixed inset-0 z-50 bg-black">
+  <video id="cam" class="w-full h-full object-cover" playsinline muted></video>
+  <div class="absolute inset-x-8 top-1/3 h-32 border-2 border-emerald-400 rounded-2xl"></div>
+  <button id="scanX" class="absolute bottom-10 inset-x-8 py-4 rounded-xl bg-white text-stone-900 font-bold">Vazgeç</button>
+</div>
+
+<nav class="fixed bottom-0 inset-x-0 bg-white/90 dark:bg-stone-900/90 backdrop-blur border-t border-stone-200 dark:border-stone-800">
+  <div class="max-w-xl mx-auto grid grid-cols-3 p-2 gap-2">
+    <button data-v="0"><i data-lucide="house" class="w-5 h-5"></i>Ana sayfa</button>
+    <button data-v="1"><i data-lucide="search" class="w-5 h-5"></i>Ara</button>
+    <button data-v="2"><i data-lucide="list-checks" class="w-5 h-5"></i>Listem<span id="n" class="absolute top-1 right-1/4 bg-emerald-600 text-white text-[10px] rounded-full min-w-[18px] h-[18px] place-items-center px-1" style="display:none"></span></button>
+  </div>
+</nav>
+<script>
+const M={sok:{n:"Şok",c:"bg-yellow-400 text-yellow-950"},migros:{n:"Migros",c:"bg-orange-500 text-white"},a101:{n:"A101",c:"bg-cyan-600 text-white"},bim:{n:"BİM",c:"bg-red-600 text-white"}},ORD=Object.keys(M);
+const $=id=>document.getElementById(id);
+const tl=x=>x.toLocaleString("tr-TR",{minimumFractionDigits:2,maximumFractionDigits:2})+" ₺";
+const norm=s=>(s||"").toLocaleLowerCase("tr");
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function load(k,d){try{const v=JSON.parse(localStorage.getItem("mf_"+k));return v??d}catch(e){return d}}
+function save(k,v){try{localStorage.setItem("mf_"+k,JSON.stringify(v))}catch(e){}}
+// G: ürün grupları (aynı ürünün marketlerdeki teklifleri), cart: liste, bmap: barkod → ürün
+let G=[],GI={},cart=load("cart",[]),bmap=load("bmap",{}),pending=null,only=null,updated="";
+
+const badge=m=>`<span class="${M[m]?M[m].c:"bg-stone-400 text-white"} text-xs font-bold px-2.5 py-1 rounded-lg">${M[m]?M[m].n:esc(m)}</span>`;
+const chip=(t,c)=>`<span class="text-[11px] font-semibold px-2 py-0.5 rounded-md ${c}">${t}</span>`;
+const card="bg-white dark:bg-stone-900 rounded-2xl ring-1 ring-stone-200 dark:ring-stone-800 shadow-sm";
+const div="divide-y divide-stone-100 dark:divide-stone-800";
+const empty=(ic,a,b)=>`<div class="${card} p-8 text-center"><i data-lucide="${ic}" class="w-10 h-10 mx-auto text-stone-300"></i><p class="mt-2 font-semibold">${a}</p><p class="text-sm text-stone-500">${b}</p></div>`;
+const img=(g,cls)=>g.image&&g.image.startsWith("https://")?`<img src="${esc(g.image)}" alt="" loading="lazy" class="${cls} object-contain bg-white rounded-xl" onerror="this.style.visibility='hidden'">`:`<div class="${cls} rounded-xl bg-stone-200 dark:bg-stone-800"></div>`;
+const avail=g=>g.offers.filter(o=>o.in_stock);
+const best=g=>avail(g).reduce((a,o)=>!a||o.price<a.price?o:a,null);
+const worst=g=>Math.max(...avail(g).map(o=>o.price));
+
+function drawH(){
+  const d=[];G.forEach(g=>g.offers.forEach(o=>{if(o.in_stock&&o.price<o.regular)d.push([g,o])}));
+  d.sort((a,b)=>a[1].price/a[1].regular-b[1].price/b[1].regular);
+  $("deals").innerHTML=d.slice(0,20).map(([g,o])=>`<article data-show="${esc(g.key)}" class="${card} p-3 w-40 shrink-0 snap-start cursor-pointer">
+    <div class="relative">${img(g,"w-full h-28")}<span class="absolute top-0 right-0 bg-red-600 text-white text-xs font-extrabold px-2 py-1 rounded-lg">-%${Math.round((1-o.price/o.regular)*100)}</span></div>
+    <p class="text-sm font-semibold leading-snug mt-2 h-10 overflow-hidden">${esc(g.name)}</p>
+    <div class="mt-2">${badge(o.market)}</div>
+    <p class="text-xs text-stone-400 line-through tabular mt-2">${tl(o.regular)}</p>
+    <p class="font-extrabold text-emerald-700 dark:text-emerald-400 tabular">${tl(o.price)}</p></article>`).join("")||`<p class="text-sm text-stone-500">Şu an indirim görünmüyor.</p>`;
+  const r=cart.slice(-3).reverse().map(k=>GI[k]).filter(Boolean);
+  $("recent").innerHTML=r.length?`<div class="${card} px-4 ${div}">`+r.map(g=>{const b=best(g);
+    return`<div data-show="${esc(g.key)}" class="flex items-center gap-3 py-3 cursor-pointer">${img(g,"w-10 h-10 shrink-0")}<span class="flex-1 text-sm font-semibold">${esc(g.name)}</span>${b?badge(b.market)+`<span class="tabular font-bold">${tl(b.price)}</span>`:chip("Tükendi","bg-stone-200 text-stone-600")}</div>`}).join("")+`</div>`
+    :empty("history","Henüz ürün eklemediniz","Listeye eklediğiniz son ürünler burada görünür.");
+  $("upd").textContent=updated?new Date(updated).toLocaleString("tr-TR",{dateStyle:"short",timeStyle:"short"}):"-"}
+
+function row(o,isB){
+  const out=!o.in_stock,disc=o.price<o.regular;
+  return`<div class="flex items-center gap-2 py-2 ${isB?"bg-emerald-50 dark:bg-emerald-950/40 -mx-4 px-4":""} ${out?"opacity-40":""}">
+  ${badge(o.market)}${isB?`<span class="flex items-center gap-1 text-emerald-700 dark:text-emerald-400 text-xs font-bold"><i data-lucide="trophy" class="w-3.5 h-3.5"></i>En ucuz</span>`:""}
+  <span class="flex-1"></span>${out?chip("Tükendi","bg-stone-200 text-stone-600"):""}${disc?`<span class="text-xs text-stone-400 line-through tabular">${tl(o.regular)}</span>`:""}
+  <span class="tabular font-bold text-right ${isB||disc?"text-emerald-700 dark:text-emerald-400":""} ${out?"line-through":""}">${tl(o.price)}</span>
+  ${o.url&&o.url.startsWith("https://")?`<a href="${esc(o.url)}" target="_blank" rel="noopener" aria-label="Markette aç" class="text-stone-400 p-1"><i data-lucide="external-link" class="w-4 h-4"></i></a>`:""}</div>`}
+
+function drawS(){
+  const w=norm($("q").value.trim()).split(/\s+/).filter(Boolean);
+  let r=only&&GI[only]?[GI[only]]:G.filter(g=>w.every(x=>g.s.includes(x)));
+  const total=r.length;r=r.slice(0,30);
+  const ban=pending?`<div class="rounded-2xl bg-amber-100 text-amber-900 p-4 text-sm"><p class="font-bold">Barkod ${esc(pending)} henüz tanınmıyor</p><p>Ürünü adıyla arayın, sonra "Bu barkodla eşleştir"e dokunun. Bunu ürün başına bir kez yapmanız yeterli.</p><button data-cancel class="mt-2 font-bold underline">Vazgeç</button></div>`:"";
+  $("res").innerHTML=ban+(r.map(g=>{const b=best(g),inC=cart.includes(g.key),multi=avail(g).length>1,sv=b&&multi?worst(g)-b.price:0;
+    return`<article class="${card} p-4">
+    <div class="flex gap-3 items-center">${img(g,"w-20 h-20 shrink-0")}
+      <div class="min-w-0"><h2 class="font-bold leading-snug">${esc(g.name)}</h2>
+      ${sv>0?`<p class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mt-1">${tl(sv)}'ye kadar tasarruf</p>`:""}</div></div>
+    <div class="mt-3 ${div}">${g.offers.map(o=>row(o,multi&&o===b)).join("")}</div>
+    ${pending?`<button data-map="${esc(g.key)}" class="mt-3 w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold bg-amber-500 text-white"><i data-lucide="link" class="w-5 h-5"></i>Bu barkodla eşleştir</button>`:""}
+    <button data-add="${esc(g.key)}" ${b||inC?"":"disabled"} class="mt-3 w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold transition active:scale-[.98] ${inC||!b?"bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-200":"bg-emerald-600 hover:bg-emerald-700 text-white"}">
+      <i data-lucide="${inC?"check":"plus"}" class="w-5 h-5"></i>${inC?"Listede · çıkar":b?"Listeye ekle → "+M[b.market].n:"Stokta yok"}</button></article>`}).join("")
+    ||(G.length?empty("search-x","Sonuç bulunamadı","Başka bir kelime deneyin."):""))
+    +(total>30?`<p class="text-center text-sm text-stone-500">${total} sonuçtan ilk 30'u gösteriliyor. Aramayı daraltın.</p>`:"")}
+
+function drawL(){
+  const items=cart.map(k=>GI[k]).filter(Boolean);
+  $("n").textContent=items.length;$("n").style.display=items.length?"grid":"none";
+  if(!items.length){$("list").innerHTML=empty("shopping-cart","Listeniz boş","Ürün arayıp ekleyin, en ucuz markete göre gruplanır.");return}
+  const line=(g,p)=>`<div class="flex items-center gap-3 py-3">${img(g,"w-10 h-10 shrink-0")}<span class="flex-1 text-sm">${esc(g.name)}</span><span class="tabular font-semibold">${p}</span><button data-add="${esc(g.key)}" aria-label="Çıkar" class="text-stone-400 hover:text-red-600 p-1"><i data-lucide="x" class="w-4 h-4"></i></button></div>`;
+  let sum=0,max=0,h="",stops=0;
+  ORD.forEach(m=>{const it=items.filter(g=>(best(g)||{}).market===m);if(!it.length)return;stops++;let t=0;
+    h+=`<section class="${card} overflow-hidden"><div class="${M[m].c} px-4 py-3 flex items-center justify-between"><span class="font-extrabold flex items-center gap-2"><span class="bg-black/15 rounded-full w-6 h-6 grid place-items-center text-xs">${stops}</span>${M[m].n}</span><span class="text-sm font-semibold opacity-90">${it.length} ürün</span></div><div class="px-4 ${div}">`+
+    it.map(g=>{const b=best(g);t+=b.price;max+=worst(g);return line(g,tl(b.price))}).join("")+
+    `</div><div class="px-4 py-3 bg-stone-50 dark:bg-stone-800/50 flex justify-between font-bold"><span>Ara toplam</span><span class="tabular">${tl(t)}</span></div></section>`;sum+=t});
+  const out=items.filter(g=>!best(g));
+  if(out.length)h+=`<section class="${card} overflow-hidden"><div class="bg-stone-300 dark:bg-stone-700 px-4 py-3 font-extrabold">Stokta yok</div><div class="px-4 ${div}">${out.map(g=>line(g,"-")).join("")}</div></section>`;
+  $("list").innerHTML=`<div class="${card} shadow-lg p-5"><p class="text-stone-500 text-sm">Toplam · ${stops} market</p><p class="text-3xl font-extrabold tabular">${tl(sum)}</p>${max-sum>0.005?`<p class="mt-2 inline-flex items-center gap-1 bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 rounded-lg px-2.5 py-1 text-sm font-semibold"><i data-lucide="piggy-bank" class="w-4 h-4"></i>${tl(max-sum)} tasarruf</p>`:""}</div>`+h}
+
+function draw(){drawH();drawS();drawL();lucide.createIcons()}
+const NB="flex flex-col items-center gap-0.5 py-2 rounded-xl text-xs font-semibold relative ";
+function tab(v){["home","search","list"].forEach((id,i)=>$(id).classList.toggle("hidden",i!==v));
+  document.querySelectorAll("nav button").forEach((b,i)=>b.className=NB+(i===v?"bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400":"text-stone-500"));scrollTo(0,0)}
+let noteT;function note(m){$("note").textContent=m;$("note").classList.remove("hidden");clearTimeout(noteT);noteT=setTimeout(()=>$("note").classList.add("hidden"),7000)}
+
+function onCode(b){const k=bmap[b];if(k&&GI[k]){only=k;pending=null}else{only=null;pending=b}$("q").value="";tab(1);draw()}
+async function scan(){
+  if(!("BarcodeDetector" in window)){tab(1);note("Bu tarayıcı kamerayla barkod okumayı desteklemiyor. Barkod numarasını arama kutusuna yazıp Enter'a basın.");return}
+  let stream;try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}})}catch(e){note("Kamera açılamadı. Tarayıcıda kamera iznini kontrol edin.");return}
+  const v=$("cam");v.srcObject=stream;await v.play();$("scanner").classList.remove("hidden");
+  const det=new BarcodeDetector({formats:["ean_13","ean_8","upc_a"]});let on=true;
+  const stop=()=>{on=false;stream.getTracks().forEach(t=>t.stop());$("scanner").classList.add("hidden")};
+  $("scanX").onclick=stop;
+  while(on){try{const r=await det.detect(v);if(r.length){stop();onCode(r[0].rawValue);return}}catch(e){}await new Promise(r=>setTimeout(r,250))}}
+
+document.addEventListener("click",e=>{const t=s=>e.target.closest(s);let el;
+  if(el=t("[data-add]")){const k=el.dataset.add;cart=cart.includes(k)?cart.filter(x=>x!==k):[...cart,k];save("cart",cart);draw()}
+  else if(el=t("[data-map]")){bmap[pending]=el.dataset.map;save("bmap",bmap);only=el.dataset.map;pending=null;draw();note("Barkod eşleştirildi. Bir dahaki okutmada ürün doğrudan açılır.")}
+  else if(t("[data-cancel]")){pending=null;draw()}
+  else if(t("a")){}
+  else if(el=t("[data-show]")){only=el.dataset.show;$("q").value="";tab(1);draw()}
+  else if(el=t("[data-v]"))tab(+el.dataset.v)});
+$("q").oninput=()=>{only=null;drawS();lucide.createIcons()};
+$("q").onchange=()=>{const v=$("q").value.trim();if(/^\d{8,14}$/.test(v))onCode(v)};
+$("scan").onclick=scan;
+tab(0);lucide.createIcons();
+fetch("data/products.json",{cache:"no-store"}).then(r=>{if(!r.ok)throw new Error("HTTP "+r.status);return r.json()}).then(d=>{
+  updated=d.updated;const g={};
+  d.products.forEach(o=>{const k=o.match||o.id;if(!g[k])g[k]={key:k,name:o.name,image:o.image,offers:[]};g[k].offers.push(o);if(!g[k].image)g[k].image=o.image});
+  G=Object.values(g);G.forEach(x=>{x.offers.sort((a,b)=>ORD.indexOf(a.market)-ORD.indexOf(b.market));x.s=norm(x.name+" "+x.offers.map(o=>(o.brand||"")+" "+(o.category||"")).join(" "));GI[x.key]=x});
+  draw()}).catch(e=>{$("deals").innerHTML="";note("Fiyat verisi yüklenemedi: "+e.message)});
+</script></body></html>
