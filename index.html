@@ -79,6 +79,16 @@ const card="bg-white dark:bg-stone-900 rounded-2xl ring-1 ring-stone-200 dark:ri
 const div="divide-y divide-stone-100 dark:divide-stone-800";
 const empty=(ic,a,b)=>`<div class="${card} p-8 text-center"><i data-lucide="${ic}" class="w-10 h-10 mx-auto text-stone-300"></i><p class="mt-2 font-semibold">${a}</p><p class="text-sm text-stone-500">${b}</p></div>`;
 const img=(g,cls)=>g.image&&g.image.startsWith("https://")?`<img src="${esc(g.image)}" alt="" loading="lazy" class="${cls} object-contain bg-white rounded-xl" onerror="this.style.visibility='hidden'">`:`<div class="${cls} rounded-xl bg-stone-200 dark:bg-stone-800"></div>`;
+const inCart=g=>cart.some(k=>GI[k]===g);
+const uniq=a=>[...new Set(a.map(k=>GI[k]).filter(Boolean))];
+// Aynı ürünü marketler arasında eşleştirmek için ad anahtarı: harfler sadeleşir, gramaj tek birime çevrilir
+const FOLD={"ç":"c","ğ":"g","ı":"i","ö":"o","ş":"s","ü":"u","â":"a","î":"i","û":"u"},UNIT={kg:["g",1000],g:["g",1],gr:["g",1],l:["ml",1000],lt:["ml",1000],ml:["ml",1],cl:["ml",10]};
+function mkey(name){let sized=false;
+  const s=norm(name).replace(/[çğıöşüâîû]/g,c=>FOLD[c]).replace(/(\d),(\d)/g,"$1.$2")
+    .replace(/(\d+(?:\.\d+)?)\s*(kg|gr|g|lt|l|ml|cl)\b/g,(m,n,u)=>{sized=true;return" "+Math.round(parseFloat(n)*UNIT[u][1])+UNIT[u][0]+" "});
+  if(!sized)return null;
+  const t=s.replace(/[^a-z0-9]+/g," ").trim().split(" ").map(x=>x.length>3&&/[a-z][iu]$/.test(x)&&!/\d/.test(x)?x.slice(0,-1):x);
+  return[...new Set(t)].sort().join(" ")}
 const avail=g=>g.offers.filter(o=>o.in_stock);
 const best=g=>avail(g).reduce((a,o)=>!a||o.price<a.price?o:a,null);
 const worst=g=>Math.max(...avail(g).map(o=>o.price));
@@ -92,7 +102,7 @@ function drawH(){
     <div class="mt-2">${badge(o.market)}</div>
     <p class="text-xs text-stone-400 line-through tabular mt-2">${tl(o.regular)}</p>
     <p class="font-extrabold text-emerald-700 dark:text-emerald-400 tabular">${tl(o.price)}</p></article>`).join("")||`<p class="text-sm text-stone-500">Şu an indirim görünmüyor.</p>`;
-  const r=cart.slice(-3).reverse().map(k=>GI[k]).filter(Boolean);
+  const r=uniq(cart).slice(-3).reverse();
   $("recent").innerHTML=r.length?`<div class="${card} px-4 ${div}">`+r.map(g=>{const b=best(g);
     return`<div data-show="${esc(g.key)}" class="flex items-center gap-3 py-3 cursor-pointer">${img(g,"w-10 h-10 shrink-0")}<span class="flex-1 text-sm font-semibold">${esc(g.name)}</span>${b?badge(b.market)+`<span class="tabular font-bold">${tl(b.price)}</span>`:chip("Tükendi","bg-stone-200 text-stone-600")}</div>`}).join("")+`</div>`
     :empty("history","Henüz ürün eklemediniz","Listeye eklediğiniz son ürünler burada görünür.");
@@ -111,7 +121,7 @@ function drawS(){
   let r=only&&GI[only]?[GI[only]]:G.filter(g=>w.every(x=>g.s.includes(x)));
   const total=r.length;r=r.slice(0,30);
   const ban=pending?`<div class="rounded-2xl bg-amber-100 text-amber-900 p-4 text-sm"><p class="font-bold">Barkod ${esc(pending)} henüz tanınmıyor</p><p>Ürünü adıyla arayın, sonra "Bu barkodla eşleştir"e dokunun. Bunu ürün başına bir kez yapmanız yeterli.</p><button data-cancel class="mt-2 font-bold underline">Vazgeç</button></div>`:"";
-  $("res").innerHTML=ban+(r.map(g=>{const b=best(g),inC=cart.includes(g.key),multi=avail(g).length>1,sv=b&&multi?worst(g)-b.price:0;
+  $("res").innerHTML=ban+(r.map(g=>{const b=best(g),inC=inCart(g),multi=avail(g).length>1,sv=b&&multi?worst(g)-b.price:0;
     return`<article class="${card} p-4">
     <div class="flex gap-3 items-center">${img(g,"w-20 h-20 shrink-0")}
       <div class="min-w-0"><h2 class="font-bold leading-snug">${esc(g.name)}</h2>
@@ -124,7 +134,7 @@ function drawS(){
     +(total>30?`<p class="text-center text-sm text-stone-500">${total} sonuçtan ilk 30'u gösteriliyor. Aramayı daraltın.</p>`:"")}
 
 function drawL(){
-  const items=cart.map(k=>GI[k]).filter(Boolean);
+  const items=uniq(cart);
   $("n").textContent=items.length;$("n").style.display=items.length?"grid":"none";
   if(!items.length){$("list").innerHTML=empty("shopping-cart","Listeniz boş","Ürün arayıp ekleyin, en ucuz markete göre gruplanır.");return}
   const line=(g,p)=>`<div class="flex items-center gap-3 py-3">${img(g,"w-10 h-10 shrink-0")}<span class="flex-1 text-sm">${esc(g.name)}</span><span class="tabular font-semibold">${p}</span><button data-add="${esc(g.key)}" aria-label="Çıkar" class="text-stone-400 hover:text-red-600 p-1"><i data-lucide="x" class="w-4 h-4"></i></button></div>`;
@@ -154,7 +164,7 @@ async function scan(){
   while(on){try{const r=await det.detect(v);if(r.length){stop();onCode(r[0].rawValue);return}}catch(e){}await new Promise(r=>setTimeout(r,250))}}
 
 document.addEventListener("click",e=>{const t=s=>e.target.closest(s);let el;
-  if(el=t("[data-add]")){const k=el.dataset.add;cart=cart.includes(k)?cart.filter(x=>x!==k):[...cart,k];save("cart",cart);draw()}
+  if(el=t("[data-add]")){const g=GI[el.dataset.add];if(g){cart=inCart(g)?cart.filter(x=>GI[x]!==g):[...cart,g.key];save("cart",cart);draw()}}
   else if(el=t("[data-map]")){bmap[pending]=el.dataset.map;save("bmap",bmap);only=el.dataset.map;pending=null;draw();note("Barkod eşleştirildi. Bir dahaki okutmada ürün doğrudan açılır.")}
   else if(t("[data-cancel]")){pending=null;draw()}
   else if(t("a")){}
@@ -164,9 +174,14 @@ $("q").oninput=()=>{only=null;drawS();lucide.createIcons()};
 $("q").onchange=()=>{const v=$("q").value.trim();if(/^\d{8,14}$/.test(v))onCode(v)};
 $("scan").onclick=scan;
 tab(0);lucide.createIcons();
-fetch("data/products.json",{cache:"no-store"}).then(r=>{if(!r.ok)throw new Error("HTTP "+r.status);return r.json()}).then(d=>{
-  updated=d.updated;const g={};
-  d.products.forEach(o=>{const k=o.match||o.id;if(!g[k])g[k]={key:k,name:o.name,image:o.image,offers:[]};g[k].offers.push(o);if(!g[k].image)g[k].image=o.image});
-  G=Object.values(g);G.forEach(x=>{x.offers.sort((a,b)=>ORD.indexOf(a.market)-ORD.indexOf(b.market));x.s=norm(x.name+" "+x.offers.map(o=>(o.brand||"")+" "+(o.category||"")).join(" "));GI[x.key]=x});
+fetch("data/products.json").then(r=>{if(!r.ok)throw new Error("HTTP "+r.status);return r.json()}).then(d=>{
+  updated=d.updated;const byKey=new Map();
+  d.products.forEach(r=>{
+    let o=r;if(Array.isArray(r)){const m=r[0].split(":")[0],p=(d.prefix||{})[m]||{};o={id:r[0],market:m,name:r[1],price:r[2],regular:r[3],in_stock:!!r[4],image:r[5]?(p.image||"")+r[5]:"",url:r[6]?(p.url||"")+r[6]:""}}
+    const k=mkey(o.name);let g=k&&byKey.get(k);
+    if(!g||g.offers.some(x=>x.market===o.market)){g={name:o.name,offers:[]};G.push(g);if(k&&!byKey.has(k))byKey.set(k,g)}
+    g.offers.push(o)});
+  G.forEach(g=>{g.offers.sort((a,b)=>ORD.indexOf(a.market)-ORD.indexOf(b.market));g.key=g.offers[0].id;g.image=(g.offers.find(o=>o.image)||{}).image;
+    g.s=norm(g.offers.map(o=>o.name).join(" "));g.offers.forEach(o=>GI[o.id]=g)});
   draw()}).catch(e=>{$("deals").innerHTML="";note("Fiyat verisi yüklenemedi: "+e.message)});
 </script></body></html>
