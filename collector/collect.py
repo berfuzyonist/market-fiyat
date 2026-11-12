@@ -8,6 +8,8 @@ Kurallar:
 - Site hata dönerse (403, 429 vb.) o market için durulur, yeniden denenmez.
 """
 import datetime
+import gzip
+import html
 import json
 import pathlib
 import re
@@ -25,10 +27,14 @@ LOG, ROBOTS = [], {}
 
 def _fetch(url, accept):
     time.sleep(DELAY)
-    req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": accept, "Accept-Language": "tr"})
+    req = urllib.request.Request(url, headers={
+        "User-Agent": UA, "Accept": accept, "Accept-Language": "tr", "Accept-Encoding": "gzip"})
     try:
         with urllib.request.urlopen(req, timeout=30) as r:
-            return r.status, r.read().decode("utf-8", "replace")
+            raw = r.read()
+            if r.headers.get("Content-Encoding") == "gzip":
+                raw = gzip.decompress(raw)
+            return r.status, raw.decode("utf-8", "replace")
     except urllib.error.HTTPError as e:
         return e.code, ""
     except Exception as e:  # ağ hatası
@@ -99,6 +105,39 @@ def migros():
             products += [migros_item(p) for p in items]
             page += 1
     return products, "tamam"
+
+
+SOK_LINK = re.compile(r'<a href="(/[a-z0-9-]+-p-(\d+))"')
+TL = r"(\d[\d.]*,\d\d)"
+
+
+def tl(text):
+    return float(text.replace(".", "").replace(",", "."))
+
+
+def sok_cards(body):
+    """Şok kategori sayfasındaki ürün kartlarını ayıklar."""
+    out, links = {}, list(SOK_LINK.finditer(body))
+    for i, m in enumerate(links):
+        blk = body[m.end(): links[i + 1].start() if i + 1 < len(links) else m.end() + 6000]
+        title = re.search(r"<h2[^>]*>(.*?)</h2>", blk, re.S)
+        prices = [tl(x) for x in re.findall(r">" + TL + r"(?:<!-- -->)?\s*₺", blk)]
+        if not title or not prices:
+            continue
+        named = re.search(r'data-testid="discountedPrice">' + TL, blk)
+        price = tl(named.group(1)) if named else min(prices)
+        img = re.search(r'<img src="(https://images\.ceptesok\.com/[^"]+)"', blk)
+        out["sok:" + m.group(2)] = {
+            "id": "sok:" + m.group(2),
+            "market": "sok",
+            "name": html.unescape(re.sub(r"<[^>]+>", "", title.group(1))).strip(),
+            "price": price,
+            "regular": max(prices + [price]),
+            "in_stock": "Tükendi" not in blk and "Stokta yok" not in blk,
+            "image": img.group(1) if img else None,
+            "url": "https://www.sokmarket.com.tr" + m.group(1),
+        }
+    return list(out.values())
 
 
 def dump(path, obj):

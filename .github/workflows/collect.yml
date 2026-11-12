@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: python3 collector/collect.py
+      - run: python3 collector/probe.py
       - name: Veriyi kaydet
         run: |
           git config user.name "fiyat-botu"
