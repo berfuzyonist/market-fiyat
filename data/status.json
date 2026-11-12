@@ -1,33 +1,38 @@
 {
- "updated": "2026-11-12T15:16:14+00:00",
- "migros": {
-  "status": "tamam",
-  "count": 72
- },
- "requests": [
-  {
-   "url": "https://www.migros.com.tr/robots.txt",
-   "status": 200
+ "updated": "2026-11-12T15:33:22+00:00",
+ "total": 1164,
+ "seconds": 167,
+ "markets": {
+  "migros": {
+   "status": "tamam",
+   "found": 475,
+   "seconds": 106,
+   "notes": [
+    "et-tavuk-balik-c-3: 558 üründen yalnızca 19 sayfa sunuluyor",
+    "kategori keşfi sınırı (5) doldu",
+    "8 üst kategori tarandı: et-tavuk-balik-c-3, ev-yasam-c-a, icecek-c-6, kagit-islak-mendil-c-8d, kisisel-bakim-kozmetik-saglik-c-8, meyve-sebze-c-2, sut-kahvaltilik-c-4, temel-gida-c-5"
+   ]
   },
-  {
-   "url": "https://www.migros.com.tr/rest/search/screens/dokme-cay-c-28c1?sayfa=1",
-   "status": 200,
-   "bytes": 55666
-  },
-  {
-   "url": "https://www.migros.com.tr/rest/search/screens/dokme-cay-c-28c1?sayfa=2",
-   "status": 200,
-   "bytes": 54036
-  },
-  {
-   "url": "https://www.migros.com.tr/rest/search/screens/dokme-cay-c-28c1?sayfa=3",
-   "status": 200,
-   "bytes": 17445
-  },
-  {
-   "url": "https://www.migros.com.tr/rest/search/screens/bulasik-makinesi-tuzu-c-28ed?sayfa=1",
-   "status": 200,
-   "bytes": 17125
+  "sok": {
+   "status": "tamam",
+   "found": 689,
+   "seconds": 167,
+   "notes": [
+    "19 üst kategori tarandı"
+   ]
   }
- ]
+ },
+ "traffic": {
+  "www.migros.com.tr": {
+   "requests": 31,
+   "megabytes": 0.3,
+   "errors": 0
+  },
+  "www.sokmarket.com.tr": {
+   "requests": 38,
+   "megabytes": 21.7,
+   "errors": 0
+  }
+ },
+ "errors": []
 }
