@@ -284,12 +284,16 @@ def bim_cards(body, label):
         src = img.group(1) if img else ""
         if src.startswith("/"):
             src = "https://www.bim.com.tr" + src
-        name = " ".join(heads[:2]) + (" " + size.group(1).strip() if size else "")
+        size = size.group(1).strip(" ,") if size else ""
+        if re.fullmatch(r"[\d.,\s]*", size):  # boyut yoksa fiyat parçası yakalanmış olabilir
+            size = ""
+        name = " ".join(heads[:2] + ([size] if size else []))
         value = float(price.group(1).replace(".", "") + "." + (price.group(2) or "00"))
         out["bim:" + m.group(2)] = {
             "id": "bim:" + m.group(2), "market": "bim", "name": name, "price": value, "regular": value,
             "in_stock": True, "image": src if src.startswith("https://") else "",
-            "url": "https://www.bim.com.tr" + m.group(1), "cat": "Aktüel · " + label,
+            "url": "https://www.bim.com.tr" + m.group(1),
+            "cat": ("İndirim · " if re.match(r"\d+\s*-\s*\d+", label) else "Aktüel · ") + label,
         }
     return out
 
