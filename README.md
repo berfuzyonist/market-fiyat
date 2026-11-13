@@ -7,4 +7,4 @@ Kişisel kullanım için market fiyat karşılaştırma uygulaması: https://ber
 - `config.json`: bekleme süresi, kategori listeleri ve sınırlar.
 - `data/products.json`: toplanan fiyatlar. `data/status.json`: son çalışmanın özeti (ürün sayısı, istek sayısı, hatalar).
 
-Henüz yok: BİM ve A101.
+Ajanlar: Migros ve Şok gece tam tarama + saat başı indirim kontrolü, BİM aktüel günde iki kez. A101 için yasal bir kaynak yok.

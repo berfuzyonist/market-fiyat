@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""Kişisel market fiyat toplayıcı (Migros ve Şok, tüm ürünler).
+"""Kişisel market fiyat toplayıcı.
+
+Kullanım: python3 collector/collect.py <market> <mod>
+  migros full | migros deals
+  sok full    | sok deals
+  bim aktuel
+Her market kendi dosyasına yazar: data/<market>.json ve data/status-<market>.json
 
 Kurallar:
 - Yalnızca herkese açık ve sitenin robots.txt dosyasının izin verdiği adresler okunur.
@@ -15,7 +21,7 @@ import json
 import os
 import pathlib
 import re
-import threading
+import sys
 import time
 import urllib.error
 import urllib.parse
@@ -206,136 +212,207 @@ def sok_cards(body, cat=""):
     return list(out.values())
 
 
+def sok_pages(slug, cat, products, notes, max_pages):
+    page, pages, got, total, why = 1, 1, 0, None, "son sayfa"
+    while page <= min(pages, max_pages):
+        url = f"https://www.sokmarket.com.tr/{slug}" + (f"?page={page}" if page > 1 else "")
+        status, body = get(url, "text/html")
+        cards = sok_cards(body, cat) if status == 200 else []
+        if not cards:
+            why = f"sayfa {page}: durum {status}, kart yok"
+            break
+        m = re.search(r'totalPages\\*":(\d+)', body)
+        if m:
+            pages = int(m.group(1))
+        m = re.search(r'totalElements\\*":(\d+)', body)
+        if m and total is None:
+            total = int(m.group(1))
+        for x in cards:
+            products.setdefault(x["id"], x)
+        got += len(cards)
+        page += 1
+    if page > max_pages:
+        why = "sayfa sınırı"
+    notes.append(f"{slug}: sitede {total}, okunan {got}, {page - 1}/{pages} sayfa ({why})")
+
+
 def sok(products, notes):
     c = CFG["sok"]
     for slug, cat in c["categories"].items():
-        page, pages, got, total, why = 1, 1, 0, None, "son sayfa"
+        sok_pages(slug, cat, products, notes, c["max_pages"])
+
+
+def sok_deals(products, notes):
+    sok_pages(CFG["sok"]["deals"], "", products, notes, CFG["sok"]["max_pages"])
+
+
+def migros_deals(products, notes):
+    c, page, pages, prev = CFG["migros"], 1, 1, None
+    for slug in c["deals"]:
+        page, pages, prev = 1, 1, None
         while page <= min(pages, c["max_pages"]):
-            url = f"https://www.sokmarket.com.tr/{slug}" + (f"?page={page}" if page > 1 else "")
-            status, body = get(url, "text/html")
-            cards = sok_cards(body, cat) if status == 200 else []
-            if not cards:
-                why = f"sayfa {page}: durum {status}, {len(body)} bayt, kart yok"
+            status, body = get(f"https://www.migros.com.tr/rest/search/screens/{slug}?sayfa={page}")
+            try:
+                info = json.loads(body)["data"]["searchInfo"]
+            except Exception:
                 break
-            m = re.search(r'totalPages\\*":(\d+)', body)
-            if m:
-                pages = int(m.group(1))
-            m = re.search(r'totalElements\\*":(\d+)', body)
-            if m and total is None:
-                total = int(m.group(1))
-            for x in cards:
-                products.setdefault(x["id"], x)
-            got += len(cards)
+            items = info.get("storeProductInfos") or []
+            if not items or items[0].get("id") == prev:
+                break
+            prev, pages = items[0].get("id"), info.get("pageCount", 1)
+            for p in items:
+                products.setdefault(f"migros:{p.get('sku')}", migros_item(p))
             page += 1
-        if page > c["max_pages"]:
-            why = "sayfa sınırı"
-        notes.append(f"{slug}: sitede {total}, okunan {got}, {page - 1}/{pages} sayfa ({why})")
+        notes.append(f"{slug}: {page - 1}/{pages} sayfa")
+
+
+# ---------- BİM aktüel ----------
+
+def bim_cards(body, label):
+    out, parts = {}, re.split(r'(?=<a[^>]+href="/aktuel-urunler/[^"]+/aktuel\.aspx")', body)
+    for blk in parts[1:]:
+        m = re.match(r'<a[^>]+href="(/aktuel-urunler/([^"/]+)/aktuel\.aspx)"', blk)
+        blk = blk[:5000]
+        heads = [html.unescape(re.sub(r"<[^>]+>", " ", h)).strip() for h in re.findall(r"<h2[^>]*>(.*?)</h2>", blk, re.S)]
+        heads = [" ".join(h.split()) for h in heads if h.strip()]
+        text = " ".join(html.unescape(re.sub(r"<[^>]+>", " ", blk)).split())
+        price = re.search(r"(\d{1,3}(?:\.\d{3})*|\d+)\s*(?:,\s*(\d{2}))?\s*₺", text)
+        if not m or not heads or not price:
+            continue
+        size = re.search(r"•\s*([^•₺]{1,25}?)\s+(?=\d[\d.,\s]*₺|Paylaş)", text)
+        img = re.search(r'(?:data-src|src)="([^"]+\.(?:jpe?g|png|webp)[^"]*)"', blk)
+        src = img.group(1) if img else ""
+        if src.startswith("/"):
+            src = "https://www.bim.com.tr" + src
+        name = " ".join(heads[:2]) + (" " + size.group(1).strip() if size else "")
+        value = float(price.group(1).replace(".", "") + "." + (price.group(2) or "00"))
+        out["bim:" + m.group(2)] = {
+            "id": "bim:" + m.group(2), "market": "bim", "name": name, "price": value, "regular": value,
+            "in_stock": True, "image": src if src.startswith("https://") else "",
+            "url": "https://www.bim.com.tr" + m.group(1), "cat": "Aktüel · " + label,
+        }
+    return out
+
+
+def bim(products, notes):
+    base = "https://www.bim.com.tr/Categories/100/aktuel-urunler.aspx"
+    status, body = get(base, "text/html")
+    dates = re.findall(r'href="(/categories/100/aktuel-urunler\.aspx\?Bim_AktuelTarihKey=(\d+))"[^>]*>(.*?)</a>', body, re.S | re.I)
+    seen = set()
+    for path, key, label in dates[: CFG["bim"]["max_dates"]]:
+        if key in seen:
+            continue
+        seen.add(key)
+        label = " ".join(html.unescape(re.sub(r"<[^>]+>", " ", label)).split())
+        st, b = get("https://www.bim.com.tr" + path, "text/html")
+        cards = bim_cards(b, label) if st == 200 else {}
+        for k, v in cards.items():
+            products.setdefault(k, v)
+        notes.append(f"{label}: {len(cards)} ürün")
+    if not products:
+        i = body.find("aktuel-urunler/")
+        notes.append("ayıklanamadı, örnek: " + body[max(0, i - 600): i + 1400] if i >= 0 else "ürün bağlantısı yok")
 
 
 # ---------- Çıktı ----------
 
 FIELDS = ["id", "name", "price", "regular", "in_stock", "image", "url", "cat"]
-MARKETS = {"migros": migros, "sok": sok}
-if os.environ.get("MARKETS"):
-    MARKETS = {k: v for k, v in MARKETS.items() if k in os.environ["MARKETS"].split(",")}
+JOBS = {
+    ("migros", "full"): migros, ("migros", "deals"): migros_deals,
+    ("sok", "full"): sok, ("sok", "deals"): sok_deals,
+    ("bim", "aktuel"): bim,
+}
 
 
-def read_old():
-    """Önceki veriyi (yeni ya da eski biçimde) id -> ürün sözlüğü olarak okur."""
+def parse_file(path, market=None):
+    """Veri dosyasını id -> ürün sözlüğü olarak okur."""
     try:
-        d = json.loads((ROOT / "data" / "products.json").read_text(encoding="utf-8"))
+        d = json.loads(path.read_text(encoding="utf-8"))
     except Exception:
         return {}
     out = {}
     for row in d.get("products", []):
-        if isinstance(row, dict):
-            p = {k: row.get(k) for k in FIELDS}
-        else:
-            p = dict(zip(FIELDS, row))
-            pre = d.get("prefix", {}).get(p["id"].split(":")[0], {})
-            p["image"] = pre.get("image", "") + p["image"] if p["image"] else ""
-            p["url"] = pre.get("url", "") + p["url"] if p["url"] else ""
-            cats = d.get("cats", {}).get(p["id"].split(":")[0], [])
-            p["cat"] = cats[p["cat"]] if isinstance(p.get("cat"), int) and p["cat"] < len(cats) else ""
-        p["market"] = p["id"].split(":")[0]
-        p["in_stock"] = bool(p["in_stock"])
-        p["cat"] = p.get("cat") or ""
-        out[p["id"]] = p
+        p = dict(zip(d.get("fields", FIELDS), row)) if isinstance(row, list) else dict(row)
+        m = p["id"].split(":")[0]
+        if market and m != market:
+            continue
+        pre = d.get("prefix", {}).get(m, {})
+        if isinstance(row, list):
+            p["image"] = pre.get("image", "") + p["image"] if p.get("image") else ""
+            p["url"] = pre.get("url", "") + p["url"] if p.get("url") else ""
+        cats = d.get("cats", {}).get(m, [])
+        cat = p.get("cat")
+        p["cat"] = (cats[cat] if isinstance(cat, int) and cat < len(cats) else cat) or ""
+        p["market"], p["in_stock"] = m, bool(p.get("in_stock"))
+        out[p["id"]] = {k: p.get(k) for k in FIELDS + ["market"]}
     return out
 
 
-def write(products, updated):
+def read_old(market):
+    own = ROOT / "data" / f"{market}.json"
+    return parse_file(own) if own.exists() else parse_file(ROOT / "data" / "products.json", market)
+
+
+def write(market, products, updated):
     rows = sorted(products.values(), key=lambda p: p["id"])
     prefix = {}
-    for m in sorted({p["market"] for p in rows}):
-        prefix[m] = {}
-        for f in ("image", "url"):
-            vals = [p[f] for p in rows if p["market"] == m and p[f]]
-            prefix[m][f] = os.path.commonprefix(vals) if len(vals) > 1 else ""
-    cats = {m: sorted({p.get("cat") or "" for p in rows if p["market"] == m}) for m in prefix}
-    lines = []
-    for p in rows:
-        pre = prefix[p["market"]]
-        lines.append(json.dumps(
-            [p["id"], p["name"], p["price"], p["regular"], int(p["in_stock"]),
-             p["image"][len(pre["image"]):] if p["image"] else "", p["url"][len(pre["url"]):] if p["url"] else "",
-             cats[p["market"]].index(p.get("cat") or "")],
-            ensure_ascii=False, separators=(",", ":")))
-    head = json.dumps({"updated": updated, "prefix": prefix, "cats": cats, "fields": FIELDS}, ensure_ascii=False)
-    (ROOT / "data" / "products.json").write_text(
+    for f in ("image", "url"):
+        vals = [p[f] for p in rows if p[f]]
+        prefix[f] = os.path.commonprefix(vals) if len(vals) > 1 else ""
+    cats = sorted({p.get("cat") or "" for p in rows})
+    lines = [json.dumps(
+        [p["id"], p["name"], p["price"], p["regular"], int(p["in_stock"]),
+         p["image"][len(prefix["image"]):] if p["image"] else "",
+         p["url"][len(prefix["url"]):] if p["url"] else "",
+         cats.index(p.get("cat") or "")], ensure_ascii=False, separators=(",", ":")) for p in rows]
+    head = json.dumps({"updated": updated, "market": market, "prefix": {market: prefix},
+                       "cats": {market: cats}, "fields": FIELDS}, ensure_ascii=False)
+    (ROOT / "data" / f"{market}.json").write_text(
         head[:-1] + ',"products":[\n' + ",\n".join(lines) + "\n]}\n", encoding="utf-8")
 
 
 def main():
+    market, mode = sys.argv[1], sys.argv[2]
+    fn = JOBS[(market, mode)]
     (ROOT / "data").mkdir(exist_ok=True)
-    started = time.time()
-    old = read_old()
-    results = {}
+    t0 = time.time()
+    old, fresh, notes, state = read_old(market), {}, [], "tamam"
+    try:
+        fn(fresh, notes)
+    except Stop as e:
+        state = f"durduruldu: {e}"
+    except Exception as e:
+        state = f"hata: {e!r}"
 
-    def run(name, fn):
-        prods, notes, state = {}, [], "tamam"
-        t0 = time.time()
-        try:
-            fn(prods, notes)
-        except Stop as e:
-            state = f"durduruldu: {e}"
-        except Exception as e:  # beklenmeyen hata diğer marketi etkilemesin
-            state = f"hata: {e!r}"
-        results[name] = (prods, notes, state, round(time.time() - t0))
-
-    threads = [threading.Thread(target=run, args=kv) for kv in MARKETS.items()]
-    for t in threads:
-        t.start()
-    for t in threads:
-        t.join()
-
-    merged, summary = {}, {}
-    for name, (prods, notes, state, secs) in results.items():
-        old_m = {k: v for k, v in old.items() if v["market"] == name}
-        keep_old = state != "tamam" or len(prods) < 0.5 * len(old_m)
-        if keep_old and old_m:
-            notes.append(f"yeni sonuç eksik ({len(prods)} ürün), eski veri ({len(old_m)} ürün) korundu")
-            merged.update(old_m)
-            merged.update(prods)
+    if mode == "full":
+        if state != "tamam" or len(fresh) < 0.5 * len(old):
+            notes.append(f"yeni sonuç eksik ({len(fresh)} ürün), eski veri ({len(old)} ürün) korundu")
+            merged = {**old, **fresh}
         else:
-            merged.update(prods)
-        summary[name] = {"status": state, "found": len(prods), "seconds": secs, "notes": notes}
-    for k, v in old.items():  # bu çalışmada hiç taranmayan marketlerin verisi kalsın
-        if v["market"] not in MARKETS:
-            merged.setdefault(k, v)
+            merged = fresh
+    elif mode == "deals":
+        # Yalnızca indirim sayfasında görülenler güncellenir. İndirim sayfası tüm indirimleri
+        # kapsamayabileceği için listede olmayanlara dokunulmaz; biten indirimleri gece taraması düzeltir.
+        merged = dict(old)
+        for k, p in fresh.items():
+            merged[k] = {**p, "cat": p.get("cat") or (old.get(k) or {}).get("cat") or ""}
+        notes.append(f"{len(fresh)} indirimli ürün güncellendi")
+    else:  # aktüel: liste her seferinde baştan
+        merged = fresh if (state == "tamam" and fresh) else {**old, **fresh}
 
     updated = datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")
     if merged:
-        write(merged, updated)
+        write(market, merged, updated)
     status = {
-        "updated": updated, "total": len(merged), "seconds": round(time.time() - started),
-        "markets": summary,
+        "updated": updated, "market": market, "mode": mode, "status": state, "found": len(fresh),
+        "total": len(merged), "seconds": round(time.time() - t0), "notes": notes,
         "traffic": {h: {"requests": s["requests"], "megabytes": round(s["bytes"] / 1e6, 1), "errors": s["errors"]}
                     for h, s in STATS.items()},
         "errors": ERRORS,
     }
-    (ROOT / "data" / "status.json").write_text(json.dumps(status, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
-    print(json.dumps(status, ensure_ascii=False, indent=1))
+    (ROOT / "data" / f"status-{market}.json").write_text(
+        json.dumps(status, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    print(json.dumps(status, ensure_ascii=False, indent=1)[:4000])
 
 
 if __name__ == "__main__":

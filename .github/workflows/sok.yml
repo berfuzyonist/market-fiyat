@@ -1,0 +1,45 @@
+name: Şok
+on:
+  schedule:
+    - cron: "47 0 * * *"   # gece tam tarama (TR 03:47)
+    - cron: "7 * * * *"    # saat başı indirimler
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Mod"
+        type: choice
+        options: [full, deals]
+  push:
+    branches-ignore: [main]
+    paths: ["collector/**", "config.json", ".github/workflows/sok.yml"]
+permissions:
+  contents: write
+concurrency:
+  group: sok
+  cancel-in-progress: false
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - name: Modu seç
+        id: m
+        run: |
+          MODE="${{ inputs.mode }}"
+          [ -z "$MODE" ] && [ "${{ github.event.schedule }}" = "47 0 * * *" ] && MODE=full
+          [ -z "$MODE" ] && MODE=deals
+          echo "mode=$MODE" >> "$GITHUB_OUTPUT"
+      - run: python3 collector/collect.py sok ${{ steps.m.outputs.mode }}
+      - name: Veriyi kaydet
+        run: |
+          git config user.name "fiyat-botu"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/sok.json data/status-sok.json
+          git diff --cached --quiet && exit 0
+          git commit -q -m "Şok: ${{ steps.m.outputs.mode }}"
+          for i in 1 2 3 4 5; do
+            git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push -q && exit 0
+            sleep $((i * 10))
+          done
+          exit 1

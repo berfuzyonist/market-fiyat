@@ -1,0 +1,44 @@
+name: BİM
+on:
+  schedule:
+    - cron: "23 5,13 * * *"   # aktüel, günde iki kez (TR 08:23, 16:23)
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Mod"
+        type: choice
+        options: [aktuel]
+  push:
+    branches-ignore: [main]
+    paths: ["collector/**", "config.json", ".github/workflows/bim.yml"]
+permissions:
+  contents: write
+concurrency:
+  group: bim
+  cancel-in-progress: false
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Modu seç
+        id: m
+        run: |
+          MODE="${{ inputs.mode }}"
+          [ -z "$MODE" ] && [ "${{ github.event.schedule }}" = "-" ] && MODE=aktuel
+          [ -z "$MODE" ] && MODE=aktuel
+          echo "mode=$MODE" >> "$GITHUB_OUTPUT"
+      - run: python3 collector/collect.py bim ${{ steps.m.outputs.mode }}
+      - name: Veriyi kaydet
+        run: |
+          git config user.name "fiyat-botu"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/bim.json data/status-bim.json
+          git diff --cached --quiet && exit 0
+          git commit -q -m "BİM: ${{ steps.m.outputs.mode }}"
+          for i in 1 2 3 4 5; do
+            git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push -q && exit 0
+            sleep $((i * 10))
+          done
+          exit 1

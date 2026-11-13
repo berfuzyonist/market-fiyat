@@ -1,5 +1,5 @@
 {
-  "user_agent": "market-fiyat-kisisel/0.2 (+https://github.com/berfuzyonist/market-fiyat)",
+  "user_agent": "market-fiyat-kisisel/0.3 (+https://github.com/berfuzyonist/market-fiyat)",
   "delay_seconds": 3,
   "migros": {
     "max_pages": 400,
@@ -15,7 +15,10 @@
       "9",
       "a"
     ],
-    "sitemap": "https://www.migros.com.tr/hermes/api/sitemaps/sitemap-categories-1.xml"
+    "sitemap": "https://www.migros.com.tr/hermes/api/sitemaps/sitemap-categories-1.xml",
+    "deals": [
+      "money-indirimli-market-urunleri-dt-5"
+    ]
   },
   "sok": {
     "max_pages": 400,
@@ -39,6 +42,10 @@
       "evcil-dostlar-c-20880": "Evcil Dostlar",
       "giyim-ve-ayakkabi-ve-aksesuar-c-20886": "Giyim & Aksesuar",
       "elektronik-c-22769": "Elektronik"
-    }
+    },
+    "deals": "indirimli-urunler-cms-pl1"
+  },
+  "bim": {
+    "max_dates": 14
   }
 }
