@@ -1,0 +1,33 @@
+{
+ "updated": "2026-11-13T09:06:50+00:00",
+ "market": "bim",
+ "mode": "aktuel",
+ "status": "tamam",
+ "found": 774,
+ "total": 774,
+ "seconds": 56,
+ "notes": [
+  "03 Kasım Salı: 92 ürün",
+  "04 Kasım Çarşamba: 18 ürün",
+  "06 Kasım Cuma: 78 ürün",
+  "08 Kasım Pazar: 64 ürün",
+  "10 Kasım Salı: 86 ürün",
+  "11 Kasım Çarşamba: 9 ürün",
+  "13 Kasım Cuma: 74 ürün",
+  "15 Kasım Pazar: 57 ürün",
+  "18 Kasım Çarşamba: 17 ürün",
+  "17 Kasım Salı: 78 ürün",
+  "20 Kasım Cuma: 72 ürün",
+  "22 Kasım Pazar: 56 ürün",
+  "03-30 Kasım: 40 ürün",
+  "07-13 Kasım: 33 ürün"
+ ],
+ "traffic": {
+  "www.bim.com.tr": {
+   "requests": 15,
+   "megabytes": 0.5,
+   "errors": 0
+  }
+ },
+ "errors": []
+}
