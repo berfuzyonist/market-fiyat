@@ -1,4 +1,4 @@
-{"updated": "2026-11-13T22:47:16+00:00", "market": "sok", "prefix": {"sok": {"image": "https://images.ceptesok.com/cdn-cgi/image/width=216,height=216,fit=pad,quality=80,format=webp/product-assets/sub-folder/", "url": "https://www.sokmarket.com.tr/"}}, "cats": {"sok": ["Anne & Bebek", "Atıştırmalık & Şekerleme", "Bahçe & Yapı Market", "Bakliyat & Temel Gıda", "Diğer", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et, Tavuk & Şarküteri", "Ev & Mutfak", "Evcil Hayvan", "Giyim & Aksesuar", "Kahvaltılık", "Kağıt Ürünleri", "Kişisel Bakım & Kozmetik", "Meyve & Sebze", "Oyuncak & Hobi", "Süt & Süt Ürünleri", "Temizlik", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat"],"products":[
+{"updated": "2026-11-13T23:44:52+00:00", "market": "sok", "prefix": {"sok": {"image": "https://images.ceptesok.com/cdn-cgi/image/width=216,height=216,fit=pad,quality=80,format=webp/product-assets/sub-folder/", "url": "https://www.sokmarket.com.tr/"}}, "cats": {"sok": ["Anne & Bebek", "Atıştırmalık & Şekerleme", "Bahçe & Yapı Market", "Bakliyat & Temel Gıda", "Diğer", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et, Tavuk & Şarküteri", "Ev & Mutfak", "Evcil Hayvan", "Giyim & Aksesuar", "Kahvaltılık", "Kağıt Ürünleri", "Kişisel Bakım & Kozmetik", "Meyve & Sebze", "Oyuncak & Hobi", "Süt & Süt Ürünleri", "Temizlik", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat"],"products":[
 ["sok:10","Crown Cola Pet 250 ml",14.0,14.0,1,"7287ee89-01d2-4b88-9f7c-23ad45e4d12c.jpg","crown-cola-pet-250-ml-p-10",19],
 ["sok:1009","İnci Soğan Halkası 450 g",55.0,55.0,1,"3b7dfe2d-f53e-4263-9011-3a26030cdc54.jpg","inci-sogan-halkasi-450-g-p-1009",15],
 ["sok:1025","Ülker Dankek Pöti Fındıklı Kakaolu 24*35 g",240.0,240.0,1,"566ca857-8d91-4a6a-9148-50ff03db6e10.png","ulker-dankek-poti-findikli-kakaolu-24-35-g-p-1025",4],
@@ -468,7 +468,7 @@
 ["sok:344323","Petrix Dokunmatik Silikon Armut Gece Lambası",499.0,499.0,1,"e4e407d2-1919-4072-8943-1bff8c3160f7.jpg","petrix-dokunmatik-silikon-armut-gece-lambasi-p-344323",15],
 ["sok:34512","Çarliston Biber Kg",99.0,99.0,1,"260f6acf-2559-446e-904f-548e4ca2bab0.jpg","carliston-biber-kg-p-34512",15],
 ["sok:34550","Salatalık Kg",59.9,59.9,1,"6665b4e7-4808-418b-8c84-1ff2a430d45b.png","salatalik-kg-p-34550",15],
-["sok:34583","Beyaz Lahana Kg",29.9,29.9,1,"9ab994a7-d064-4131-9fc5-f5618bd91df8.jpg","beyaz-lahana-kg-p-34583",15],
+["sok:34583","Beyaz Lahana Kg",19.9,29.9,1,"9ab994a7-d064-4131-9fc5-f5618bd91df8.jpg","beyaz-lahana-kg-p-34583",15],
 ["sok:34649","Patos Rolls Acı Kırmızı Biber 185 g",54.9,79.5,1,"99bac66a-5674-4eb9-ac5d-3a86131bd887.png","patos-rolls-aci-kirmizi-biber-185-g-p-34649",15],
 ["sok:34674","Aytaç Dana Kasap Sucuk 400 g",379.0,379.0,1,"f7438fbe-497f-4574-bc79-1a7ee885e43e.png","aytac-dana-kasap-sucuk-400-g-p-34674",8],
 ["sok:3471","Red Bull Şekersiz Enerji İçeceği 250 ml",70.0,70.0,1,"b9a1074b-f8e8-45d1-8073-48c3e7271dd6.png","red-bull-sekersiz-enerji-icecegi-250-ml-p-3471",4],
@@ -2822,7 +2822,7 @@
 ["sok:887","Tuttaze Alüminyum Folyo 8 M",69.9,69.9,1,"a81f7371-0b52-43b2-a569-4ea949f4c1a1.png","tuttaze-aluminyum-folyo-8-m-p-887",4],
 ["sok:8889","Acılı Kahvaltılık Sos Bizim Vatan 300 g",63.5,63.5,1,"bafd2686-ed46-4bf2-9dd1-676969372e5a.jpg","acili-kahvaltilik-sos-bizim-vatan-300-g-p-8889",3],
 ["sok:8891","Algida Maraş Usulü Sade Dondurma 500 ml",200.0,200.0,1,"2abbbada-cbb0-4423-863d-0c146871309d.png","algida-maras-usulu-sade-dondurma-500-ml-p-8891",5],
-["sok:8893","Raid Electro Sistem 10 Gece",289.0,289.0,1,"11a1e813-d251-44d5-81b7-8483bb418d54.png","raid-electro-sistem-10-gece-p-8893",4],
+["sok:8893","Raid Electro Sistem 10 Gece",199.0,289.0,1,"11a1e813-d251-44d5-81b7-8483bb418d54.png","raid-electro-sistem-10-gece-p-8893",4],
 ["sok:8895","Hobby Enerji Saç Jölesi Sert 250 Ml",199.0,199.0,1,"86f68941-9cf9-447b-8d82-ad388449c38e.jpg","hobby-enerji-sac-jolesi-sert-250-ml-p-8895",4],
 ["sok:8896","Arko Krem Yağlı 20 cc",54.9,54.9,1,"7eda4105-3a3f-4df8-845a-356930950691.png","arko-krem-yagli-20-cc-p-8896",14],
 ["sok:8899","Kellogg's Coco Pops Kakaolu Mısır ve Buğday Gevreği 450 g",169.0,169.0,1,"4a67f0df-c2f7-4db0-9a3e-174fc2d45396.png","kellogg-s-coco-pops-kakaolu-misir-ve-bugday-gevregi-450-g-p-8899",4],
