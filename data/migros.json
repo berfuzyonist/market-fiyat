@@ -1,4 +1,4 @@
-{"updated": "2026-11-13T12:35:29+00:00", "market": "migros", "prefix": {"migros": {"image": "https://images.migrosone.com/sanalmarket/product/", "url": "https://www.migros.com.tr/"}}, "cats": {"migros": ["", "Atıştırmalık", "Bebek", "Deterjan, Temizlik", "Dondurma", "Dondurulmuş Gıda", "Et, Tavuk, Balık", "Ev, Yaşam", "Fırın, Pastane", "Hazır Yemek, Meze", "Kağıt, Islak Mendil", "Kitap, Kırtasiye, Oyuncak", "Kişisel Bakım, Kozmetik, Sağlık", "Süt, Kahvaltılık", "Temel Gıda", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat"],"products":[
+{"updated": "2026-11-13T13:52:02+00:00", "market": "migros", "prefix": {"migros": {"image": "https://images.migrosone.com/sanalmarket/product/", "url": "https://www.migros.com.tr/"}}, "cats": {"migros": ["", "Atıştırmalık", "Bebek", "Deterjan, Temizlik", "Dondurma", "Dondurulmuş Gıda", "Et, Tavuk, Balık", "Ev, Yaşam", "Fırın, Pastane", "Hazır Yemek, Meze", "Kağıt, Islak Mendil", "Kitap, Kırtasiye, Oyuncak", "Kişisel Bakım, Kozmetik, Sağlık", "Süt, Kahvaltılık", "Temel Gıda", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat"],"products":[
 ["migros:01010084","Yayla Yerli Pirinç Osmancık Bölgesi Mahsulü 2 Kg",244.95,244.95,1,"01010084/01010084_1-270e94.jpg","yayla-yerli-pirinc-osmancik-bolgesi-mahsulu-2-kg-p-f69a4",0],
 ["migros:01010085","Yayla Basmati Pirinç 1 Kg",199.95,199.95,1,"01010085/01010085_1-634e4e.jpg","yayla-basmati-pirinc-1-kg-p-f69a5",0],
 ["migros:01010086","Yayla Aşurelik Buğday 1 Kg",63.95,63.95,1,"1010086/1010086-2958da.jpg","yayla-asurelik-bugday-1-kg-p-f69a6",0],
@@ -2648,6 +2648,7 @@
 ["migros:07030471","Toblerone Üzüm ve Kuruyemişli Çikolata 100 G",119.9,324.9,1,"07030471/07030471_1-fb51f2.jpg","toblerone-uzum-ve-kuruyemisli-cikolata-100-g-p-6b46c7",1],
 ["migros:07030476","Ülker Laviva Dolgulu ve Bisküvili Çikolata 35 G",24.9,24.9,1,"07030476/ulker-laviva-dolgulu-ve-biskuvili-cikolata-35-gr-80ac2b.jpg","ulker-laviva-dolgulu-ve-biskuvili-cikolata-35-g-p-6b46cc",0],
 ["migros:07030502","Eti Petito Mini Bol Sütlü Çikolata 72 G",97.9,97.9,1,"07030502/07030502-b9a3c2.jpg","eti-petito-mini-bol-sutlu-cikolata-72-g-p-6b46e6",0],
+["migros:07030505","Snickers 2'li 80 G",54.9,74.95,1,"07030505/07030505_1-76037c.jpg","snickers-2li-80-g-p-6b46e9",1],
 ["migros:07030506","Twix Xtra Karamelli Çikolata 75 G",74.95,74.95,1,"07030506/07030506_1-26fbb1.jpg","twix-xtra-karamelli-cikolata-75-g-p-6b46ea",0],
 ["migros:07030551","Tony's Fındıklı Sütlü Çikolata 180 G",530.0,530.0,1,"07030551/07030551_1-8df2cf.jpg","tonys-findikli-sutlu-cikolata-180-g-p-6b4717",0],
 ["migros:07030568","Ülker Bitter Damla Çikolata 120 G",139.95,139.95,1,"07030568/07030568-2e6596.jpg","ulker-bitter-damla-cikolata-120-g-p-6b4728",0],
@@ -8879,6 +8880,7 @@
 ["migros:32020572","Hascevher Piccoli Tava 14 Cm (2mm)",249.95,249.95,1,"32020572/32020572_1-58f720.jpg","hascevher-piccoli-tava-14-cm-2mm-p-1e8985c",0],
 ["migros:32020868","Tefal Easy Cook & Clean Wok Tava 28 Cm",849.95,1499.95,1,"32020868/32020868_1-f88911.jpg","tefal-easy-cook-clean-wok-tava-28-cm-p-1e89984",7],
 ["migros:32020870","Fissler Catania 2'li Tava Seti 24/28 Cm",5999.95,5999.95,1,"32020870/32020870_1-4f83cb.jpg","fissler-catania-2li-tava-seti-2428-cm-p-1e89986",0],
+["migros:32020873","Tefal 3X XL Force Krep Tava 25 Cm",1499.95,2799.95,1,"32020873/32020873_1-b53d0e.png","tefal-3x-xl-force-krep-tava-25-cm-p-1e89989",7],
 ["migros:32020896","Papilla Nirvana Wok Tava Mürdüm 18 Cm",299.95,299.95,1,"32020896/32020896_1-87d361.jpg","papilla-nirvana-wok-tava-murdum-18-cm-p-1e899a0",0],
 ["migros:32020903","Mehtap Victoria Tava 24 Cm",349.95,349.95,1,"32020903/32020903_1-8f07f4.jpg","mehtap-victoria-tava-24-cm-p-1e899a7",0],
 ["migros:32020910","Papilla Nirvana Sos Tava Mürdüm 16 Cm",299.95,299.95,1,"32020910/32020910_1-76deda.jpg","papilla-nirvana-sos-tava-murdum-16-cm-p-1e899ae",0],
