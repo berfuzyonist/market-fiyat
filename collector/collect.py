@@ -187,7 +187,8 @@ def sok_cards(body):
             continue
         named = re.search(r'data-testid="discountedPrice">' + TL, blk)
         price = tl(named.group(1)) if named else min(prices)
-        img = re.search(r'<img src="(https://images\.ceptesok\.com/[^"]+)"', blk)
+        img = (re.search(r'<img src="(https://images\.ceptesok\.com/[^"]*product-assets[^"]+)"', blk)
+               or re.search(r'<img src="(https://images\.ceptesok\.com/(?!badge)[^"]+)"', blk))
         out["sok:" + m.group(2)] = {
             "id": "sok:" + m.group(2),
             "market": "sok",
@@ -204,26 +205,35 @@ def sok_cards(body):
 def sok(products, notes):
     c = CFG["sok"]
     for slug in c["categories"]:
-        page, pages = 1, 1
+        page, pages, got, total, why = 1, 1, 0, None, "son sayfa"
         while page <= min(pages, c["max_pages"]):
             url = f"https://www.sokmarket.com.tr/{slug}" + (f"?page={page}" if page > 1 else "")
             status, body = get(url, "text/html")
             cards = sok_cards(body) if status == 200 else []
             if not cards:
+                why = f"sayfa {page}: durum {status}, {len(body)} bayt, kart yok"
                 break
             m = re.search(r'totalPages\\*":(\d+)', body)
             if m:
                 pages = int(m.group(1))
+            m = re.search(r'totalElements\\*":(\d+)', body)
+            if m and total is None:
+                total = int(m.group(1))
             for x in cards:
                 products[x["id"]] = x
+            got += len(cards)
             page += 1
-    notes.append(f"{len(c['categories'])} üst kategori tarandı")
+        if page > c["max_pages"]:
+            why = "sayfa sınırı"
+        notes.append(f"{slug}: sitede {total}, okunan {got}, {page - 1}/{pages} sayfa ({why})")
 
 
 # ---------- Çıktı ----------
 
 FIELDS = ["id", "name", "price", "regular", "in_stock", "image", "url"]
 MARKETS = {"migros": migros, "sok": sok}
+if os.environ.get("MARKETS"):
+    MARKETS = {k: v for k, v in MARKETS.items() if k in os.environ["MARKETS"].split(",")}
 
 
 def read_old():
