@@ -1,14 +1,14 @@
 {
- "updated": "2026-11-13T11:33:15+00:00",
+ "updated": "2026-11-13T12:35:29+00:00",
  "market": "migros",
  "mode": "deals",
  "status": "tamam",
- "found": 2365,
- "total": 15862,
- "seconds": 263,
+ "found": 2361,
+ "total": 15863,
+ "seconds": 270,
  "notes": [
   "money-indirimli-market-urunleri-dt-5: 80/80 sayfa",
-  "2365 indirimli ürün güncellendi"
+  "2361 indirimli ürün güncellendi"
  ],
  "traffic": {
   "www.migros.com.tr": {
