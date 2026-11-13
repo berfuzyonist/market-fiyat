@@ -373,7 +373,7 @@ CATEGORY_RULES = [
     ("Ekmek & Pastane", r"\b(ekmek|lava[sş]|yufka|bazlama|simit|pogaca|acma|kruvasan|pasta|pastane|unlu mamul)\b"),
     ("Dondurulmuş Ürünler", r"\b(dondurulmus|dondurma|pizza|patates kroket|su boregi)\b"),
     ("Atıştırmalık & Şekerleme", r"\b(cikolata|biskuvi|gofret|cips|kraker|jelibon|sekerleme|lokum|sakiz|kuruyemis|findik|fistik|ceviz|badem|cerez|kek|bar)\b"),
-    ("Bakliyat & Temel Gıda", r"\b(pirinc|bulgur|makarna|mercimek|nohut|fasulye|bakliyat|un|irmik|nisasta|salca|ketcap|mayonez|sos|baharat|tuz|toz seker|zeytinyagi|aycicek yagi|sivi yag|konserve|sirke|turşu|turşu)\b"),
+    ("Bakliyat & Temel Gıda", r"\b(pirinc|bulgur|makarna|mercimek|nohut|fasulye|bakliyat|un|irmik|nisasta|salca|ketcap|mayonez|sos|baharat|tuz|toz seker|zeytinyagi|aycicek yagi|sivi yag|konserve|sirke|tursu)\b"),
     ("Temizlik", r"\b(deterjan|camasir suyu|bulasik|yumusatici|yuzey temizleyici|camasir|bulasik makinesi|wc temizleyici|kirec sokucu|sabun tozu)\b"),
     ("Kağıt Ürünleri", r"\b(tuvalet kagidi|kagit havlu|havlu kagit|pecete|mendil|rulo havlu)\b"),
     ("Kişisel Bakım & Kozmetik", r"\b(sampuan|dus jeli|dis macunu|dis fircasi|deodorant|parfum|kolonya|krem|losyon|makyaj|ruj|maskara|tirnak|kozmetik|sac boyasi|tras)\b"),
@@ -483,7 +483,7 @@ def main():
     if mode == "full":
         if state != "tamam" or len(fresh) < 0.5 * len(old):
             notes.append(f"yeni sonuç eksik ({len(fresh)} ürün), eski veri ({len(old)} ürün) korundu")
-            merged = dict(old) if state != "tamam" else {**old, **fresh}
+            merged = dict(old)
             complete = False
         else:
             merged = fresh

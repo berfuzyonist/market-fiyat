@@ -7,4 +7,4 @@ Kişisel kullanım için market fiyat karşılaştırma uygulaması: https://ber
 - `config.json`: bekleme süresi, kategori listeleri ve sınırlar.
 - `data/<market>.json`: son başarılı fiyat verisi. `data/status-<market>.json`: son denemenin sonucu. Başarısız veya eksik tarama, son başarılı veri zamanını ileri taşımaz. Boş ve kampanya-tarihi kategorileri ürün adına dayalı sınıflandırmayla tamamlanır.
 
-Ajanlar: Migros ve Şok gece tam tarama + saat başı indirim kontrolü, BİM aktüel günde iki kez. A101 için yasal bir kaynak yok.
+Ajanlar: Migros gece tam tarama + saatlik indirim kontrolü; Şok gece tam tarama + 30 dakikada bir indirim kontrolü; BİM aktüel günde iki kez. A101 için yasal bir kaynak yok.
