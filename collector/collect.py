@@ -91,6 +91,8 @@ def get(url, accept="application/json"):
 
 def migros_item(p):
     img = ((p.get("images") or [{}])[0].get("urls") or {}).get("PRODUCT_DETAIL")
+    asc = p.get("categoryAscendants") or []
+    top = (asc[-1] if asc else p.get("category") or {}).get("name") or ""
     return {
         "id": f"migros:{p.get('sku')}",
         "market": "migros",
@@ -100,6 +102,7 @@ def migros_item(p):
         "in_stock": p.get("status") == "IN_SALE",
         "image": img or "",
         "url": "https://www.migros.com.tr/" + (p.get("prettyName") or ""),
+        "cat": top,
     }
 
 
@@ -176,7 +179,7 @@ def tl(text):
     return float(text.replace(".", "").replace(",", "."))
 
 
-def sok_cards(body):
+def sok_cards(body, cat=""):
     """Şok kategori sayfasındaki ürün kartlarını ayıklar."""
     out, links = {}, list(SOK_LINK.finditer(body))
     for i, m in enumerate(links):
@@ -198,18 +201,19 @@ def sok_cards(body):
             "in_stock": "Tükendi" not in blk and "Stokta yok" not in blk,
             "image": img.group(1) if img else "",
             "url": "https://www.sokmarket.com.tr" + m.group(1),
+            "cat": cat,
         }
     return list(out.values())
 
 
 def sok(products, notes):
     c = CFG["sok"]
-    for slug in c["categories"]:
+    for slug, cat in c["categories"].items():
         page, pages, got, total, why = 1, 1, 0, None, "son sayfa"
         while page <= min(pages, c["max_pages"]):
             url = f"https://www.sokmarket.com.tr/{slug}" + (f"?page={page}" if page > 1 else "")
             status, body = get(url, "text/html")
-            cards = sok_cards(body) if status == 200 else []
+            cards = sok_cards(body, cat) if status == 200 else []
             if not cards:
                 why = f"sayfa {page}: durum {status}, {len(body)} bayt, kart yok"
                 break
@@ -220,7 +224,7 @@ def sok(products, notes):
             if m and total is None:
                 total = int(m.group(1))
             for x in cards:
-                products[x["id"]] = x
+                products.setdefault(x["id"], x)
             got += len(cards)
             page += 1
         if page > c["max_pages"]:
@@ -230,7 +234,7 @@ def sok(products, notes):
 
 # ---------- Çıktı ----------
 
-FIELDS = ["id", "name", "price", "regular", "in_stock", "image", "url"]
+FIELDS = ["id", "name", "price", "regular", "in_stock", "image", "url", "cat"]
 MARKETS = {"migros": migros, "sok": sok}
 if os.environ.get("MARKETS"):
     MARKETS = {k: v for k, v in MARKETS.items() if k in os.environ["MARKETS"].split(",")}
@@ -251,8 +255,11 @@ def read_old():
             pre = d.get("prefix", {}).get(p["id"].split(":")[0], {})
             p["image"] = pre.get("image", "") + p["image"] if p["image"] else ""
             p["url"] = pre.get("url", "") + p["url"] if p["url"] else ""
+            cats = d.get("cats", {}).get(p["id"].split(":")[0], [])
+            p["cat"] = cats[p["cat"]] if isinstance(p.get("cat"), int) and p["cat"] < len(cats) else ""
         p["market"] = p["id"].split(":")[0]
         p["in_stock"] = bool(p["in_stock"])
+        p["cat"] = p.get("cat") or ""
         out[p["id"]] = p
     return out
 
@@ -265,14 +272,16 @@ def write(products, updated):
         for f in ("image", "url"):
             vals = [p[f] for p in rows if p["market"] == m and p[f]]
             prefix[m][f] = os.path.commonprefix(vals) if len(vals) > 1 else ""
+    cats = {m: sorted({p.get("cat") or "" for p in rows if p["market"] == m}) for m in prefix}
     lines = []
     for p in rows:
         pre = prefix[p["market"]]
         lines.append(json.dumps(
             [p["id"], p["name"], p["price"], p["regular"], int(p["in_stock"]),
-             p["image"][len(pre["image"]):] if p["image"] else "", p["url"][len(pre["url"]):] if p["url"] else ""],
+             p["image"][len(pre["image"]):] if p["image"] else "", p["url"][len(pre["url"]):] if p["url"] else "",
+             cats[p["market"]].index(p.get("cat") or "")],
             ensure_ascii=False, separators=(",", ":")))
-    head = json.dumps({"updated": updated, "prefix": prefix, "fields": FIELDS}, ensure_ascii=False)
+    head = json.dumps({"updated": updated, "prefix": prefix, "cats": cats, "fields": FIELDS}, ensure_ascii=False)
     (ROOT / "data" / "products.json").write_text(
         head[:-1] + ',"products":[\n' + ",\n".join(lines) + "\n]}\n", encoding="utf-8")
 

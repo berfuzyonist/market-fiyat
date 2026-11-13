@@ -17,8 +17,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: python3 collector/collect.py
-        env:
-          MARKETS: ${{ github.ref_name == 'main' && '' || 'sok' }}
       - name: Veriyi kaydet
         run: |
           git config user.name "fiyat-botu"
