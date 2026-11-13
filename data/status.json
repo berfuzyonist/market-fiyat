@@ -1,20 +1,20 @@
 {
- "updated": "2026-11-12T19:42:37+00:00",
- "total": 19153,
- "seconds": 2858,
+ "updated": "2026-11-13T02:07:43+00:00",
+ "total": 18272,
+ "seconds": 2801,
  "markets": {
   "sok": {
    "status": "tamam",
-   "found": 2819,
-   "seconds": 685,
+   "found": 2853,
+   "seconds": 745,
    "notes": [
     "19 üst kategori tarandı"
    ]
   },
   "migros": {
    "status": "tamam",
-   "found": 16334,
-   "seconds": 2858,
+   "found": 15419,
+   "seconds": 2801,
    "notes": [
     "kategori keşfi sınırı (250) doldu, taranmamış kategori kalmış olabilir",
     "19 üst kategori tarandı: atistirmalik-c-113fb, bebek-c-9, cicek-c-502, deterjan-temizlik-c-7, dondurma-c-41b, dondurulmus-gida-c-7c, elektronik-c-a6, et-tavuk-balik-c-3, ev-yasam-c-a, evcil-hayvan-c-a0, firin-pastane-c-7e, hazir-yemek-meze-c-7d, icecek-c-6, kagit-islak-mendil-c-8d, kisisel-bakim-kozmetik-saglik-c-8, kitap-kirtasiye-oyuncak-c-118ec, meyve-sebze-c-2, sut-kahvaltilik-c-4, temel-gida-c-5"
@@ -23,8 +23,8 @@
  },
  "traffic": {
   "www.migros.com.tr": {
-   "requests": 888,
-   "megabytes": 8.0,
+   "requests": 851,
+   "megabytes": 7.5,
    "errors": 0
   },
   "www.sokmarket.com.tr": {
