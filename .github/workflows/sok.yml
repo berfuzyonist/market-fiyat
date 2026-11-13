@@ -2,7 +2,7 @@ name: Şok
 on:
   schedule:
     - cron: "47 0 * * *"   # gece tam tarama (TR 03:47)
-    - cron: "7 * * * *"    # saat başı indirimler
+    - cron: "7,37 * * * *" # 30 dakikada bir indirimler
   workflow_dispatch:
     inputs:
       mode:

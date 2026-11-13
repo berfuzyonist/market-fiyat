@@ -114,23 +114,40 @@ def migros_item(p):
 
 def migros(products, notes):
     c = CFG["migros"]
-    covered, crawled = set(), set()
+    covered_names, visited_slugs, crawled = set(), set(), set()
+    page_cache = {}
 
     def page_of(slug, page):
+        key = (slug, page)
+        if key in page_cache:
+            return page_cache[key]
         status, body = get(f"https://www.migros.com.tr/rest/search/screens/{slug}?sayfa={page}")
         if status != 200:
+            page_cache[key] = None
             return None
         try:
-            return json.loads(body)["data"]["searchInfo"]
+            info = json.loads(body)["data"]["searchInfo"]
         except Exception:
-            return None
+            info = None
+        page_cache[key] = info
+        return info
+
+    def remember_categories(info):
+        for p in (info or {}).get("storeProductInfos") or []:
+            categories = [p.get("category") or {}] + (p.get("categoryAscendants") or [])
+            for category in categories:
+                if not isinstance(category, dict):
+                    continue
+                name = category.get("prettyName") or category.get("name")
+                if name:
+                    covered_names.add(_category_key(name))
 
     def top_of(info):
         """Sayfadaki ürünlerin çoğunun bağlı olduğu üst kategori."""
         votes = {}
         for p in (info or {}).get("storeProductInfos") or []:
             asc = p.get("categoryAscendants") or []
-            top = (asc[-1] if asc else p.get("category") or {}).get("prettyName")
+            top = (asc[-1] if asc else p.get("category") or {}).get("name") or ""
             if top:
                 votes[top] = votes.get(top, 0) + 1
         return max(votes, key=votes.get) if votes else None
@@ -143,38 +160,47 @@ def migros(products, notes):
             if not items or items[0].get("id") == prev:
                 break
             prev, pages = items[0].get("id"), info.get("pageCount", 1)
+            remember_categories(info)
             if page == 1 and pages * len(items) < 0.9 * info.get("hitCount", 0):
                 notes.append(f"{slug}: {info.get('hitCount')} üründen yalnızca {pages} sayfa sunuluyor")
             for p in items:
                 products[f"migros:{p.get('sku')}"] = migros_item(p)
-                covered.add((p.get("category") or {}).get("prettyName"))
-                covered.update(a.get("prettyName") for a in p.get("categoryAscendants") or [])
             page += 1
 
     def visit(slug):
-        top = top_of(page_of(slug, 1))
-        covered.add(slug)
-        if top and top not in crawled:
-            crawled.add(top)
-            crawl(top)
+        if slug in visited_slugs:
+            return
+        base_slug = slug.rsplit("-c-", 1)[0] if "-c-" in slug else slug
+        if "-c-" in slug and _category_key(base_slug) in covered_names:
+            visited_slugs.add(slug)
+            return
+        visited_slugs.add(slug)
+        info = page_of(slug, 1)
+        remember_categories(info)
+        top = top_of(info)
+        if top:
+            top_key = _category_key(top)
+            if top_key not in crawled:
+                crawled.add(top_key)
+                crawl(top)
 
     for cid in c["seed_ids"]:  # bilinen üst kategori numaraları
         visit(f"x-c-{cid}")
-    # Site haritasındaki kategorilerden hâlâ kapsanmayan varsa onun üst kategorisini de tara
+
+    # Site haritasındaki kategorileri, zaten taranan kategori adlarıyla eşleştir.
     status, body = get(c["sitemap"], "application/xml")
     slugs = [u.rsplit("/", 1)[-1] for u in re.findall(r"<loc>(.*?)</loc>", body) if "-c-" in u]
     extra = 0
     for slug in slugs:
-        if slug in covered:
+        base_slug = slug.rsplit("-c-", 1)[0]
+        if _category_key(base_slug) in covered_names or slug in visited_slugs:
             continue
         if extra >= c["max_discovery"]:
             notes.append(f"kategori keşfi sınırı ({c['max_discovery']}) doldu, taranmamış kategori kalmış olabilir")
             break
         extra += 1
         visit(slug)
-    notes.append(f"{len(crawled)} üst kategori tarandı: " + ", ".join(sorted(crawled)))
-
-
+    notes.append(f"{len(crawled)} üst kategori tarandı; {len(page_cache)} kategori sayfası tekrar istek yapılmadan önbellekten kullanıldı")
 # ---------- Şok ----------
 
 SOK_LINK = re.compile(r'<a href="(/[a-z0-9-]+-p-(\d+))"')
@@ -328,6 +354,62 @@ JOBS = {
 }
 
 
+# ---------- Kategori tamamlama ----------
+
+_CATEGORY_TRANSLATION = str.maketrans("çğıöşüâîû", "cgiosuaiu")
+
+
+def _category_key(value):
+    value = str(value or "").strip().lower().translate(_CATEGORY_TRANSLATION)
+    return re.sub(r"[^a-z0-9]+", "-", value).strip("-")
+
+
+CATEGORY_RULES = [
+    ("Meyve & Sebze", r"\b(elma|armut|muz|portakal|mandalina|limon|greyfurt|uzum|cilek|kiraz|visne|seftali|kayisi|erik|karpuz|kavun|domates|salatalik|biber|patlican|kabak|patates|sogan|sarimsak|havu[cç]|marul|maydanoz|roka|ispanak|brokoli|karnabahar|lahana|mantar|avokado)\b"),
+    ("Et, Tavuk & Şarküteri", r"\b(dana|kuzu|tavuk|hindi|sucuk|salam|sosis|pastirma|kiyma|kofte|biftek|antrikot|pirzola|balik|somon|ton baligi|karides|midye)\b"),
+    ("Süt & Süt Ürünleri", r"\b(sut|yogurt|ayran|kefir|peynir|kasar|tereyag|kaymak|krema|labne|mozzarella|lor)\b"),
+    ("Kahvaltılık", r"\b(zeytin|bal|recel|pekmez|tahin|helva|yumurta|fistik ezmesi)\b"),
+    ("İçecek", r"\b(maden suyu|soda|kola|cola|gazoz|fanta|sprite|ice tea|meyve suyu|limonata|enerji icecegi|kahve|nescafe|espresso|filtre kahve|cay|turk kahvesi|bitki cayi)\b"),
+    ("Ekmek & Pastane", r"\b(ekmek|lava[sş]|yufka|bazlama|simit|pogaca|acma|kruvasan|pasta|pastane|unlu mamul)\b"),
+    ("Dondurulmuş Ürünler", r"\b(dondurulmus|dondurma|pizza|patates kroket|su boregi)\b"),
+    ("Atıştırmalık & Şekerleme", r"\b(cikolata|biskuvi|gofret|cips|kraker|jelibon|sekerleme|lokum|sakiz|kuruyemis|findik|fistik|ceviz|badem|cerez|kek|bar)\b"),
+    ("Bakliyat & Temel Gıda", r"\b(pirinc|bulgur|makarna|mercimek|nohut|fasulye|bakliyat|un|irmik|nisasta|salca|ketcap|mayonez|sos|baharat|tuz|toz seker|zeytinyagi|aycicek yagi|sivi yag|konserve|sirke|turşu|turşu)\b"),
+    ("Temizlik", r"\b(deterjan|camasir suyu|bulasik|yumusatici|yuzey temizleyici|camasir|bulasik makinesi|wc temizleyici|kirec sokucu|sabun tozu)\b"),
+    ("Kağıt Ürünleri", r"\b(tuvalet kagidi|kagit havlu|havlu kagit|pecete|mendil|rulo havlu)\b"),
+    ("Kişisel Bakım & Kozmetik", r"\b(sampuan|dus jeli|dis macunu|dis fircasi|deodorant|parfum|kolonya|krem|losyon|makyaj|ruj|maskara|tirnak|kozmetik|sac boyasi|tras)\b"),
+    ("Anne & Bebek", r"\b(bebek|emzik|biberon|bebek bezi|islak mendil|mama sandalyesi|puset)\b"),
+    ("Evcil Hayvan", r"\b(kedi kumu|kedi mamasi|kopek mamasi|kopek tasmasi|kus yemi|akvaryum|evcil hayvan)\b"),
+    ("Elektronik", r"\b(telefon|televizyon|tv|notebook|laptop|bilgisayar|tablet|kulaklik|sarj|powerbank|hoparlor|mouse|klavye|yazici|monitor|kamera|akilli saat|elektrikli supurge|blender|kahve makinesi)\b"),
+    ("Giyim & Aksesuar", r"\b(corap|tisort|t shirt|pantolon|gomlek|kazak|hirk|mont|ceket|elbise|ayakkabi|terlik|canta|kemer|pijama|havlu|bornoz)\b"),
+    ("Oyuncak & Hobi", r"\b(oyuncak|lego|puzzle|kirtasiye|boya kalemi|oyun hamuru|masa oyunu|hobi|kitap)\b"),
+    ("Bahçe & Yapı Market", r"\b(matkap|tornavida|mengene|testere|civata|vida|boya|fircasi|hortum|bahce|sulama|alet seti|tamir|yapi market)\b"),
+    ("Ev & Mutfak", r"\b(tencere|tava|tabak|bardak|kupa|termos|saklama kabi|saklama kabı|kesme tahtasi|bicak|catal|kasik|masa ortusu|nevresim|yastik|yorgan|aski|duzenleyici|mobilya|lamba|ampul|dekorasyon)\b"),
+]
+
+
+def infer_category(name):
+    text = str(name or "").lower().translate(_CATEGORY_TRANSLATION)
+    text = " ".join(re.findall(r"[a-z0-9]+", text))
+    for category, pattern in CATEGORY_RULES:
+        if re.search(pattern, text):
+            return category
+    return "Diğer"
+
+
+def complete_categories(products):
+    """Boş veya yalnızca kampanya tarihi içeren kategori alanlarını ürün adına göre doldur."""
+    changed = False
+    for product in products.values():
+        current = str(product.get("cat") or "").strip()
+        folded = current.lower().translate(_CATEGORY_TRANSLATION)
+        if not current or re.match(r"^(aktuel|indirim)\b", folded):
+            inferred = infer_category(product.get("name"))
+            if inferred != current:
+                product["cat"] = inferred
+                changed = True
+    return changed
+
+
 def parse_file(path, market=None):
     """Veri dosyasını id -> ürün sözlüğü olarak okur."""
     try:
@@ -375,12 +457,22 @@ def write(market, products, updated):
         head[:-1] + ',"products":[\n' + ",\n".join(lines) + "\n]}\n", encoding="utf-8")
 
 
+def data_updated(market):
+    path = ROOT / "data" / f"{market}.json"
+    try:
+        return json.loads(path.read_text(encoding="utf-8")).get("updated")
+    except Exception:
+        return None
+
+
 def main():
     market, mode = sys.argv[1], sys.argv[2]
     fn = JOBS[(market, mode)]
     (ROOT / "data").mkdir(exist_ok=True)
     t0 = time.time()
     old, fresh, notes, state = read_old(market), {}, [], "tamam"
+    previous_data_update = data_updated(market)
+    complete = True
     try:
         fn(fresh, notes)
     except Stop as e:
@@ -391,25 +483,45 @@ def main():
     if mode == "full":
         if state != "tamam" or len(fresh) < 0.5 * len(old):
             notes.append(f"yeni sonuç eksik ({len(fresh)} ürün), eski veri ({len(old)} ürün) korundu")
-            merged = {**old, **fresh}
+            merged = dict(old) if state != "tamam" else {**old, **fresh}
+            complete = False
         else:
             merged = fresh
     elif mode == "deals":
-        # Yalnızca indirim sayfasında görülenler güncellenir. İndirim sayfası tüm indirimleri
-        # kapsamayabileceği için listede olmayanlara dokunulmaz; biten indirimleri gece taraması düzeltir.
         merged = dict(old)
         for k, p in fresh.items():
             merged[k] = {**p, "cat": p.get("cat") or (old.get(k) or {}).get("cat") or ""}
         notes.append(f"{len(fresh)} indirimli ürün güncellendi")
-    else:  # aktüel: liste her seferinde baştan
-        merged = fresh if (state == "tamam" and fresh) else {**old, **fresh}
+    else:  # aktüel: liste her başarılı taramada baştan oluşturulur
+        merged = fresh if (state == "tamam" and fresh) else dict(old)
 
-    updated = datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")
-    if merged:
-        write(market, merged, updated)
+    if state != "tamam":
+        # 403/429 veya ağ hatasında kısmi sonuçları fiyat verisi gibi yayımlama.
+        merged = dict(old)
+        complete = False
+
+    categories_changed = complete_categories(merged)
+    attempted = datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")
+    data_file_exists = (ROOT / "data" / f"{market}.json").exists()
+    has_new_prices = state == "tamam" and complete and bool(fresh)
+    should_write = bool(merged) and (has_new_prices or categories_changed or not data_file_exists)
+    last_data_update = previous_data_update
+    if should_write:
+        last_data_update = attempted if has_new_prices or not previous_data_update else previous_data_update
+        write(market, merged, last_data_update)
+
     status = {
-        "updated": updated, "market": market, "mode": mode, "status": state, "found": len(fresh),
-        "total": len(merged), "seconds": round(time.time() - t0), "notes": notes,
+        "updated": attempted,
+        "checked_at": attempted,
+        "data_updated": last_data_update,
+        "market": market,
+        "mode": mode,
+        "status": state,
+        "complete": complete and state == "tamam",
+        "found": len(fresh),
+        "total": len(merged),
+        "seconds": round(time.time() - t0),
+        "notes": notes,
         "traffic": {h: {"requests": s["requests"], "megabytes": round(s["bytes"] / 1e6, 1), "errors": s["errors"]}
                     for h, s in STATS.items()},
         "errors": ERRORS,
@@ -417,7 +529,6 @@ def main():
     (ROOT / "data" / f"status-{market}.json").write_text(
         json.dumps(status, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     print(json.dumps(status, ensure_ascii=False, indent=1)[:4000])
-
 
 if __name__ == "__main__":
     main()

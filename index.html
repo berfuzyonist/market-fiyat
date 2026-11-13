@@ -88,11 +88,40 @@ const M={sok:{n:"Şok",c:"bg-yellow-400 text-yellow-950"},migros:{n:"Migros",c:"
 const $=id=>document.getElementById(id);
 const tl=x=>x.toLocaleString("tr-TR",{minimumFractionDigits:2,maximumFractionDigits:2})+" ₺";
 const norm=s=>(s||"").toLocaleLowerCase("tr");
+const FOLD={"ç":"c","ğ":"g","ı":"i","ö":"o","ş":"s","ü":"u","â":"a","î":"i","û":"u"};
+const fold=s=>norm(s).replace(/[çğıöşüâîû]/g,c=>FOLD[c]);
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function categoryOf(o){
+  const raw=String(o.cat||"").trim(), c=fold(raw);
+  if(raw && !/^(aktuel|indirim)\b/.test(c))return raw;
+  const n=fold(o.name);
+  const rules=[
+    ["Meyve & Sebze",/\b(elma|armut|muz|portakal|mandalina|limon|uzum|cilek|kiraz|visne|seftali|kayisi|erik|karpuz|kavun|domates|salatalik|biber|patlican|kabak|patates|sogan|sarimsak|havu[cç]|marul|maydanoz|roka|ispanak|brokoli|karnabahar|lahana|mantar|avokado)\b/],
+    ["Et, Tavuk & Şarküteri",/\b(dana|kuzu|tavuk|hindi|sucuk|salam|sosis|pastirma|kiyma|kofte|biftek|antrikot|pirzola|balik|somon|karides|midye)\b/],
+    ["Süt & Süt Ürünleri",/\b(sut|yogurt|ayran|kefir|peynir|kasar|tereyag|kaymak|krema|labne|mozzarella|lor)\b/],
+    ["Kahvaltılık",/\b(zeytin|bal|recel|pekmez|tahin|helva|yumurta|fistik ezmesi)\b/],
+    ["İçecek",/\b(maden suyu|soda|kola|cola|gazoz|fanta|sprite|ice tea|meyve suyu|limonata|enerji icecegi|kahve|nescafe|espresso|filtre kahve|cay|turk kahvesi|bitki cayi)\b/],
+    ["Ekmek & Pastane",/\b(ekmek|lavas|yufka|bazlama|simit|pogaca|acma|kruvasan|pasta|pastane|unlu mamul)\b/],
+    ["Dondurulmuş Ürünler",/\b(dondurulmus|dondurma|pizza|patates kroket|su boregi)\b/],
+    ["Atıştırmalık & Şekerleme",/\b(cikolata|biskuvi|gofret|cips|kraker|jelibon|sekerleme|lokum|sakiz|kuruyemis|findik|fistik|ceviz|badem|cerez|kek|bar)\b/],
+    ["Bakliyat & Temel Gıda",/\b(pirinc|bulgur|makarna|mercimek|nohut|fasulye|bakliyat|un|irmik|nisasta|salca|ketcap|mayonez|sos|baharat|tuz|seker|zeytinyagi|aycicek yagi|sivi yag|konserve|sirke)\b/],
+    ["Temizlik",/\b(deterjan|camasir suyu|bulasik|yumusatici|yuzey temizleyici|camasir|wc temizleyici|kirec sokucu)\b/],
+    ["Kağıt Ürünleri",/\b(tuvalet kagidi|kagit havlu|havlu kagit|pecete|mendil|rulo havlu)\b/],
+    ["Kişisel Bakım & Kozmetik",/\b(sampuan|dus jeli|dis macunu|dis fircasi|deodorant|parfum|kolonya|krem|losyon|makyaj|ruj|maskara|kozmetik|sac boyasi|tras)\b/],
+    ["Anne & Bebek",/\b(bebek|emzik|biberon|bebek bezi|mama sandalyesi|puset)\b/],
+    ["Evcil Hayvan",/\b(kedi kumu|kedi mamasi|kopek mamasi|kopek tasmasi|kus yemi|akvaryum|evcil hayvan)\b/],
+    ["Elektronik",/\b(telefon|televizyon|tv|notebook|laptop|bilgisayar|tablet|kulaklik|sarj|powerbank|hoparlor|mouse|klavye|yazici|monitor|kamera|akilli saat|elektrikli supurge|blender|kahve makinesi)\b/],
+    ["Giyim & Aksesuar",/\b(corap|tisort|t shirt|pantolon|gomlek|kazak|hirk|mont|ceket|elbise|ayakkabi|terlik|canta|kemer|pijama|bornoz)\b/],
+    ["Oyuncak & Hobi",/\b(oyuncak|lego|puzzle|kirtasiye|boya kalemi|oyun hamuru|masa oyunu|hobi|kitap)\b/],
+    ["Bahçe & Yapı Market",/\b(matkap|tornavida|mengene|testere|civata|vida|boya|hortum|bahce|sulama|alet seti|tamir|yapi market)\b/],
+    ["Ev & Mutfak",/\b(tencere|tava|tabak|bardak|kupa|termos|saklama kabi|kesme tahtasi|bicak|catal|kasik|masa ortusu|nevresim|yastik|yorgan|aski|duzenleyici|mobilya|lamba|ampul|dekorasyon)\b/]
+  ];
+  return rules.find(([,pattern])=>pattern.test(n))?.[0]||"Diğer";
+}
 function load(k,d){try{const v=JSON.parse(localStorage.getItem("mf_"+k));return v??d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem("mf_"+k,JSON.stringify(v))}catch(e){}}
 // G: ürün grupları (aynı ürünün marketlerdeki teklifleri), cart: liste, bmap: barkod → ürün
-let G=[],GI={},cart=load("cart",[]),bmap=load("bmap",{}),pending=null,only=null,updated="";
+let G=[],GI={},cart=load("cart",[]),bmap=load("bmap",{}),pending=null,only=null,updated="",UPD={},CHECK={};
 
 const badge=m=>`<span class="${M[m]?M[m].c:"bg-stone-400 text-white"} text-xs font-bold px-2.5 py-1 rounded-lg">${M[m]?M[m].n:esc(m)}</span>`;
 const chip=(t,c)=>`<span class="text-[11px] font-semibold px-2 py-0.5 rounded-md ${c}">${t}</span>`;
@@ -103,7 +132,7 @@ const img=(g,cls)=>g.image&&g.image.startsWith("https://")?`<img src="${esc(g.im
 const inCart=g=>cart.some(k=>GI[k]===g);
 const uniq=a=>[...new Set(a.map(k=>GI[k]).filter(Boolean))];
 // Aynı ürünü marketler arasında eşleştirmek için ad anahtarı: harfler sadeleşir, gramaj tek birime çevrilir
-const FOLD={"ç":"c","ğ":"g","ı":"i","ö":"o","ş":"s","ü":"u","â":"a","î":"i","û":"u"},UNIT={kg:["g",1000],g:["g",1],gr:["g",1],l:["ml",1000],lt:["ml",1000],ml:["ml",1],cl:["ml",10]};
+const UNIT={kg:["g",1000],g:["g",1],gr:["g",1],l:["ml",1000],lt:["ml",1000],ml:["ml",1],cl:["ml",10]};
 function mkey(name){let sized=false;
   const s=norm(name).replace(/[çğıöşüâîû]/g,c=>FOLD[c]).replace(/(\d),(\d)/g,"$1.$2")
     .replace(/(\d+(?:\.\d+)?)\s*(kg|gr|g|lt|l|ml|cl)\b/g,(m,n,u)=>{sized=true;return" "+Math.round(parseFloat(n)*UNIT[u][1])+UNIT[u][0]+" "});
@@ -195,8 +224,9 @@ function drawB(){
   const btn=(p,ic,lb,off)=>`<button data-page="${p}" ${off?"disabled":""} class="flex items-center gap-1 px-4 py-2.5 rounded-xl font-bold ${off?"opacity-30":"bg-white dark:bg-stone-900 ring-1 ring-stone-200 dark:ring-stone-800"}">${ic==="l"?`<i data-lucide="chevron-left" class="w-4 h-4"></i>${lb}`:`${lb}<i data-lucide="chevron-right" class="w-4 h-4"></i>`}</button>`;
   $("bPager").innerHTML=pages>1?btn(B.page-1,"l","Önceki",B.page===0)+`<span class="text-sm font-semibold tabular">${B.page+1} / ${pages}</span>`+btn(B.page+1,"r","Sonraki",B.page>=pages-1):""}
 function drawStores(){
-  $("stores").innerHTML=ORD.filter(m=>O.some(o=>o.market===m)).map(m=>{const n=O.filter(o=>o.market===m&&o.in_stock),d=n.filter(o=>o.price<o.regular).length;
-    return`<button data-bm="${m}" data-open="1" class="${card} p-4 text-left"><span class="${M[m].c} text-sm font-extrabold px-3 py-1 rounded-lg">${M[m].n}</span><p class="mt-3 font-bold tabular">${n.length.toLocaleString("tr-TR")} ürün</p><p class="text-sm text-red-600 font-semibold tabular">${d.toLocaleString("tr-TR")} indirimli</p>${UPD[m]?`<p class="text-xs text-stone-500 mt-1">${new Date(UPD[m]).toLocaleString("tr-TR",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})}</p>`:""}</button>`}).join("")}
+  $("stores").innerHTML=ORD.filter(m=>O.some(o=>o.market===m)).map(m=>{const n=O.filter(o=>o.market===m&&o.in_stock),d=n.filter(o=>o.price<o.regular).length,s=CHECK[m],failed=s&&(s.status!=="tamam"||s.complete===false);
+    const stamp=v=>v?new Date(v).toLocaleString("tr-TR",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}):"";
+    return`<button data-bm="${m}" data-open="1" class="${card} p-4 text-left"><span class="${M[m].c} text-sm font-extrabold px-3 py-1 rounded-lg">${M[m].n}</span><p class="mt-3 font-bold tabular">${n.length.toLocaleString("tr-TR")} ürün</p><p class="text-sm text-red-600 font-semibold tabular">${d.toLocaleString("tr-TR")} indirimli</p>${UPD[m]?`<p class="text-xs text-stone-500 mt-1">Veri: ${stamp(UPD[m])}</p>`:""}${s?.updated?`<p class="text-xs mt-1 ${failed?"text-red-600 font-semibold":"text-stone-500"}">Kontrol: ${stamp(s.updated)}${failed?" · güncelleme sorunu":""}</p>`:""}</button>`}).join("")}
 function browse(o){Object.assign(B,{page:0},o);tab(2);drawB();lucide.createIcons()}
 function draw(){drawH();drawStores();drawS();drawB();drawL();lucide.createIcons()}
 const NB="flex flex-col items-center gap-0.5 py-2 rounded-xl text-xs font-semibold relative ";
@@ -236,15 +266,18 @@ const get=u=>fetch(u,{cache:"no-cache"}).then(r=>r.ok?r.json():null).catch(()=>n
 const rowsOf=(d,only)=>(d&&d.products||[]).map(r=>{
   if(!Array.isArray(r))return r;const m=r[0].split(":")[0],p=(d.prefix||{})[m]||{},cs=(d.cats||{})[m]||[];
   return{id:r[0],market:m,name:r[1],price:r[2],regular:r[3],in_stock:!!r[4],image:r[5]?(p.image||"")+r[5]:"",url:r[6]?(p.url||"")+r[6]:"",cat:typeof r[7]==="number"?cs[r[7]]||"":""}}).filter(o=>!only||o.market===only);
-let UPD={};
-Promise.all(ORD.map(m=>get(`data/${m}.json`))).then(async files=>{
+Promise.all([
+  Promise.all(ORD.map(m=>get(`data/${m}.json`))),
+  Promise.all(ORD.map(m=>get(`data/status-${m}.json`)))
+]).then(async ([files,statuses])=>{
+  statuses.forEach((s,i)=>{if(s)CHECK[ORD[i]]=s});
   let rows=[];const miss=[];
   files.forEach((d,i)=>{if(d){rows.push(...rowsOf(d));UPD[ORD[i]]=d.updated}else miss.push(ORD[i])});
   if(miss.length){const old=await get("data/products.json");miss.forEach(m=>{const r=rowsOf(old,m);if(r.length){rows.push(...r);UPD[m]=old.updated}})}
   if(!rows.length)throw new Error("veri yok");
   updated=Object.values(UPD).sort().pop();
   const byKey=new Map();
-  rows.forEach(o=>{O.push(o);
+  rows.forEach(o=>{o.cat=categoryOf(o);O.push(o);
     const k=mkey(o.name);let g=k&&byKey.get(k);
     if(!g||g.offers.some(x=>x.market===o.market)){g={name:o.name,offers:[]};G.push(g);if(k&&!byKey.has(k))byKey.set(k,g)}
     g.offers.push(o)});
