@@ -1,4 +1,4 @@
-{"updated": "2026-11-13T20:56:23+00:00", "market": "sok", "prefix": {"sok": {"image": "https://images.ceptesok.com/cdn-cgi/image/width=216,height=216,fit=pad,quality=80,format=webp/product-assets/sub-folder/", "url": "https://www.sokmarket.com.tr/"}}, "cats": {"sok": ["Anne & Bebek", "Atıştırmalık & Şekerleme", "Bahçe & Yapı Market", "Bakliyat & Temel Gıda", "Diğer", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et, Tavuk & Şarküteri", "Ev & Mutfak", "Evcil Hayvan", "Giyim & Aksesuar", "Kahvaltılık", "Kağıt Ürünleri", "Kişisel Bakım & Kozmetik", "Meyve & Sebze", "Oyuncak & Hobi", "Süt & Süt Ürünleri", "Temizlik", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat"],"products":[
+{"updated": "2026-11-13T21:51:31+00:00", "market": "sok", "prefix": {"sok": {"image": "https://images.ceptesok.com/cdn-cgi/image/width=216,height=216,fit=pad,quality=80,format=webp/product-assets/sub-folder/", "url": "https://www.sokmarket.com.tr/"}}, "cats": {"sok": ["Anne & Bebek", "Atıştırmalık & Şekerleme", "Bahçe & Yapı Market", "Bakliyat & Temel Gıda", "Diğer", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et, Tavuk & Şarküteri", "Ev & Mutfak", "Evcil Hayvan", "Giyim & Aksesuar", "Kahvaltılık", "Kağıt Ürünleri", "Kişisel Bakım & Kozmetik", "Meyve & Sebze", "Oyuncak & Hobi", "Süt & Süt Ürünleri", "Temizlik", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat"],"products":[
 ["sok:10","Crown Cola Pet 250 ml",14.0,14.0,1,"7287ee89-01d2-4b88-9f7c-23ad45e4d12c.jpg","crown-cola-pet-250-ml-p-10",19],
 ["sok:1009","İnci Soğan Halkası 450 g",55.0,55.0,1,"3b7dfe2d-f53e-4263-9011-3a26030cdc54.jpg","inci-sogan-halkasi-450-g-p-1009",15],
 ["sok:1025","Ülker Dankek Pöti Fındıklı Kakaolu 24*35 g",240.0,240.0,1,"566ca857-8d91-4a6a-9148-50ff03db6e10.png","ulker-dankek-poti-findikli-kakaolu-24-35-g-p-1025",4],
@@ -420,7 +420,7 @@
 ["sok:328814","Mon Amour Concealer",149.0,199.0,1,"ec707d18-89f1-4d8b-a63b-7283c388bde1.png","mon-amour-concealer-p-328814",4],
 ["sok:328822","Kurutma Makinası Tutacağı",150.0,150.0,1,"46470bbe-e2da-4279-91c7-d84561e4d318.jpg","kurutma-makinasi-tutacagi-p-328822",4],
 ["sok:328825","Kağıt Havluluk",150.0,150.0,1,"2cf423b5-e55a-4cb9-880a-3a6ceec66599.jpg","kagit-havluluk-p-328825",4],
-["sok:32883","Kuru Soğan Kg",35.0,35.0,1,"c48f6f40-eace-4529-bfc5-99b14a95ed2d.png","kuru-sogan-kg-p-32883",15],
+["sok:32883","Kuru Soğan Kg",24.9,35.0,1,"c48f6f40-eace-4529-bfc5-99b14a95ed2d.png","kuru-sogan-kg-p-32883",15],
 ["sok:32886","Domates Kg",79.9,79.9,1,"0e01df87-c557-43a8-a962-d97dc3607d3b.jpg","domates-kg-p-32886",15],
 ["sok:32887","Greyfurt Kg",49.9,49.9,1,"cbbf6b1d-a056-4d7b-bd03-1d6cf2a74699.jpg","greyfurt-kg-p-32887",15],
 ["sok:3289","Calve BBQ Sos 290 g",124.0,124.0,1,"f520b549-3551-46b5-8f0e-f64e5d832115.jpg","calve-bbq-sos-290-g-p-3289",3],
@@ -2462,6 +2462,7 @@
 ["sok:833137","Rooc Desenli Pasta Seti 2'li",175.0,175.0,1,"3797ac5d-6c9a-49b4-855d-88f181470050.jpg","rooc-desenli-pasta-seti-2-li-p-833137",6],
 ["sok:833140","Rooc Meyve-sebze Bıçağı 6'lı",175.0,175.0,1,"5733a5cc-126f-43f3-ba92-67b9ad1f5693.jpg","rooc-meyve-sebze-bicagi-6-li-p-833140",4],
 ["sok:833142","Paşabahçe Snowbox Cam Saklama Kabı Seti 1225 Cc",625.0,625.0,1,"fdf9ac01-b1cd-46f0-b362-610f66bc45b1.jpg","pasabahce-snowbox-cam-saklama-kabi-seti-1225-cc-p-833142",9],
+["sok:833148","Tatdolu Peynirli Baton Sandviç 130 g",24.9,29.9,1,"02c5b7bc-1a76-4e78-853a-4db77b8940ac.png","tatdolu-peynirli-baton-sandvic-130-g-p-833148",4],
 ["sok:8333","Indomie Körili Hazır Noodle 5'li Paket 375 g",85.0,85.0,1,"24997f77-90a6-4680-ba8d-02e29c2bc296.png","indomie-korili-hazir-noodle-5-li-paket-375-g-p-8333",4],
 ["sok:834052","Rooc Standlı Sabunluk Seti",299.0,299.0,1,"5c1612bb-c9c9-4a4f-af63-760508ac5985.jpg","rooc-standli-sabunluk-seti-p-834052",4],
 ["sok:834058","Vivaldi Granit Krep Tava 26 Cm (3mm)",599.0,599.0,1,"486640fb-a2fd-4892-b16b-dbd386e2b39a.jpg","vivaldi-granit-krep-tava-26-cm-3mm-p-834058",9],
