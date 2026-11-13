@@ -1,7 +1,7 @@
 name: Şok
 on:
   schedule:
-    - cron: "47 0 * * *"   # gece tam tarama (TR 03:47)
+    - cron: "47 0,12 * * *" # tam tarama (TR 03:47 ve 15:47)
     - cron: "7,37 * * * *" # 30 dakikada bir indirimler
   workflow_dispatch:
     inputs:
@@ -27,7 +27,7 @@ jobs:
         id: m
         run: |
           MODE="${{ inputs.mode }}"
-          [ -z "$MODE" ] && [ "${{ github.event.schedule }}" = "47 0 * * *" ] && MODE=full
+          [ -z "$MODE" ] && [ "${{ github.event.schedule }}" = "47 0,12 * * *" ] && MODE=full
           [ -z "$MODE" ] && MODE=deals
           echo "mode=$MODE" >> "$GITHUB_OUTPUT"
       - run: python3 collector/collect.py sok ${{ steps.m.outputs.mode }}
