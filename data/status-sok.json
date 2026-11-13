@@ -1,22 +1,22 @@
 {
- "updated": "2026-11-13T21:51:31+00:00",
- "checked_at": "2026-11-13T21:51:31+00:00",
- "data_updated": "2026-11-13T21:51:31+00:00",
+ "updated": "2026-11-13T22:47:16+00:00",
+ "checked_at": "2026-11-13T22:47:16+00:00",
+ "data_updated": "2026-11-13T22:47:16+00:00",
  "market": "sok",
  "mode": "deals",
  "status": "tamam",
  "complete": true,
- "found": 312,
+ "found": 285,
  "total": 2896,
- "seconds": 71,
+ "seconds": 81,
  "notes": [
-  "indirimli-urunler-cms-pl1: sitede 314, okunan 314, 16/16 sayfa (son sayfa)",
-  "312 indirimli ürün güncellendi"
+  "indirimli-urunler-cms-pl1: sitede 322, okunan 322, 17/17 sayfa (son sayfa)",
+  "285 indirimli ürün güncellendi"
  ],
  "traffic": {
   "www.sokmarket.com.tr": {
-   "requests": 16,
-   "megabytes": 9.0,
+   "requests": 17,
+   "megabytes": 9.6,
    "errors": 0
   }
  },

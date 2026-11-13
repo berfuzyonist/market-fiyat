@@ -1,4 +1,4 @@
-{"updated": "2026-11-13T21:51:31+00:00", "market": "sok", "prefix": {"sok": {"image": "https://images.ceptesok.com/cdn-cgi/image/width=216,height=216,fit=pad,quality=80,format=webp/product-assets/sub-folder/", "url": "https://www.sokmarket.com.tr/"}}, "cats": {"sok": ["Anne & Bebek", "Atıştırmalık & Şekerleme", "Bahçe & Yapı Market", "Bakliyat & Temel Gıda", "Diğer", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et, Tavuk & Şarküteri", "Ev & Mutfak", "Evcil Hayvan", "Giyim & Aksesuar", "Kahvaltılık", "Kağıt Ürünleri", "Kişisel Bakım & Kozmetik", "Meyve & Sebze", "Oyuncak & Hobi", "Süt & Süt Ürünleri", "Temizlik", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat"],"products":[
+{"updated": "2026-11-13T22:47:16+00:00", "market": "sok", "prefix": {"sok": {"image": "https://images.ceptesok.com/cdn-cgi/image/width=216,height=216,fit=pad,quality=80,format=webp/product-assets/sub-folder/", "url": "https://www.sokmarket.com.tr/"}}, "cats": {"sok": ["Anne & Bebek", "Atıştırmalık & Şekerleme", "Bahçe & Yapı Market", "Bakliyat & Temel Gıda", "Diğer", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et, Tavuk & Şarküteri", "Ev & Mutfak", "Evcil Hayvan", "Giyim & Aksesuar", "Kahvaltılık", "Kağıt Ürünleri", "Kişisel Bakım & Kozmetik", "Meyve & Sebze", "Oyuncak & Hobi", "Süt & Süt Ürünleri", "Temizlik", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat"],"products":[
 ["sok:10","Crown Cola Pet 250 ml",14.0,14.0,1,"7287ee89-01d2-4b88-9f7c-23ad45e4d12c.jpg","crown-cola-pet-250-ml-p-10",19],
 ["sok:1009","İnci Soğan Halkası 450 g",55.0,55.0,1,"3b7dfe2d-f53e-4263-9011-3a26030cdc54.jpg","inci-sogan-halkasi-450-g-p-1009",15],
 ["sok:1025","Ülker Dankek Pöti Fındıklı Kakaolu 24*35 g",240.0,240.0,1,"566ca857-8d91-4a6a-9148-50ff03db6e10.png","ulker-dankek-poti-findikli-kakaolu-24-35-g-p-1025",4],
@@ -893,10 +893,10 @@
 ["sok:4747","Piyale Şehriyeli Tavuk Çorbası 58 g",32.9,32.9,1,"9e7fe301-4f9d-4039-a8cd-c5e0db15ee0d.png","piyale-sehriyeli-tavuk-corbasi-58-g-p-4747",8],
 ["sok:4748","Confort Peçete 200'lü",28.5,28.5,1,"a7aa7033-8871-433e-b799-f12d6ceeebeb.png","confort-pecete-200-lu-p-4748",13],
 ["sok:474800","Polonez Fit Yaşam Hindi Füme Eti 2*110 g",179.0,179.0,1,"12e94485-c23b-4051-afd0-b2689e11b498.jpg","polonez-fit-yasam-hindi-fume-eti-2-110-g-p-474800",8],
-["sok:4751","Raid Elektro Likit Sistem 30 Gece",319.0,319.0,1,"48a3208a-e5df-4d29-85e4-05b4c98995fd.png","raid-elektro-likit-sistem-30-gece-p-4751",4],
+["sok:4751","Raid Elektro Likit Sistem 30 Gece",245.0,319.0,1,"48a3208a-e5df-4d29-85e4-05b4c98995fd.png","raid-elektro-likit-sistem-30-gece-p-4751",4],
 ["sok:4757","Mis Krem Peynir 300 g",85.0,85.0,1,"15346cf5-9613-46c0-ae55-f9462533a23f.jpg","mis-krem-peynir-300-g-p-4757",17],
 ["sok:4760","Mis Yarım Yağlı Taze Beyaz Peynir 650 g",205.0,205.0,1,"3751b7a2-9f9e-4fb6-b3d4-4ef954e81a34.jpg","mis-yarim-yagli-taze-beyaz-peynir-650-g-p-4760",17],
-["sok:476220","Difaş Proclinic Smokers Diş Fırçası",89.0,89.0,1,"6786f910-7f37-4ad8-98d3-a9fa35d09824.png","difas-proclinic-smokers-dis-fircasi-p-476220",14],
+["sok:476220","Difaş Proclinic Smokers Diş Fırçası",66.9,89.0,1,"6786f910-7f37-4ad8-98d3-a9fa35d09824.png","difas-proclinic-smokers-dis-fircasi-p-476220",14],
 ["sok:4766","Amigo Süt Mısırı Çeşnili Mısır Çerez 130 g",36.9,36.9,1,"1d1b2c4c-85f6-4c70-bda8-54fad384ebfa.png","amigo-sut-misiri-cesnili-misir-cerez-130-g-p-4766",17],
 ["sok:4769","Amigo Yer Fıstıklı Mısır Çerezi 55 g",17.9,17.9,1,"1a042249-3e62-44a4-8f1b-dd88865143ae.png","amigo-yer-fistikli-misir-cerezi-55-g-p-4769",4],
 ["sok:4771","Karışık Turşu Bizim Vatan 680 g",54.0,54.0,1,"3b3c5168-e7b4-440d-84ee-35c885a4b50c.jpg","karisik-tursu-bizim-vatan-680-g-p-4771",3],
