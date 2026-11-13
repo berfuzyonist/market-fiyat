@@ -1,26 +1,21 @@
 {
- "updated": "2026-11-13T10:32:25+00:00",
+ "updated": "2026-11-13T11:33:15+00:00",
  "market": "migros",
  "mode": "deals",
- "status": "durduruldu: www.migros.com.tr: durum 403",
- "found": 0,
- "total": 15857,
- "seconds": 7,
+ "status": "tamam",
+ "found": 2365,
+ "total": 15862,
+ "seconds": 263,
  "notes": [
-  "0 indirimli ürün güncellendi"
+  "money-indirimli-market-urunleri-dt-5: 80/80 sayfa",
+  "2365 indirimli ürün güncellendi"
  ],
  "traffic": {
   "www.migros.com.tr": {
-   "requests": 1,
-   "megabytes": 0.0,
-   "errors": 1
+   "requests": 80,
+   "megabytes": 1.4,
+   "errors": 0
   }
  },
- "errors": [
-  {
-   "url": "https://www.migros.com.tr/rest/search/screens/money-indirimli-market-urunleri-dt-5?sayfa=1",
-   "status": 403,
-   "detail": ""
-  }
- ]
+ "errors": []
 }

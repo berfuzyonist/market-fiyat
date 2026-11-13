@@ -1,4 +1,4 @@
-{"updated": "2026-11-13T10:32:25+00:00", "market": "migros", "prefix": {"migros": {"image": "https://images.migrosone.com/sanalmarket/product/", "url": "https://www.migros.com.tr/"}}, "cats": {"migros": ["", "Atıştırmalık", "Bebek", "Deterjan, Temizlik", "Dondurma", "Dondurulmuş Gıda", "Et, Tavuk, Balık", "Ev, Yaşam", "Fırın, Pastane", "Hazır Yemek, Meze", "Kağıt, Islak Mendil", "Kitap, Kırtasiye, Oyuncak", "Kişisel Bakım, Kozmetik, Sağlık", "Süt, Kahvaltılık", "Temel Gıda", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat"],"products":[
+{"updated": "2026-11-13T11:33:15+00:00", "market": "migros", "prefix": {"migros": {"image": "https://images.migrosone.com/sanalmarket/product/", "url": "https://www.migros.com.tr/"}}, "cats": {"migros": ["", "Atıştırmalık", "Bebek", "Deterjan, Temizlik", "Dondurma", "Dondurulmuş Gıda", "Et, Tavuk, Balık", "Ev, Yaşam", "Fırın, Pastane", "Hazır Yemek, Meze", "Kağıt, Islak Mendil", "Kitap, Kırtasiye, Oyuncak", "Kişisel Bakım, Kozmetik, Sağlık", "Süt, Kahvaltılık", "Temel Gıda", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat"],"products":[
 ["migros:01010084","Yayla Yerli Pirinç Osmancık Bölgesi Mahsulü 2 Kg",244.95,244.95,1,"01010084/01010084_1-270e94.jpg","yayla-yerli-pirinc-osmancik-bolgesi-mahsulu-2-kg-p-f69a4",0],
 ["migros:01010085","Yayla Basmati Pirinç 1 Kg",199.95,199.95,1,"01010085/01010085_1-634e4e.jpg","yayla-basmati-pirinc-1-kg-p-f69a5",0],
 ["migros:01010086","Yayla Aşurelik Buğday 1 Kg",63.95,63.95,1,"1010086/1010086-2958da.jpg","yayla-asurelik-bugday-1-kg-p-f69a6",0],
@@ -1307,6 +1307,7 @@
 ["migros:05044000","Naturiga Glutensiz Granola (Yaban Mersini, Mango)",290.0,290.0,1,"05044000/05044000_1-449b3a.jpg","naturiga-glutensiz-granola-yaban-mersini-mango-p-4cf720",0],
 ["migros:05044544","İhe Kakaolu Fındıklı Kurabiye 215 G",90.0,90.0,1,"05044544/05044544-4821ea.jpg","ihe-kakaolu-findikli-kurabiye-215-g-p-4cf940",0],
 ["migros:05044545","İhe Yulaflı Keçiboynuzlu Kurabiye 230 G",90.0,90.0,1,"05044545/5044545_1-8d3688.jpg","ihe-yulafli-keciboynuzlu-kurabiye-230-g-p-4cf941",0],
+["migros:05044801","Pakmaya 4'lü Yaş Hamur Mayası 168 G",38.25,51.0,1,"05044801/pakmaya-4-lu-168-gr-c46b7a.jpg","pakmaya-4lu-yas-hamur-mayasi-168-g-p-4cfa41",14],
 ["migros:05044802","Pakmaya Aktif Kuru Hamur Mayası 100 G",44.96,59.95,1,"05044802/05044802-7853bf.jpg","pakmaya-aktif-kuru-hamur-mayasi-100-g-p-4cfa42",14],
 ["migros:05044803","Pakmaya Instant Maya 3'lü 30 G",28.46,37.95,1,"05044803/05044803-f87466.jpg","pakmaya-instant-maya-3lu-30-g-p-4cfa43",14],
 ["migros:05044804","Pakmaya 10'lu Hamur Kabartma Tozu 100 G",24.38,32.5,1,"05044804/05044804-d4706f.jpg","pakmaya-10lu-hamur-kabartma-tozu-100-g-p-4cfa44",14],
@@ -5258,6 +5259,7 @@
 ["migros:10108907","Ariste Dilimli Trakya Eski Kaşar 200 G",499.9,499.9,1,"10108907/10108907-87b718.jpg","ariste-dilimli-trakya-eski-kasar-200-g-p-9a3feb",0],
 ["migros:10109060","Teksüt Yarım Yağlı Dilimli Taze Kaşar Peynir 200 G",172.25,172.25,1,"10109060/10109060_1-475dd0.jpg","teksut-yarim-yagli-dilimli-taze-kasar-peynir-200-g-p-9a4084",0],
 ["migros:10109075","Ariste Tam Yağlı Olgunlaştırılmış Kars Eski Kaşar Peyniri 200 G",349.9,349.9,1,"10109075/10109075_1-46c41d.jpg","ariste-tam-yagli-olgunlastirilmis-kars-eski-kasar-peyniri-200-g-p-9a4093",0],
+["migros:10109079","Yörsan Susurluk Tam Yağlı Dilim Eritme Peyniri 320 G",239.9,269.9,1,"10109079/10109079_1-2da4ed.jpg","yorsan-susurluk-tam-yagli-dilim-eritme-peyniri-320-g-p-9a4097",13],
 ["migros:10109080","Bahçıvan Taze Kaşar Peyniri Kg",649.9,649.9,1,"10109080/10109080_1-a79ea8.jpg","bahcivan-taze-kasar-peyniri-kg-p-9a4098",0],
 ["migros:10109091","Bahçıvan Tam Yağlı Taze Kaşar Peyniri 350 G",284.95,284.95,1,"10109091/10109091_1-ddb01c.jpg","bahcivan-tam-yagli-taze-kasar-peyniri-350-g-p-9a40a3",0],
 ["migros:10109094","Uluova Tam Yağlı Taze Kaşar Peyniri 500 G",494.95,494.95,1,"10109094/10109094_1-8e4c9f.jpg","uluova-tam-yagli-taze-kasar-peyniri-500-g-p-9a40a6",0],
@@ -5268,6 +5270,8 @@
 ["migros:10109112","Migros Ekstra Tam Yağlı Taze Kaşar Peyniri 400 G",236.9,236.9,1,"10109112/10109112_1-406915.jpg","migros-ekstra-tam-yagli-taze-kasar-peyniri-400-g-p-9a40b8",0],
 ["migros:10109116","Migros Ekstra Tam Yağlı Dilimli Taze Kaşar Peyniri 225 G",157.5,157.5,1,"10109116/10109116_1-ef893a.jpg","migros-ekstra-tam-yagli-dilimli-taze-kasar-peyniri-225-g-p-9a40bc",0],
 ["migros:10109117","Sek Yüksek Proteinli Kaşar 200 G",199.0,199.0,1,"10109117/10109117_1-9ef5d3.jpg","sek-yuksek-proteinli-kasar-200-g-p-9a40bd",0],
+["migros:10109146","Bahçıvan Çeçil Peyniri 180 G",149.9,219.95,1,"10109146/10109146_1-21fa24.jpg","bahcivan-cecil-peyniri-180-g-p-9a40da",13],
+["migros:10109147","Bahçıvan Dil Peyniri 180 G",149.9,219.95,1,"10109147/10109147_1-e9cd9c.jpg","bahcivan-dil-peyniri-180-g-p-9a40db",13],
 ["migros:10109273","President Rende Mozzarella Peyniri 200 G",174.9,174.9,1,"10109273/10109273-113d64.jpg","president-rende-mozzarella-peyniri-200-g-p-9a4159",0],
 ["migros:10109274","President Mozzarella Peyniri 600 G",358.5,358.5,1,"10109274/10109274-584b33.jpg","president-mozzarella-peyniri-600-g-p-9a415a",0],
 ["migros:10109673","Tire Süt Kooperatifi Tam Yağlı Taze Kaşar Peyniri 600 G",429.0,429.0,1,"10109673/10109673-e1bdce.jpg","tire-sut-kooperatifi-tam-yagli-taze-kasar-peyniri-600-g-p-9a42e9",0],
@@ -5413,6 +5417,7 @@
 ["migros:10403865","Ariste Yarım Yağlı Olgunlaşmış Gravyer Peynir 200 G",379.9,379.9,1,"10403865/10403865_1-70dae0.jpg","ariste-yarim-yagli-olgunlasmis-gravyer-peynir-200-g-p-9ec019",0],
 ["migros:10403866","Philadelphia Yarım Yağlı Sürülebilir Füme Somonlu Taze Peynir 175 G",649.0,649.0,1,"10403866/10403866_1-1b33cc.jpg","philadelphia-yarim-yagli-surulebilir-fume-somonlu-taze-peynir-175-g-p-9ec01a",0],
 ["migros:10403874","Uluova Tam Yağlı Taze Ricotta 160 G",159.9,159.9,1,"10403874/10403874_1-5e737e.jpg","uluova-tam-yagli-taze-ricotta-160-g-p-9ec022",0],
+["migros:10403882","Bahçıvan Tam Yağlı Taze Kaşar Peyniri 600 G",349.9,539.9,1,"10403882/10403882_1-bec878.jpg","bahcivan-tam-yagli-taze-kasar-peyniri-600-g-p-9ec02a",13],
 ["migros:10403885","Bahçıvan Grana Padano Peyniri 180 G",519.9,519.9,1,"10403885/10403885_1-f97f71.jpg","bahcivan-grana-padano-peyniri-180-g-p-9ec02d",0],
 ["migros:10403890","Migros Ekstra Tam Yağlı Taze Dil Peyniri 250 G",157.5,157.5,1,"10403890/10403890_1-8dfc47.jpg","migros-ekstra-tam-yagli-taze-dil-peyniri-250-g-p-9ec032",0],
 ["migros:10403891","Migros Ekstra Tam Yağlı Taze Çeçil Peyniri 250 G",157.5,157.5,1,"10403891/10403891_1-8f1a7e.jpg","migros-ekstra-tam-yagli-taze-cecil-peyniri-250-g-p-9ec033",0],
