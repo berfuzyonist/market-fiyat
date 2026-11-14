@@ -57,7 +57,7 @@ def _fetch(url, accept):
 
 
 def allowed(url):
-    """robots.txt okunamazsa ya da yolu yasaklıyorsa False döner."""
+    """robots.txt okunamazsa veya yolu yasaklıyorsa taramayı durdurur."""
     u = urllib.parse.urlsplit(url)
     base = f"{u.scheme}://{u.netloc}"
     if base not in ROBOTS:
@@ -199,6 +199,8 @@ def migros(products, notes):
 
     # Site haritasındaki kategorileri, zaten taranan kategori adlarıyla eşleştir.
     status, body = get(c["sitemap"], "application/xml")
+    if status != 200:
+        raise Stop(f"Migros kategori sitemap isteği başarısız: HTTP {status}")
     slugs = [urllib.parse.unquote(urllib.parse.urlsplit(html.unescape(u)).path.rstrip("/").rsplit("/", 1)[-1])
              for u in re.findall(r"<loc>(.*?)</loc>", body) if "-c-" in u]
     extra = 0
@@ -207,8 +209,7 @@ def migros(products, notes):
         if _category_key(base_slug) in covered_names or slug in visited_slugs:
             continue
         if extra >= c["max_discovery"]:
-            notes.append(f"kategori keşfi sınırı ({c['max_discovery']}) doldu, taranmamış kategori kalmış olabilir")
-            break
+            raise Stop(f"kategori keşfi sınırı ({c['max_discovery']}) doldu; tam tarama doğrulanamadı")
         extra += 1
         visit(slug)
     notes.append(f"{len(crawled)} üst kategori tarandı; {len(page_cache)} kategori sayfası tekrar istek yapılmadan önbellekten kullanıldı")
