@@ -31,6 +31,7 @@ jobs:
           echo "mode=$MODE" >> "$GITHUB_OUTPUT"
       - run: python3 collector/collect.py bim ${{ steps.m.outputs.mode }}
       - name: Veriyi kaydet
+        if: github.ref == 'refs/heads/main'
         run: |
           git config user.name "fiyat-botu"
           git config user.email "actions@users.noreply.github.com"
