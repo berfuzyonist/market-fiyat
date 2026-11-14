@@ -1,71 +1,24 @@
 {
- "updated": "2026-11-14T01:30:33+00:00",
- "checked_at": "2026-11-14T01:30:33+00:00",
- "data_updated": "2026-11-14T00:15:55+00:00",
+ "updated": "2026-11-14T01:46:56+00:00",
+ "checked_at": "2026-11-14T01:46:56+00:00",
+ "data_updated": "2026-11-14T01:46:56+00:00",
  "market": "migros",
- "mode": "full",
+ "mode": "deals",
  "status": "tamam",
- "complete": false,
- "found": 0,
+ "complete": true,
+ "found": 2359,
  "total": 15875,
- "seconds": 861,
+ "seconds": 267,
  "notes": [
-  "kategori keşfi sınırı (250) doldu, taranmamış kategori kalmış olabilir",
-  "10 üst kategori tarandı; 269 kategori sayfası tekrar istek yapılmadan önbellekten kullanıldı",
-  "yeni sonuç eksik (0 ürün), eski veri (15875 ürün) korundu"
+  "money-indirimli-market-urunleri-dt-5: 80/80 sayfa",
+  "2359 indirimli ürün güncellendi"
  ],
  "traffic": {
   "www.migros.com.tr": {
-   "requests": 270,
-   "megabytes": 1.0,
-   "errors": 9
+   "requests": 80,
+   "megabytes": 1.4,
+   "errors": 0
   }
  },
- "errors": [
-  {
-   "url": "https://www.migros.com.tr/rest/search/screens/Meyve, Sebze?sayfa=1",
-   "status": 0,
-   "detail": "InvalidURL(\"URL can't contain control characters. '/rest/search/screens/Meyve, Sebze?sayfa=1' (found at least ' ')\")"
-  },
-  {
-   "url": "https://www.migros.com.tr/rest/search/screens/Et, Tavuk, Balık?sayfa=1",
-   "status": 0,
-   "detail": "InvalidURL(\"URL can't contain control characters. '/rest/search/screens/Et, Tavuk, Balık?sayfa=1' (found at least ' ')\")"
-  },
-  {
-   "url": "https://www.migros.com.tr/rest/search/screens/Süt, Kahvaltılık?sayfa=1",
-   "status": 0,
-   "detail": "InvalidURL(\"URL can't contain control characters. '/rest/search/screens/Süt, Kahvaltılık?sayfa=1' (found at least ' ')\")"
-  },
-  {
-   "url": "https://www.migros.com.tr/rest/search/screens/Temel Gıda?sayfa=1",
-   "status": 0,
-   "detail": "InvalidURL(\"URL can't contain control characters. '/rest/search/screens/Temel Gıda?sayfa=1' (found at least ' ')\")"
-  },
-  {
-   "url": "https://www.migros.com.tr/rest/search/screens/İçecek?sayfa=1",
-   "status": 0,
-   "detail": "UnicodeEncodeError('ascii', 'GET /rest/search/screens/İçecek?sayfa=1 HTTP/1.1', 25, 27, 'ordinal not in range(128)')"
-  },
-  {
-   "url": "https://www.migros.com.tr/rest/search/screens/Deterjan, Temizlik?sayfa=1",
-   "status": 0,
-   "detail": "InvalidURL(\"URL can't contain control characters. '/rest/search/screens/Deterjan, Temizlik?sayfa=1' (found at least ' ')"
-  },
-  {
-   "url": "https://www.migros.com.tr/rest/search/screens/Kişisel Bakım, Kozmetik, Sağlık?sayfa=1",
-   "status": 0,
-   "detail": "InvalidURL(\"URL can't contain control characters. '/rest/search/screens/Kişisel Bakım, Kozmetik, Sağlık?sayfa=1' (found "
-  },
-  {
-   "url": "https://www.migros.com.tr/rest/search/screens/Ev, Yaşam?sayfa=1",
-   "status": 0,
-   "detail": "InvalidURL(\"URL can't contain control characters. '/rest/search/screens/Ev, Yaşam?sayfa=1' (found at least ' ')\")"
-  },
-  {
-   "url": "https://www.migros.com.tr/rest/search/screens/Atıştırmalık?sayfa=1",
-   "status": 0,
-   "detail": "UnicodeEncodeError('ascii', 'GET /rest/search/screens/Atıştırmalık?sayfa=1 HTTP/1.1', 27, 29, 'ordinal not in range(128)"
-  }
- ]
+ "errors": []
 }
