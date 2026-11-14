@@ -1,4 +1,4 @@
-{"updated": "2026-11-14T13:55:32+00:00", "market": "sok", "prefix": {"sok": {"image": "https://images.ceptesok.com/cdn-cgi/image/width=216,height=216,fit=pad,quality=80,format=webp/product-assets/sub-folder/", "url": "https://www.sokmarket.com.tr/"}}, "cats": {"sok": ["Anne - Bebek & Çocuk", "Atıştırmalık", "Atıştırmalık & Şekerleme", "Diğer", "Dondurma", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et & Tavuk & Şarküteri", "Et, Tavuk & Şarküteri", "Ev & Mutfak", "Ev & Yaşam", "Evcil Dostlar", "Giyim & Aksesuar", "Kahvaltılık", "Kağıt Ürünleri", "Kişisel Bakım & Kozmetik", "Meyve & Sebze", "Oyuncak", "Süt & Süt Ürünleri", "Temizlik", "Yemeklik Malzemeler", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat"],"products":[
+{"updated": "2026-11-14T14:45:51+00:00", "market": "sok", "prefix": {"sok": {"image": "https://images.ceptesok.com/cdn-cgi/image/width=216,height=216,fit=pad,quality=80,format=webp/product-assets/sub-folder/", "url": "https://www.sokmarket.com.tr/"}}, "cats": {"sok": ["Anne - Bebek & Çocuk", "Atıştırmalık", "Atıştırmalık & Şekerleme", "Diğer", "Dondurma", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et & Tavuk & Şarküteri", "Et, Tavuk & Şarküteri", "Ev & Mutfak", "Ev & Yaşam", "Evcil Dostlar", "Giyim & Aksesuar", "Kahvaltılık", "Kağıt Ürünleri", "Kişisel Bakım & Kozmetik", "Meyve & Sebze", "Oyuncak", "Süt & Süt Ürünleri", "Temizlik", "Yemeklik Malzemeler", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat"],"products":[
 ["sok:10","Crown Cola Pet 250 ml",14.0,14.0,1,"7287ee89-01d2-4b88-9f7c-23ad45e4d12c.jpg","crown-cola-pet-250-ml-p-10",22],
 ["sok:1009","İnci Soğan Halkası 450 g",55.0,55.0,1,"3b7dfe2d-f53e-4263-9011-3a26030cdc54.jpg","inci-sogan-halkasi-450-g-p-1009",5],
 ["sok:102010","Fruko Gazoz 2.5 L",76.0,76.0,1,"fcfc63c8-10e4-4a0d-86e2-773c8fe27c4d.png","fruko-gazoz-2-5-l-p-102010",22],
@@ -406,6 +406,7 @@
 ["sok:32775","Karnabahar Kg",79.9,79.9,1,"58997070-4fc8-4c3f-9437-3cdaca1255f5.png","karnabahar-kg-p-32775",17],
 ["sok:327892","Gokidy Supercar Metal Araba Seri 1",250.0,250.0,1,"fc93d300-cc6b-4d18-aa01-242c9bb33061.jpg","gokidy-supercar-metal-araba-seri-1-p-327892",0],
 ["sok:327898","Söğütlüçeşme Karadut Ve Frenk Üzümü 6*200 ml",62.0,62.0,1,"9a9f0fd9-846b-4fd7-9ad8-fd02e51c1dfc.jpg","sogutlucesme-karadut-ve-frenk-uzumu-6-200-ml-p-327898",22],
+["sok:32800","Çevreci Lamineli Çanta",9.99,14.95,1,"fd73b6bf-0e22-4769-b601-06b32d303b6b.png","cevreci-lamineli-canta-p-32800",13],
 ["sok:32805","Bingo Soft Lovely Parfümlü 3 Lt",209.0,209.0,1,"53119838-0e3a-4a29-be0e-72c37a71027b.png","bingo-soft-lovely-parfumlu-3-lt-p-32805",20],
 ["sok:3281","Nescafe Xpress Vanilya 250 ml",64.9,80.0,1,"345a75d1-bd4d-4d57-a8b2-c3a98b0d9ea2.png","nescafe-xpress-vanilya-250-ml-p-3281",22],
 ["sok:32842","Pırasa Demet",69.9,69.9,1,"a5e45e1e-4ba8-401e-9d1f-0c5dbf4f3b6e.jpeg","pirasa-demet-p-32842",17],
@@ -2119,6 +2120,7 @@
 ["sok:768942","Nestle Kitkat Chunky Fındıklı Gofret 3'lü 114 g",69.95,79.95,1,"c33e50a5-242e-4dec-b1b0-c48b392c069c.jpg","nestle-kitkat-chunky-findikli-gofret-3-lu-114-g-p-768942",1],
 ["sok:768950","Mintax Kir&Küf Temizleyici 1000 Ml",129.0,129.0,1,"cd2e0c86-e9c6-400c-b1f5-e8ce5fddfdbe.jpg","mintax-kir-kuf-temizleyici-1000-ml-p-768950",20],
 ["sok:7690","Eti Mini Pop Kek Çikolatalı 180 g",67.0,67.0,1,"ac94716c-b1cb-4e35-8d74-421be0962e0f.png","eti-mini-pop-kek-cikolatali-180-g-p-7690",1],
+["sok:769072","Soqu Yüzde Eriyen Kore Maskesi",129.0,199.0,1,"5c119aed-3415-43da-bd3c-c0879ac6e1bc.jpg","soqu-yuzde-eriyen-kore-maskesi-p-769072",3],
 ["sok:769073","Forever Yapışkanlı Yüz Taşı",89.0,119.0,1,"9bcbc8ea-1250-4e15-b712-88635b697218.jpg","forever-yapiskanli-yuz-tasi-p-769073",16],
 ["sok:769075","Canped Emici Külot Orta 9'lu",235.0,339.0,1,"4bbf4ad0-67da-4431-927f-6707a5e9cdbc.jpeg","canped-emici-kulot-orta-9-lu-p-769075",16],
 ["sok:7695","Altınkılıç Laktozsuz Kefir 1 L",135.0,135.0,1,"aab8efb9-9057-43e9-8fb1-e64ac4105506.png","altinkilic-laktozsuz-kefir-1-l-p-7695",19],
