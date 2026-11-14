@@ -1,4 +1,4 @@
-{"updated": "2026-11-13T23:44:52+00:00", "market": "sok", "prefix": {"sok": {"image": "https://images.ceptesok.com/cdn-cgi/image/width=216,height=216,fit=pad,quality=80,format=webp/product-assets/sub-folder/", "url": "https://www.sokmarket.com.tr/"}}, "cats": {"sok": ["Anne & Bebek", "Atıştırmalık & Şekerleme", "Bahçe & Yapı Market", "Bakliyat & Temel Gıda", "Diğer", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et, Tavuk & Şarküteri", "Ev & Mutfak", "Evcil Hayvan", "Giyim & Aksesuar", "Kahvaltılık", "Kağıt Ürünleri", "Kişisel Bakım & Kozmetik", "Meyve & Sebze", "Oyuncak & Hobi", "Süt & Süt Ürünleri", "Temizlik", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat"],"products":[
+{"updated": "2026-11-14T01:00:50+00:00", "market": "sok", "prefix": {"sok": {"image": "https://images.ceptesok.com/cdn-cgi/image/width=216,height=216,fit=pad,quality=80,format=webp/product-assets/sub-folder/", "url": "https://www.sokmarket.com.tr/"}}, "cats": {"sok": ["Anne & Bebek", "Atıştırmalık & Şekerleme", "Bahçe & Yapı Market", "Bakliyat & Temel Gıda", "Diğer", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et, Tavuk & Şarküteri", "Ev & Mutfak", "Evcil Hayvan", "Giyim & Aksesuar", "Kahvaltılık", "Kağıt Ürünleri", "Kişisel Bakım & Kozmetik", "Meyve & Sebze", "Oyuncak & Hobi", "Süt & Süt Ürünleri", "Temizlik", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat"],"products":[
 ["sok:10","Crown Cola Pet 250 ml",14.0,14.0,1,"7287ee89-01d2-4b88-9f7c-23ad45e4d12c.jpg","crown-cola-pet-250-ml-p-10",19],
 ["sok:1009","İnci Soğan Halkası 450 g",55.0,55.0,1,"3b7dfe2d-f53e-4263-9011-3a26030cdc54.jpg","inci-sogan-halkasi-450-g-p-1009",15],
 ["sok:1025","Ülker Dankek Pöti Fındıklı Kakaolu 24*35 g",240.0,240.0,1,"566ca857-8d91-4a6a-9148-50ff03db6e10.png","ulker-dankek-poti-findikli-kakaolu-24-35-g-p-1025",4],
@@ -53,7 +53,7 @@
 ["sok:1358","Confort Geri Dönüşüm Kağıt Havlu 6'lı",70.0,70.0,1,"69a6653f-1bb9-4b3f-a6d1-3895eb6805a4.png","confort-geri-donusum-kagit-havlu-6-li-p-1358",13],
 ["sok:1360","Doğadan Bitki Çayı Papatya 20'li",69.9,110.0,1,"c2e0ee76-698d-4aa1-9634-eeff3039cc69.png","dogadan-bitki-cayi-papatya-20-li-p-1360",19],
 ["sok:1366","Anadolu Mutfağı Yerli Pilavlık Pirinç 1 kg",64.5,64.5,1,"6a7ebff0-88ba-43a7-a090-5919ea3ece16.png","anadolu-mutfagi-yerli-pilavlik-pirinc-1-kg-p-1366",3],
-["sok:1370","Terem Gurme Kaymaklı Kase Margarin 400 g",147.0,147.0,1,"9a873d7e-2254-4832-90bc-4faa73f9ff38.png","terem-gurme-kaymakli-kase-margarin-400-g-p-1370",4],
+["sok:1370","Terem Gurme Kaymaklı Kase Margarin 400 g",99.0,147.0,1,"9a873d7e-2254-4832-90bc-4faa73f9ff38.png","terem-gurme-kaymakli-kase-margarin-400-g-p-1370",4],
 ["sok:13798","Hot Wheels Fırlatma Seti",325.0,325.0,1,"5aa4ae0e-c205-422c-95d7-299eb8512c25.png","hot-wheels-firlatma-seti-p-13798",4],
 ["sok:138","Meysu % 100 Karışık Meyve Suyu 1 L",79.9,79.9,1,"92f88fb2-99e0-4bb4-9ec5-e5fbe71ab122.png","meysu-100-karisik-meyve-suyu-1-l-p-138",19],
 ["sok:138051","Finish Quantum Tablet 50'li",399.0,519.0,1,"5af75b8f-5498-4873-8228-fe5414dad140.png","finish-quantum-tablet-50-li-p-138051",7],
@@ -189,7 +189,7 @@
 ["sok:2105","Anadolu Mutfağı Çiğ Köfte Harcı 430 g",79.95,79.95,1,"b0e089ff-775f-49e8-a762-4fef8cdc6c76.png","anadolu-mutfagi-cig-kofte-harci-430-g-p-2105",8],
 ["sok:2107","Dardanel Fish Finger 400 g",314.0,314.0,1,"4b68a98e-2cb0-4ba2-9473-7aa2760eea58.png","dardanel-fish-finger-400-g-p-2107",4],
 ["sok:2116","Sultan Premium Dana Kavurma 100 g",229.0,229.0,1,"d42b55e4-d2cb-4b5b-b393-069a9a9abd2b.jpg","sultan-premium-dana-kavurma-100-g-p-2116",8],
-["sok:2118","Experdent Pro Ultra Soft Diş Fırçası",79.9,79.9,1,"043e327b-fe9b-4bcb-bc24-5815bf86239a.jpg","experdent-pro-ultra-soft-dis-fircasi-p-2118",14],
+["sok:2118","Experdent Pro Ultra Soft Diş Fırçası",59.9,79.9,1,"043e327b-fe9b-4bcb-bc24-5815bf86239a.jpg","experdent-pro-ultra-soft-dis-fircasi-p-2118",14],
 ["sok:2120","Eti Popkek Limonlu 60 g",17.95,17.95,1,"f9d3e694-e126-4311-998a-ecc6735c909a.png","eti-popkek-limonlu-60-g-p-2120",4],
 ["sok:2123","Mon Amour Perfect Shine Likit Ruj",29.0,29.0,1,"db64a6c7-0de7-4fa6-b8dc-0d670a766185.png","mon-amour-perfect-shine-likit-ruj-p-2123",14],
 ["sok:21357","Duş Başlığı Seti 4 Fonksiyonlu",150.0,150.0,1,"94b81143-faed-4bf0-bf26-786958d86173.png","dus-basligi-seti-4-fonksiyonlu-p-21357",4],
@@ -1023,7 +1023,7 @@
 ["sok:502447","Bisto Mini Susamlı Simit 225 g",84.9,84.9,1,"65c8f104-fd58-4817-a4ab-bedb7525230b.jpg","bisto-mini-susamli-simit-225-g-p-502447",6],
 ["sok:5031","Cappy Atom Ballı Karışık Meyve Suyu 200 mL",20.0,20.0,1,"a1ccc2b1-63ec-4415-b83d-c04d81461651.jpg","cappy-atom-balli-karisik-meyve-suyu-200-ml-p-5031",19],
 ["sok:5032","Saroz Plastik Çatal 10'lu",16.5,16.5,1,"23b27757-04ae-4a76-a123-851b255ff0c2.png","saroz-plastik-catal-10-lu-p-5032",9],
-["sok:503351","Experdent Pro Orta Diş Fırçası",79.9,79.9,1,"988db704-cdcc-4cc5-95e4-db6ed1048bff.jpg","experdent-pro-orta-dis-fircasi-p-503351",14],
+["sok:503351","Experdent Pro Orta Diş Fırçası",59.9,79.9,1,"988db704-cdcc-4cc5-95e4-db6ed1048bff.jpg","experdent-pro-orta-dis-fircasi-p-503351",14],
 ["sok:503359","Handy Kırlent Kılıfı Mavi 45*45",119.0,119.0,1,"4c3d5b1d-b357-4f87-b38a-28827d0cf465.jpg","handy-kirlent-kilifi-mavi-45-45-p-503359",4],
 ["sok:5034","Saroz Plastik Tabak 10'lu",39.95,39.95,1,"1f91c8bf-a252-47a6-9029-ee7ab8a0616d.png","saroz-plastik-tabak-10-lu-p-5034",9],
 ["sok:5039","Mon Amour Bb Krem",99.9,99.9,1,"54bab51c-b087-43bb-a1d3-bcdb0e9c2fc9.png","mon-amour-bb-krem-p-5039",14],
