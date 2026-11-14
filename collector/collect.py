@@ -23,6 +23,7 @@ import pathlib
 import re
 import sys
 import time
+import unicodedata
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -56,18 +57,23 @@ def _fetch(url, accept):
 
 
 def allowed(url):
-    """robots.txt okunamazsa ya da yolu yasaklıyorsa False döner."""
+    """robots.txt okunamazsa veya yolu yasaklıyorsa taramayı durdurur."""
     u = urllib.parse.urlsplit(url)
     base = f"{u.scheme}://{u.netloc}"
     if base not in ROBOTS:
         status, body, _ = _fetch(base + "/robots.txt", "text/plain")
-        rp = None
-        if status == 200:
-            rp = urllib.robotparser.RobotFileParser()
-            rp.parse(body.splitlines())
+        if status != 200:
+            ERRORS.append({"url": base + "/robots.txt", "status": status,
+                           "detail": "robots.txt okunamadı; tarama durduruldu"})
+            raise Stop(f"{base}: robots.txt alınamadı (HTTP {status})")
+        rp = urllib.robotparser.RobotFileParser()
+        rp.parse(body.splitlines())
         ROBOTS[base] = rp
     rp = ROBOTS[base]
-    return bool(rp) and rp.can_fetch(UA, url)
+    if not rp.can_fetch(UA, url):
+        ERRORS.append({"url": url, "status": "robots.txt izin vermiyor"})
+        raise Stop(f"robots.txt erişime izin vermiyor: {url}")
+    return True
 
 
 def get(url, accept="application/json"):
@@ -121,10 +127,10 @@ def migros(products, notes):
         key = (slug, page)
         if key in page_cache:
             return page_cache[key]
-        status, body = get(f"https://www.migros.com.tr/rest/search/screens/{slug}?sayfa={page}")
+        safe_slug = urllib.parse.quote(urllib.parse.unquote(slug), safe="-")
+        status, body = get(f"https://www.migros.com.tr/rest/search/screens/{safe_slug}?sayfa={page}")
         if status != 200:
-            page_cache[key] = None
-            return None
+            raise Stop(f"Migros kategori isteği başarısız: HTTP {status} ({slug})")
         try:
             info = json.loads(body)["data"]["searchInfo"]
         except Exception:
@@ -157,9 +163,11 @@ def migros(products, notes):
         while page <= min(pages, c["max_pages"]):
             info = page_of(slug, page)
             items = (info or {}).get("storeProductInfos") or []
-            if not items or items[0].get("id") == prev:
-                break
+            if not info or not items or items[0].get("id") == prev:
+                raise Stop(f"Migros kategori sayfası eksik/boş: {slug}, sayfa {page}")
             prev, pages = items[0].get("id"), info.get("pageCount", 1)
+            if pages > c["max_pages"]:
+                raise Stop(f"Migros sayfa sınırı aşıldı: {slug}, {pages} sayfa")
             remember_categories(info)
             if page == 1 and pages * len(items) < 0.9 * info.get("hitCount", 0):
                 notes.append(f"{slug}: {info.get('hitCount')} üründen yalnızca {pages} sayfa sunuluyor")
@@ -176,6 +184,8 @@ def migros(products, notes):
             return
         visited_slugs.add(slug)
         info = page_of(slug, 1)
+        if not info:
+            raise Stop(f"Migros kategori yanıtı çözümlenemedi: {slug}")
         remember_categories(info)
         top = top_of(info)
         if top:
@@ -189,15 +199,17 @@ def migros(products, notes):
 
     # Site haritasındaki kategorileri, zaten taranan kategori adlarıyla eşleştir.
     status, body = get(c["sitemap"], "application/xml")
-    slugs = [u.rsplit("/", 1)[-1] for u in re.findall(r"<loc>(.*?)</loc>", body) if "-c-" in u]
+    if status != 200:
+        raise Stop(f"Migros kategori sitemap isteği başarısız: HTTP {status}")
+    slugs = [urllib.parse.unquote(urllib.parse.urlsplit(html.unescape(u)).path.rstrip("/").rsplit("/", 1)[-1])
+             for u in re.findall(r"<loc>(.*?)</loc>", body) if "-c-" in u]
     extra = 0
     for slug in slugs:
         base_slug = slug.rsplit("-c-", 1)[0]
         if _category_key(base_slug) in covered_names or slug in visited_slugs:
             continue
         if extra >= c["max_discovery"]:
-            notes.append(f"kategori keşfi sınırı ({c['max_discovery']}) doldu, taranmamış kategori kalmış olabilir")
-            break
+            raise Stop(f"kategori keşfi sınırı ({c['max_discovery']}) doldu; tam tarama doğrulanamadı")
         extra += 1
         visit(slug)
     notes.append(f"{len(crawled)} üst kategori tarandı; {len(page_cache)} kategori sayfası tekrar istek yapılmadan önbellekten kullanıldı")
@@ -246,7 +258,7 @@ def sok_pages(slug, cat, products, notes, max_pages):
         cards = sok_cards(body, cat) if status == 200 else []
         if not cards:
             why = f"sayfa {page}: durum {status}, kart yok"
-            break
+            raise Stop(f"Şok kategorisi eksik/boş: {slug} ({why})")
         m = re.search(r'totalPages\\*":(\d+)', body)
         if m:
             pages = int(m.group(1))
@@ -257,8 +269,10 @@ def sok_pages(slug, cat, products, notes, max_pages):
             products.setdefault(x["id"], x)
         got += len(cards)
         page += 1
-    if page > max_pages:
-        why = "sayfa sınırı"
+    if page > max_pages and page <= pages:
+        raise Stop(f"Şok sayfa sınırı aşıldı: {slug} ({pages} sayfa)")
+    if pages > 1 and page <= pages:
+        raise Stop(f"Şok taraması eksik: {slug}, {page - 1}/{pages} sayfa")
     notes.append(f"{slug}: sitede {total}, okunan {got}, {page - 1}/{pages} sayfa ({why})")
 
 
@@ -266,6 +280,8 @@ def sok(products, notes):
     c = CFG["sok"]
     for slug, cat in c["categories"].items():
         sok_pages(slug, cat, products, notes, c["max_pages"])
+    if not products:
+        raise Stop("Şok tam taraması sıfır ürün döndürdü")
 
 
 def sok_deals(products, notes):
@@ -277,14 +293,17 @@ def migros_deals(products, notes):
     for slug in c["deals"]:
         page, pages, prev = 1, 1, None
         while page <= min(pages, c["max_pages"]):
-            status, body = get(f"https://www.migros.com.tr/rest/search/screens/{slug}?sayfa={page}")
+            safe_slug = urllib.parse.quote(urllib.parse.unquote(slug), safe="-")
+            status, body = get(f"https://www.migros.com.tr/rest/search/screens/{safe_slug}?sayfa={page}")
+            if status != 200:
+                raise Stop(f"Migros indirim isteği başarısız: HTTP {status}")
             try:
                 info = json.loads(body)["data"]["searchInfo"]
-            except Exception:
-                break
+            except Exception as e:
+                raise Stop(f"Migros indirim yanıtı çözümlenemedi: {e!r}")
             items = info.get("storeProductInfos") or []
             if not items or items[0].get("id") == prev:
-                break
+                raise Stop(f"Migros indirim sayfası eksik/boş: {slug}, sayfa {page}")
             prev, pages = items[0].get("id"), info.get("pageCount", 1)
             for p in items:
                 products.setdefault(f"migros:{p.get('sku')}", migros_item(p))
@@ -327,7 +346,11 @@ def bim_cards(body, label):
 def bim(products, notes):
     base = "https://www.bim.com.tr/Categories/100/aktuel-urunler.aspx"
     status, body = get(base, "text/html")
+    if status != 200:
+        raise Stop(f"BİM aktüel ana sayfa isteği başarısız: HTTP {status}")
     dates = re.findall(r'href="(/categories/100/aktuel-urunler\.aspx\?Bim_AktuelTarihKey=(\d+))"[^>]*>(.*?)</a>', body, re.S | re.I)
+    if not dates:
+        raise Stop("BİM aktüel sayfasında kampanya tarihleri bulunamadı")
     seen = set()
     for path, key, label in dates[: CFG["bim"]["max_dates"]]:
         if key in seen:
@@ -335,13 +358,16 @@ def bim(products, notes):
         seen.add(key)
         label = " ".join(html.unescape(re.sub(r"<[^>]+>", " ", label)).split())
         st, b = get("https://www.bim.com.tr" + path, "text/html")
-        cards = bim_cards(b, label) if st == 200 else {}
+        if st != 200:
+            raise Stop(f"BİM kampanya sayfası başarısız: HTTP {st} ({label})")
+        cards = bim_cards(b, label)
+        if not cards:
+            raise Stop(f"BİM kampanya sayfasında ürün ayıklanamadı: {label}")
         for k, v in cards.items():
             products.setdefault(k, v)
         notes.append(f"{label}: {len(cards)} ürün")
     if not products:
-        i = body.find("aktuel-urunler/")
-        notes.append("ayıklanamadı, örnek: " + body[max(0, i - 600): i + 1400] if i >= 0 else "ürün bağlantısı yok")
+        raise Stop("BİM aktüel taraması sıfır ürün döndürdü")
 
 
 # ---------- Çıktı ----------
@@ -356,12 +382,15 @@ JOBS = {
 
 # ---------- Kategori tamamlama ----------
 
-_CATEGORY_TRANSLATION = str.maketrans("çğıöşüâîû", "cgiosuaiu")
+def _fold_tr(value):
+    """Türkçe metni aksansız ASCII karşılaştırma biçimine getirir."""
+    value = unicodedata.normalize("NFKD", str(value or "").casefold())
+    value = "".join(ch for ch in value if not unicodedata.combining(ch))
+    return value.replace("ı", "i")
 
 
 def _category_key(value):
-    value = str(value or "").strip().lower().translate(_CATEGORY_TRANSLATION)
-    return re.sub(r"[^a-z0-9]+", "-", value).strip("-")
+    return re.sub(r"[^a-z0-9]+", "-", _fold_tr(value)).strip("-")
 
 
 CATEGORY_RULES = [
@@ -388,8 +417,7 @@ CATEGORY_RULES = [
 
 
 def infer_category(name):
-    text = str(name or "").lower().translate(_CATEGORY_TRANSLATION)
-    text = " ".join(re.findall(r"[a-z0-9]+", text))
+    text = " ".join(re.findall(r"[a-z0-9]+", _fold_tr(name)))
     for category, pattern in CATEGORY_RULES:
         if re.search(pattern, text):
             return category
@@ -401,7 +429,7 @@ def complete_categories(products):
     changed = False
     for product in products.values():
         current = str(product.get("cat") or "").strip()
-        folded = current.lower().translate(_CATEGORY_TRANSLATION)
+        folded = _fold_tr(current)
         if not current or re.match(r"^(aktuel|indirim)\b", folded):
             inferred = infer_category(product.get("name"))
             if inferred != current:
@@ -480,6 +508,9 @@ def main():
     except Exception as e:
         state = f"hata: {e!r}"
 
+    if state == "tamam" and not fresh:
+        state = "hata: tarama sıfır ürün döndürdü"
+
     if mode == "full":
         if state != "tamam" or len(fresh) < 0.5 * len(old):
             notes.append(f"yeni sonuç eksik ({len(fresh)} ürün), eski veri ({len(old)} ürün) korundu")
@@ -529,6 +560,8 @@ def main():
     (ROOT / "data" / f"status-{market}.json").write_text(
         json.dumps(status, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     print(json.dumps(status, ensure_ascii=False, indent=1)[:4000])
+    if status["status"] != "tamam" or not status["complete"]:
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()
