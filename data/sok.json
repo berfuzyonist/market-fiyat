@@ -1,4 +1,4 @@
-{"updated": "2026-11-14T14:45:51+00:00", "market": "sok", "prefix": {"sok": {"image": "https://images.ceptesok.com/cdn-cgi/image/width=216,height=216,fit=pad,quality=80,format=webp/product-assets/sub-folder/", "url": "https://www.sokmarket.com.tr/"}}, "cats": {"sok": ["Anne - Bebek & Çocuk", "Atıştırmalık", "Atıştırmalık & Şekerleme", "Diğer", "Dondurma", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et & Tavuk & Şarküteri", "Et, Tavuk & Şarküteri", "Ev & Mutfak", "Ev & Yaşam", "Evcil Dostlar", "Giyim & Aksesuar", "Kahvaltılık", "Kağıt Ürünleri", "Kişisel Bakım & Kozmetik", "Meyve & Sebze", "Oyuncak", "Süt & Süt Ürünleri", "Temizlik", "Yemeklik Malzemeler", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat"],"products":[
+{"updated": "2026-11-14T15:42:36+00:00", "market": "sok", "prefix": {"sok": {"image": "https://images.ceptesok.com/cdn-cgi/image/width=216,height=216,fit=pad,quality=80,format=webp/product-assets/sub-folder/", "url": "https://www.sokmarket.com.tr/"}}, "cats": {"sok": ["Anne - Bebek & Çocuk", "Atıştırmalık", "Atıştırmalık & Şekerleme", "Diğer", "Dondurma", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et & Tavuk & Şarküteri", "Et, Tavuk & Şarküteri", "Ev & Mutfak", "Ev & Yaşam", "Evcil Dostlar", "Giyim & Aksesuar", "Kahvaltılık", "Kağıt Ürünleri", "Kişisel Bakım & Kozmetik", "Meyve & Sebze", "Oyuncak", "Süt & Süt Ürünleri", "Temizlik", "Yemeklik Malzemeler", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat"],"products":[
 ["sok:10","Crown Cola Pet 250 ml",14.0,14.0,1,"7287ee89-01d2-4b88-9f7c-23ad45e4d12c.jpg","crown-cola-pet-250-ml-p-10",22],
 ["sok:1009","İnci Soğan Halkası 450 g",55.0,55.0,1,"3b7dfe2d-f53e-4263-9011-3a26030cdc54.jpg","inci-sogan-halkasi-450-g-p-1009",5],
 ["sok:102010","Fruko Gazoz 2.5 L",76.0,76.0,1,"fcfc63c8-10e4-4a0d-86e2-773c8fe27c4d.png","fruko-gazoz-2-5-l-p-102010",22],
@@ -1443,6 +1443,7 @@
 ["sok:610940","Pure Korean Melting Eriyen Maske",139.0,199.0,1,"b617b5c7-7959-4438-864c-7545daa7fdfd.jpg","pure-korean-melting-eriyen-maske-p-610940",3],
 ["sok:611","Nilky Yulaflı İçecek 1 l",179.95,179.95,1,"48e973d7-75a6-4293-a700-4705494270a9.jpg","nilky-yulafli-icecek-1-l-p-611",22],
 ["sok:6111","Derby Tek Bıçak Tıraş Bıçağı",22.0,22.0,1,"d5a9c4b0-34b3-41c1-9b08-c5de6e886514.png","derby-tek-bicak-tiras-bicagi-p-6111",16],
+["sok:6117","Hotline Enerji İçeceği 250 ml",22.9,38.5,1,"2930d8cb-398c-4953-b9ba-aac72cb37089.png","hotline-enerji-icecegi-250-ml-p-6117",3],
 ["sok:6118","Colgate Max Beyazlık Diş Macunu 50 ml",59.0,99.0,1,"bba55782-9b1f-44b1-809f-e1f5e17a0c4b.png","colgate-max-beyazlik-dis-macunu-50-ml-p-6118",16],
 ["sok:612","Free Dog Biftekli Yetişkin Köpek Maması 10 kg",995.0,995.0,1,"54a6cabe-b2f4-495b-b149-da2e903cb1ea.png","free-dog-biftekli-yetiskin-kopek-mamasi-10-kg-p-612",12],
 ["sok:6121","Garnitür Konservesi Bizim Vatan 560 g",44.5,44.5,1,"b47887b9-cb14-416a-9ae8-d5e7adf008c6.png","garnitur-konservesi-bizim-vatan-560-g-p-6121",21],
@@ -2016,6 +2017,7 @@
 ["sok:748335","Komili Sofralık Lezzetler Riviera 1 L",329.0,329.0,1,"727baa6b-87aa-497a-b2c6-873e317934e4.jpg","komili-sofralik-lezzetler-riviera-1-l-p-748335",21],
 ["sok:749253","Toy Story Micro Figürler",100.0,100.0,1,"7a1d60b2-6ff5-4365-945e-cfa238147f15.jpg","toy-story-micro-figurler-p-749253",0],
 ["sok:749261","Mia Klinika Gözenek Karşıtı Kil Maskesi 25 G",89.0,159.0,1,"7328210d-f068-47ef-a09f-140a0f44eed1.jpg","mia-klinika-gozenek-karsiti-kil-maskesi-25-g-p-749261",16],
+["sok:749272","Vione Yüz Temizleme Köpüğü Yatıştırıcı 150 Ml",99.0,199.0,1,"2fb38c57-afc4-4a5e-af86-a4fb25c59ac4.jpg","vione-yuz-temizleme-kopugu-yatistirici-150-ml-p-749272",3],
 ["sok:7501","Mis Bakraçlık Süt Tam Yağlı 1 L",64.0,64.0,1,"ddb7fb6c-e722-4e47-a34b-c925ec43a74f.png","mis-bakraclik-sut-tam-yagli-1-l-p-7501",19],
 ["sok:750177","Purina One Kedi Maması Sığır Etli 750 g",469.0,469.0,1,"e034f25b-0581-407a-a526-0c475c8810fe.jpg","purina-one-kedi-mamasi-sigir-etli-750-g-p-750177",12],
 ["sok:750186","Vione Yüz Temizleme Köpüğü Arındırıcı 150 Ml",99.0,199.0,1,"cb931dfe-0292-4a81-a283-d228859fadf0.jpg","vione-yuz-temizleme-kopugu-arindirici-150-ml-p-750186",3],
