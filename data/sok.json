@@ -1,4 +1,4 @@
-{"updated": "2026-11-15T07:44:23+00:00", "market": "sok", "prefix": {"sok": {"image": "https://images.ceptesok.com/cdn-cgi/image/width=216,height=216,fit=pad,quality=80,format=webp/product-assets/sub-folder/", "url": "https://www.sokmarket.com.tr/"}}, "cats": {"sok": ["Anne - Bebek & Çocuk", "Atıştırmalık", "Atıştırmalık & Şekerleme", "Diğer", "Dondurma", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et & Tavuk & Şarküteri", "Ev & Yaşam", "Evcil Dostlar", "Giyim & Aksesuar", "Kahvaltılık", "Kağıt Ürünleri", "Kişisel Bakım & Kozmetik", "Meyve & Sebze", "Süt & Süt Ürünleri", "Temizlik", "Yemeklik Malzemeler", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat"],"products":[
+{"updated": "2026-11-15T08:55:37+00:00", "market": "sok", "prefix": {"sok": {"image": "https://images.ceptesok.com/cdn-cgi/image/width=216,height=216,fit=pad,quality=80,format=webp/product-assets/sub-folder/", "url": "https://www.sokmarket.com.tr/"}}, "cats": {"sok": ["Anne - Bebek & Çocuk", "Atıştırmalık", "Atıştırmalık & Şekerleme", "Diğer", "Dondurma", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et & Tavuk & Şarküteri", "Ev & Yaşam", "Evcil Dostlar", "Giyim & Aksesuar", "Kahvaltılık", "Kağıt Ürünleri", "Kişisel Bakım & Kozmetik", "Meyve & Sebze", "Süt & Süt Ürünleri", "Temizlik", "Yemeklik Malzemeler", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat"],"products":[
 ["sok:10","Crown Cola Pet 250 ml",14.0,14.0,1,"7287ee89-01d2-4b88-9f7c-23ad45e4d12c.jpg","crown-cola-pet-250-ml-p-10",19],
 ["sok:1009","İnci Soğan Halkası 450 g",55.0,55.0,1,"3b7dfe2d-f53e-4263-9011-3a26030cdc54.jpg","inci-sogan-halkasi-450-g-p-1009",5],
 ["sok:1025","Ülker Dankek Pöti Fındıklı Kakaolu 24*35 g",240.0,240.0,1,"566ca857-8d91-4a6a-9148-50ff03db6e10.png","ulker-dankek-poti-findikli-kakaolu-24-35-g-p-1025",1],
@@ -113,6 +113,7 @@
 ["sok:1669","Haribo Ekşi Mix 115 g",65.0,65.0,1,"d4b468e3-9610-4b20-9d82-dafc3d7c43e0.png","haribo-eksi-mix-115-g-p-1669",1],
 ["sok:1673","Ülker O'lala Tiramisu 45 g",25.0,25.0,1,"606049e9-6e95-4c3f-8eb6-bbe4269f0e21.png","ulker-o-lala-tiramisu-45-g-p-1673",1],
 ["sok:1675","Duru Sıvı Sabun Avokado 500 ml",64.0,64.0,1,"1716278b-a902-46e5-94ae-62ada293d42e.png","duru-sivi-sabun-avokado-500-ml-p-1675",17],
+["sok:169197","Head&Shoulders Şampuan Kadınlara Özel 330 ml",187.0,249.0,1,"d1d891a8-3e1d-4856-a2ac-aaa8f9a609b2.jpg","head-shoulders-sampuan-kadinlara-ozel-330-ml-p-169197",14],
 ["sok:169198","Head&Shoulders Şampuan Klasik Bakım 330 ml",187.0,249.0,1,"3599d56f-ec57-49c5-812b-dc98b3ac0cf8.jpg","head-shoulders-sampuan-klasik-bakim-330-ml-p-169198",14],
 ["sok:17","Crown Mandalina Aromalı Gazoz 1,5 L",43.5,43.5,1,"81ab3701-fd87-40c0-845e-6e5ba1e048a4.jpg","crown-mandalina-aromali-gazoz-1-5-l-p-17",19],
 ["sok:170234","Head&Shoulders Şampuan Mentol 330 ml",187.0,249.0,1,"d3d53f94-765f-4fa2-a2fd-35f03ab56f08.jpg","head-shoulders-sampuan-mentol-330-ml-p-170234",14],
@@ -1113,7 +1114,7 @@
 ["sok:5263","Anadolu Mutfağı Kırmızı Pul Biber 250 g",150.0,150.0,1,"73f8caa1-c75a-452c-aebc-b6bfb3cb33ca.png","anadolu-mutfagi-kirmizi-pul-biber-250-g-p-5263",18],
 ["sok:5264","Lipton Ice Tea Şeftali Pet 1 L",66.5,66.5,1,"87f891a3-1ad8-48c8-a027-a07602d74f47.png","lipton-ice-tea-seftali-pet-1-l-p-5264",19],
 ["sok:5268","Nivea Kadın Roll on Deodorant Fresh Natural 50 ml",280.0,280.0,1,"20060a0d-99b0-445c-8ef9-f060b5dedbda.jpg","nivea-kadin-roll-on-deodorant-fresh-natural-50-ml-p-5268",14],
-["sok:526806","Elseve Komple Direnç Saç Kremi 250 Ml",234.0,234.0,1,"b96e2b7c-5ef3-4ef9-8207-481d49ea5159.jpg","elseve-komple-direnc-sac-kremi-250-ml-p-526806",14],
+["sok:526806","Elseve Komple Direnç Saç Kremi 250 Ml",149.0,234.0,1,"b96e2b7c-5ef3-4ef9-8207-481d49ea5159.jpg","elseve-komple-direnc-sac-kremi-250-ml-p-526806",14],
 ["sok:5270","Ülker Probis Atıştırmalık 75 g",25.0,25.0,1,"efbd9b5d-34f9-4350-b786-d4f9c49f0fb5.png","ulker-probis-atistirmalik-75-g-p-5270",1],
 ["sok:527743","Sobe Saç ve Vücut Parfümü 100 Ml",150.0,150.0,1,"79ac37b6-d74f-4487-ae62-abb97322929e.jpg","sobe-sac-ve-vucut-parfumu-100-ml-p-527743",14],
 ["sok:5278","Amigo İç Ay Çekirdeği 100 g",20.5,20.5,1,"047d4081-b0f9-41f7-b350-b6f209a0da9a.png","amigo-ic-ay-cekirdegi-100-g-p-5278",1],
