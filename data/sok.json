@@ -1,4 +1,4 @@
-{"updated": "2026-11-15T08:55:37+00:00", "market": "sok", "prefix": {"sok": {"image": "https://images.ceptesok.com/cdn-cgi/image/width=216,height=216,fit=pad,quality=80,format=webp/product-assets/sub-folder/", "url": "https://www.sokmarket.com.tr/"}}, "cats": {"sok": ["Anne - Bebek & Çocuk", "Atıştırmalık", "Atıştırmalık & Şekerleme", "Diğer", "Dondurma", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et & Tavuk & Şarküteri", "Ev & Yaşam", "Evcil Dostlar", "Giyim & Aksesuar", "Kahvaltılık", "Kağıt Ürünleri", "Kişisel Bakım & Kozmetik", "Meyve & Sebze", "Süt & Süt Ürünleri", "Temizlik", "Yemeklik Malzemeler", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat"],"products":[
+{"updated": "2026-11-15T09:49:46+00:00", "market": "sok", "prefix": {"sok": {"image": "https://images.ceptesok.com/cdn-cgi/image/width=216,height=216,fit=pad,quality=80,format=webp/product-assets/sub-folder/", "url": "https://www.sokmarket.com.tr/"}}, "cats": {"sok": ["Anne - Bebek & Çocuk", "Atıştırmalık", "Atıştırmalık & Şekerleme", "Diğer", "Dondurma", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et & Tavuk & Şarküteri", "Ev & Yaşam", "Evcil Dostlar", "Giyim & Aksesuar", "Kahvaltılık", "Kağıt Ürünleri", "Kişisel Bakım & Kozmetik", "Meyve & Sebze", "Süt & Süt Ürünleri", "Temizlik", "Yemeklik Malzemeler", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat"],"products":[
 ["sok:10","Crown Cola Pet 250 ml",14.0,14.0,1,"7287ee89-01d2-4b88-9f7c-23ad45e4d12c.jpg","crown-cola-pet-250-ml-p-10",19],
 ["sok:1009","İnci Soğan Halkası 450 g",55.0,55.0,1,"3b7dfe2d-f53e-4263-9011-3a26030cdc54.jpg","inci-sogan-halkasi-450-g-p-1009",5],
 ["sok:1025","Ülker Dankek Pöti Fındıklı Kakaolu 24*35 g",240.0,240.0,1,"566ca857-8d91-4a6a-9148-50ff03db6e10.png","ulker-dankek-poti-findikli-kakaolu-24-35-g-p-1025",1],
@@ -2376,6 +2376,7 @@
 ["sok:827590","Forslu Renkli Şeker 140 g",59.95,75.0,1,"3f12b7e8-a572-4748-88be-0af00dab8df2.jpg","forslu-renkli-seker-140-g-p-827590",1],
 ["sok:827592","Lav Odin Meşrubat Bardağı 4'lü 356 Cc",299.0,299.0,1,"c0d30ba6-f95b-40f8-b969-3e015f442daa.jpg","lav-odin-mesrubat-bardagi-4-lu-356-cc-p-827592",9],
 ["sok:827594","Dünya Plastik Bebek Basamağı",250.0,250.0,1,"caf976d3-8777-48bb-85d8-6d593eef64f4.jpg","dunya-plastik-bebek-basamagi-p-827594",0],
+["sok:827596","Tto-x Yüz Temizleme Köpüğü Yağlı Ciltler 200 Ml",199.0,399.0,1,"285da90d-0974-4f10-8a61-19c428c2145b.jpeg","tto-x-yuz-temizleme-kopugu-yagli-ciltler-200-ml-p-827596",3],
 ["sok:827597","Milka Çilekli Çikolata 300 g",199.0,399.0,1,"0cef3859-44d0-4a9f-95e6-5512f0be9a85.jpg","milka-cilekli-cikolata-300-g-p-827597",1],
 ["sok:8278","Lio Salamura Siyah Zeytin (381-460) 2 kg",299.0,299.0,1,"9c8c10bb-68b6-4626-ab34-02efd75807e5.jpg","lio-salamura-siyah-zeytin-381-460-2-kg-p-8278",12],
 ["sok:8280","Ülker Bitter Damla Çikolata 120 g",139.95,139.95,1,"1de8178c-d1f7-423d-bde1-d0c7d431bc3e.png","ulker-bitter-damla-cikolata-120-g-p-8280",18],
@@ -2384,6 +2385,8 @@
 ["sok:828501","Smartware Hareketli Süzgeç",100.0,100.0,1,"53e28f62-f635-47d9-92a8-1a98dd328780.jpg","smartware-hareketli-suzgec-p-828501",9],
 ["sok:828502","Lav Odin Su Bardağı 4'lü 330 Cc",275.0,275.0,1,"c4a15c7a-7fed-471b-be01-7910326b8eb3.jpg","lav-odin-su-bardagi-4-lu-330-cc-p-828502",9],
 ["sok:8289","Anadolu Mutfağı Esmer Pilavlık Bulgur 1 kg",40.9,40.9,1,"3e954ba3-54ab-41b7-b4f7-c850eb4c82a7.png","anadolu-mutfagi-esmer-pilavlik-bulgur-1-kg-p-8289",18],
+["sok:829426","Tto-x Yüz Temizleme Köpüğü Hassas Ciltler 200 Ml",199.0,399.0,1,"ac2db0bd-e5e5-41eb-9df1-6507cfdffc5a.jpeg","tto-x-yuz-temizleme-kopugu-hassas-ciltler-200-ml-p-829426",3],
+["sok:829427","Tto-x Yüz Temizleme Köpüğü Kuru Ciltler 200 Ml",199.0,399.0,1,"8f41f020-464d-4067-b20a-9964cc35d324.jpeg","tto-x-yuz-temizleme-kopugu-kuru-ciltler-200-ml-p-829427",3],
 ["sok:8297","Eros Don Juan Prezervatif 12'li",89.9,89.9,1,"de598ca4-0400-4fb0-aad6-56d486158df2.png","eros-don-juan-prezervatif-12-li-p-8297",14],
 ["sok:8300","Aytaç Şipşak Piliç Salam Dilimli 60 g",24.0,24.0,1,"a5b024c5-7d44-4be9-acdf-1d302977b3b6.png","aytac-sipsak-pilic-salam-dilimli-60-g-p-8300",8],
 ["sok:8301","Deren Tomurcuk Bergamot Çay 100 g",54.9,54.9,1,"e44e9af7-11a8-4dab-99d1-25dc8565dfae.jpg","deren-tomurcuk-bergamot-cay-100-g-p-8301",12],
