@@ -1,0 +1,9 @@
+.tabular{font-variant-numeric:tabular-nums}
+.noscroll{scrollbar-width:none}.noscroll::-webkit-scrollbar{display:none}
+#res>:not(article),#list>:not(section){grid-column:1/-1}
+article{transition:transform .2s ease,box-shadow .2s ease}
+@media(hover:hover){article:hover{transform:translateY(-3px);box-shadow:0 14px 30px -14px rgb(0 0 0/.3)}}
+@keyframes up{from{opacity:0;transform:translateY(10px)}}
+@media(prefers-reduced-motion:no-preference){.enter{animation:up .3s ease both}}
+.hero{background:radial-gradient(60rem 30rem at 110% -20%,rgb(45 212 191/.45),transparent 60%),radial-gradient(40rem 24rem at -10% 120%,rgb(250 204 21/.22),transparent 60%),linear-gradient(135deg,#047857,#0f766e 60%,#115e59)}
+.bar{position:absolute;inset:0 auto 0 0;border-radius:.75rem;opacity:.16}

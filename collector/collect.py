@@ -105,6 +105,7 @@ def migros_item(p):
     img = ((p.get("images") or [{}])[0].get("urls") or {}).get("PRODUCT_DETAIL")
     asc = p.get("categoryAscendants") or []
     top = (asc[-1] if asc else p.get("category") or {}).get("name") or ""
+    promo = next((b.get("value") or "" for b in p.get("badges") or [] if b.get("name") == "CROSS_PROMOTED"), "")
     return {
         "id": f"migros:{p.get('sku')}",
         "market": "migros",
@@ -115,6 +116,7 @@ def migros_item(p):
         "image": img or "",
         "url": "https://www.migros.com.tr/" + (p.get("prettyName") or ""),
         "cat": top,
+        "promo": promo,  # çoklu alım kampanyası: "2 Al 1 Öde", "2.si %70" gibi
     }
 
 
@@ -153,7 +155,8 @@ def migros(products, notes):
         votes = {}
         for p in (info or {}).get("storeProductInfos") or []:
             asc = p.get("categoryAscendants") or []
-            top = (asc[-1] if asc else p.get("category") or {}).get("name") or ""
+            # Adres için görünen ad ("Meyve, Sebze") değil, bağlantı adı ("meyve-sebze-c-2") gerekir.
+            top = (asc[-1] if asc else p.get("category") or {}).get("prettyName") or ""
             if top:
                 votes[top] = votes.get(top, 0) + 1
         return max(votes, key=votes.get) if votes else None
@@ -246,6 +249,7 @@ def sok_cards(body, cat=""):
             "image": img.group(1) if img else "",
             "url": "https://www.sokmarket.com.tr" + m.group(1),
             "cat": cat,
+            "promo": "",
         }
     return list(out.values())
 
@@ -276,7 +280,31 @@ def sok_pages(slug, cat, products, notes, max_pages):
     notes.append(f"{slug}: sitede {total}, okunan {got}, {page - 1}/{pages} sayfa ({why})")
 
 
+SOK_PROMOS = None  # {"sok:<no>": "kampanya başlığı"}; None = kampanya sayfası okunamadı
+
+
+def sok_campaigns(notes):
+    """Şok kampanyalar sayfasından ürün-kampanya eşlemesini okur (tek istek). Hata taramayı durdurmaz."""
+    global SOK_PROMOS
+    try:
+        status, body = get("https://www.sokmarket.com.tr/" + CFG["sok"]["campaigns"], "text/html")
+    except Stop:
+        raise
+    body = re.sub(r'"\]\)</script><script>self\.__next_f\.push\(\[1,"', "", body).replace('\\"', '"')
+    found = {}
+    for title, skus in re.findall(r'"campaignId":"[^"]+","campaignUrl":"[^"]*","title":"([^"]*)"(?:(?!"campaignId").)*?"skuIds":\[([^\]]*)\]', body, re.S):
+        title = " ".join(html.unescape(title).split())
+        for sku in re.findall(r'"(\d+)\.\d+"', skus):
+            found.setdefault("sok:" + sku, title)
+    if status == 200 and found:
+        SOK_PROMOS = found
+        notes.append(f"kampanyalar: {len(found)} ürün")
+    else:
+        notes.append(f"kampanya sayfası okunamadı (durum {status}); eski kampanya bilgisi korundu")
+
+
 def sok(products, notes):
+    sok_campaigns(notes)
     c = CFG["sok"]
     for slug, cat in c["categories"].items():
         sok_pages(slug, cat, products, notes, c["max_pages"])
@@ -285,6 +313,7 @@ def sok(products, notes):
 
 
 def sok_deals(products, notes):
+    sok_campaigns(notes)
     sok_pages(CFG["sok"]["deals"], "", products, notes, CFG["sok"]["max_pages"])
 
 
@@ -339,6 +368,7 @@ def bim_cards(body, label):
             "in_stock": True, "image": src if src.startswith("https://") else "",
             "url": "https://www.bim.com.tr" + m.group(1),
             "cat": ("İndirim · " if re.match(r"\d+\s*-\s*\d+", label) else "Aktüel · ") + label,
+            "promo": ("İndirim · " if re.match(r"\d+\s*-\s*\d+", label) else "Aktüel · ") + label,
         }
     return out
 
@@ -372,7 +402,7 @@ def bim(products, notes):
 
 # ---------- Çıktı ----------
 
-FIELDS = ["id", "name", "price", "regular", "in_stock", "image", "url", "cat"]
+FIELDS = ["id", "name", "price", "regular", "in_stock", "image", "url", "cat", "promo"]
 JOBS = {
     ("migros", "full"): migros, ("migros", "deals"): migros_deals,
     ("sok", "full"): sok, ("sok", "deals"): sok_deals,
@@ -458,6 +488,7 @@ def parse_file(path, market=None):
         cat = p.get("cat")
         p["cat"] = (cats[cat] if isinstance(cat, int) and cat < len(cats) else cat) or ""
         p["market"], p["in_stock"] = m, bool(p.get("in_stock"))
+        p["promo"] = p.get("promo") or ""
         out[p["id"]] = {k: p.get(k) for k in FIELDS + ["market"]}
     return out
 
@@ -478,7 +509,7 @@ def write(market, products, updated):
         [p["id"], p["name"], p["price"], p["regular"], int(p["in_stock"]),
          p["image"][len(prefix["image"]):] if p["image"] else "",
          p["url"][len(prefix["url"]):] if p["url"] else "",
-         cats.index(p.get("cat") or "")], ensure_ascii=False, separators=(",", ":")) for p in rows]
+         cats.index(p.get("cat") or ""), p.get("promo") or ""], ensure_ascii=False, separators=(",", ":")) for p in rows]
     head = json.dumps({"updated": updated, "market": market, "prefix": {market: prefix},
                        "cats": {market: cats}, "fields": FIELDS}, ensure_ascii=False)
     (ROOT / "data" / f"{market}.json").write_text(
@@ -531,11 +562,25 @@ def main():
         merged = dict(old)
         complete = False
 
+    promos_before = {k: p.get("promo") or "" for k, p in merged.items()}
+    if state == "tamam":
+        if market == "migros" and mode == "deals":
+            # Çoklu indirim sayfası eksiksiz okundu: listede olmayan üründe kampanya kalmamıştır.
+            for k, p in merged.items():
+                if k not in fresh and p.get("promo"):
+                    merged[k] = {**p, "promo": ""}
+        if market == "sok" and SOK_PROMOS is not None:
+            for k, p in merged.items():
+                want = SOK_PROMOS.get(k, "")
+                if (p.get("promo") or "") != want:
+                    merged[k] = {**p, "promo": want}
+    promos_changed = promos_before != {k: p.get("promo") or "" for k, p in merged.items()}
+
     categories_changed = complete_categories(merged)
     attempted = datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")
     data_file_exists = (ROOT / "data" / f"{market}.json").exists()
     has_new_prices = state == "tamam" and complete and bool(fresh)
-    should_write = bool(merged) and (has_new_prices or categories_changed or not data_file_exists)
+    should_write = bool(merged) and (has_new_prices or categories_changed or promos_changed or not data_file_exists)
     last_data_update = previous_data_update
     if should_write:
         last_data_update = attempted if has_new_prices or not previous_data_update else previous_data_update
