@@ -8,3 +8,11 @@ Kişisel kullanım için market fiyat karşılaştırma uygulaması: https://ber
 - `data/<market>.json`: son başarılı fiyat verisi. `data/status-<market>.json`: son denemenin sonucu. Başarısız veya eksik tarama, son başarılı veri zamanını ileri taşımaz. Boş ve kampanya-tarihi kategorileri ürün adına dayalı sınıflandırmayla tamamlanır.
 
 Ajanlar: Migros gece tam tarama + saatlik indirim kontrolü; Şok günde iki tam tarama + 30 dakikada bir indirim kontrolü; BİM aktüel günde iki kez. A101 için yasal bir kaynak yok.
+
+## Uygulama dosyaları
+- `index.html`: sayfa iskeleti
+- `css/app.css`: stiller
+- `js/match.js`: aynı ürünü marketler arasında eşleştirme, birim fiyat, temel ihtiyaç kuralları
+- `js/app.js`: arayüz (Ana sayfa, Karşılaştır, Kampanyalar, Keşfet, Ara, Listem)
+
+Kampanyalar veri dosyalarında `promo` alanında tutulur: Migros çoklu alım rozetleri, Şok kampanya sayfası, BİM aktüel tarihleri.

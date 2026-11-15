@@ -17,7 +17,8 @@
     ],
     "sitemap": "https://www.migros.com.tr/hermes/api/sitemaps/sitemap-categories-1.xml",
     "deals": [
-      "money-indirimli-market-urunleri-dt-5"
+      "money-indirimli-market-urunleri-dt-5",
+      "coklu-indirim-kampanyalari-ve-hediyeli-urunler-dt-1"
     ]
   },
   "sok": {
@@ -43,7 +44,8 @@
       "giyim-ve-ayakkabi-ve-aksesuar-c-20886": "Giyim & Aksesuar",
       "elektronik-c-22769": "Elektronik"
     },
-    "deals": "indirimli-urunler-cms-pl1"
+    "deals": "indirimli-urunler-cms-pl1",
+    "campaigns": "kampanyalar"
   },
   "bim": {
     "max_dates": 14
