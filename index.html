@@ -9,30 +9,50 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <script>tailwind.config={theme:{extend:{fontFamily:{sans:['"Plus Jakarta Sans"','system-ui','sans-serif']}}}}</script>
 <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
-<style>.tabular{font-variant-numeric:tabular-nums}.noscroll::-webkit-scrollbar{display:none}</style>
+<style>
+.tabular{font-variant-numeric:tabular-nums}.noscroll{scrollbar-width:none}.noscroll::-webkit-scrollbar{display:none}
+#res>:not(article),#list>:not(section){grid-column:1/-1}
+article{transition:transform .2s ease,box-shadow .2s ease}
+@media(hover:hover){article:hover{transform:translateY(-3px);box-shadow:0 14px 30px -14px rgb(0 0 0/.3)}}
+@keyframes up{from{opacity:0;transform:translateY(10px)}}
+@media(prefers-reduced-motion:no-preference){.enter{animation:up .3s ease both}}
+.hero{background:radial-gradient(60rem 30rem at 110% -20%,rgb(45 212 191/.45),transparent 60%),radial-gradient(40rem 24rem at -10% 120%,rgb(250 204 21/.22),transparent 60%),linear-gradient(135deg,#047857,#0f766e 60%,#115e59)}
+</style>
 </head>
 <body class="bg-stone-100 text-stone-900 dark:bg-stone-950 dark:text-stone-100 font-sans antialiased">
-<header class="bg-gradient-to-br from-emerald-600 to-teal-700 text-white px-4 pt-6 pb-16">
-  <div class="max-w-xl mx-auto">
-    <div class="flex items-center gap-2 text-emerald-100 text-xs font-semibold uppercase tracking-wider"><i data-lucide="shopping-basket" class="w-4 h-4"></i>Market Fiyat</div>
-    <h1 class="text-2xl font-extrabold mt-1">En ucuzu nerede?</h1>
-    <p class="text-emerald-100 text-sm">Son güncelleme: <span id="upd">-</span></p>
+<nav class="sticky top-0 z-40 bg-white/80 dark:bg-stone-950/80 backdrop-blur-lg border-b border-stone-200/70 dark:border-stone-800">
+  <div class="max-w-6xl mx-auto px-4 h-14 flex items-center gap-4">
+    <div class="flex items-center gap-2 font-extrabold tracking-tight"><span class="w-8 h-8 rounded-xl bg-emerald-600 text-white grid place-items-center"><i data-lucide="shopping-basket" class="w-4 h-4"></i></span>Market Fiyat</div>
+    <div class="hidden lg:flex items-center gap-1 ml-6">
+      <button data-v="0" data-top="1"><i data-lucide="house" class="w-4 h-4"></i>Ana sayfa</button>
+      <button data-v="1" data-top="1"><i data-lucide="search" class="w-4 h-4"></i>Ara</button>
+      <button data-v="2" data-top="1"><i data-lucide="layout-grid" class="w-4 h-4"></i>Keşfet</button>
+      <button data-v="3" data-top="1"><i data-lucide="list-checks" class="w-4 h-4"></i>Listem<span id="n2" class="bg-white text-emerald-700 ring-1 ring-emerald-600 text-[10px] rounded-full min-w-[18px] h-[18px] place-items-center px-1" style="display:none"></span></button>
+    </div>
+    <p class="ml-auto text-xs text-stone-500 flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500"></span><span class="hidden sm:inline">Son güncelleme:</span><span id="upd">-</span></p>
+  </div>
+</nav>
+<header class="hero text-white px-4 pt-8 pb-10 lg:pt-14 lg:pb-16 lg:rounded-b-[2.5rem]">
+  <div class="max-w-6xl mx-auto">
+    <h1 class="text-3xl lg:text-5xl font-extrabold tracking-tight">En ucuzu nerede?</h1>
+    <p id="heroStat" class="text-emerald-100 text-sm lg:text-base mt-1">Şok · Migros · BİM, tek ekranda</p>
+    <div id="heroAct" class="mt-5 flex flex-col sm:flex-row gap-3 max-w-2xl">
+      <button data-v="1" data-focus="1" class="flex-1 flex items-center gap-3 bg-white text-stone-500 rounded-2xl px-4 py-3.5 text-left shadow-xl shadow-emerald-950/20"><i data-lucide="search" class="w-5 h-5 text-emerald-600"></i>Ürün adı ya da barkod ara…</button>
+      <button id="scan" class="flex items-center justify-center gap-2 px-5 py-3.5 rounded-2xl font-bold bg-emerald-950/40 hover:bg-emerald-950/60 ring-1 ring-white/30 backdrop-blur active:scale-[.98] transition"><i data-lucide="scan-barcode" class="w-5 h-5"></i>Barkod okut</button>
+    </div>
   </div>
 </header>
-<main class="max-w-xl mx-auto px-4 -mt-10 pb-28">
+<main class="max-w-6xl mx-auto px-4 mt-6 pb-28 lg:pb-12">
   <div id="note" class="hidden mb-3 rounded-2xl bg-amber-100 text-amber-900 p-4 text-sm font-semibold"></div>
 
-  <div id="home" class="space-y-6">
-    <section class="bg-white dark:bg-stone-900 rounded-2xl ring-1 ring-stone-200 dark:ring-stone-800 shadow-lg shadow-stone-900/5 p-4">
-      <button id="scan" class="w-full flex items-center justify-center gap-2 py-4 rounded-xl font-bold bg-emerald-600 hover:bg-emerald-700 text-white active:scale-[.98] transition"><i data-lucide="scan-barcode" class="w-6 h-6"></i>Barkod okut</button>
-    </section>
+  <div id="home" class="space-y-8">
     <section>
       <div class="flex items-center justify-between mb-3"><h2 class="font-extrabold text-lg flex items-center gap-2"><i data-lucide="badge-percent" class="w-5 h-5 text-red-600"></i>İndirimler</h2><button data-go="deals" class="text-sm font-bold text-emerald-700 dark:text-emerald-400 flex items-center gap-1">Tümünü gör<i data-lucide="chevron-right" class="w-4 h-4"></i></button></div>
       <div id="deals" class="flex gap-3 overflow-x-auto snap-x noscroll -mx-4 px-4 pb-1"></div>
     </section>
     <section>
       <h2 class="font-extrabold text-lg flex items-center gap-2 mb-3"><i data-lucide="store" class="w-5 h-5 text-emerald-600"></i>Marketler</h2>
-      <div id="stores" class="grid grid-cols-2 gap-3"></div>
+      <div id="stores" class="grid grid-cols-2 lg:grid-cols-4 gap-3"></div>
     </section>
     <section>
       <h2 class="font-extrabold text-lg flex items-center gap-2 mb-3"><i data-lucide="history" class="w-5 h-5 text-emerald-600"></i>Son eklenenler</h2>
@@ -41,30 +61,30 @@
   </div>
 
   <div id="search" class="hidden">
-    <label class="flex items-center gap-2 bg-white dark:bg-stone-900 rounded-2xl shadow-lg shadow-stone-900/5 px-4 py-3 ring-1 ring-stone-200 dark:ring-stone-800">
+    <label class="max-w-2xl flex items-center gap-2 bg-white dark:bg-stone-900 rounded-2xl shadow-lg shadow-stone-900/5 px-4 py-3 ring-1 ring-stone-200 dark:ring-stone-800">
       <i data-lucide="search" class="w-5 h-5 text-stone-400"></i>
       <input id="q" class="flex-1 min-w-0 bg-transparent outline-none placeholder:text-stone-400" placeholder="Ürün adı ya da barkod" enterkeyhint="search">
     </label>
-    <div id="res" class="mt-4 space-y-3"></div>
+    <div id="res" class="mt-4 grid gap-3 lg:grid-cols-2 items-start"></div>
   </div>
 
   <div id="browse" class="hidden">
-    <div class="bg-white dark:bg-stone-900 rounded-2xl ring-1 ring-stone-200 dark:ring-stone-800 shadow-lg shadow-stone-900/5 p-4 space-y-3">
-      <div id="bMk" class="flex gap-2 overflow-x-auto noscroll"></div>
-      <div class="grid grid-cols-2 gap-2">
+    <div class="bg-white dark:bg-stone-900 rounded-2xl ring-1 ring-stone-200 dark:ring-stone-800 shadow-lg shadow-stone-900/5 p-4 space-y-3 lg:space-y-0 lg:flex lg:items-center lg:gap-4">
+      <div id="bMk" class="flex gap-2 overflow-x-auto noscroll lg:flex-1"></div>
+      <div class="grid grid-cols-2 gap-2 lg:w-[26rem]">
         <select id="bCat" aria-label="Kategori" class="rounded-xl bg-stone-100 dark:bg-stone-800 px-3 py-2.5 text-sm font-semibold min-w-0"></select>
         <select id="bSort" aria-label="Sıralama" class="rounded-xl bg-stone-100 dark:bg-stone-800 px-3 py-2.5 text-sm font-semibold min-w-0">
           <option value="disc">İndirim oranı</option><option value="pa">Fiyat: artan</option><option value="pd">Fiyat: azalan</option><option value="unit">Ada göre</option>
         </select>
       </div>
-      <label class="flex items-center gap-2 text-sm font-semibold"><input id="bDisc" type="checkbox" class="w-5 h-5 accent-emerald-600">Sadece indirimliler</label>
+      <label class="flex items-center gap-2 text-sm font-semibold whitespace-nowrap"><input id="bDisc" type="checkbox" class="w-5 h-5 accent-emerald-600">Sadece indirimliler</label>
     </div>
     <p id="bInfo" class="text-sm text-stone-500 mt-4 mb-2"></p>
-    <div id="bGrid" class="grid grid-cols-2 gap-3"></div>
+    <div id="bGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3"></div>
     <div id="bPager" class="flex items-center justify-between mt-4"></div>
   </div>
 
-  <div id="list" class="hidden space-y-3"></div>
+  <div id="list" class="hidden grid gap-3 lg:grid-cols-2 items-start"></div>
 
   <p class="text-xs text-stone-500 mt-6 leading-relaxed">Fiyatlar marketlerin online satış fiyatıdır; şube rafındaki fiyat ve stok farklı olabilir. Kişisel kullanım içindir.</p>
 </main>
@@ -75,8 +95,8 @@
   <button id="scanX" class="absolute bottom-10 inset-x-8 py-4 rounded-xl bg-white text-stone-900 font-bold">Vazgeç</button>
 </div>
 
-<nav class="fixed bottom-0 inset-x-0 bg-white/90 dark:bg-stone-900/90 backdrop-blur border-t border-stone-200 dark:border-stone-800">
-  <div class="max-w-xl mx-auto grid grid-cols-4 p-2 gap-1">
+<nav class="lg:hidden fixed bottom-3 inset-x-3 z-40 rounded-2xl bg-white/90 dark:bg-stone-900/90 backdrop-blur-lg ring-1 ring-stone-200 dark:ring-stone-800 shadow-xl shadow-stone-900/10">
+  <div class="max-w-xl mx-auto grid grid-cols-4 p-1.5 gap-1">
     <button data-v="0"><i data-lucide="house" class="w-5 h-5"></i>Ana sayfa</button>
     <button data-v="1"><i data-lucide="search" class="w-5 h-5"></i>Ara</button>
     <button data-v="2"><i data-lucide="layout-grid" class="w-5 h-5"></i>Keşfet</button>
@@ -146,7 +166,7 @@ const worst=g=>Math.max(...avail(g).map(o=>o.price));
 function drawH(){
   const d=[];G.forEach(g=>g.offers.forEach(o=>{if(o.in_stock&&o.price<o.regular)d.push([g,o])}));
   d.sort((a,b)=>a[1].price/a[1].regular-b[1].price/b[1].regular);
-  $("deals").innerHTML=d.slice(0,20).map(([g,o])=>`<article data-show="${esc(g.key)}" class="${card} p-3 w-40 shrink-0 snap-start cursor-pointer">
+  $("deals").innerHTML=d.slice(0,20).map(([g,o])=>`<article data-show="${esc(g.key)}" class="${card} p-3 w-40 lg:w-48 shrink-0 snap-start cursor-pointer">
     <div class="relative">${img(g,"w-full h-28")}<span class="absolute top-0 right-0 bg-red-600 text-white text-xs font-extrabold px-2 py-1 rounded-lg">-%${Math.round((1-o.price/o.regular)*100)}</span></div>
     <p class="text-sm font-semibold leading-snug mt-2 h-10 overflow-hidden">${esc(g.name)}</p>
     <div class="mt-2">${badge(o.market)}</div>
@@ -185,7 +205,7 @@ function drawS(){
 
 function drawL(){
   const items=uniq(cart);
-  $("n").textContent=items.length;$("n").style.display=items.length?"grid":"none";
+  ["n","n2"].forEach(i=>{$(i).textContent=items.length;$(i).style.display=items.length?"grid":"none"});
   if(!items.length){$("list").innerHTML=empty("shopping-cart","Listeniz boş","Ürün arayıp ekleyin, en ucuz markete göre gruplanır.");return}
   const line=(g,p)=>`<div class="flex items-center gap-3 py-3">${img(g,"w-10 h-10 shrink-0")}<span class="flex-1 text-sm">${esc(g.name)}</span><span class="tabular font-semibold">${p}</span><button data-add="${esc(g.key)}" aria-label="Çıkar" class="text-stone-400 hover:text-red-600 p-1"><i data-lucide="x" class="w-4 h-4"></i></button></div>`;
   let sum=0,max=0,h="",stops=0;
@@ -220,7 +240,7 @@ function drawB(){
     ${d?`<p class="text-xs text-stone-400 line-through tabular mt-2">${tl(o.regular)}</p>`:`<p class="mt-2"></p>`}
     <p class="font-extrabold tabular ${d?"text-emerald-700 dark:text-emerald-400":""}">${tl(o.price)}</p>
     <button data-add="${esc(g?g.key:o.id)}" class="mt-auto pt-2"><span class="w-full flex items-center justify-center gap-1 py-2 rounded-lg text-sm font-bold ${inC?"bg-stone-100 dark:bg-stone-800":"bg-emerald-600 text-white"}"><i data-lucide="${inC?"check":"plus"}" class="w-4 h-4"></i>${inC?"Listede":"Ekle"}</span></button></article>`}).join("")
-    ||`<div class="col-span-2">${empty("package-search","Ürün bulunamadı","Filtreleri değiştirin.")}</div>`;
+    ||`<div class="col-span-full">${empty("package-search","Ürün bulunamadı","Filtreleri değiştirin.")}</div>`;
   const btn=(p,ic,lb,off)=>`<button data-page="${p}" ${off?"disabled":""} class="flex items-center gap-1 px-4 py-2.5 rounded-xl font-bold ${off?"opacity-30":"bg-white dark:bg-stone-900 ring-1 ring-stone-200 dark:ring-stone-800"}">${ic==="l"?`<i data-lucide="chevron-left" class="w-4 h-4"></i>${lb}`:`${lb}<i data-lucide="chevron-right" class="w-4 h-4"></i>`}</button>`;
   $("bPager").innerHTML=pages>1?btn(B.page-1,"l","Önceki",B.page===0)+`<span class="text-sm font-semibold tabular">${B.page+1} / ${pages}</span>`+btn(B.page+1,"r","Sonraki",B.page>=pages-1):""}
 function drawStores(){
@@ -228,10 +248,14 @@ function drawStores(){
     const stamp=v=>v?new Date(v).toLocaleString("tr-TR",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}):"";
     return`<button data-bm="${m}" data-open="1" class="${card} p-4 text-left"><span class="${M[m].c} text-sm font-extrabold px-3 py-1 rounded-lg">${M[m].n}</span><p class="mt-3 font-bold tabular">${n.length.toLocaleString("tr-TR")} ürün</p><p class="text-sm text-red-600 font-semibold tabular">${d.toLocaleString("tr-TR")} indirimli</p>${UPD[m]?`<p class="text-xs text-stone-500 mt-1">Veri: ${stamp(UPD[m])}</p>`:""}${s?.updated?`<p class="text-xs mt-1 ${failed?"text-red-600 font-semibold":"text-stone-500"}">Kontrol: ${stamp(s.updated)}${failed?" · güncelleme sorunu":""}</p>`:""}</button>`}).join("")}
 function browse(o){Object.assign(B,{page:0},o);tab(2);drawB();lucide.createIcons()}
-function draw(){drawH();drawStores();drawS();drawB();drawL();lucide.createIcons()}
+function draw(){const st=O.filter(o=>o.in_stock);$("heroStat").textContent=`${st.length.toLocaleString("tr-TR")} ürün · ${st.filter(o=>o.price<o.regular).length.toLocaleString("tr-TR")} indirim · ${ORD.filter(m=>O.some(o=>o.market===m)).map(m=>M[m].n).join(", ")}`;drawH();drawStores();drawS();drawB();drawL();lucide.createIcons()}
 const NB="flex flex-col items-center gap-0.5 py-2 rounded-xl text-xs font-semibold relative ";
 function tab(v){["home","search","browse","list"].forEach((id,i)=>$(id).classList.toggle("hidden",i!==v));
-  document.querySelectorAll("nav button").forEach((b,i)=>b.className=NB+(i===v?"bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400":"text-stone-500"));scrollTo(0,0)}
+  document.querySelectorAll("nav [data-v]").forEach(b=>{const on=+b.dataset.v===v;
+    b.className=b.dataset.top?NT+(on?"bg-emerald-600 text-white shadow":"text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800"):NB+(on?"bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400":"text-stone-500")});
+  $("heroAct").classList.toggle("hidden",v!==0);
+  const el=$(["home","search","browse","list"][v]);el.classList.remove("enter");void el.offsetWidth;el.classList.add("enter");scrollTo(0,0)}
+const NT="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition ";
 let noteT;function note(m){$("note").textContent=m;$("note").classList.remove("hidden");clearTimeout(noteT);noteT=setTimeout(()=>$("note").classList.add("hidden"),7000)}
 
 function onCode(b){const k=bmap[b];if(k&&GI[k]){only=k;pending=null}else{only=null;pending=b}$("q").value="";tab(1);draw()}
@@ -253,7 +277,7 @@ document.addEventListener("click",e=>{const t=s=>e.target.closest(s);let el;
   else if(el=t("[data-bm]")){if(el.dataset.open)browse({m:el.dataset.bm,cat:"",disc:false,sort:"disc"});else{B.m=el.dataset.bm;B.page=0;drawB();lucide.createIcons()}}
   else if(el=t("[data-page]")){B.page=+el.dataset.page;drawB();lucide.createIcons();scrollTo(0,0)}
   else if(el=t("[data-show]")){only=el.dataset.show;$("q").value="";tab(1);draw()}
-  else if(el=t("[data-v]"))tab(+el.dataset.v)});
+  else if(el=t("[data-v]")){tab(+el.dataset.v);if(el.dataset.focus)$("q").focus()}});
 $("q").oninput=()=>{only=null;drawS();lucide.createIcons()};
 $("q").onchange=()=>{const v=$("q").value.trim();if(/^\d{8,14}$/.test(v))onCode(v)};
 $("scan").onclick=scan;
