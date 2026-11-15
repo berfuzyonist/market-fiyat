@@ -1,4 +1,4 @@
-{"updated": "2026-11-15T02:11:04+00:00", "market": "sok", "prefix": {"sok": {"image": "https://images.ceptesok.com/cdn-cgi/image/width=216,height=216,fit=pad,quality=80,format=webp/product-assets/sub-folder/", "url": "https://www.sokmarket.com.tr/"}}, "cats": {"sok": ["Anne - Bebek & Çocuk", "Atıştırmalık", "Atıştırmalık & Şekerleme", "Diğer", "Dondurma", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et & Tavuk & Şarküteri", "Ev & Yaşam", "Evcil Dostlar", "Giyim & Aksesuar", "Kahvaltılık", "Kağıt Ürünleri", "Kişisel Bakım & Kozmetik", "Meyve & Sebze", "Süt & Süt Ürünleri", "Temizlik", "Yemeklik Malzemeler", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat"],"products":[
+{"updated": "2026-11-15T03:27:22+00:00", "market": "sok", "prefix": {"sok": {"image": "https://images.ceptesok.com/cdn-cgi/image/width=216,height=216,fit=pad,quality=80,format=webp/product-assets/sub-folder/", "url": "https://www.sokmarket.com.tr/"}}, "cats": {"sok": ["Anne - Bebek & Çocuk", "Atıştırmalık", "Atıştırmalık & Şekerleme", "Diğer", "Dondurma", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et & Tavuk & Şarküteri", "Ev & Yaşam", "Evcil Dostlar", "Giyim & Aksesuar", "Kahvaltılık", "Kağıt Ürünleri", "Kişisel Bakım & Kozmetik", "Meyve & Sebze", "Süt & Süt Ürünleri", "Temizlik", "Yemeklik Malzemeler", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat"],"products":[
 ["sok:10","Crown Cola Pet 250 ml",14.0,14.0,1,"7287ee89-01d2-4b88-9f7c-23ad45e4d12c.jpg","crown-cola-pet-250-ml-p-10",19],
 ["sok:1009","İnci Soğan Halkası 450 g",55.0,55.0,1,"3b7dfe2d-f53e-4263-9011-3a26030cdc54.jpg","inci-sogan-halkasi-450-g-p-1009",5],
 ["sok:1025","Ülker Dankek Pöti Fındıklı Kakaolu 24*35 g",240.0,240.0,1,"566ca857-8d91-4a6a-9148-50ff03db6e10.png","ulker-dankek-poti-findikli-kakaolu-24-35-g-p-1025",1],
@@ -508,7 +508,7 @@
 ["sok:358136","Gokidy Spor Motosiklet",150.0,150.0,1,"0c528f55-0e9a-4438-b791-a7034b72e762.jpg","gokidy-spor-motosiklet-p-358136",0],
 ["sok:3587","Free Dog Köpek Maması Biftekli Yetişkin 415 g",74.9,74.9,1,"4003e353-92f9-4c25-89e0-1ac3e69b1fa8.png","free-dog-kopek-mamasi-biftekli-yetiskin-415-g-p-3587",10],
 ["sok:35879","Sivri Biber Kg",99.0,99.0,1,"a3083790-4aa9-4072-898e-133b61d4c37f.jpg","sivri-biber-kg-p-35879",15],
-["sok:35919","Patates Kg",35.0,35.0,1,"8e1897ed-e702-48e6-b672-b8e85855bb89.png","patates-kg-p-35919",15],
+["sok:35919","Patates Kg",29.5,35.0,1,"8e1897ed-e702-48e6-b672-b8e85855bb89.png","patates-kg-p-35919",15],
 ["sok:3596","Aptamil 3 Devam Sütü 9-12 Ay 250 g",449.0,449.0,1,"83a01b0d-942b-450f-9be4-55d2aec21e05.jpg","aptamil-3-devam-sutu-9-12-ay-250-g-p-3596",0],
 ["sok:3597","Nivea Soft Bakım Kremi Nemlendirici 200 ml",95.0,190.0,1,"88dda2da-60d9-4c11-92ce-6217703e6018.jpg","nivea-soft-bakim-kremi-nemlendirici-200-ml-p-3597",14],
 ["sok:3598","Piyale İrmik 500 g",23.5,23.5,1,"d9ef86a0-1fc9-41b9-98ef-376688e4b0a9.png","piyale-irmik-500-g-p-3598",18],
@@ -1830,6 +1830,7 @@
 ["sok:718662","Asperox Sparx Sıvı Bulaşık Deterjanı Elma 1.2 L",179.0,179.0,1,"3e3148de-828b-4baa-9c36-bc8dc5d9afac.png","asperox-sparx-sivi-bulasik-deterjani-elma-1-2-l-p-718662",17],
 ["sok:718663","Asperox Sparx Sıvı Bulaşık Deterjanı Limon 1.2 L",179.0,179.0,1,"5dd9a15b-b1a9-40df-b18a-29f258bade06.png","asperox-sparx-sivi-bulasik-deterjani-limon-1-2-l-p-718663",17],
 ["sok:718666","The Kitap Gözümü Açtım: Nasıl Hareket Ederim?",149.0,149.0,1,"29371d0d-c3e9-41f7-8ad3-83ff227a9814.jpg","the-kitap-gozumu-actim-nasil-hareket-ederim-p-718666",0],
+["sok:718670","Koza Kadın Pijama Takımı Bol Paça S-m",350.0,449.0,1,"3a6a4fd7-4b5b-4a26-864c-5cab35fc0c48.jpg","koza-kadin-pijama-takimi-bol-paca-s-m-p-718670",11],
 ["sok:7189","Piyale Muzlu Puding 125 g",22.9,22.9,1,"b7c184ac-1b96-4bfc-8364-051b4399ec11.png","piyale-muzlu-puding-125-g-p-7189",18],
 ["sok:719","Tuttaze Buzdolabı Poşeti Orta Boy 100'lü",48.5,48.5,1,"08a0ad69-48ef-41fd-bb1e-5c4d7ba5e27c.png","tuttaze-buzdolabi-poseti-orta-boy-100-lu-p-719",9],
 ["sok:7192","Lipton Doğu Karadeniz Poşet Çay 25'li 50 g",110.0,110.0,1,"f184af44-ea85-4f39-9854-864a0c82d858.jpg","lipton-dogu-karadeniz-poset-cay-25-li-50-g-p-7192",19],
@@ -1926,6 +1927,7 @@
 ["sok:735128","Superfresh Superton Ayçiçekyağlı 2*135 g",159.0,159.0,1,"d47316c8-22df-4be6-9ede-c0ea34a7d9d4.png","superfresh-superton-aycicekyagli-2-135-g-p-735128",18],
 ["sok:735129","Dardanel Ekonomik Ton 2*120 g",169.5,169.5,1,"f4bd1a8c-423b-4d3c-95d8-8c98e0ea2813.jpg","dardanel-ekonomik-ton-2-120-g-p-735129",18],
 ["sok:735131","Jolie 4'lü Pvc Supla Gümüş 3 (Püsküllü)",199.0,199.0,1,"ea5ff27f-f440-4375-9e2c-7898f31106a4.jpg","jolie-4-lu-pvc-supla-gumus-3-puskullu-p-735131",9],
+["sok:735149","Adelfa Kadın Sandalet Şeffaf Simli",175.0,225.0,1,"0f29004e-a06a-4533-b58b-02244948225e.jpg","adelfa-kadin-sandalet-seffaf-simli-p-735149",3],
 ["sok:735150","Adelfa Kadın Terlik Bej",125.0,150.0,1,"8e6a433b-e109-4805-9e91-c054bf52a835.jpg","adelfa-kadin-terlik-bej-p-735150",11],
 ["sok:736","Peros Sık Yıkananlar Yasemin Çiçeği 10 Kg",399.0,399.0,1,"344acb8d-92b9-42bf-a572-0f775f195846.PNG","peros-sik-yikananlar-yasemin-cicegi-10-kg-p-736",17],
 ["sok:736059","Adelfa Kadın Örgü Bant Terlik Bej",125.0,159.0,1,"cea3530e-96f1-4853-a734-04c45a6e6c5a.jpg","adelfa-kadin-orgu-bant-terlik-bej-p-736059",11],
@@ -1989,6 +1991,7 @@
 ["sok:7444","Bebeland Bebek Şampuanı 750 Ml",96.0,96.0,1,"7b850e54-6aa7-461d-a413-bbad319ab8fe.jpg","bebeland-bebek-sampuani-750-ml-p-7444",0],
 ["sok:744634","Altınyıldız Erkek Polo Yaka T-shirt Comfort Xl",399.0,499.0,1,"40a57ea0-8faf-42a0-b0ba-7e2f3530a155.jpg","altinyildiz-erkek-polo-yaka-t-shirt-comfort-xl-p-744634",11],
 ["sok:744638","Koza Erkek Şortlu Takımı Gri M-l",299.0,449.0,1,"65a31685-a776-46a8-b1ab-1eef18bb55d6.jpg","koza-erkek-sortlu-takimi-gri-m-l-p-744638",3],
+["sok:744641","Koza Kadın Kalın Askılı Şortlu Takım Pembe S-m",250.0,349.0,1,"055984b1-2315-4a43-aaa6-de53c6669f0e.jpg","koza-kadin-kalin-askili-sortlu-takim-pembe-s-m-p-744641",3],
 ["sok:745552","Omo Express Fresh Beyaz Ve Renkliler 840 Ml",299.0,299.0,1,"58683e6f-5e65-4053-b3e8-30de08970587.jpg","omo-express-fresh-beyaz-ve-renkliler-840-ml-p-745552",17],
 ["sok:745554","Altınyıldız Erkek Polo Yaka T-shirt Comfort L",399.0,499.0,1,"43481179-bf90-4fd6-9b7d-3da5b5f8d2ff.jpg","altinyildiz-erkek-polo-yaka-t-shirt-comfort-l-p-745554",11],
 ["sok:745557","Altınyıldız Erkek Polo Yaka T-shirt Slim L",399.0,499.0,1,"60e17acc-a3b0-4abc-ae55-36a24598bed4.jpg","altinyildiz-erkek-polo-yaka-t-shirt-slim-l-p-745557",11],
