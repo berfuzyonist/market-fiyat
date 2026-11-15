@@ -153,7 +153,8 @@ def migros(products, notes):
         votes = {}
         for p in (info or {}).get("storeProductInfos") or []:
             asc = p.get("categoryAscendants") or []
-            top = (asc[-1] if asc else p.get("category") or {}).get("name") or ""
+            # Adres için görünen ad ("Meyve, Sebze") değil, bağlantı adı ("meyve-sebze-c-2") gerekir.
+            top = (asc[-1] if asc else p.get("category") or {}).get("prettyName") or ""
             if top:
                 votes[top] = votes.get(top, 0) + 1
         return max(votes, key=votes.get) if votes else None
