@@ -1,4 +1,4 @@
-{"updated": "2026-11-16T12:14:25+00:00", "market": "sok", "prefix": {"sok": {"image": "https://images.ceptesok.com/cdn-cgi/image/width=216,height=216,fit=pad,quality=80,format=webp/product-assets/sub-folder/", "url": "https://www.sokmarket.com.tr/"}}, "cats": {"sok": ["Anne - Bebek & Çocuk", "Atıştırmalık", "Atıştırmalık & Şekerleme", "Bahçe & Yapı Market", "Diğer", "Dondurma", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et & Tavuk & Şarküteri", "Et, Tavuk & Şarküteri", "Ev & Yaşam", "Evcil Dostlar", "Giyim & Aksesuar", "Kahvaltılık", "Kağıt Ürünleri", "Kişisel Bakım & Kozmetik", "Meyve & Sebze", "Oyuncak", "Süt & Süt Ürünleri", "Temizlik", "Yemeklik Malzemeler", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat", "promo"],"products":[
+{"updated": "2026-11-16T15:40:14+00:00", "market": "sok", "prefix": {"sok": {"image": "https://images.ceptesok.com/cdn-cgi/image/width=216,height=216,fit=pad,quality=80,format=webp/product-assets/sub-folder/", "url": "https://www.sokmarket.com.tr/"}}, "cats": {"sok": ["Anne - Bebek & Çocuk", "Atıştırmalık", "Atıştırmalık & Şekerleme", "Bahçe & Yapı Market", "Diğer", "Dondurma", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et & Tavuk & Şarküteri", "Et, Tavuk & Şarküteri", "Ev & Yaşam", "Evcil Dostlar", "Giyim & Aksesuar", "Kahvaltılık", "Kağıt Ürünleri", "Kişisel Bakım & Kozmetik", "Meyve & Sebze", "Oyuncak", "Süt & Süt Ürünleri", "Temizlik", "Yemeklik Malzemeler", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat", "promo"],"products":[
 ["sok:10","Crown Cola Pet 250 ml",14.0,14.0,1,"7287ee89-01d2-4b88-9f7c-23ad45e4d12c.jpg","crown-cola-pet-250-ml-p-10",22,""],
 ["sok:1009","İnci Soğan Halkası 450 g",55.0,55.0,1,"3b7dfe2d-f53e-4263-9011-3a26030cdc54.jpg","inci-sogan-halkasi-450-g-p-1009",6,""],
 ["sok:1025","Ülker Dankek Pöti Fındıklı Kakaolu 24*35 g",240.0,240.0,1,"566ca857-8d91-4a6a-9148-50ff03db6e10.png","ulker-dankek-poti-findikli-kakaolu-24-35-g-p-1025",1,"50 TL ve üzeri alışverişte 165.00 TL!"],
@@ -689,7 +689,7 @@
 ["sok:418543","Paşabahçe Frigo Studio Saklama Kabı",175.0,175.0,1,"fa73c52a-0ae3-494b-aa0b-86749119b1d8.jpg","pasabahce-frigo-studio-saklama-kabi-p-418543",11,""],
 ["sok:41898","Gourmet Gold Ton Balıklı Yetişkin Kıyılmış 85 Gr",34.9,69.9,1,"192074c3-4db8-4e1a-b078-3f27d68389d9.jpg","gourmet-gold-ton-balikli-yetiskin-kiyilmis-85-gr-p-41898",12,""],
 ["sok:419463","Gillette Sensor 3 Comfort Tıraş Bıçağı + 4 Yedek",354.0,354.0,1,"0314af3e-eeaf-457c-ad91-f318aadccb48.jpg","gillette-sensor-3-comfort-tiras-bicagi-4-yedek-p-419463",16,""],
-["sok:4203","Bingo Çamaşır Suyu Oksijenli 1852 Ml",199.0,199.0,1,"ea696463-b8ce-4c8f-b171-15b56eb88e33.png","bingo-camasir-suyu-oksijenli-1852-ml-p-4203",20,"50 TL ve üzeri alışverişte 139.00 TL!"],
+["sok:4203","Bingo Çamaşır Suyu Oksijenli 1852 Ml",199.0,199.0,1,"ea696463-b8ce-4c8f-b171-15b56eb88e33.png","bingo-camasir-suyu-oksijenli-1852-ml-p-4203",20,""],
 ["sok:4206","Papatya Bardak 350 Ml",14.95,14.95,1,"49563167-6ea8-4834-9836-3525124597ce.png","papatya-bardak-350-ml-p-4206",11,""],
 ["sok:420650","Uludağ Meyvelim Mandalinalı İçecek 1 l",59.5,59.5,1,"0d151ade-96a6-447c-8f42-d2a0ca61e630.jpg","uludag-meyvelim-mandalinali-icecek-1-l-p-420650",22,""],
 ["sok:4207","Cocoss Organik Hindistan Cevizi Yağı 150 Ml",289.0,289.0,1,"32ee8f87-54d1-4581-b688-7937a3efd98c.png","cocoss-organik-hindistan-cevizi-yagi-150-ml-p-4207",16,""],
@@ -1152,7 +1152,7 @@
 ["sok:5317","Adam Tıraş Köpüğü Cool 250 ml",72.0,72.0,1,"45f21c95-9884-4a89-8bad-823b3fa64a0f.png","adam-tiras-kopugu-cool-250-ml-p-5317",16,""],
 ["sok:5319","Falım Nane 3'lü 21 g",44.95,44.95,1,"d430b9ab-cbfe-41c0-9e6e-fddafab58778.png","falim-nane-3-lu-21-g-p-5319",1,""],
 ["sok:532","Mis Ballı Süt 200 ml",16.5,16.5,1,"306b1cfe-d153-4035-b530-1f35efc9a32c.jpg","mis-balli-sut-200-ml-p-532",19,""],
-["sok:5322","Johnson's Baby Şampuan 750 Ml",209.0,209.0,1,"c1131e69-5c30-4861-9193-4a2c9c21e2ce.png","johnson-s-baby-sampuan-750-ml-p-5322",0,"50 TL ve üzeri alışverişte 139.00 TL!"],
+["sok:5322","Johnson's Baby Şampuan 750 Ml",209.0,209.0,1,"c1131e69-5c30-4861-9193-4a2c9c21e2ce.png","johnson-s-baby-sampuan-750-ml-p-5322",0,""],
 ["sok:5323","Taşkale Tahin Helvası Kakaolu 500 g",76.5,76.5,1,"f6687c23-0a1f-4846-92bc-2a1682cf6fb7.png","taskale-tahin-helvasi-kakaolu-500-g-p-5323",14,""],
 ["sok:5325","Anadolu Mutfağı Pilavlık Bulgur 1 kg",38.0,38.0,1,"551e27c1-72fc-49ab-a4b0-9b8ead4567fa.png","anadolu-mutfagi-pilavlik-bulgur-1-kg-p-5325",21,""],
 ["sok:5333","Salatalık Turşusu Bizim Vatan 3000 Gr",175.0,195.0,1,"ab273218-dbb9-48c7-bf4f-f73ebb971b96.jpg","salatalik-tursusu-bizim-vatan-3000-gr-p-5333",21,""],
