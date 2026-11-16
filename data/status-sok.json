@@ -1,17 +1,17 @@
 {
- "updated": "2026-11-16T08:46:26+00:00",
- "checked_at": "2026-11-16T08:46:26+00:00",
- "data_updated": "2026-11-16T08:46:26+00:00",
+ "updated": "2026-11-16T10:43:17+00:00",
+ "checked_at": "2026-11-16T10:43:17+00:00",
+ "data_updated": "2026-11-16T10:43:17+00:00",
  "market": "sok",
  "mode": "deals",
  "status": "tamam",
  "complete": true,
  "found": 324,
  "total": 2893,
- "seconds": 97,
+ "seconds": 88,
  "notes": [
   "kampanyalar: 89 ürün",
-  "indirimli-urunler-cms-pl1: sitede 326, okunan 327, 17/17 sayfa (son sayfa)",
+  "indirimli-urunler-cms-pl1: sitede 323, okunan 326, 17/17 sayfa (son sayfa)",
   "324 indirimli ürün güncellendi"
  ],
  "traffic": {
