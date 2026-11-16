@@ -1,18 +1,18 @@
 {
- "updated": "2026-11-16T19:37:14+00:00",
- "checked_at": "2026-11-16T19:37:14+00:00",
- "data_updated": "2026-11-16T19:37:14+00:00",
+ "updated": "2026-11-16T20:29:24+00:00",
+ "checked_at": "2026-11-16T20:29:24+00:00",
+ "data_updated": "2026-11-16T20:29:24+00:00",
  "market": "sok",
  "mode": "deals",
  "status": "tamam",
  "complete": true,
- "found": 316,
+ "found": 312,
  "total": 2898,
- "seconds": 79,
+ "seconds": 81,
  "notes": [
   "kampanyalar: 86 ürün",
   "indirimli-urunler-cms-pl1: sitede 318, okunan 320, 16/16 sayfa (son sayfa)",
-  "316 indirimli ürün güncellendi"
+  "312 indirimli ürün güncellendi"
  ],
  "traffic": {
   "www.sokmarket.com.tr": {
