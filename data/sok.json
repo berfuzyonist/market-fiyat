@@ -1,4 +1,4 @@
-{"updated": "2026-11-17T20:11:23+00:00", "market": "sok", "prefix": {"sok": {"image": "https://images.ceptesok.com/cdn-cgi/image/width=216,height=216,fit=pad,quality=80,format=webp/product-assets/sub-folder/", "url": "https://www.sokmarket.com.tr/"}}, "cats": {"sok": ["Anne - Bebek & Çocuk", "Atıştırmalık", "Atıştırmalık & Şekerleme", "Diğer", "Dondurma", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et & Tavuk & Şarküteri", "Ev & Yaşam", "Evcil Dostlar", "Giyim & Aksesuar", "Kahvaltılık", "Kağıt Ürünleri", "Kişisel Bakım & Kozmetik", "Meyve & Sebze", "Oyuncak & Hobi", "Süt & Süt Ürünleri", "Temizlik", "Yemeklik Malzemeler", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat", "promo"],"products":[
+{"updated": "2026-11-17T21:28:44+00:00", "market": "sok", "prefix": {"sok": {"image": "https://images.ceptesok.com/cdn-cgi/image/width=216,height=216,fit=pad,quality=80,format=webp/product-assets/sub-folder/", "url": "https://www.sokmarket.com.tr/"}}, "cats": {"sok": ["Anne - Bebek & Çocuk", "Atıştırmalık", "Atıştırmalık & Şekerleme", "Diğer", "Dondurma", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et & Tavuk & Şarküteri", "Ev & Yaşam", "Evcil Dostlar", "Giyim & Aksesuar", "Kahvaltılık", "Kağıt Ürünleri", "Kişisel Bakım & Kozmetik", "Meyve & Sebze", "Oyuncak & Hobi", "Süt & Süt Ürünleri", "Temizlik", "Yemeklik Malzemeler", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat", "promo"],"products":[
 ["sok:10","Crown Cola Pet 250 ml",14.0,14.0,1,"7287ee89-01d2-4b88-9f7c-23ad45e4d12c.jpg","crown-cola-pet-250-ml-p-10",20,""],
 ["sok:1009","İnci Soğan Halkası 450 g",55.0,55.0,1,"3b7dfe2d-f53e-4263-9011-3a26030cdc54.jpg","inci-sogan-halkasi-450-g-p-1009",5,""],
 ["sok:1025","Ülker Dankek Pöti Fındıklı Kakaolu 24*35 g",240.0,240.0,1,"566ca857-8d91-4a6a-9148-50ff03db6e10.png","ulker-dankek-poti-findikli-kakaolu-24-35-g-p-1025",1,"50 TL ve üzeri alışverişte 165.00 TL!"],
@@ -360,7 +360,7 @@
 ["sok:312707","Asperox Sparx Bulaşık Makinası Kapsülü 30'lu",259.0,259.0,1,"89901319-b5b7-4c6c-93f1-e48dde04ab1c.jpg","asperox-sparx-bulasik-makinasi-kapsulu-30-lu-p-312707",18,""],
 ["sok:3155","Lezzcafe 3'ü 1 Arada 10'lu 10*18 g",54.0,54.0,1,"a488cf19-af77-43a2-b4c7-61c5c025803f.png","lezzcafe-3-u-1-arada-10-lu-10-18-g-p-3155",12,""],
 ["sok:31765","Tamköy El Galetası 150 G",59.9,59.9,1,"1d66282d-8f19-4c6f-9e6f-2ec81cf4427e.jpg","tamkoy-el-galetasi-150-g-p-31765",6,""],
-["sok:3177","Kellogg's Coco Pops Kakaolu Mısır ve Buğday Gevreği 1000 g",299.0,299.0,1,"395acc7a-196f-4ace-937e-e162212c4f2a.png","kellogg-s-coco-pops-kakaolu-misir-ve-bugday-gevregi-1000-g-p-3177",12,""],
+["sok:3177","Kellogg's Coco Pops Kakaolu Mısır ve Buğday Gevreği 1000 g",299.0,299.0,1,"395acc7a-196f-4ace-937e-e162212c4f2a.png","kellogg-s-coco-pops-kakaolu-misir-ve-bugday-gevregi-1000-g-p-3177",12,"50 TL ve üzeri alışverişte 150.00 TL!"],
 ["sok:318273","Elidor Onarıcı Ve Koruyucu Şampuan 650 Ml+325 Ml",279.0,399.0,1,"0c71c907-224a-4594-b88d-788adbb0dd32.png","elidor-onarici-ve-koruyucu-sampuan-650-ml-325-ml-p-318273",14,""],
 ["sok:318376","Nestle Coffee Mate 625 g",329.0,329.0,1,"6c855db7-04b7-426f-b78d-804f069ec68a.png","nestle-coffee-mate-625-g-p-318376",20,"50 TL ve üzeri alışverişte 199.00 TL!"],
 ["sok:318396","Elidor Güçlü Ve Parlak Şampuan 650 Ml+325 Ml",279.0,399.0,1,"b064bff0-8d5c-4fa8-9e8c-cb40cfc07bd2.png","elidor-guclu-ve-parlak-sampuan-650-ml-325-ml-p-318396",14,""],
@@ -1303,7 +1303,7 @@
 ["sok:5804","Mintax Bulaşık Makinesi Tuzu 1.5 Kg",42.0,42.0,1,"b99c7b4c-a9e8-4e60-8e9f-44b3acafca27.jpg","mintax-bulasik-makinesi-tuzu-1-5-kg-p-5804",18,""],
 ["sok:5805","Tuttaze Yanmaz Fırın Torbası 25 Gr",49.0,49.0,1,"dc10221b-01e2-4dab-8d20-d1055b821880.png","tuttaze-yanmaz-firin-torbasi-25-gr-p-5805",9,""],
 ["sok:5806","Tuttaze Pişirme Kağıdı 8 Mt",44.9,44.9,1,"3e6cf92d-b42a-4dbd-a6d5-0604ac23587d.png","tuttaze-pisirme-kagidi-8-mt-p-5806",9,""],
-["sok:5807","Ülker Gofret Vanilya Aromalı 220 g",55.0,55.0,1,"aab5b83e-b59a-4a9e-97f9-e6be56863249.png","ulker-gofret-vanilya-aromali-220-g-p-5807",1,"50 TL ve üzeri alışverişte 40.00 TL!"],
+["sok:5807","Ülker Gofret Vanilya Aromalı 220 g",55.0,55.0,1,"aab5b83e-b59a-4a9e-97f9-e6be56863249.png","ulker-gofret-vanilya-aromali-220-g-p-5807",1,""],
 ["sok:5809","Mis Labne Peyniri 200 g",59.9,59.9,1,"7d1c63fe-a17e-436d-ab37-e1729bbca038.png","mis-labne-peyniri-200-g-p-5809",17,""],
 ["sok:5810","Amigo Kızarmış Yer Fıstığı 150 g",35.0,35.0,1,"448367ea-fa7f-4457-804a-df58fc5742a4.png","amigo-kizarmis-yer-fistigi-150-g-p-5810",1,""],
 ["sok:581095","Hascevher Buse Çelik Çaydanlık",1490.0,1490.0,1,"8524fa66-8870-4a17-ab01-9defd1b789bf.jpg","hascevher-buse-celik-caydanlik-p-581095",9,""],
