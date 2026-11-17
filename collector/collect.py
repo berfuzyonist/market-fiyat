@@ -40,28 +40,39 @@ class Stop(Exception):
 
 
 def _fetch(url, accept):
-    time.sleep(DELAY)
-    req = urllib.request.Request(url, headers={
-        "User-Agent": UA, "Accept": accept, "Accept-Language": "tr", "Accept-Encoding": "gzip"})
-    try:
-        with urllib.request.urlopen(req, timeout=60) as r:
-            raw = r.read()
-            size = len(raw)
-            if r.headers.get("Content-Encoding") == "gzip":
-                raw = gzip.decompress(raw)
-            return r.status, raw.decode("utf-8", "replace"), size
-    except urllib.error.HTTPError as e:
-        return e.code, "", 0
-    except Exception as e:  # ağ hatası
-        return 0, repr(e), 0
+    """İsteği nazik aralıklarla yap; geçici ağ/5xx hatalarını sınırlı sayıda dene."""
+    retries = max(0, int(CFG.get("retry_attempts", 2)))
+    backoff = max(1, int(CFG.get("retry_backoff_seconds", 5)))
+    status, body, size = 0, "", 0
+    for attempt in range(retries + 1):
+        time.sleep(DELAY)
+        req = urllib.request.Request(url, headers={
+            "User-Agent": UA, "Accept": accept, "Accept-Language": "tr", "Accept-Encoding": "gzip"})
+        try:
+            with urllib.request.urlopen(req, timeout=60) as r:
+                raw = r.read()
+                size = len(raw)
+                if r.headers.get("Content-Encoding") == "gzip":
+                    raw = gzip.decompress(raw)
+                status, body = r.status, raw.decode("utf-8", "replace")
+        except urllib.error.HTTPError as e:
+            status, body, size = e.code, "", 0
+        except Exception as e:
+            status, body, size = 0, repr(e), 0
+        # 403/429 ve kalıcı 4xx yanıtlarında yeniden deneme veya kısıt aşma yapılmaz.
+        if status in (200, 404, 403, 429) or not (status == 0 or 500 <= status <= 599):
+            return status, body, size, attempt + 1
+        if attempt < retries:
+            time.sleep(min(60, backoff * (attempt + 1)))
+    return status, body, size, retries + 1
 
 
 def allowed(url):
-    """robots.txt okunamazsa veya yolu yasaklıyorsa taramayı durdurur."""
+    """robots.txt okunamazsa veya yolu yasaklıysa taramayı durdurur."""
     u = urllib.parse.urlsplit(url)
     base = f"{u.scheme}://{u.netloc}"
     if base not in ROBOTS:
-        status, body, _ = _fetch(base + "/robots.txt", "text/plain")
+        status, body, _, _ = _fetch(base + "/robots.txt", "text/plain")
         if status != 200:
             ERRORS.append({"url": base + "/robots.txt", "status": status,
                            "detail": "robots.txt okunamadı; tarama durduruldu"})
@@ -78,22 +89,24 @@ def allowed(url):
 
 def get(url, accept="application/json"):
     host = urllib.parse.urlsplit(url).netloc
-    st = STATS.setdefault(host, {"requests": 0, "bytes": 0, "errors": 0, "streak": 0})
+    st = STATS.setdefault(host, {"requests": 0, "bytes": 0, "errors": 0, "streak": 0, "retries": 0})
     if not allowed(url):
         ERRORS.append({"url": url, "status": "robots.txt izin vermiyor, atlandı"})
         return None, ""
-    status, body, size = _fetch(url, accept)
-    st["requests"] += 1
+    status, body, size, attempts = _fetch(url, accept)
+    st["requests"] += attempts
+    st["retries"] += max(0, attempts - 1)
     st["bytes"] += size
     if status == 200:
+        st["errors"] += max(0, attempts - 1)
         st["streak"] = 0
         return status, body
-    if status == 404:  # böyle bir sayfa yok: hata sayılmaz
+    if status == 404:
         return status, ""
-    st["errors"] += 1
+    st["errors"] += attempts
     st["streak"] += 1
     if len(ERRORS) < 50:
-        ERRORS.append({"url": url, "status": status, "detail": body[:120] if status == 0 else ""})
+        ERRORS.append({"url": url, "status": status, "detail": body[:160] if status == 0 else ""})
     if status in (403, 429) or st["streak"] >= 3:
         raise Stop(f"{host}: durum {status}")
     return status, ""
@@ -424,25 +437,27 @@ def _category_key(value):
 
 
 CATEGORY_RULES = [
-    ("Meyve & Sebze", r"\b(elma|armut|muz|portakal|mandalina|limon|greyfurt|uzum|cilek|kiraz|visne|seftali|kayisi|erik|karpuz|kavun|domates|salatalik|biber|patlican|kabak|patates|sogan|sarimsak|havu[cç]|marul|maydanoz|roka|ispanak|brokoli|karnabahar|lahana|mantar|avokado)\b"),
+    ("Meyve & Sebze", r"\b(elma|armut|muz|portakal|mandalina|limon|greyfurt|uzum|cilek|kiraz|visne|seftali|kayisi|erik|karpuz|kavun|bogurtlen|ahududu|domates|salatalik|biber|patlican|kabak|patates|sogan|sarimsak|havu[cç]|marul|maydanoz|roka|ispanak|brokoli|karnabahar|lahana|mantar|avokado)\b"),
     ("Et, Tavuk & Şarküteri", r"\b(dana|kuzu|tavuk|hindi|sucuk|salam|sosis|pastirma|kiyma|kofte|biftek|antrikot|pirzola|balik|somon|ton baligi|karides|midye)\b"),
-    ("Süt & Süt Ürünleri", r"\b(sut|yogurt|ayran|kefir|peynir|kasar|tereyag|kaymak|krema|labne|mozzarella|lor)\b"),
-    ("Kahvaltılık", r"\b(zeytin|bal|recel|pekmez|tahin|helva|yumurta|fistik ezmesi)\b"),
+    ("Süt & Süt Ürünleri", r"\b(sut|yogurt|ayran|kefir|peynir|kasar|tereyag|kaymak|krema|kremsos|quark|milkshake|labne|mozzarella|lor)\b"),
+    ("Kahvaltılık", r"\b(zeytin|bal|recel|pekmez|tahin|helva|yumurta|fistik ezmesi|margarin)\b"),
     ("İçecek", r"\b(maden suyu|soda|kola|cola|gazoz|fanta|sprite|ice tea|meyve suyu|limonata|enerji icecegi|kahve|nescafe|espresso|filtre kahve|cay|turk kahvesi|bitki cayi)\b"),
     ("Ekmek & Pastane", r"\b(ekmek|lava[sş]|yufka|bazlama|simit|pogaca|acma|kruvasan|pasta|pastane|unlu mamul)\b"),
     ("Dondurulmuş Ürünler", r"\b(dondurulmus|dondurma|pizza|patates kroket|su boregi)\b"),
-    ("Atıştırmalık & Şekerleme", r"\b(cikolata|biskuvi|gofret|cips|kraker|jelibon|sekerleme|lokum|sakiz|kuruyemis|findik|fistik|ceviz|badem|cerez|kek|bar)\b"),
-    ("Bakliyat & Temel Gıda", r"\b(pirinc|bulgur|makarna|mercimek|nohut|fasulye|bakliyat|un|irmik|nisasta|salca|ketcap|mayonez|sos|baharat|tuz|toz seker|zeytinyagi|aycicek yagi|sivi yag|konserve|sirke|tursu)\b"),
-    ("Temizlik", r"\b(deterjan|camasir suyu|bulasik|yumusatici|yuzey temizleyici|camasir|bulasik makinesi|wc temizleyici|kirec sokucu|sabun tozu)\b"),
-    ("Kağıt Ürünleri", r"\b(tuvalet kagidi|kagit havlu|havlu kagit|pecete|mendil|rulo havlu)\b"),
-    ("Kişisel Bakım & Kozmetik", r"\b(sampuan|dus jeli|dis macunu|dis fircasi|deodorant|parfum|kolonya|krem|losyon|makyaj|ruj|maskara|tirnak|kozmetik|sac boyasi|tras)\b"),
+    ("Atıştırmalık & Şekerleme", r"\b(cikolata|biskuvi|gofret|cips|kraker|jelibon|sekerleme|softbons|bonbon|lokum|sakiz|kuruyemis|findik|fistik|ceviz|badem|cerez|kek|kurabiye|granola|pankek|bar)\b"),
+    ("Bakliyat & Temel Gıda", r"\b(pirinc|bulgur|makarna|eriste|mercimek|nohut|fasulye|bakliyat|un|irmik|galeta unu|nisasta|salca|ketcap|mayonez|sos|baharat|tuz|toz seker|zeytinyagi|aycicek yagi|sivi yag|konserv\w*|corba|puding|kakao|sirke|tursu)\b"),
+    ("Temizlik", r"\b(deterjan|camasir suyu|bulasik|yumusatici|yuzey temizleyici|cam temizleyici|camsil|cam sil|camasir|bulasik makinesi|wc temizleyici|kirec sokucu|sabun tozu)\b"),
+    ("Kağıt Ürünleri", r"\b(tuvalet kagidi|kagit havlu|havlu kagit|pecete|mendil\w*|rulo havlu)\b"),
+    ("Spor & Takviye", r"\b(kreatin|kolajen|protein tozu|whey|bcaa|takviye edici gida|multivitamin|vitamin)\b"),
+    ("Kişisel Bakım & Kozmetik", r"\b(sampuan|dus jeli|dus kopugu|bakim seti|tiras|dis macunu|dis fircasi|deodorant|parfum|kolonya|krem|losyon|makyaj|ruj|gloss|dudak|balm|parlatici|maskara|tirnak|kozmetik|sac boyasi|fon suyu|epilator|epilasyon|tirash|tras|hijyenik ped|gunluk ped|molped|dermokil|yuz maskesi|goz alti|kirpik kivirici|sabun)\b"),
     ("Anne & Bebek", r"\b(bebek|emzik|biberon|bebek bezi|islak mendil|mama sandalyesi|puset)\b"),
     ("Evcil Hayvan", r"\b(kedi kumu|kedi mamasi|kopek mamasi|kopek tasmasi|kus yemi|akvaryum|evcil hayvan)\b"),
-    ("Elektronik", r"\b(telefon|televizyon|tv|notebook|laptop|bilgisayar|tablet|kulaklik|sarj|powerbank|hoparlor|mouse|klavye|yazici|monitor|kamera|akilli saat|elektrikli supurge|blender|kahve makinesi)\b"),
-    ("Giyim & Aksesuar", r"\b(corap|tisort|t shirt|pantolon|gomlek|kazak|hirk|mont|ceket|elbise|ayakkabi|terlik|canta|kemer|pijama|havlu|bornoz)\b"),
-    ("Oyuncak & Hobi", r"\b(oyuncak|lego|puzzle|kirtasiye|boya kalemi|oyun hamuru|masa oyunu|hobi|kitap)\b"),
+    ("Elektronik", r"\b(telefon|televizyon|tv|notebook|laptop|bilgisayar|oyun bilgisayari|tablet|kulaklik|sarj|powerbank|hoparlor|speaker|mouse|klavye|yazici|monitor|kamera|akilli saat|elektrikli supurge|supurge|blender|kahve makinesi|radyator|isitici|fanli isitici|buharli utu|utu|kettle|ketil|dograyici|aksiyon kamera|elektrikli kirpik)\b"),
+    ("Giyim & Aksesuar", r"\b(corap|uyku corabi|bere|boxer|slip|fanila|esofman|sweat|polar|bot|tisort|t shirt|pantolon|gomlek|kazak|hirk|mont|ceket|elbise|ayakkabi|terlik|canta|kemer|pijama|havlu|bornoz|kol saati|saat)\b"),
+    ("Oyuncak & Hobi", r"\b(oyuncak|oyun\w*|lego|puzzle|kirtasiye|boya kalemi|boyama|oyun hamuru|masa oyunu|kutu oyunu|bowling|pelus|barbie|dollhouse|anahtarlik|araba\w*|arabalar|is makineleri|is araclari|cek birak|denge|blok|doktor seti|balon|kitap\w*|kalem|mezura|dikis seti|dikis)\b"),
     ("Bahçe & Yapı Market", r"\b(matkap|tornavida|mengene|testere|civata|vida|boya|fircasi|hortum|bahce|sulama|alet seti|tamir|yapi market)\b"),
-    ("Ev & Mutfak", r"\b(tencere|tava|tabak|bardak|kupa|termos|saklama kabi|saklama kabı|kesme tahtasi|bicak|catal|kasik|masa ortusu|nevresim|yastik|yorgan|aski|duzenleyici|mobilya|lamba|ampul|dekorasyon)\b"),
+    ("Otomotiv & Aksesuar", r"\b(oto cam suyu|antifriz|silecek suyu|motor yagi|arac ici|arac kokusu|oto aksesuar)\b"),
+    ("Ev & Mutfak", r"\b(tencere|tava|tabak|bardak|kupa|termos|saklama kabi|saklama kutusu|kesme tahtasi|bicak|catal|kasik|masa ortusu|nevresim|carsaf|yastik|yorgan|aski|duzenleyici|organizer|mobilya|gardrop|gardirop|dolap|kiler|komodin|vestiyer|koltuk|baza|yatak|masa|sehpa|raf|porselen|yemek takimi|tepsi|sunumluk|kepce|mutfak gereci|sabunluk|fircalik|baharatlik|kavanoz|kirli sepeti|bambu|banyo seti|banyo dolabi|banyo paspasi|paspas|banyo taburesi|tabanlik|valiz|hamur legeni|sicak su torbasi|oda kokusu|cam kase|kase|kase seti|borcam|firin kabi|emaye|bakrac|sosluk|badya|caydanlik|ma[sş]a|bula[sş]iklik|firin tepsi|tepsi seti|havlu|bornoz|semsiye|lamba|ampul|dekorasyon|yemek takimi)\b"),
 ]
 
 
@@ -524,6 +539,30 @@ def data_updated(market):
         return None
 
 
+def category_quality(products):
+    """Kategori dağılımını ve sınıflandırma boşluklarını ölç."""
+    counts = {}
+    empty = 0
+    campaign_only = 0
+    for product in products.values():
+        category = str(product.get("cat") or "").strip()
+        if not category:
+            empty += 1
+        if re.match(r"^(aktuel|indirim)\\s*[·:-]?\\s*\\d", _fold_tr(category)):
+            campaign_only += 1
+        counts[category or "(boş)"] = counts.get(category or "(boş)", 0) + 1
+    total = len(products)
+    other = counts.get("Diğer", 0) + counts.get("diger", 0)
+    return {
+        "category_count": len(counts),
+        "empty_category_count": empty,
+        "campaign_date_category_count": campaign_only,
+        "other_count": other,
+        "other_ratio": round(other / total, 4) if total else 0.0,
+        "category_counts": counts,
+    }
+
+
 def main():
     market, mode = sys.argv[1], sys.argv[2]
     fn = JOBS[(market, mode)]
@@ -531,6 +570,12 @@ def main():
     t0 = time.time()
     old, fresh, notes, state = read_old(market), {}, [], "tamam"
     previous_data_update = data_updated(market)
+    status_path = ROOT / "data" / f"status-{market}.json"
+    try:
+        previous_status = json.loads(status_path.read_text(encoding="utf-8"))
+    except Exception:
+        previous_status = {}
+    previous_quality = previous_status.get("quality") or {}
     complete = True
     try:
         fn(fresh, notes)
@@ -542,8 +587,12 @@ def main():
     if state == "tamam" and not fresh:
         state = "hata: tarama sıfır ürün döndürdü"
 
+    quality_cfg = CFG.get("quality", {})
+    min_full_ratio = float(quality_cfg.get("full_min_product_ratio", 0.70))
     if mode == "full":
-        if state != "tamam" or len(fresh) < 0.5 * len(old):
+        if state != "tamam" or (old and len(fresh) < min_full_ratio * len(old)):
+            if state == "tamam":
+                state = f"eksik: {len(fresh)}/{len(old)} ürün; tam tarama eşiği %{min_full_ratio * 100:.0f}"
             notes.append(f"yeni sonuç eksik ({len(fresh)} ürün), eski veri ({len(old)} ürün) korundu")
             merged = dict(old)
             complete = False
@@ -554,18 +603,23 @@ def main():
         for k, p in fresh.items():
             merged[k] = {**p, "cat": p.get("cat") or (old.get(k) or {}).get("cat") or ""}
         notes.append(f"{len(fresh)} indirimli ürün güncellendi")
-    else:  # aktüel: liste her başarılı taramada baştan oluşturulur
-        merged = fresh if (state == "tamam" and fresh) else dict(old)
+    else:
+        min_aktuel_ratio = float(quality_cfg.get("aktuel_min_product_ratio", 0.50))
+        if state == "tamam" and old and len(fresh) < min_aktuel_ratio * len(old):
+            state = f"eksik: {len(fresh)}/{len(old)} ürün; aktüel tarama eşiği %{min_aktuel_ratio * 100:.0f}"
+            notes.append(f"aktüel sonuç şüpheli derecede küçük ({len(fresh)} ürün), eski veri ({len(old)} ürün) korundu")
+            merged = dict(old)
+            complete = False
+        else:
+            merged = fresh if (state == "tamam" and fresh) else dict(old)
 
     if state != "tamam":
-        # 403/429 veya ağ hatasında kısmi sonuçları fiyat verisi gibi yayımlama.
         merged = dict(old)
         complete = False
 
     promos_before = {k: p.get("promo") or "" for k, p in merged.items()}
     if state == "tamam":
         if market == "migros" and mode == "deals":
-            # Çoklu indirim sayfası eksiksiz okundu: listede olmayan üründe kampanya kalmamıştır.
             for k, p in merged.items():
                 if k not in fresh and p.get("promo"):
                     merged[k] = {**p, "promo": ""}
@@ -586,10 +640,47 @@ def main():
         last_data_update = attempted if has_new_prices or not previous_data_update else previous_data_update
         write(market, merged, last_data_update)
 
+    quality = category_quality(merged)
+    warnings = []
+    for error in ERRORS:
+        code = str(error.get("status", ""))
+        detail = str(error.get("detail", "")).lower()
+        if code in ("403", "429"):
+            warnings.append(f"HTTP {code}: erişim sınırı/engeli; tarama durduruldu")
+        elif code == "0" or (code.isdigit() and int(code) >= 500):
+            warnings.append(f"Ağ veya sunucu hatası: {error.get('url', '')}")
+        if "robots" in detail or "robots" in code.lower():
+            warnings.append("robots.txt kontrolü başarısız veya erişim izni yok")
+    if quality["empty_category_count"]:
+        warnings.append(f"{quality['empty_category_count']} üründe kategori boş")
+    if quality["campaign_date_category_count"]:
+        warnings.append(f"{quality['campaign_date_category_count']} ürünün kategorisi kampanya tarihi olarak kalmış")
+    if quality["other_ratio"] > float(quality_cfg.get("other_warn_ratio", 0.35)):
+        warnings.append(f"'Diğer' kategorisi yüksek: %{quality['other_ratio'] * 100:.1f}")
+    previous_other = previous_quality.get("other_ratio")
+    if previous_other is not None and quality["other_ratio"] > float(previous_other) + float(quality_cfg.get("other_increase_warn_ratio", 0.05)):
+        warnings.append(f"'Diğer' kategorisi önceki duruma göre belirgin arttı: %{float(previous_other) * 100:.1f} → %{quality['other_ratio'] * 100:.1f}")
+    if mode in ("full", "aktuel") and old and len(fresh) < float(quality_cfg.get("product_drop_warn_ratio", 0.85)) * len(old):
+        warnings.append(f"Ürün sayısı önceki veri setine göre belirgin düştü: {len(fresh)}/{len(old)}")
+
+    if last_data_update:
+        try:
+            parsed_update = datetime.datetime.fromisoformat(str(last_data_update).replace("Z", "+00:00"))
+            if parsed_update.tzinfo is None:
+                parsed_update = parsed_update.replace(tzinfo=datetime.timezone.utc)
+            age_hours = (datetime.datetime.now(datetime.timezone.utc) - parsed_update).total_seconds() / 3600
+            if age_hours > float(quality_cfg.get("stale_after_hours", 36)):
+                warnings.append(f"Son başarılı veri {age_hours:.1f} saattir güncellenmedi")
+        except (TypeError, ValueError):
+            warnings.append("data_updated geçerli bir ISO zaman damgası değil")
+    if state != "tamam" or not complete:
+        warnings.insert(0, f"Tarama başarılı değil: {state}")
+
     status = {
         "updated": attempted,
         "checked_at": attempted,
         "data_updated": last_data_update,
+        "last_successful_data_at": last_data_update,
         "market": market,
         "mode": mode,
         "status": state,
@@ -598,13 +689,36 @@ def main():
         "total": len(merged),
         "seconds": round(time.time() - t0),
         "notes": notes,
-        "traffic": {h: {"requests": s["requests"], "megabytes": round(s["bytes"] / 1e6, 1), "errors": s["errors"]}
-                    for h, s in STATS.items()},
+        "quality": quality,
+        "quality_warnings": list(dict.fromkeys(warnings)),
+        "traffic": {h: {
+            "requests": s["requests"],
+            "retries": s.get("retries", 0),
+            "megabytes": round(s["bytes"] / 1e6, 1),
+            "errors": s["errors"],
+        } for h, s in STATS.items()},
         "errors": ERRORS,
+        "run_id": os.environ.get("GITHUB_RUN_ID"),
     }
-    (ROOT / "data" / f"status-{market}.json").write_text(
-        json.dumps(status, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
-    print(json.dumps(status, ensure_ascii=False, indent=1)[:4000])
+
+    # Tek durum dosyasında mod başına son denemeyi sakla.
+    last_by_mode = dict(previous_status.get("last_attempt_by_mode") or {})
+    old_mode = previous_status.get("mode")
+    if old_mode and old_mode not in last_by_mode and previous_status.get("checked_at"):
+        last_by_mode[old_mode] = {
+            key: previous_status.get(key)
+            for key in ("checked_at", "status", "complete", "found", "total", "seconds",
+                        "data_updated", "errors", "notes", "quality_warnings", "quality", "traffic")
+        }
+    last_by_mode[mode] = {
+        key: status.get(key)
+        for key in ("checked_at", "status", "complete", "found", "total", "seconds",
+                    "data_updated", "errors", "notes", "quality_warnings", "quality", "traffic")
+    }
+    status["last_attempt_by_mode"] = last_by_mode
+
+    status_path.write_text(json.dumps(status, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    print(json.dumps(status, ensure_ascii=False, indent=1)[:6000])
     if status["status"] != "tamam" or not status["complete"]:
         sys.exit(1)
 

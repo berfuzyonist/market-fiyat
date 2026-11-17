@@ -1,0 +1,34 @@
+name: Collector tests
+on:
+  push:
+    branches-ignore: [main]
+    paths:
+      - "collector/**"
+      - "tests/**"
+      - "config.json"
+      - "scripts/publish-market-data.sh"
+      - ".github/workflows/**"
+  pull_request:
+    branches: [main]
+    paths:
+      - "collector/**"
+      - "tests/**"
+      - "config.json"
+      - "scripts/publish-market-data.sh"
+      - ".github/workflows/**"
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Python sözdizimini denetle
+        run: python -m py_compile collector/collect.py
+      - name: Publisher shell sözdizimini denetle
+        run: bash -n scripts/publish-market-data.sh
+      - name: Birim testleri
+        run: python -m unittest discover -s tests -v

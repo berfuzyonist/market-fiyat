@@ -15,14 +15,15 @@ on:
 permissions:
   contents: write
 concurrency:
-  group: migros
+  # Tam tarama ile indirim kontrolü birbirinin bekleyen çalıştırmasını ezmesin.
+  group: migros-${{ (github.event_name == 'workflow_dispatch' && inputs.mode) || (github.event.schedule == '17 0 * * *' && 'full') || 'deals' }}
   cancel-in-progress: false
 jobs:
   collect:
     runs-on: ubuntu-latest
     timeout-minutes: 240
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Modu seç
         id: m
         run: |
@@ -30,7 +31,9 @@ jobs:
           [ -z "$MODE" ] && [ "${{ github.event.schedule }}" = "17 0 * * *" ] && MODE=full
           [ -z "$MODE" ] && MODE=deals
           echo "mode=$MODE" >> "$GITHUB_OUTPUT"
-      - run: python3 collector/collect.py migros ${{ steps.m.outputs.mode }}
-      - name: Veriyi kaydet
-        if: github.ref == 'refs/heads/main'
+      - name: Tarayıcıyı çalıştır
+        id: collect
+        run: python3 collector/collect.py migros ${{ steps.m.outputs.mode }}
+      - name: Sonucu yayımla
+        if: always() && github.ref == 'refs/heads/main' && steps.collect.outcome != 'skipped'
         run: bash scripts/publish-market-data.sh migros ${{ steps.m.outputs.mode }}
