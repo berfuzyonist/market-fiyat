@@ -1,4 +1,4 @@
-{"updated": "2026-11-17T03:29:13+00:00", "market": "migros", "prefix": {"migros": {"image": "https://images.migrosone.com/sanalmarket/product/", "url": "https://www.migros.com.tr/"}}, "cats": {"migros": ["Anne & Bebek", "Atıştırmalık", "Atıştırmalık & Şekerleme", "Bahçe & Yapı Market", "Bakliyat & Temel Gıda", "Bebek", "Deterjan, Temizlik", "Diğer", "Dondurma", "Dondurulmuş Gıda", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et, Tavuk & Şarküteri", "Et, Tavuk, Balık", "Ev & Mutfak", "Ev, Yaşam", "Evcil Hayvan", "Fırın, Pastane", "Giyim & Aksesuar", "Hazır Yemek, Meze", "Kahvaltılık", "Kağıt Ürünleri", "Kağıt, Islak Mendil", "Kitap, Kırtasiye, Oyuncak", "Kişisel Bakım & Kozmetik", "Kişisel Bakım, Kozmetik, Sağlık", "Meyve & Sebze", "Oyuncak & Hobi", "Süt & Süt Ürünleri", "Süt, Kahvaltılık", "Temel Gıda", "Temizlik", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat", "promo"],"products":[
+{"updated": "2026-11-17T04:36:56+00:00", "market": "migros", "prefix": {"migros": {"image": "https://images.migrosone.com/sanalmarket/product/", "url": "https://www.migros.com.tr/"}}, "cats": {"migros": ["Anne & Bebek", "Atıştırmalık", "Atıştırmalık & Şekerleme", "Bahçe & Yapı Market", "Bakliyat & Temel Gıda", "Bebek", "Deterjan, Temizlik", "Diğer", "Dondurma", "Dondurulmuş Gıda", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et, Tavuk & Şarküteri", "Et, Tavuk, Balık", "Ev & Mutfak", "Ev, Yaşam", "Evcil Hayvan", "Fırın, Pastane", "Giyim & Aksesuar", "Hazır Yemek, Meze", "Kahvaltılık", "Kağıt Ürünleri", "Kağıt, Islak Mendil", "Kitap, Kırtasiye, Oyuncak", "Kişisel Bakım & Kozmetik", "Kişisel Bakım, Kozmetik, Sağlık", "Meyve & Sebze", "Oyuncak & Hobi", "Süt & Süt Ürünleri", "Süt, Kahvaltılık", "Temel Gıda", "Temizlik", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat", "promo"],"products":[
 ["migros:01010084","Yayla Yerli Pirinç Osmancık Bölgesi Mahsulü 2 Kg",244.95,244.95,1,"01010084/01010084_1-270e94.jpg","yayla-yerli-pirinc-osmancik-bolgesi-mahsulu-2-kg-p-f69a4",4,""],
 ["migros:01010085","Yayla Basmati Pirinç 1 Kg",199.95,199.95,1,"01010085/01010085_1-634e4e.jpg","yayla-basmati-pirinc-1-kg-p-f69a5",4,""],
 ["migros:01010086","Yayla Aşurelik Buğday 1 Kg",63.95,63.95,1,"1010086/1010086-2958da.jpg","yayla-asurelik-bugday-1-kg-p-f69a6",7,""],
@@ -4581,6 +4581,7 @@
 ["migros:08080795","Kuruyemiş ve Kurumeyve Dolgulu Hurma Kg",1249.95,2499.9,1,"08080795/08080795_1-f43eda.jpg","kuruyemis-ve-kurumeyve-dolgulu-hurma-kg-p-7b4d9b",1,""],
 ["migros:08080827","Peyman Boll Bites Meyveli Kuruyemiş Parça 150 G",129.9,229.9,1,"08080827/08080827_1-1ac53a.jpg","peyman-boll-bites-meyveli-kuruyemis-parca-150-g-p-7b4dbb",1,""],
 ["migros:08080828","Seyran Ürgüp Kabak Çekirdeği 200 G",81.0,81.0,1,"08080828/08080828_1-4783e0.jpg","seyran-urgup-kabak-cekirdegi-200-g-p-7b4dbc",27,""],
+["migros:08080830","Datella Medjoul Hurma 2 Kg",1299.9,1699.9,1,"08080830/08080830_1-ac9bad.jpg","datella-medjoul-hurma-2-kg-p-7b4dbe",1,""],
 ["migros:08080832","Master Nut Parti Karışım 160 G",83.93,119.9,1,"08080832/08080832_1-446b6a.jpg","master-nut-parti-karisim-160-g-p-7b4dc0",1,""],
 ["migros:08080833","Master Nut Artizan Karışık Kuruyemiş 180 G",329.9,329.9,1,"08080833/08080833_1-90556c.jpg","master-nut-artizan-karisik-kuruyemis-180-g-p-7b4dc1",2,""],
 ["migros:08080834","Master Nut Eğlencelik Karışık Kuruyemiş 180 G",129.9,129.9,1,"08080834/08080834_1-10ebb9.jpg","master-nut-eglencelik-karisik-kuruyemis-180-g-p-7b4dc2",2,""],
@@ -6032,6 +6033,7 @@
 ["migros:12501134","Eker Hurmalı & Chialı Probiyotik Yoğurt 4 x 100 G",105.95,105.95,1,"12501134/12501134_1-c4aa98.jpeg","eker-hurmali-chiali-probiyotik-yogurt-4-x-100-g-p-bec08e",29,""],
 ["migros:12501135","Danone Yocrush Renkli Halka 149 G",44.5,54.9,1,"12501135/12501135_1-1c0f4a.jpg","danone-yocrush-renkli-halka-149-g-p-bec08f",30,""],
 ["migros:12501136","Eker İncirli & Yulaflı Probiyotik Yoğurt 4 x 100 G",105.95,105.95,1,"12501136/12501136_1-cec80a.jpeg","eker-incirli-yulafli-probiyotik-yogurt-4-x-100-g-p-bec090",29,""],
+["migros:12501143","Activia Shot Çilek Muz 80 Ml",33.0,41.5,1,"12501143/12501143_1-9b67c8.jpg","activia-shot-cilek-muz-80-ml-p-bec097",30,""],
 ["migros:12501154","Activia İyi Hisset Ananaslı Hindistan Cevizli Yulaflı Probiyotikli Bowl  150 G",69.9,69.9,1,"12501154/12501154_1-83b682.jpg","activia-iyi-hisset-ananasli-hindistan-cevizli-yulafli-probiyotikli-bowl-150-g-p-bec0a2",7,""],
 ["migros:12501168","Eker Çırpılmış Yoğurt 500 G",79.95,79.95,1,"12501168/12501168_1-c845e7.jpg","eker-cirpilmis-yogurt-500-g-p-bec0b0",29,""],
 ["migros:12501169","Sütaş Hüptrik Çilek 3 x 35 G",18.95,18.95,1,"12501169/12501169_1-e2a9e9.jpg","sutas-huptrik-cilek-3-x-35-g-p-bec0b1",27,""],
@@ -6086,6 +6088,8 @@
 ["migros:12505658","Eker Efsane Yoğurt 750 G",97.95,97.95,1,"12505658/12505658_1-eaa685.jpeg","eker-efsane-yogurt-750-g-p-bed23a",29,""],
 ["migros:12505659","Eker Efsane Yoğurt  350 G",52.95,52.95,1,"12505659/12505659_1-c579fd.png","eker-efsane-yogurt-350-g-p-bed23b",29,""],
 ["migros:12508505","Activia Shot+ Nar Ve Çilek 80 Ml",34.5,43.5,1,"12508505/12508505_1-773e2e.jpg","activia-shot-nar-ve-cilek-80-ml-p-bedd59",30,""],
+["migros:12508506","Activia Shot+ Kara Mürver Ve Yaban Mersinli 80 Ml",34.5,43.5,1,"12508506/12508506_1-01fa3a.jpg","activia-shot-kara-murver-ve-yaban-mersinli-80-ml-p-bedd5a",30,""],
+["migros:12508530","Activia x2 Probiyotik Shot Sade 80 Ml",33.0,41.5,1,"12508530/12508530_1-d23e17.jpg","activia-x2-probiyotik-shot-sade-80-ml-p-bedd72",30,""],
 ["migros:12508532","Activia x2 Probiyotik Shot Ahududu Hibiskus 80 Ml",33.0,41.5,1,"12508532/12508532_1-a7d94c.jpg","activia-x2-probiyotik-shot-ahududu-hibiskus-80-ml-p-bedd74",30,""],
 ["migros:12508768","Pınar Organik Homojenize %3,5 Yağlı Yoğurt 4X125 G",117.0,117.0,1,"12508768/12508768-261dde.jpg","pinar-organik-homojenize-35-yagli-yogurt-4x125-g-p-bede60",29,""],
 ["migros:12508888","Büyüyo Probiyotik Yoğurt Mayası 3 x 0,5 G",129.0,129.0,1,"12508888/12508888-1e88b2.JPG","buyuyo-probiyotik-yogurt-mayasi-3-x-05-g-p-beded8",29,""],
