@@ -114,11 +114,49 @@ def get(url, accept="application/json"):
 
 # ---------- Migros ----------
 
+def migros_promo(p):
+    """Migros ürün kartındaki sepet/ürün kampanyası etiketlerini kaybetmeden çıkar."""
+    found = []
+
+    def add(value):
+        if isinstance(value, str):
+            value = re.sub(r"\s+", " ", value).strip()
+            if value and value not in found:
+                found.append(value)
+
+    for badge in p.get("badges") or []:
+        if not isinstance(badge, dict):
+            continue
+        name = str(badge.get("name") or "")
+        value = badge.get("value")
+        key = name.casefold()
+        if name == "CROSS_PROMOTED" or re.search(r"basket|cart|sepet|discount|indirim", key, re.I):
+            add(str(value or ""))
+            if re.search(r"basket|cart|sepet", key, re.I) and isinstance(value, (int, float)) and 0 < value <= 100:
+                add(f"Sepette %{value:g} indirimli")
+
+    def walk(value, key=""):
+        if isinstance(value, dict):
+            for k, v in value.items():
+                walk(v, str(k))
+        elif isinstance(value, list):
+            for v in value:
+                walk(v, key)
+        elif isinstance(value, str):
+            if re.search(r"sepette.{0,40}%\s*\d{1,2}|%\s*\d{1,2}.{0,40}sepette", value, re.I):
+                add(value)
+        elif isinstance(value, (int, float)) and re.search(r"basket|cart|sepet", key, re.I) and 0 < value <= 100:
+            add(f"Sepette %{value:g} indirimli")
+
+    walk(p)
+    return " · ".join(found)
+
+
 def migros_item(p):
     img = ((p.get("images") or [{}])[0].get("urls") or {}).get("PRODUCT_DETAIL")
     asc = p.get("categoryAscendants") or []
     top = (asc[-1] if asc else p.get("category") or {}).get("name") or ""
-    promo = next((b.get("value") or "" for b in p.get("badges") or [] if b.get("name") == "CROSS_PROMOTED"), "")
+    promo = migros_promo(p)
     return {
         "id": f"migros:{p.get('sku')}",
         "market": "migros",

@@ -75,13 +75,15 @@ function promoOf(o){
   if(m=f.match(/(\d+)\s*alana\s*(\d+)\s*bedava/)){const n=+m[1]+ +m[2];return{kind:"multi",label:`${m[1]} Alana ${m[2]} Bedava`,need:n,eff:o.price*m[1]/n}}
   if(m=f.match(/(\d+)\.\s*si\s*%\s*(\d+)/))return{kind:"multi",label:t,need:+m[1],eff:o.price*(m[1]-m[2]/100)/m[1]};
   if(m=f.match(/(\d+)\s*tl ve uzeri alisveriste\s*(\d+(?:[.,]\d+)?)\s*tl/)){const p=parseFloat(m[2].replace(",","."));return{kind:"basket",label:`${m[1]} TL üzeri sepette`,need:1,eff:p,min:+m[1]}}
+  if(m=f.match(/sepette\s*%?\s*(\d{1,2})\s*(?:indirimli|indirim)?/))return{kind:"basket",label:t,need:1,eff:o.price,percent:+m[1]};
   if(/^(aktuel|indirim)/.test(f))return{kind:"bim",label:t,need:1,eff:o.price};
   return{kind:"other",label:t,need:1,eff:o.price};
 }
 const gain=o=>o._promo&&o.price>0?Math.max(0,1-o._promo.eff/o.price):0;
 function promoLine(o){const p=o._promo;if(!p)return"";
   if(p.kind==="multi")return`${p.need} adet alınca tanesi <b>${tl(p.eff)}</b>`;
-  if(p.kind==="basket")return`${p.min} TL üzeri sepette <b>${tl(p.eff)}</b>`;
+  if(p.kind==="basket"&&p.min)return`${p.min} TL üzeri sepette <b>${tl(p.eff)}</b>`;
+  if(p.kind==="basket")return esc(p.label);
   return esc(p.label)}
 const promoChip=o=>o._promo?chip(`<i data-lucide="gift" class="w-3 h-3 inline -mt-0.5"></i> ${esc(o._promo.kind==="basket"?o._promo.label:o._promo.label)}`,"bg-violet-100 text-violet-700 dark:bg-violet-950 dark:text-violet-300"):"";
 
