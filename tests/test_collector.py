@@ -48,6 +48,34 @@ class CategoryInferenceTests(unittest.TestCase):
         self.assertEqual(quality["campaign_date_category_count"], 0)
 
 
+class MigrosBasketPromotionTests(unittest.TestCase):
+    def test_basket_percent_badge_is_preserved(self):
+        product = {
+            "sku": "123",
+            "name": "Gourmet Gold Parça Etli Soslu Sığır Etli Kedi Maması 85 G",
+            "shownPrice": 6995,
+            "regularPrice": 6995,
+            "status": "IN_SALE",
+            "badges": [{"name": "BASKET_DISCOUNT", "value": "Sepette %40 İndirimli"}],
+        }
+        item = collect.migros_item(product)
+        self.assertIn("Sepette %40 İndirimli", item["promo"])
+        self.assertEqual(item["price"], 69.95)
+        self.assertEqual(item["regular"], 69.95)
+
+    def test_nested_basket_promotion_text_is_preserved(self):
+        product = {
+            "sku": "456",
+            "badges": [],
+            "campaign": {"description": "Sepette %25 indirimli"},
+        }
+        self.assertEqual(collect.migros_promo(product), "Sepette %25 indirimli")
+
+    def test_cross_promoted_badge_is_kept(self):
+        product = {"badges": [{"name": "CROSS_PROMOTED", "value": "2 Al 1 Öde"}]}
+        self.assertEqual(collect.migros_promo(product), "2 Al 1 Öde")
+
+
 class FetchRetryTests(unittest.TestCase):
     def test_temporary_network_error_is_retried(self):
         response = MagicMock()
