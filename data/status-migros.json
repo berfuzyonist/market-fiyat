@@ -1,18 +1,18 @@
 {
- "updated": "2026-11-17T10:42:32+00:00",
- "checked_at": "2026-11-17T10:42:32+00:00",
- "data_updated": "2026-11-17T10:42:32+00:00",
+ "updated": "2026-11-17T12:30:40+00:00",
+ "checked_at": "2026-11-17T12:30:40+00:00",
+ "data_updated": "2026-11-17T12:30:40+00:00",
  "market": "migros",
  "mode": "deals",
  "status": "tamam",
  "complete": true,
- "found": 2531,
- "total": 15954,
- "seconds": 287,
+ "found": 2528,
+ "total": 15958,
+ "seconds": 283,
  "notes": [
   "money-indirimli-market-urunleri-dt-5: 77/77 sayfa",
   "coklu-indirim-kampanyalari-ve-hediyeli-urunler-dt-1: 9/9 sayfa",
-  "2531 indirimli ürün güncellendi"
+  "2528 indirimli ürün güncellendi"
  ],
  "traffic": {
   "www.migros.com.tr": {
