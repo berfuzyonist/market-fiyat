@@ -28,5 +28,7 @@ jobs:
           python-version: "3.12"
       - name: Python sözdizimini denetle
         run: python -m py_compile collector/collect.py
+      - name: Publisher shell sözdizimini denetle
+        run: bash -n scripts/publish-market-data.sh
       - name: Birim testleri
         run: python -m unittest discover -s tests -v
