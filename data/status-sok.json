@@ -1,25 +1,115 @@
 {
- "updated": "2026-11-17T19:06:55+00:00",
- "checked_at": "2026-11-17T19:06:55+00:00",
- "data_updated": "2026-11-17T19:06:55+00:00",
+ "updated": "2026-11-17T20:11:23+00:00",
+ "checked_at": "2026-11-17T20:11:23+00:00",
+ "data_updated": "2026-11-17T20:11:23+00:00",
+ "last_successful_data_at": "2026-11-17T20:11:23+00:00",
  "market": "sok",
  "mode": "deals",
  "status": "tamam",
  "complete": true,
- "found": 311,
- "total": 2943,
+ "found": 315,
+ "total": 2957,
  "seconds": 79,
  "notes": [
   "kampanyalar: 93 ürün",
   "indirimli-urunler-cms-pl1: sitede 318, okunan 320, 16/16 sayfa (son sayfa)",
-  "311 indirimli ürün güncellendi"
+  "315 indirimli ürün güncellendi"
  ],
+ "quality": {
+  "category_count": 21,
+  "empty_category_count": 0,
+  "campaign_date_category_count": 0,
+  "other_count": 20,
+  "other_ratio": 0.0068,
+  "category_counts": {
+   "İçecek": 215,
+   "Dondurulmuş Ürünler": 43,
+   "Atıştırmalık": 530,
+   "Ev & Yaşam": 288,
+   "Elektronik": 43,
+   "Yemeklik Malzemeler": 271,
+   "Kişisel Bakım & Kozmetik": 403,
+   "Ekmek & Pastane": 57,
+   "Kahvaltılık": 149,
+   "Temizlik": 211,
+   "Anne - Bebek & Çocuk": 235,
+   "Süt & Süt Ürünleri": 166,
+   "Et & Tavuk & Şarküteri": 59,
+   "Kağıt Ürünleri": 52,
+   "Evcil Dostlar": 39,
+   "Giyim & Aksesuar": 41,
+   "Dondurma": 85,
+   "Meyve & Sebze": 47,
+   "Diğer": 20,
+   "Atıştırmalık & Şekerleme": 1,
+   "Oyuncak & Hobi": 2
+  }
+ },
+ "quality_warnings": [],
  "traffic": {
   "www.sokmarket.com.tr": {
    "requests": 17,
+   "retries": 0,
    "megabytes": 9.6,
    "errors": 0
   }
  },
- "errors": []
+ "errors": [],
+ "run_id": "44166366170",
+ "last_attempt_by_mode": {
+  "deals": {
+   "checked_at": "2026-11-17T20:11:23+00:00",
+   "status": "tamam",
+   "complete": true,
+   "found": 315,
+   "total": 2957,
+   "seconds": 79,
+   "data_updated": "2026-11-17T20:11:23+00:00",
+   "errors": [],
+   "notes": [
+    "kampanyalar: 93 ürün",
+    "indirimli-urunler-cms-pl1: sitede 318, okunan 320, 16/16 sayfa (son sayfa)",
+    "315 indirimli ürün güncellendi"
+   ],
+   "quality_warnings": [],
+   "quality": {
+    "category_count": 21,
+    "empty_category_count": 0,
+    "campaign_date_category_count": 0,
+    "other_count": 20,
+    "other_ratio": 0.0068,
+    "category_counts": {
+     "İçecek": 215,
+     "Dondurulmuş Ürünler": 43,
+     "Atıştırmalık": 530,
+     "Ev & Yaşam": 288,
+     "Elektronik": 43,
+     "Yemeklik Malzemeler": 271,
+     "Kişisel Bakım & Kozmetik": 403,
+     "Ekmek & Pastane": 57,
+     "Kahvaltılık": 149,
+     "Temizlik": 211,
+     "Anne - Bebek & Çocuk": 235,
+     "Süt & Süt Ürünleri": 166,
+     "Et & Tavuk & Şarküteri": 59,
+     "Kağıt Ürünleri": 52,
+     "Evcil Dostlar": 39,
+     "Giyim & Aksesuar": 41,
+     "Dondurma": 85,
+     "Meyve & Sebze": 47,
+     "Diğer": 20,
+     "Atıştırmalık & Şekerleme": 1,
+     "Oyuncak & Hobi": 2
+    }
+   },
+   "traffic": {
+    "www.sokmarket.com.tr": {
+     "requests": 17,
+     "retries": 0,
+     "megabytes": 9.6,
+     "errors": 0
+    }
+   }
+  }
+ }
 }
