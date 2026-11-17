@@ -1,4 +1,4 @@
-{"updated": "2026-11-17T02:54:05+00:00", "market": "sok", "prefix": {"sok": {"image": "https://images.ceptesok.com/cdn-cgi/image/width=216,height=216,fit=pad,quality=80,format=webp/product-assets/sub-folder/", "url": "https://www.sokmarket.com.tr/"}}, "cats": {"sok": ["Anne - Bebek & Çocuk", "Atıştırmalık", "Bakliyat & Temel Gıda", "Diğer", "Dondurma", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et & Tavuk & Şarküteri", "Ev & Yaşam", "Evcil Dostlar", "Giyim & Aksesuar", "Kahvaltılık", "Kağıt Ürünleri", "Kişisel Bakım & Kozmetik", "Meyve & Sebze", "Oyuncak", "Süt & Süt Ürünleri", "Temizlik", "Yemeklik Malzemeler", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat", "promo"],"products":[
+{"updated": "2026-11-17T03:57:44+00:00", "market": "sok", "prefix": {"sok": {"image": "https://images.ceptesok.com/cdn-cgi/image/width=216,height=216,fit=pad,quality=80,format=webp/product-assets/sub-folder/", "url": "https://www.sokmarket.com.tr/"}}, "cats": {"sok": ["Anne - Bebek & Çocuk", "Atıştırmalık", "Bakliyat & Temel Gıda", "Diğer", "Dondurma", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et & Tavuk & Şarküteri", "Ev & Yaşam", "Evcil Dostlar", "Giyim & Aksesuar", "Kahvaltılık", "Kağıt Ürünleri", "Kişisel Bakım & Kozmetik", "Meyve & Sebze", "Oyuncak", "Süt & Süt Ürünleri", "Temizlik", "Yemeklik Malzemeler", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat", "promo"],"products":[
 ["sok:10","Crown Cola Pet 250 ml",14.0,14.0,1,"7287ee89-01d2-4b88-9f7c-23ad45e4d12c.jpg","crown-cola-pet-250-ml-p-10",20,""],
 ["sok:1009","İnci Soğan Halkası 450 g",55.0,55.0,1,"3b7dfe2d-f53e-4263-9011-3a26030cdc54.jpg","inci-sogan-halkasi-450-g-p-1009",5,""],
 ["sok:1025","Ülker Dankek Pöti Fındıklı Kakaolu 24*35 g",240.0,240.0,1,"566ca857-8d91-4a6a-9148-50ff03db6e10.png","ulker-dankek-poti-findikli-kakaolu-24-35-g-p-1025",1,"50 TL ve üzeri alışverişte 165.00 TL!"],
@@ -2586,6 +2586,7 @@
 ["sok:852898","Tamöz Çilek Aromalı İçecek 250 ml",12.0,12.0,1,"ad9c5cf2-e027-4b85-957f-8e7a9381f0d5.png","tamoz-cilek-aromali-icecek-250-ml-p-852898",20,""],
 ["sok:8529","İnci Tane Mısır 450 g",57.5,57.5,1,"fb2b6761-9294-4079-8ebb-87006f417615.jpg","inci-tane-misir-450-g-p-8529",5,""],
 ["sok:8531","Coca-Cola Zero Sugar 330 ml",55.0,55.0,1,"b59d9b48-b7f2-4f63-8864-462cebe36833.png","coca-cola-zero-sugar-330-ml-p-8531",20,""],
+["sok:8532","Nescafe Xpress Cafe Choco 250 ml",64.9,80.0,1,"50d57914-df52-4508-bd06-dc757a505f8f.png","nescafe-xpress-cafe-choco-250-ml-p-8532",20,""],
 ["sok:8533","Mis Uht Süt %3.1 Yağlı 1 L",52.5,52.5,1,"691ac110-fa10-46fe-a58a-9126d2c09c64.jpg","mis-uht-sut-3-1-yagli-1-l-p-8533",17,""],
 ["sok:8538","Evin Margarin 250 g",29.0,29.0,1,"2c6e5c77-0ecd-47a4-9bc6-23d8831c6249.png","evin-margarin-250-g-p-8538",19,""],
 ["sok:853801","Karmen Bütün Antep Fıstıklı Çikolata 80 g",79.95,79.95,1,"42dc1751-6e55-4c59-8904-1a4f37f08677.jpg","karmen-butun-antep-fistikli-cikolata-80-g-p-853801",1,""],
@@ -2602,6 +2603,7 @@
 ["sok:854746","Tayaş Damla Gummy Alfabe 80 g",24.95,29.95,1,"e5d3cb06-8dbc-433f-b843-a27a9460e1b9.jpg","tayas-damla-gummy-alfabe-80-g-p-854746",1,""],
 ["sok:855665","Kiwi Khs 2041 Saç Düzleştirici",750.0,750.0,1,"b258bec3-ab36-4f17-8a17-11f170d41b4a.jpg","kiwi-khs-2041-sac-duzlestirici-p-855665",7,""],
 ["sok:855667","Bonart Meyve Aromalı Ekşi Licorice 8 g",4.95,4.95,1,"206859ac-0b32-4d25-9042-ba8fdba820f6.jpg","bonart-meyve-aromali-eksi-licorice-8-g-p-855667",1,""],
+["sok:855670","Reebok Men Deodorant Cool 150 Ml",129.0,199.0,1,"6cc9c190-059c-4903-94b0-faff3fe953f8.jpg","reebok-men-deodorant-cool-150-ml-p-855670",14,""],
 ["sok:855672","Molfix Tatlı Rüyalar Large 6 48'li",455.0,455.0,1,"6733f531-8fa4-4640-b851-e2c0380b85cc.jpg","molfix-tatli-ruyalar-large-6-48-li-p-855672",0,""],
 ["sok:856581","Fuse Tea Mango Ananas 2 L",90.0,90.0,1,"e7ccf359-81dc-448b-a7b2-12a32fa0dae0.png","fuse-tea-mango-ananas-2-l-p-856581",20,""],
 ["sok:856582","Colgate Optic Purple 50 Ml+total Diş Macunu 50 Ml",299.0,299.0,1,"cd88e12d-5b36-426f-b998-8e9c8fa58437.png","colgate-optic-purple-50-ml-total-dis-macunu-50-ml-p-856582",14,""],
