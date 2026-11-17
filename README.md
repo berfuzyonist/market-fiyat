@@ -19,3 +19,5 @@ Kampanyalar veri dosyalarında `promo` alanında tutulur: Migros çoklu alım ro
 
 
 GitHub Actions zamanlaması GitHub tarafında en iyi çaba esaslıdır; kesin dakikada başlama garantisi yoktur. Migros ve ŞOK'ta tam tarama ile indirim işlerinin concurrency grupları ayrıdır; böylece uzun tam tarama, daha sık gelen indirim kontrollerinin bekleyen çalıştırmalarını ezmez. Kod değişiklikleri ayrı test iş akışında doğrulanır.
+
+Market tarayıcıları yalnızca planlı zamanlamalar veya açık `workflow_dispatch` isteğiyle çalışır; kod değişikliği itmeleri yalnızca birim testlerini çalıştırır. Concurrency grupları Git dalına göre de ayrılır; geliştirme dalındaki iş ana dalın planlı taramasını bekletmez.

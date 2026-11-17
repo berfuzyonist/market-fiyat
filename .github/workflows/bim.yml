@@ -8,13 +8,10 @@ on:
         description: "Mod"
         type: choice
         options: [aktuel]
-  push:
-    branches-ignore: [main]
-    paths: ["collector/**", "config.json", ".github/workflows/bim.yml"]
 permissions:
   contents: write
 concurrency:
-  group: bim
+  group: bim-${{ github.ref }}
   cancel-in-progress: false
 jobs:
   collect:
