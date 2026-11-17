@@ -40,28 +40,39 @@ class Stop(Exception):
 
 
 def _fetch(url, accept):
-    time.sleep(DELAY)
-    req = urllib.request.Request(url, headers={
-        "User-Agent": UA, "Accept": accept, "Accept-Language": "tr", "Accept-Encoding": "gzip"})
-    try:
-        with urllib.request.urlopen(req, timeout=60) as r:
-            raw = r.read()
-            size = len(raw)
-            if r.headers.get("Content-Encoding") == "gzip":
-                raw = gzip.decompress(raw)
-            return r.status, raw.decode("utf-8", "replace"), size
-    except urllib.error.HTTPError as e:
-        return e.code, "", 0
-    except Exception as e:  # ağ hatası
-        return 0, repr(e), 0
+    """İsteği nazik aralıklarla yap; geçici ağ/5xx hatalarını sınırlı sayıda dene."""
+    retries = max(0, int(CFG.get("retry_attempts", 2)))
+    backoff = max(1, int(CFG.get("retry_backoff_seconds", 5)))
+    status, body, size = 0, "", 0
+    for attempt in range(retries + 1):
+        time.sleep(DELAY)
+        req = urllib.request.Request(url, headers={
+            "User-Agent": UA, "Accept": accept, "Accept-Language": "tr", "Accept-Encoding": "gzip"})
+        try:
+            with urllib.request.urlopen(req, timeout=60) as r:
+                raw = r.read()
+                size = len(raw)
+                if r.headers.get("Content-Encoding") == "gzip":
+                    raw = gzip.decompress(raw)
+                status, body = r.status, raw.decode("utf-8", "replace")
+        except urllib.error.HTTPError as e:
+            status, body, size = e.code, "", 0
+        except Exception as e:
+            status, body, size = 0, repr(e), 0
+        # 403/429 ve kalıcı 4xx yanıtlarında yeniden deneme veya kısıt aşma yapılmaz.
+        if status in (200, 404, 403, 429) or not (status == 0 or 500 <= status <= 599):
+            return status, body, size, attempt + 1
+        if attempt < retries:
+            time.sleep(min(60, backoff * (attempt + 1)))
+    return status, body, size, retries + 1
 
 
 def allowed(url):
-    """robots.txt okunamazsa veya yolu yasaklıyorsa taramayı durdurur."""
+    """robots.txt okunamazsa veya yolu yasaklıysa taramayı durdurur."""
     u = urllib.parse.urlsplit(url)
     base = f"{u.scheme}://{u.netloc}"
     if base not in ROBOTS:
-        status, body, _ = _fetch(base + "/robots.txt", "text/plain")
+        status, body, _, _ = _fetch(base + "/robots.txt", "text/plain")
         if status != 200:
             ERRORS.append({"url": base + "/robots.txt", "status": status,
                            "detail": "robots.txt okunamadı; tarama durduruldu"})
@@ -78,22 +89,24 @@ def allowed(url):
 
 def get(url, accept="application/json"):
     host = urllib.parse.urlsplit(url).netloc
-    st = STATS.setdefault(host, {"requests": 0, "bytes": 0, "errors": 0, "streak": 0})
+    st = STATS.setdefault(host, {"requests": 0, "bytes": 0, "errors": 0, "streak": 0, "retries": 0})
     if not allowed(url):
         ERRORS.append({"url": url, "status": "robots.txt izin vermiyor, atlandı"})
         return None, ""
-    status, body, size = _fetch(url, accept)
-    st["requests"] += 1
+    status, body, size, attempts = _fetch(url, accept)
+    st["requests"] += attempts
+    st["retries"] += max(0, attempts - 1)
     st["bytes"] += size
     if status == 200:
+        st["errors"] += max(0, attempts - 1)
         st["streak"] = 0
         return status, body
-    if status == 404:  # böyle bir sayfa yok: hata sayılmaz
+    if status == 404:
         return status, ""
-    st["errors"] += 1
+    st["errors"] += attempts
     st["streak"] += 1
     if len(ERRORS) < 50:
-        ERRORS.append({"url": url, "status": status, "detail": body[:120] if status == 0 else ""})
+        ERRORS.append({"url": url, "status": status, "detail": body[:160] if status == 0 else ""})
     if status in (403, 429) or st["streak"] >= 3:
         raise Stop(f"{host}: durum {status}")
     return status, ""
