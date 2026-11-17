@@ -1,9 +1,19 @@
 {
   "user_agent": "market-fiyat-kisisel/0.3 (+https://github.com/berfuzyonist/market-fiyat)",
   "delay_seconds": 3,
+  "retry_attempts": 2,
+  "retry_backoff_seconds": 5,
+  "quality": {
+    "full_min_product_ratio": 0.70,
+    "aktuel_min_product_ratio": 0.50,
+    "product_drop_warn_ratio": 0.85,
+    "other_warn_ratio": 0.35,
+    "other_increase_warn_ratio": 0.05,
+    "stale_after_hours": 36
+  },
   "migros": {
     "max_pages": 400,
-    "max_discovery": 250,
+    "max_discovery": 1500,
     "seed_ids": [
       "2",
       "3",

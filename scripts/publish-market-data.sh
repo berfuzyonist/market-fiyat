@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
-# Conflict-free, freshness-aware publisher for one market's two data files.
+# Publish the latest successful market data and every attempt's status safely.
 set -euo pipefail
 
 market="${1:?usage: publish-market-data.sh <migros|sok|bim> <mode>}"
 mode="${2:?usage: publish-market-data.sh <migros|sok|bim> <mode>}"
-
 case "$market" in
   migros|sok|bim) ;;
   *) echo "Unknown market: $market" >&2; exit 2 ;;
@@ -15,74 +14,123 @@ status_rel="data/status-${market}.json"
 tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
 
-# Preserve this run's output before moving the checkout to the latest main.
-test -s "$data_rel" || { echo "Missing or empty $data_rel" >&2; exit 1; }
 test -s "$status_rel" || { echo "Missing or empty $status_rel" >&2; exit 1; }
-cp "$data_rel" "$tmp/market.json"
+cp "$data_rel" "$tmp/market.json" 2>/dev/null || true
 cp "$status_rel" "$tmp/status.json"
 
-# Never publish incomplete, failed, or internally inconsistent collector output.
-python3 - "$tmp/market.json" "$tmp/status.json" <<'PY'
-import json, sys
+# Ensure this status was produced by the current Actions execution.
+python3 - "$tmp/status.json" <<'PY'
+import json, os, sys
 with open(sys.argv[1], encoding="utf-8") as f:
-    data = json.load(f)
-with open(sys.argv[2], encoding="utf-8") as f:
     status = json.load(f)
-if status.get("status") != "tamam" or status.get("complete") is not True:
-    raise SystemExit("Refusing to publish: collector status is not complete")
-if not status.get("checked_at") or not status.get("data_updated"):
-    raise SystemExit("Refusing to publish: checked_at/data_updated missing")
-if data.get("updated") != status.get("data_updated"):
-    raise SystemExit("Refusing to publish: data file updated timestamp does not match status.data_updated")
-if not data.get("products"):
-    raise SystemExit("Refusing to publish: product list is empty")
+if not status.get("checked_at") or "complete" not in status:
+    raise SystemExit("Refusing to publish: status is missing checked_at/complete")
+run_id = os.environ.get("GITHUB_RUN_ID")
+if run_id and str(status.get("run_id") or "") != run_id:
+    raise SystemExit("Refusing to publish: status does not belong to this Actions run")
 PY
 
 git config user.name "fiyat-botu"
 git config user.email "actions@users.noreply.github.com"
 
-# Rebuild each attempt on the latest remote main. No rebase means no unresolved
-# index state; if another market wins the push race, the next attempt retains it.
+# Rebuild each attempt on latest main. Failed attempts update only status.
 for attempt in 1 2 3 4 5 6 7 8 9 10; do
   echo "Publish attempt $attempt/10 for $market"
   git fetch --no-tags origin main
   git reset --hard origin/main
 
-  current_status="$tmp/current-status.json"
-  if git show "origin/main:$status_rel" > "$current_status" 2>/dev/null; then
-    # Older completions must never overwrite a newer successful run.
-    if python3 - "$tmp/status.json" "$current_status" <<'PY'
-import datetime, json, sys
-def parse(path):
-    with open(path, encoding="utf-8") as f:
-        value = json.load(f).get("checked_at")
-    if not value:
+  python3 - "$tmp/market.json" "$tmp/status.json" "$data_rel" "$status_rel" <<'PY'
+import json, shutil, sys
+incoming_data_path, incoming_status_path, data_path, status_path = sys.argv[1:]
+def load(path):
+    try:
+        with open(path, encoding="utf-8") as f:
+            return json.load(f)
+    except (OSError, ValueError):
+        return {}
+def stamp(value):
+    return str(value or "")
+incoming_data = load(incoming_data_path)
+incoming = load(incoming_status_path)
+current_data = load(data_path)
+current = load(status_path)
+
+incoming_success = incoming.get("status") == "tamam" and incoming.get("complete") is True
+if incoming_success:
+    if not incoming_data.get("products"):
+        raise SystemExit("Refusing to publish: successful market file has no products")
+    if incoming_data.get("updated") != incoming.get("data_updated"):
+        raise SystemExit("Refusing to publish: data.updated does not match status.data_updated")
+
+def one_attempt(value):
+    if not value or not value.get("checked_at"):
         return None
-    return datetime.datetime.fromisoformat(value.replace("Z", "+00:00"))
-incoming, current = parse(sys.argv[1]), parse(sys.argv[2])
-raise SystemExit(0 if incoming and current and incoming <= current else 1)
+    keys = ("checked_at", "status", "complete", "found", "total", "seconds",
+            "data_updated", "errors", "notes", "quality_warnings", "quality", "traffic")
+    return {key: value.get(key) for key in keys}
+
+attempts = {}
+for source in (current, incoming):
+    for mode_name, record in (source.get("last_attempt_by_mode") or {}).items():
+        if not record or not record.get("checked_at"):
+            continue
+        previous = attempts.get(mode_name)
+        if previous is None or stamp(record.get("checked_at")) > stamp(previous.get("checked_at")):
+            attempts[mode_name] = record
+    legacy = one_attempt(source)
+    mode_name = source.get("mode")
+    if legacy and mode_name:
+        previous = attempts.get(mode_name)
+        if previous is None or stamp(legacy.get("checked_at")) > stamp(previous.get("checked_at")):
+            attempts[mode_name] = legacy
+
+current_time = stamp(current.get("checked_at"))
+incoming_time = stamp(incoming.get("checked_at"))
+if incoming_time and (not current_time or incoming_time > current_time):
+    merged_status = dict(incoming)
+elif current:
+    merged_status = dict(current)
+else:
+    merged_status = dict(incoming)
+
+# Data freshness and attempt freshness are independent.
+current_data_time = stamp(current_data.get("updated"))
+incoming_data_time = stamp(incoming_data.get("updated"))
+publish_data = bool(incoming_success and incoming_data_time and
+                    (not current_data_time or incoming_data_time > current_data_time))
+if publish_data:
+    shutil.copyfile(incoming_data_path, data_path)
+    current_data_time = incoming_data_time
+
+status_data_times = [
+    stamp(current.get("data_updated")),
+    stamp(incoming.get("data_updated")),
+]
+# The market JSON is the source of truth whenever it has a timestamp.
+latest_data_time = current_data_time or max((v for v in status_data_times if v), default=None)
+if latest_data_time:
+    merged_status["data_updated"] = latest_data_time
+    merged_status["last_successful_data_at"] = latest_data_time
+merged_status["last_attempt_by_mode"] = attempts
+
+with open(status_path, "w", encoding="utf-8") as f:
+    json.dump(merged_status, f, ensure_ascii=False, indent=1)
+    f.write("\n")
+print("Published status for", incoming.get("market"), "mode", incoming.get("mode"),
+      "| data updated:", latest_data_time or "unknown",
+      "| market data replaced:", "yes" if publish_data else "no")
 PY
-    then
-      echo "A newer or equal $market run is already on main; skipping stale publish."
-      exit 0
-    fi
-  fi
 
-  cp "$tmp/market.json" "$data_rel"
-  cp "$tmp/status.json" "$status_rel"
-  git add "$data_rel" "$status_rel"
-
+  git add "$status_rel" "$data_rel"
   if git diff --cached --quiet; then
-    echo "No data changes for $market."
+    echo "No newer status or data to publish for $market."
     exit 0
   fi
-
-  git commit -m "${market}: ${mode}"
+  git commit -m "${market}: ${mode} status/data"
   if git push origin HEAD:refs/heads/main; then
-    echo "Published $market data successfully."
+    echo "Published $market result successfully."
     exit 0
   fi
-
   echo "main moved during publish; refreshing and retrying without rebase."
   sleep $((attempt * 3))
 done
