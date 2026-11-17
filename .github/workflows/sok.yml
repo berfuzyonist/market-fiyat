@@ -9,14 +9,11 @@ on:
         description: "Mod"
         type: choice
         options: [full, deals]
-  push:
-    branches-ignore: [main]
-    paths: ["collector/**", "config.json", ".github/workflows/sok.yml"]
 permissions:
   contents: write
 concurrency:
   # Tam tarama ile indirim kontrolü birbirinin bekleyen çalıştırmasını ezmesin.
-  group: sok-${{ (github.event_name == 'workflow_dispatch' && inputs.mode) || (github.event.schedule == '47 0,12 * * *' && 'full') || 'deals' }}
+  group: sok-${{ github.ref }}-${{ (github.event_name == 'workflow_dispatch' && inputs.mode) || (github.event.schedule == '47 0,12 * * *' && 'full') || 'deals' }}
   cancel-in-progress: false
 jobs:
   collect:

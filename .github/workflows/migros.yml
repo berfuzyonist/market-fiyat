@@ -9,14 +9,11 @@ on:
         description: "Mod"
         type: choice
         options: [full, deals]
-  push:
-    branches-ignore: [main]
-    paths: ["collector/**", "config.json", ".github/workflows/migros.yml"]
 permissions:
   contents: write
 concurrency:
   # Tam tarama ile indirim kontrolü birbirinin bekleyen çalıştırmasını ezmesin.
-  group: migros-${{ (github.event_name == 'workflow_dispatch' && inputs.mode) || (github.event.schedule == '17 0 * * *' && 'full') || 'deals' }}
+  group: migros-${{ github.ref }}-${{ (github.event_name == 'workflow_dispatch' && inputs.mode) || (github.event.schedule == '17 0 * * *' && 'full') || 'deals' }}
   cancel-in-progress: false
 jobs:
   collect:
