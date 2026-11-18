@@ -1,19 +1,17 @@
 {
- "updated": "2026-11-18T01:57:51+00:00",
- "checked_at": "2026-11-18T01:57:51+00:00",
+ "updated": "2026-11-18T03:16:43+00:00",
+ "checked_at": "2026-11-18T03:16:43+00:00",
  "data_updated": "2026-11-18T01:57:51+00:00",
  "last_successful_data_at": "2026-11-18T01:57:51+00:00",
  "market": "migros",
- "mode": "deals",
- "status": "tamam",
- "complete": true,
- "found": 2355,
+ "mode": "full",
+ "status": "durduruldu: Migros kategori isteği başarısız: HTTP 404 (powerbank-c-12090)",
+ "complete": false,
+ "found": 16463,
  "total": 15980,
- "seconds": 269,
+ "seconds": 6399,
  "notes": [
-  "money-indirimli-market-urunleri-dt-5: 73/73 sayfa",
-  "coklu-indirim-kampanyalari-ve-hediyeli-urunler-dt-1: 7/7 sayfa",
-  "2355 indirimli ürün güncellendi"
+  "yeni sonuç eksik (16463 ürün), eski veri (15980 ürün) korundu"
  ],
  "quality": {
   "category_count": 34,
@@ -59,18 +57,19 @@
   }
  },
  "quality_warnings": [
+  "Tarama başarılı değil: durduruldu: Migros kategori isteği başarısız: HTTP 404 (powerbank-c-12090)",
   "'Diğer' kategorisi yüksek: %42.0"
  ],
  "traffic": {
   "www.migros.com.tr": {
-   "requests": 80,
+   "requests": 1958,
    "retries": 0,
-   "megabytes": 1.3,
+   "megabytes": 12.0,
    "errors": 0
   }
  },
  "errors": [],
- "run_id": "44219188209",
+ "run_id": "44216258766",
  "last_attempt_by_mode": {
   "deals": {
    "checked_at": "2026-11-18T01:57:51+00:00",
@@ -137,6 +136,74 @@
      "requests": 80,
      "retries": 0,
      "megabytes": 1.3,
+     "errors": 0
+    }
+   }
+  },
+  "full": {
+   "checked_at": "2026-11-18T03:16:43+00:00",
+   "status": "durduruldu: Migros kategori isteği başarısız: HTTP 404 (powerbank-c-12090)",
+   "complete": false,
+   "found": 16463,
+   "total": 15980,
+   "seconds": 6399,
+   "data_updated": "2026-11-18T00:28:37+00:00",
+   "errors": [],
+   "notes": [
+    "yeni sonuç eksik (16463 ürün), eski veri (15980 ürün) korundu"
+   ],
+   "quality_warnings": [
+    "Tarama başarılı değil: durduruldu: Migros kategori isteği başarısız: HTTP 404 (powerbank-c-12090)",
+    "'Diğer' kategorisi yüksek: %42.0"
+   ],
+   "quality": {
+    "category_count": 34,
+    "empty_category_count": 0,
+    "campaign_date_category_count": 0,
+    "other_count": 6717,
+    "other_ratio": 0.4203,
+    "category_counts": {
+     "Bakliyat & Temel Gıda": 572,
+     "Diğer": 6717,
+     "Temel Gıda": 289,
+     "Meyve & Sebze": 924,
+     "Atıştırmalık & Şekerleme": 855,
+     "İçecek": 763,
+     "Ev & Mutfak": 458,
+     "Süt & Süt Ürünleri": 435,
+     "Atıştırmalık": 366,
+     "Süt, Kahvaltılık": 164,
+     "Et, Tavuk & Şarküteri": 457,
+     "Hazır Yemek, Meze": 47,
+     "Et, Tavuk, Balık": 69,
+     "Ekmek & Pastane": 156,
+     "Bebek": 156,
+     "Anne & Bebek": 94,
+     "Kişisel Bakım & Kozmetik": 358,
+     "Kahvaltılık": 228,
+     "Dondurulmuş Ürünler": 110,
+     "Fırın, Pastane": 8,
+     "Oyuncak & Hobi": 186,
+     "Elektronik": 143,
+     "Evcil Hayvan": 67,
+     "Dondurma": 34,
+     "Dondurulmuş Gıda": 39,
+     "Kişisel Bakım, Kozmetik, Sağlık": 442,
+     "Temizlik": 281,
+     "Deterjan, Temizlik": 114,
+     "Kağıt Ürünleri": 26,
+     "Kağıt, Islak Mendil": 82,
+     "Giyim & Aksesuar": 458,
+     "Ev, Yaşam": 138,
+     "Bahçe & Yapı Market": 76,
+     "Kitap, Kırtasiye, Oyuncak": 668
+    }
+   },
+   "traffic": {
+    "www.migros.com.tr": {
+     "requests": 1958,
+     "retries": 0,
+     "megabytes": 12.0,
      "errors": 0
     }
    }
