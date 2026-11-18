@@ -1,14 +1,15 @@
 {
- "updated": "2026-11-17T14:31:13+00:00",
- "checked_at": "2026-11-17T14:31:13+00:00",
- "data_updated": "2026-11-17T14:31:13+00:00",
+ "updated": "2026-11-18T06:26:12+00:00",
+ "checked_at": "2026-11-18T06:26:12+00:00",
+ "data_updated": "2026-11-18T06:26:12+00:00",
+ "last_successful_data_at": "2026-11-18T06:26:12+00:00",
  "market": "bim",
  "mode": "aktuel",
  "status": "tamam",
  "complete": true,
  "found": 647,
  "total": 647,
- "seconds": 52,
+ "seconds": 53,
  "notes": [
   "10 Kasım Salı: 86 ürün",
   "11 Kasım Çarşamba: 9 ürün",
@@ -23,12 +24,108 @@
   "03-30 Kasım: 40 ürün",
   "14-20 Kasım: 38 ürün"
  ],
+ "quality": {
+  "category_count": 20,
+  "empty_category_count": 0,
+  "campaign_date_category_count": 0,
+  "other_count": 108,
+  "other_ratio": 0.1669,
+  "category_counts": {
+   "Et, Tavuk & Şarküteri": 19,
+   "Süt & Süt Ürünleri": 49,
+   "Diğer": 108,
+   "Kahvaltılık": 20,
+   "İçecek": 16,
+   "Atıştırmalık & Şekerleme": 52,
+   "Meyve & Sebze": 24,
+   "Temizlik": 21,
+   "Anne & Bebek": 8,
+   "Kağıt Ürünleri": 11,
+   "Kişisel Bakım & Kozmetik": 39,
+   "Ev & Mutfak": 95,
+   "Giyim & Aksesuar": 52,
+   "Elektronik": 33,
+   "Oyuncak & Hobi": 60,
+   "Ekmek & Pastane": 7,
+   "Bakliyat & Temel Gıda": 26,
+   "Spor & Takviye": 3,
+   "Bahçe & Yapı Market": 1,
+   "Otomotiv & Aksesuar": 3
+  }
+ },
+ "quality_warnings": [],
  "traffic": {
   "www.bim.com.tr": {
    "requests": 13,
+   "retries": 0,
    "megabytes": 0.4,
    "errors": 0
   }
  },
- "errors": []
+ "errors": [],
+ "run_id": "44251190668",
+ "last_attempt_by_mode": {
+  "aktuel": {
+   "checked_at": "2026-11-18T06:26:12+00:00",
+   "status": "tamam",
+   "complete": true,
+   "found": 647,
+   "total": 647,
+   "seconds": 53,
+   "data_updated": "2026-11-18T06:26:12+00:00",
+   "errors": [],
+   "notes": [
+    "10 Kasım Salı: 86 ürün",
+    "11 Kasım Çarşamba: 9 ürün",
+    "13 Kasım Cuma: 74 ürün",
+    "15 Kasım Pazar: 57 ürün",
+    "18 Kasım Çarşamba: 17 ürün",
+    "17 Kasım Salı: 78 ürün",
+    "20 Kasım Cuma: 72 ürün",
+    "22 Kasım Pazar: 56 ürün",
+    "25 Kasım Çarşamba: 29 ürün",
+    "24 Kasım Salı: 91 ürün",
+    "03-30 Kasım: 40 ürün",
+    "14-20 Kasım: 38 ürün"
+   ],
+   "quality_warnings": [],
+   "quality": {
+    "category_count": 20,
+    "empty_category_count": 0,
+    "campaign_date_category_count": 0,
+    "other_count": 108,
+    "other_ratio": 0.1669,
+    "category_counts": {
+     "Et, Tavuk & Şarküteri": 19,
+     "Süt & Süt Ürünleri": 49,
+     "Diğer": 108,
+     "Kahvaltılık": 20,
+     "İçecek": 16,
+     "Atıştırmalık & Şekerleme": 52,
+     "Meyve & Sebze": 24,
+     "Temizlik": 21,
+     "Anne & Bebek": 8,
+     "Kağıt Ürünleri": 11,
+     "Kişisel Bakım & Kozmetik": 39,
+     "Ev & Mutfak": 95,
+     "Giyim & Aksesuar": 52,
+     "Elektronik": 33,
+     "Oyuncak & Hobi": 60,
+     "Ekmek & Pastane": 7,
+     "Bakliyat & Temel Gıda": 26,
+     "Spor & Takviye": 3,
+     "Bahçe & Yapı Market": 1,
+     "Otomotiv & Aksesuar": 3
+    }
+   },
+   "traffic": {
+    "www.bim.com.tr": {
+     "requests": 13,
+     "retries": 0,
+     "megabytes": 0.4,
+     "errors": 0
+    }
+   }
+  }
+ }
 }
