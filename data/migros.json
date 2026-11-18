@@ -1,4 +1,4 @@
-{"updated": "2026-11-18T13:54:56+00:00", "market": "migros", "prefix": {"migros": {"image": "https://images.migrosone.com/sanalmarket/product/", "url": "https://www.migros.com.tr/"}}, "cats": {"migros": ["Anne & Bebek", "Atıştırmalık", "Atıştırmalık & Şekerleme", "Bahçe & Yapı Market", "Bakliyat & Temel Gıda", "Bebek", "Deterjan, Temizlik", "Diğer", "Dondurma", "Dondurulmuş Gıda", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et, Tavuk & Şarküteri", "Et, Tavuk, Balık", "Ev & Mutfak", "Ev, Yaşam", "Evcil Hayvan", "Fırın, Pastane", "Giyim & Aksesuar", "Hazır Yemek, Meze", "Kahvaltılık", "Kağıt Ürünleri", "Kağıt, Islak Mendil", "Kitap, Kırtasiye, Oyuncak", "Kişisel Bakım & Kozmetik", "Kişisel Bakım, Kozmetik, Sağlık", "Meyve & Sebze", "Oyuncak & Hobi", "Süt & Süt Ürünleri", "Süt, Kahvaltılık", "Temel Gıda", "Temizlik", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat", "promo"],"products":[
+{"updated": "2026-11-18T15:34:05+00:00", "market": "migros", "prefix": {"migros": {"image": "https://images.migrosone.com/sanalmarket/product/", "url": "https://www.migros.com.tr/"}}, "cats": {"migros": ["Anne & Bebek", "Atıştırmalık", "Atıştırmalık & Şekerleme", "Bahçe & Yapı Market", "Bakliyat & Temel Gıda", "Bebek", "Deterjan, Temizlik", "Diğer", "Dondurma", "Dondurulmuş Gıda", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et, Tavuk & Şarküteri", "Et, Tavuk, Balık", "Ev & Mutfak", "Ev, Yaşam", "Evcil Hayvan", "Fırın, Pastane", "Giyim & Aksesuar", "Hazır Yemek, Meze", "Kahvaltılık", "Kağıt Ürünleri", "Kağıt, Islak Mendil", "Kitap, Kırtasiye, Oyuncak", "Kişisel Bakım & Kozmetik", "Kişisel Bakım, Kozmetik, Sağlık", "Meyve & Sebze", "Oyuncak & Hobi", "Süt & Süt Ürünleri", "Süt, Kahvaltılık", "Temel Gıda", "Temizlik", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat", "promo"],"products":[
 ["migros:01010084","Yayla Yerli Pirinç Osmancık Bölgesi Mahsulü 2 Kg",244.95,244.95,1,"01010084/01010084_1-270e94.jpg","yayla-yerli-pirinc-osmancik-bolgesi-mahsulu-2-kg-p-f69a4",4,""],
 ["migros:01010085","Yayla Basmati Pirinç 1 Kg",199.95,199.95,1,"01010085/01010085_1-634e4e.jpg","yayla-basmati-pirinc-1-kg-p-f69a5",4,""],
 ["migros:01010086","Yayla Aşurelik Buğday 1 Kg",63.95,63.95,1,"1010086/1010086-2958da.jpg","yayla-asurelik-bugday-1-kg-p-f69a6",7,""],
@@ -857,6 +857,7 @@
 ["migros:04202446","Becel Kase Margarin Klasik 500 G",165.0,165.0,1,"04202446/04202446-a1dbf6.jpg","becel-kase-margarin-klasik-500-g-p-401fce",7,""],
 ["migros:04202461","Sana Kase Margarin Ekmeküstü 500 G",165.0,165.0,1,"04202461/4202461_1-141d77.jpeg","sana-kase-margarin-ekmekustu-500-g-p-401fdd",7,""],
 ["migros:04202950","Terem Kase Margarin 500 G",124.9,175.0,1,"04202950/4202950_1-67052a.jpg","terem-kase-margarin-500-g-p-4021c6",30,""],
+["migros:04202952","Terem Kase Margarin 250 G",62.9,90.0,1,"04202952/4202952_1-10df93.jpg","terem-kase-margarin-250-g-p-4021c8",30,""],
 ["migros:04205020","Sana Paket Margarin Hamurişi 250 G",76.0,76.0,1,"04205020/4205020_1-c6a8fb.jpeg","sana-paket-margarin-hamurisi-250-g-p-4029dc",7,""],
 ["migros:04205050","Terem %15 Ekonomik Paket Margarin 3 x 250 G",199.0,199.0,1,"04205050/4205050_1-6a3444.jpg","terem-15-ekonomik-paket-margarin-3-x-250-g-p-4029fa",7,""],
 ["migros:04205090","Terem Kase Margarin 600 G %20 Bedava",175.0,175.0,1,"04205090/4205090_1-b3bd20.jpg","terem-kase-margarin-600-g-20-bedava-p-402a22",7,""],
@@ -4249,6 +4250,7 @@
 ["migros:08054838","Dimes %100 Kırmızı Meyvelerden Meyve Suyu 1 L",120.0,120.0,1,"08054838/8054838_1-e58c88.jpg","dimes-100-kirmizi-meyvelerden-meyve-suyu-1-l-p-7ae836",33,""],
 ["migros:08054913","Dimes %100 Elma - Vişne Suyu 1 L",135.0,135.0,1,"08054913/8054913_1-08aaee.jpg","dimes-100-elma-visne-suyu-1-l-p-7ae881",27,""],
 ["migros:08054914","Dimes %100 Karışık Meyve Suyu 1 L",120.0,120.0,1,"08054914/8054914_1-99696f.jpg","dimes-100-karisik-meyve-suyu-1-l-p-7ae882",33,""],
+["migros:08054924","Dimes Moments Sıkma Nar Suyu 700 Ml",169.9,225.0,1,"08054924/08054924_1-812bd9.jpg","dimes-moments-sikma-nar-suyu-700-ml-p-7ae88c",33,""],
 ["migros:08054927","Dimes Moments Sıkma Portakal Suyu Cam 700 Ml",169.9,225.0,1,"08054927/08054927_1-ed25a3.jpg","dimes-moments-sikma-portakal-suyu-cam-700-ml-p-7ae88f",33,""],
 ["migros:08054962","Dimes Ekşi Elma 1 L",80.0,80.0,1,"08054962/8054962_1-f1e74c.jpg","dimes-eksi-elma-1-l-p-7ae8b2",27,""],
 ["migros:08054980","Dimes Sıkma Portakal Suyu 250 Ml",95.0,95.0,1,"08054980/08054980_1-aa63b8.jpg","dimes-sikma-portakal-suyu-250-ml-p-7ae8c4",27,""],
@@ -4349,6 +4351,7 @@
 ["migros:08060190","Abant Doğal Kaynak Suyu 500 Ml",6.95,6.95,1,"08060190/08060190-9fa3d8.jpg","abant-dogal-kaynak-suyu-500-ml-p-7afd1e",7,""],
 ["migros:08060191","Abant Doğal Kaynak Suyu 1,5 L",12.95,12.95,1,"08060191/abant-dogal-kaynak-suyu-1-5-l-aa2331.jpg","abant-dogal-kaynak-suyu-15-l-p-7afd1f",7,""],
 ["migros:08060192","Abant Doğal Kaynak Suyu 5 L",36.5,36.5,1,"8060192/8060192-a20417.jpg","abant-dogal-kaynak-suyu-5-l-p-7afd20",7,""],
+["migros:08060199","Dimes Ananaslı İçecek 1 L",80.0,80.0,1,"08060199/8060199_1-957adc.jpg","dimes-ananasli-icecek-1-l-p-7afd27",33,"Birlikte Al"],
 ["migros:08060249","Pınar Yaşam Pınarım 500 Ml",20.95,20.95,1,"08060249/08060249_1-437983.jpg","pinar-yasam-pinarim-500-ml-p-7afd59",7,""],
 ["migros:08060301","Damla Doğal Kaynak Suyu Pet 500 ML",22.25,22.25,1,"08060301/8060301_yan-8e923a.jpg","damla-dogal-kaynak-suyu-pet-500-ml-p-7afd8d",7,""],
 ["migros:08060303","Damla Doğal Kaynak Suyu 5 L",74.5,74.5,1,"08060303/8060303_yan-2327ef.jpg","damla-dogal-kaynak-suyu-5-l-p-7afd8f",7,""],
@@ -8851,7 +8854,7 @@
 ["migros:31604928","Uni Baby Yenidoğan ve Premature Islak Mendil 3 x 40'lı",229.95,299.95,1,"31604928/31604928_1-8e1efd.jpg","uni-baby-yenidogan-ve-premature-islak-mendil-3-x-40li-p-1e240c0",23,""],
 ["migros:31604929","Dalin Peri Masalı Kolonya 150 Ml",149.95,149.95,1,"31604929/31604929_1-01ac4c.jpg","dalin-peri-masali-kolonya-150-ml-p-1e240c1",26,"2.si %70"],
 ["migros:31604931","Uni Baby Yenidoğan & Premature Islak Mendil 40'lı",89.95,109.95,1,"31604931/31604931_1-09d2e6.jpg","uni-baby-yenidogan-premature-islak-mendil-40li-p-1e240c3",23,""],
-["migros:31604934","Dalin Peri Işıltısı Kolay Tarama Spreyi 200 Ml",249.95,249.95,1,"31604934/31604934_1-617f95.jpg","dalin-peri-isiltisi-kolay-tarama-spreyi-200-ml-p-1e240c6",1,""],
+["migros:31604934","Dalin Peri Işıltısı Kolay Tarama Spreyi 200 Ml",249.95,249.95,1,"31604934/31604934_1-617f95.jpg","dalin-peri-isiltisi-kolay-tarama-spreyi-200-ml-p-1e240c6",1,"2.si %70"],
 ["migros:31604935","Uni Baby Yenidoğan Şampuan 500 Ml",444.95,444.95,1,"31604935/31604935_1-72d13c.jpg","uni-baby-yenidogan-sampuan-500-ml-p-1e240c7",5,"2 Al 1 Öde"],
 ["migros:31604936","Roll-Up Jumbo Çöp Torbası 80 x 110 Cm 10'lu",239.95,239.95,1,"31604936/31604936_1-c9d664.jpg","roll-up-jumbo-cop-torbasi-80-x-110-cm-10lu-p-1e240c8",7,""],
 ["migros:31604937","Johnson's Kids Işıldayan Parlaklık Şampuan 750 Ml",199.95,369.95,1,"31604937/31604937_1-1568b7.jpg","johnsons-kids-isildayan-parlaklik-sampuan-750-ml-p-1e240c9",5,""],
