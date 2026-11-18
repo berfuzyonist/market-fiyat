@@ -1,19 +1,19 @@
 {
- "updated": "2026-11-17T23:28:07+00:00",
- "checked_at": "2026-11-17T23:28:07+00:00",
- "data_updated": "2026-11-17T23:28:07+00:00",
- "last_successful_data_at": "2026-11-17T23:28:07+00:00",
+ "updated": "2026-11-18T00:27:45+00:00",
+ "checked_at": "2026-11-18T00:27:45+00:00",
+ "data_updated": "2026-11-18T00:27:45+00:00",
+ "last_successful_data_at": "2026-11-18T00:27:45+00:00",
  "market": "sok",
  "mode": "deals",
  "status": "tamam",
  "complete": true,
- "found": 313,
+ "found": 342,
  "total": 2957,
- "seconds": 75,
+ "seconds": 86,
  "notes": [
   "kampanyalar: 93 ürün",
-  "indirimli-urunler-cms-pl1: sitede 318, okunan 320, 16/16 sayfa (son sayfa)",
-  "313 indirimli ürün güncellendi"
+  "indirimli-urunler-cms-pl1: sitede 399, okunan 380, 20/20 sayfa (son sayfa)",
+  "342 indirimli ürün güncellendi"
  ],
  "quality": {
   "category_count": 21,
@@ -48,28 +48,28 @@
  "quality_warnings": [],
  "traffic": {
   "www.sokmarket.com.tr": {
-   "requests": 17,
+   "requests": 21,
    "retries": 0,
-   "megabytes": 9.6,
+   "megabytes": 11.8,
    "errors": 0
   }
  },
  "errors": [],
- "run_id": "44199428372",
+ "run_id": "44207796771",
  "last_attempt_by_mode": {
   "deals": {
-   "checked_at": "2026-11-17T23:28:07+00:00",
+   "checked_at": "2026-11-18T00:27:45+00:00",
    "status": "tamam",
    "complete": true,
-   "found": 313,
+   "found": 342,
    "total": 2957,
-   "seconds": 75,
-   "data_updated": "2026-11-17T23:28:07+00:00",
+   "seconds": 86,
+   "data_updated": "2026-11-18T00:27:45+00:00",
    "errors": [],
    "notes": [
     "kampanyalar: 93 ürün",
-    "indirimli-urunler-cms-pl1: sitede 318, okunan 320, 16/16 sayfa (son sayfa)",
-    "313 indirimli ürün güncellendi"
+    "indirimli-urunler-cms-pl1: sitede 399, okunan 380, 20/20 sayfa (son sayfa)",
+    "342 indirimli ürün güncellendi"
    ],
    "quality_warnings": [],
    "quality": {
@@ -104,9 +104,9 @@
    },
    "traffic": {
     "www.sokmarket.com.tr": {
-     "requests": 17,
+     "requests": 21,
      "retries": 0,
-     "megabytes": 9.6,
+     "megabytes": 11.8,
      "errors": 0
     }
    }
