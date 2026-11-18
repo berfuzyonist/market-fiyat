@@ -1,22 +1,22 @@
 {
- "updated": "2026-11-18T02:56:05+00:00",
- "checked_at": "2026-11-18T02:56:05+00:00",
- "data_updated": "2026-11-18T02:56:05+00:00",
- "last_successful_data_at": "2026-11-18T02:56:05+00:00",
+ "updated": "2026-11-18T03:59:26+00:00",
+ "checked_at": "2026-11-18T03:59:26+00:00",
+ "data_updated": "2026-11-18T03:59:26+00:00",
+ "last_successful_data_at": "2026-11-18T03:59:26+00:00",
  "market": "sok",
  "mode": "deals",
  "status": "tamam",
  "complete": true,
  "found": 341,
- "total": 2928,
- "seconds": 90,
+ "total": 2931,
+ "seconds": 95,
  "notes": [
   "kampanyalar: 93 ürün",
-  "indirimli-urunler-cms-pl1: sitede 399, okunan 381, 20/20 sayfa (son sayfa)",
+  "indirimli-urunler-cms-pl1: sitede 399, okunan 380, 20/20 sayfa (son sayfa)",
   "341 indirimli ürün güncellendi"
  ],
  "quality": {
-  "category_count": 20,
+  "category_count": 21,
   "empty_category_count": 0,
   "campaign_date_category_count": 0,
   "other_count": 9,
@@ -37,11 +37,12 @@
    "Ev & Yaşam": 279,
    "Kağıt Ürünleri": 51,
    "Evcil Dostlar": 39,
-   "Giyim & Aksesuar": 39,
+   "Giyim & Aksesuar": 41,
    "Dondurma": 85,
    "Meyve & Sebze": 39,
+   "Diğer": 9,
    "Ev & Mutfak": 1,
-   "Diğer": 9
+   "Atıştırmalık & Şekerleme": 1
   }
  },
  "quality_warnings": [],
@@ -54,25 +55,25 @@
   }
  },
  "errors": [],
- "run_id": "44226629965",
+ "run_id": "44234001410",
  "last_attempt_by_mode": {
   "deals": {
-   "checked_at": "2026-11-18T02:56:05+00:00",
+   "checked_at": "2026-11-18T03:59:26+00:00",
    "status": "tamam",
    "complete": true,
    "found": 341,
-   "total": 2928,
-   "seconds": 90,
-   "data_updated": "2026-11-18T02:56:05+00:00",
+   "total": 2931,
+   "seconds": 95,
+   "data_updated": "2026-11-18T03:59:26+00:00",
    "errors": [],
    "notes": [
     "kampanyalar: 93 ürün",
-    "indirimli-urunler-cms-pl1: sitede 399, okunan 381, 20/20 sayfa (son sayfa)",
+    "indirimli-urunler-cms-pl1: sitede 399, okunan 380, 20/20 sayfa (son sayfa)",
     "341 indirimli ürün güncellendi"
    ],
    "quality_warnings": [],
    "quality": {
-    "category_count": 20,
+    "category_count": 21,
     "empty_category_count": 0,
     "campaign_date_category_count": 0,
     "other_count": 9,
@@ -93,11 +94,12 @@
      "Ev & Yaşam": 279,
      "Kağıt Ürünleri": 51,
      "Evcil Dostlar": 39,
-     "Giyim & Aksesuar": 39,
+     "Giyim & Aksesuar": 41,
      "Dondurma": 85,
      "Meyve & Sebze": 39,
+     "Diğer": 9,
      "Ev & Mutfak": 1,
-     "Diğer": 9
+     "Atıştırmalık & Şekerleme": 1
     }
    },
    "traffic": {
