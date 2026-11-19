@@ -1,19 +1,19 @@
 {
- "updated": "2026-11-18T23:54:23+00:00",
- "checked_at": "2026-11-18T23:54:23+00:00",
- "data_updated": "2026-11-18T23:54:23+00:00",
- "last_successful_data_at": "2026-11-18T23:54:23+00:00",
+ "updated": "2026-11-19T01:14:04+00:00",
+ "checked_at": "2026-11-19T01:14:04+00:00",
+ "data_updated": "2026-11-19T01:14:04+00:00",
+ "last_successful_data_at": "2026-11-19T01:14:04+00:00",
  "market": "sok",
  "mode": "deals",
  "status": "tamam",
  "complete": true,
- "found": 330,
- "total": 2944,
- "seconds": 89,
+ "found": 383,
+ "total": 2945,
+ "seconds": 88,
  "notes": [
   "kampanyalar: 91 ürün",
-  "indirimli-urunler-cms-pl1: sitede 399, okunan 380, 20/20 sayfa (son sayfa)",
-  "330 indirimli ürün güncellendi"
+  "indirimli-urunler-cms-pl1: sitede 399, okunan 399, 20/20 sayfa (son sayfa)",
+  "383 indirimli ürün güncellendi"
  ],
  "quality": {
   "category_count": 22,
@@ -33,7 +33,7 @@
    "Kahvaltılık": 153,
    "Temizlik": 212,
    "Anne - Bebek & Çocuk": 234,
-   "Süt & Süt Ürünleri": 166,
+   "Süt & Süt Ürünleri": 167,
    "Et & Tavuk & Şarküteri": 59,
    "Kağıt Ürünleri": 51,
    "Atıştırmalık & Şekerleme": 3,
@@ -56,21 +56,21 @@
   }
  },
  "errors": [],
- "run_id": "44424437249",
+ "run_id": "44435123944",
  "last_attempt_by_mode": {
   "deals": {
-   "checked_at": "2026-11-18T23:54:23+00:00",
+   "checked_at": "2026-11-19T01:14:04+00:00",
    "status": "tamam",
    "complete": true,
-   "found": 330,
-   "total": 2944,
-   "seconds": 89,
-   "data_updated": "2026-11-18T23:54:23+00:00",
+   "found": 383,
+   "total": 2945,
+   "seconds": 88,
+   "data_updated": "2026-11-19T01:14:04+00:00",
    "errors": [],
    "notes": [
     "kampanyalar: 91 ürün",
-    "indirimli-urunler-cms-pl1: sitede 399, okunan 380, 20/20 sayfa (son sayfa)",
-    "330 indirimli ürün güncellendi"
+    "indirimli-urunler-cms-pl1: sitede 399, okunan 399, 20/20 sayfa (son sayfa)",
+    "383 indirimli ürün güncellendi"
    ],
    "quality_warnings": [],
    "quality": {
@@ -91,7 +91,7 @@
      "Kahvaltılık": 153,
      "Temizlik": 212,
      "Anne - Bebek & Çocuk": 234,
-     "Süt & Süt Ürünleri": 166,
+     "Süt & Süt Ürünleri": 167,
      "Et & Tavuk & Şarküteri": 59,
      "Kağıt Ürünleri": 51,
      "Atıştırmalık & Şekerleme": 3,
