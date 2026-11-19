@@ -1,17 +1,19 @@
 {
- "updated": "2026-11-19T11:28:09+00:00",
- "checked_at": "2026-11-19T11:28:09+00:00",
- "data_updated": "2026-11-19T07:59:27+00:00",
- "last_successful_data_at": "2026-11-19T07:59:27+00:00",
+ "updated": "2026-11-19T12:38:06+00:00",
+ "checked_at": "2026-11-19T12:38:06+00:00",
+ "data_updated": "2026-11-19T12:38:06+00:00",
+ "last_successful_data_at": "2026-11-19T12:38:06+00:00",
  "market": "migros",
  "mode": "deals",
- "status": "durduruldu: www.migros.com.tr: durum 403",
- "complete": false,
- "found": 0,
- "total": 16372,
- "seconds": 7,
+ "status": "tamam",
+ "complete": true,
+ "found": 2707,
+ "total": 16374,
+ "seconds": 304,
  "notes": [
-  "0 indirimli ürün güncellendi"
+  "money-indirimli-market-urunleri-dt-5: 87/87 sayfa",
+  "coklu-indirim-kampanyalari-ve-hediyeli-urunler-dt-1: 5/5 sayfa",
+  "2707 indirimli ürün güncellendi"
  ],
  "quality": {
   "category_count": 34,
@@ -51,54 +53,40 @@
    "Kağıt Ürünleri": 24,
    "Kağıt, Islak Mendil": 86,
    "Giyim & Aksesuar": 353,
-   "Ev, Yaşam": 517,
+   "Ev, Yaşam": 519,
    "Bahçe & Yapı Market": 70,
    "Kitap, Kırtasiye, Oyuncak": 937
   }
  },
  "quality_warnings": [
-  "Tarama başarılı değil: durduruldu: www.migros.com.tr: durum 403",
-  "HTTP 403: erişim sınırı/engeli; tarama durduruldu",
   "'Diğer' kategorisi yüksek: %36.0"
  ],
  "traffic": {
   "www.migros.com.tr": {
-   "requests": 1,
+   "requests": 92,
    "retries": 0,
-   "megabytes": 0.0,
-   "errors": 1
+   "megabytes": 1.5,
+   "errors": 0
   }
  },
- "errors": [
-  {
-   "url": "https://www.migros.com.tr/rest/search/screens/money-indirimli-market-urunleri-dt-5?sayfa=1",
-   "status": 403,
-   "detail": ""
-  }
- ],
- "run_id": "44515045265",
+ "errors": [],
+ "run_id": "44524908174",
  "last_attempt_by_mode": {
   "deals": {
-   "checked_at": "2026-11-19T11:28:09+00:00",
-   "status": "durduruldu: www.migros.com.tr: durum 403",
-   "complete": false,
-   "found": 0,
-   "total": 16372,
-   "seconds": 7,
-   "data_updated": "2026-11-19T07:59:27+00:00",
-   "errors": [
-    {
-     "url": "https://www.migros.com.tr/rest/search/screens/money-indirimli-market-urunleri-dt-5?sayfa=1",
-     "status": 403,
-     "detail": ""
-    }
-   ],
+   "checked_at": "2026-11-19T12:38:06+00:00",
+   "status": "tamam",
+   "complete": true,
+   "found": 2707,
+   "total": 16374,
+   "seconds": 304,
+   "data_updated": "2026-11-19T12:38:06+00:00",
+   "errors": [],
    "notes": [
-    "0 indirimli ürün güncellendi"
+    "money-indirimli-market-urunleri-dt-5: 87/87 sayfa",
+    "coklu-indirim-kampanyalari-ve-hediyeli-urunler-dt-1: 5/5 sayfa",
+    "2707 indirimli ürün güncellendi"
    ],
    "quality_warnings": [
-    "Tarama başarılı değil: durduruldu: www.migros.com.tr: durum 403",
-    "HTTP 403: erişim sınırı/engeli; tarama durduruldu",
     "'Diğer' kategorisi yüksek: %36.0"
    ],
    "quality": {
@@ -139,17 +127,17 @@
      "Kağıt Ürünleri": 24,
      "Kağıt, Islak Mendil": 86,
      "Giyim & Aksesuar": 353,
-     "Ev, Yaşam": 517,
+     "Ev, Yaşam": 519,
      "Bahçe & Yapı Market": 70,
      "Kitap, Kırtasiye, Oyuncak": 937
     }
    },
    "traffic": {
     "www.migros.com.tr": {
-     "requests": 1,
+     "requests": 92,
      "retries": 0,
-     "megabytes": 0.0,
-     "errors": 1
+     "megabytes": 1.5,
+     "errors": 0
     }
    }
   },
