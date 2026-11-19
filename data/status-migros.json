@@ -1,6 +1,6 @@
 {
- "updated": "2026-11-19T09:38:25+00:00",
- "checked_at": "2026-11-19T09:38:25+00:00",
+ "updated": "2026-11-19T11:28:09+00:00",
+ "checked_at": "2026-11-19T11:28:09+00:00",
  "data_updated": "2026-11-19T07:59:27+00:00",
  "last_successful_data_at": "2026-11-19T07:59:27+00:00",
  "market": "migros",
@@ -76,10 +76,10 @@
    "detail": ""
   }
  ],
- "run_id": "44498235618",
+ "run_id": "44515045265",
  "last_attempt_by_mode": {
   "deals": {
-   "checked_at": "2026-11-19T09:38:25+00:00",
+   "checked_at": "2026-11-19T11:28:09+00:00",
    "status": "durduruldu: www.migros.com.tr: durum 403",
    "complete": false,
    "found": 0,
