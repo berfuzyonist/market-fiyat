@@ -1,19 +1,19 @@
 {
- "updated": "2026-11-19T18:32:36+00:00",
- "checked_at": "2026-11-19T18:32:36+00:00",
- "data_updated": "2026-11-19T18:32:36+00:00",
- "last_successful_data_at": "2026-11-19T18:32:36+00:00",
+ "updated": "2026-11-19T19:42:55+00:00",
+ "checked_at": "2026-11-19T19:42:55+00:00",
+ "data_updated": "2026-11-19T19:42:55+00:00",
+ "last_successful_data_at": "2026-11-19T19:42:55+00:00",
  "market": "migros",
  "mode": "deals",
  "status": "tamam",
  "complete": true,
- "found": 2686,
+ "found": 2681,
  "total": 16374,
  "seconds": 305,
  "notes": [
   "money-indirimli-market-urunleri-dt-5: 86/86 sayfa",
   "coklu-indirim-kampanyalari-ve-hediyeli-urunler-dt-1: 5/5 sayfa",
-  "2686 indirimli ürün güncellendi"
+  "2681 indirimli ürün güncellendi"
  ],
  "quality": {
   "category_count": 34,
@@ -70,21 +70,21 @@
   }
  },
  "errors": [],
- "run_id": "44587988951",
+ "run_id": "44600288969",
  "last_attempt_by_mode": {
   "deals": {
-   "checked_at": "2026-11-19T18:32:36+00:00",
+   "checked_at": "2026-11-19T19:42:55+00:00",
    "status": "tamam",
    "complete": true,
-   "found": 2686,
+   "found": 2681,
    "total": 16374,
    "seconds": 305,
-   "data_updated": "2026-11-19T18:32:36+00:00",
+   "data_updated": "2026-11-19T19:42:55+00:00",
    "errors": [],
    "notes": [
     "money-indirimli-market-urunleri-dt-5: 86/86 sayfa",
     "coklu-indirim-kampanyalari-ve-hediyeli-urunler-dt-1: 5/5 sayfa",
-    "2686 indirimli ürün güncellendi"
+    "2681 indirimli ürün güncellendi"
    ],
    "quality_warnings": [
     "'Diğer' kategorisi yüksek: %36.0"
