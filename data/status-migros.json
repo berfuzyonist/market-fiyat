@@ -1,19 +1,17 @@
 {
- "updated": "2026-11-19T07:59:27+00:00",
- "checked_at": "2026-11-19T07:59:27+00:00",
+ "updated": "2026-11-19T09:38:25+00:00",
+ "checked_at": "2026-11-19T09:38:25+00:00",
  "data_updated": "2026-11-19T07:59:27+00:00",
  "last_successful_data_at": "2026-11-19T07:59:27+00:00",
  "market": "migros",
  "mode": "deals",
- "status": "tamam",
- "complete": true,
- "found": 2737,
+ "status": "durduruldu: www.migros.com.tr: durum 403",
+ "complete": false,
+ "found": 0,
  "total": 16372,
- "seconds": 314,
+ "seconds": 7,
  "notes": [
-  "money-indirimli-market-urunleri-dt-5: 88/88 sayfa",
-  "coklu-indirim-kampanyalari-ve-hediyeli-urunler-dt-1: 5/5 sayfa",
-  "2737 indirimli ürün güncellendi"
+  "0 indirimli ürün güncellendi"
  ],
  "quality": {
   "category_count": 34,
@@ -59,34 +57,48 @@
   }
  },
  "quality_warnings": [
+  "Tarama başarılı değil: durduruldu: www.migros.com.tr: durum 403",
+  "HTTP 403: erişim sınırı/engeli; tarama durduruldu",
   "'Diğer' kategorisi yüksek: %36.0"
  ],
  "traffic": {
   "www.migros.com.tr": {
-   "requests": 93,
+   "requests": 1,
    "retries": 0,
-   "megabytes": 1.6,
-   "errors": 0
+   "megabytes": 0.0,
+   "errors": 1
   }
  },
- "errors": [],
- "run_id": "44483181570",
+ "errors": [
+  {
+   "url": "https://www.migros.com.tr/rest/search/screens/money-indirimli-market-urunleri-dt-5?sayfa=1",
+   "status": 403,
+   "detail": ""
+  }
+ ],
+ "run_id": "44498235618",
  "last_attempt_by_mode": {
   "deals": {
-   "checked_at": "2026-11-19T07:59:27+00:00",
-   "status": "tamam",
-   "complete": true,
-   "found": 2737,
+   "checked_at": "2026-11-19T09:38:25+00:00",
+   "status": "durduruldu: www.migros.com.tr: durum 403",
+   "complete": false,
+   "found": 0,
    "total": 16372,
-   "seconds": 314,
+   "seconds": 7,
    "data_updated": "2026-11-19T07:59:27+00:00",
-   "errors": [],
+   "errors": [
+    {
+     "url": "https://www.migros.com.tr/rest/search/screens/money-indirimli-market-urunleri-dt-5?sayfa=1",
+     "status": 403,
+     "detail": ""
+    }
+   ],
    "notes": [
-    "money-indirimli-market-urunleri-dt-5: 88/88 sayfa",
-    "coklu-indirim-kampanyalari-ve-hediyeli-urunler-dt-1: 5/5 sayfa",
-    "2737 indirimli ürün güncellendi"
+    "0 indirimli ürün güncellendi"
    ],
    "quality_warnings": [
+    "Tarama başarılı değil: durduruldu: www.migros.com.tr: durum 403",
+    "HTTP 403: erişim sınırı/engeli; tarama durduruldu",
     "'Diğer' kategorisi yüksek: %36.0"
    ],
    "quality": {
@@ -134,10 +146,10 @@
    },
    "traffic": {
     "www.migros.com.tr": {
-     "requests": 93,
+     "requests": 1,
      "retries": 0,
-     "megabytes": 1.6,
-     "errors": 0
+     "megabytes": 0.0,
+     "errors": 1
     }
    }
   },
