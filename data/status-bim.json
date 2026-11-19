@@ -1,15 +1,15 @@
 {
- "updated": "2026-11-19T06:24:24+00:00",
- "checked_at": "2026-11-19T06:24:24+00:00",
- "data_updated": "2026-11-19T06:24:24+00:00",
- "last_successful_data_at": "2026-11-19T06:24:24+00:00",
+ "updated": "2026-11-19T14:29:54+00:00",
+ "checked_at": "2026-11-19T14:29:54+00:00",
+ "data_updated": "2026-11-19T14:29:54+00:00",
+ "last_successful_data_at": "2026-11-19T14:29:54+00:00",
  "market": "bim",
  "mode": "aktuel",
  "status": "tamam",
  "complete": true,
  "found": 647,
  "total": 647,
- "seconds": 50,
+ "seconds": 52,
  "notes": [
   "10 Kasım Salı: 86 ürün",
   "11 Kasım Çarşamba: 9 ürün",
@@ -63,16 +63,16 @@
   }
  },
  "errors": [],
- "run_id": "44471812513",
+ "run_id": "44544202574",
  "last_attempt_by_mode": {
   "aktuel": {
-   "checked_at": "2026-11-19T06:24:24+00:00",
+   "checked_at": "2026-11-19T14:29:54+00:00",
    "status": "tamam",
    "complete": true,
    "found": 647,
    "total": 647,
-   "seconds": 50,
-   "data_updated": "2026-11-19T06:24:24+00:00",
+   "seconds": 52,
+   "data_updated": "2026-11-19T14:29:54+00:00",
    "errors": [],
    "notes": [
     "10 Kasım Salı: 86 ürün",
