@@ -1,19 +1,19 @@
 {
- "updated": "2026-11-19T17:11:03+00:00",
- "checked_at": "2026-11-19T17:11:03+00:00",
- "data_updated": "2026-11-19T17:11:03+00:00",
- "last_successful_data_at": "2026-11-19T17:11:03+00:00",
+ "updated": "2026-11-19T18:31:19+00:00",
+ "checked_at": "2026-11-19T18:31:19+00:00",
+ "data_updated": "2026-11-19T18:31:19+00:00",
+ "last_successful_data_at": "2026-11-19T18:31:19+00:00",
  "market": "sok",
  "mode": "deals",
  "status": "tamam",
  "complete": true,
- "found": 376,
+ "found": 375,
  "total": 2927,
- "seconds": 93,
+ "seconds": 94,
  "notes": [
   "kampanyalar: 92 ürün",
   "indirimli-urunler-cms-pl1: sitede 392, okunan 399, 20/20 sayfa (son sayfa)",
-  "376 indirimli ürün güncellendi"
+  "375 indirimli ürün güncellendi"
  ],
  "quality": {
   "category_count": 21,
@@ -55,21 +55,21 @@
   }
  },
  "errors": [],
- "run_id": "44574083718",
+ "run_id": "44588381307",
  "last_attempt_by_mode": {
   "deals": {
-   "checked_at": "2026-11-19T17:11:03+00:00",
+   "checked_at": "2026-11-19T18:31:19+00:00",
    "status": "tamam",
    "complete": true,
-   "found": 376,
+   "found": 375,
    "total": 2927,
-   "seconds": 93,
-   "data_updated": "2026-11-19T17:11:03+00:00",
+   "seconds": 94,
+   "data_updated": "2026-11-19T18:31:19+00:00",
    "errors": [],
    "notes": [
     "kampanyalar: 92 ürün",
     "indirimli-urunler-cms-pl1: sitede 392, okunan 399, 20/20 sayfa (son sayfa)",
-    "376 indirimli ürün güncellendi"
+    "375 indirimli ürün güncellendi"
    ],
    "quality_warnings": [],
    "quality": {
