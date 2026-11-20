@@ -1,19 +1,19 @@
 {
- "updated": "2026-11-20T02:19:18+00:00",
- "checked_at": "2026-11-20T02:19:18+00:00",
- "data_updated": "2026-11-20T02:19:18+00:00",
- "last_successful_data_at": "2026-11-20T02:19:18+00:00",
+ "updated": "2026-11-20T03:27:33+00:00",
+ "checked_at": "2026-11-20T03:27:33+00:00",
+ "data_updated": "2026-11-20T03:27:33+00:00",
+ "last_successful_data_at": "2026-11-20T03:27:33+00:00",
  "market": "sok",
  "mode": "deals",
  "status": "tamam",
  "complete": true,
- "found": 388,
+ "found": 387,
  "total": 2930,
- "seconds": 91,
+ "seconds": 94,
  "notes": [
   "kampanyalar: 88 ürün",
   "indirimli-urunler-cms-pl1: sitede 404, okunan 403, 21/21 sayfa (son sayfa)",
-  "388 indirimli ürün güncellendi"
+  "387 indirimli ürün güncellendi"
  ],
  "quality": {
   "category_count": 21,
@@ -41,8 +41,8 @@
    "Dondurma": 85,
    "Meyve & Sebze": 47,
    "Oyuncak": 11,
-   "Ev & Mutfak": 1,
-   "Diğer": 5
+   "Diğer": 5,
+   "Ev & Mutfak": 1
   }
  },
  "quality_warnings": [],
@@ -55,21 +55,21 @@
   }
  },
  "errors": [],
- "run_id": "44659741488",
+ "run_id": "44667667164",
  "last_attempt_by_mode": {
   "deals": {
-   "checked_at": "2026-11-20T02:19:18+00:00",
+   "checked_at": "2026-11-20T03:27:33+00:00",
    "status": "tamam",
    "complete": true,
-   "found": 388,
+   "found": 387,
    "total": 2930,
-   "seconds": 91,
-   "data_updated": "2026-11-20T02:19:18+00:00",
+   "seconds": 94,
+   "data_updated": "2026-11-20T03:27:33+00:00",
    "errors": [],
    "notes": [
     "kampanyalar: 88 ürün",
     "indirimli-urunler-cms-pl1: sitede 404, okunan 403, 21/21 sayfa (son sayfa)",
-    "388 indirimli ürün güncellendi"
+    "387 indirimli ürün güncellendi"
    ],
    "quality_warnings": [],
    "quality": {
@@ -98,8 +98,8 @@
      "Dondurma": 85,
      "Meyve & Sebze": 47,
      "Oyuncak": 11,
-     "Ev & Mutfak": 1,
-     "Diğer": 5
+     "Diğer": 5,
+     "Ev & Mutfak": 1
     }
    },
    "traffic": {
