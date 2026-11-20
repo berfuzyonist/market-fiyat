@@ -1,4 +1,4 @@
-{"updated": "2026-11-20T13:56:24+00:00", "market": "migros", "prefix": {"migros": {"image": "https://images.migrosone.com/sanalmarket/product/", "url": "https://www.migros.com.tr/"}}, "cats": {"migros": ["Anne & Bebek", "Atıştırmalık", "Atıştırmalık & Şekerleme", "Bahçe & Yapı Market", "Bakliyat & Temel Gıda", "Bebek", "Deterjan, Temizlik", "Diğer", "Dondurma", "Dondurulmuş Gıda", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et, Tavuk & Şarküteri", "Et, Tavuk, Balık", "Ev & Mutfak", "Ev, Yaşam", "Evcil Hayvan", "Fırın, Pastane", "Giyim & Aksesuar", "Hazır Yemek, Meze", "Kahvaltılık", "Kağıt Ürünleri", "Kağıt, Islak Mendil", "Kitap, Kırtasiye, Oyuncak", "Kişisel Bakım & Kozmetik", "Kişisel Bakım, Kozmetik, Sağlık", "Meyve & Sebze", "Meyve, Sebze", "Oyuncak & Hobi", "Süt & Süt Ürünleri", "Süt, Kahvaltılık", "Temel Gıda", "Temizlik", "Çiçek", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat", "promo"],"products":[
+{"updated": "2026-11-20T15:35:22+00:00", "market": "migros", "prefix": {"migros": {"image": "https://images.migrosone.com/sanalmarket/product/", "url": "https://www.migros.com.tr/"}}, "cats": {"migros": ["Anne & Bebek", "Atıştırmalık", "Atıştırmalık & Şekerleme", "Bahçe & Yapı Market", "Bakliyat & Temel Gıda", "Bebek", "Deterjan, Temizlik", "Diğer", "Dondurma", "Dondurulmuş Gıda", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et, Tavuk & Şarküteri", "Et, Tavuk, Balık", "Ev & Mutfak", "Ev, Yaşam", "Evcil Hayvan", "Fırın, Pastane", "Giyim & Aksesuar", "Hazır Yemek, Meze", "Kahvaltılık", "Kağıt Ürünleri", "Kağıt, Islak Mendil", "Kitap, Kırtasiye, Oyuncak", "Kişisel Bakım & Kozmetik", "Kişisel Bakım, Kozmetik, Sağlık", "Meyve & Sebze", "Meyve, Sebze", "Oyuncak & Hobi", "Süt & Süt Ürünleri", "Süt, Kahvaltılık", "Temel Gıda", "Temizlik", "Çiçek", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat", "promo"],"products":[
 ["migros:01010084","Yayla Yerli Pirinç Osmancık Bölgesi Mahsulü 2 Kg",244.95,244.95,1,"01010084/01010084_1-270e94.jpg","yayla-yerli-pirinc-osmancik-bolgesi-mahsulu-2-kg-p-f69a4",4,""],
 ["migros:01010085","Yayla Basmati Pirinç 1 Kg",199.95,199.95,1,"01010085/01010085_1-634e4e.jpg","yayla-basmati-pirinc-1-kg-p-f69a5",4,""],
 ["migros:01010086","Yayla Aşurelik Buğday 1 Kg",63.95,63.95,1,"1010086/1010086-2958da.jpg","yayla-asurelik-bugday-1-kg-p-f69a6",7,""],
@@ -6295,7 +6295,7 @@
 ["migros:13500037","Keskinoğlu Piliç Kasap Köfte 300 G",92.95,92.95,1,"13500037/13500037_1-4f3902.jpg","keskinoglu-pilic-kasap-kofte-300-g-p-cdfe85",13,""],
 ["migros:13500053","Gedik Soslu Piliç Döner 400 + 100 G",185.5,185.5,1,"13500053/13500053_1-9ac14f.jpg","gedik-soslu-pilic-doner-400-100-g-p-cdfe95",7,""],
 ["migros:13500608","Lezita Piliç Acılı Kebap 400 G",89.95,109.95,1,"13500608/13500608_1-c4dd22.jpg","lezita-pilic-acili-kebap-400-g-p-ce00c0",14,""],
-["migros:13500610","Gedik Piliç Nugget 700 G",164.95,164.95,1,"13500610/13500610_1-7a9b2b.jpg","gedik-pilic-nugget-700-g-p-ce00c2",7,""],
+["migros:13500610","Gedik Piliç Nugget 700 G",124.95,159.95,1,"13500610/13500610_1-7a9b2b.jpg","gedik-pilic-nugget-700-g-p-ce00c2",14,""],
 ["migros:13500611","Lezita Piliç Köfte 300 G",72.5,72.5,1,"13500611/13500611_1-91898b.jpg","lezita-pilic-kofte-300-g-p-ce00c3",13,""],
 ["migros:13500613","Lezita Piliç Yaprak Döner 200 G",77.5,77.5,1,"13500613/13500613_1-de8db9.jpg","lezita-pilic-yaprak-doner-200-g-p-ce00c5",7,""],
 ["migros:13500616","Keskinoğlu Piliç Çıtır Çubuk 300 G",118.5,118.5,1,"13500616/13500616_1-e8e788.jpg","keskinoglu-pilic-citir-cubuk-300-g-p-ce00c8",7,""],
@@ -7664,6 +7664,7 @@
 ["migros:28600756","Aressa Zencefil Püresi Paket Adet 80 G",199.5,199.5,1,"28600756/28600756_1-82bd4c.png","aressa-zencefil-puresi-paket-adet-80-g-p-1b469b4",7,""],
 ["migros:28601018","Excelente Zencefil 250 G",83.95,83.95,1,"28601018/28601018-fd82e8.jpg","excelentezencefil-250-g-p-1b46aba",7,""],
 ["migros:28601021","Si&Ha Zencefil Ezmesi 90 G",237.95,237.95,1,"28601021/28601021_1-6612fb.jpg","siha-zencefil-ezmesi-90-g-p-1b46abd",7,""],
+["migros:28901028","Soloplant Çift Dal Orkide",697.46,929.95,1,"28901028/phalenopsis-orkide-buyuk-2-dal-d510d8.jpg","soloplant-cift-dal-orkide-p-1b8fea4",34,""],
 ["migros:28901052","Yanko Yucca Tekli",397.46,529.95,1,"28901052/28901052-f6643c.jpg","yanko-yucca-tekli-p-1b8febc",34,""],
 ["migros:28901079","Kasımpatı",101.21,134.95,1,"28901079/28901079-74ca6d.jpg","kasimpati-p-1b8fed7",34,""],
 ["migros:28901221","Anthurium",337.46,449.95,1,"28901221/28901221_1-47a395.jpg","anthurium-p-1b8ff65",34,""],
@@ -7674,6 +7675,7 @@
 ["migros:28901961","Solo Plant Orkide Q12 ( 50-70 Cm )",699.95,699.95,1,"28901961/28901961_1-c32c58.jpg","solo-plant-orkide-q12-50-70-cm-p-1b90249",7,""],
 ["migros:28902884","Barış Çiçeği (Spathphyllium) Q12",247.46,329.95,1,"28902884/28902884_1-511d2a.jpg","baris-cicegi-spathphyllium-q12-p-1b905e4",34,""],
 ["migros:28902885","Barış Çiçeği (Spathyphillium) Q12 2",187.46,249.95,1,"28902885/28902885-346922.jpg","baris-cicegi-spathyphillium-q12-2-p-1b905e5",34,""],
+["migros:28902902","Asya Lale Saksılı 3'lü Sümbül",299.96,399.95,1,"28902902/28902902-f5284f.jpg","asya-lale-saksili-3lu-sumbul-p-1b905f6",34,""],
 ["migros:28903582","Asya Lale Sonbahar Çiçek Soğanı",149.96,199.95,1,"28903582/28903582_1-f33c64.JPG","asya-lale-sonbahar-cicek-sogani-p-1b9089e",34,""],
 ["migros:28903740","Asya Lale Saksılı 2'li Zambak",247.46,329.95,1,"28903740/28903740-711eea.jpg","asya-lale-saksili-2li-zambak-p-1b9093c",34,""],
 ["migros:28903747","Queen Mini Kalanchoe",63.71,84.95,1,"28903747/28903747_1-c4dd05.jpg","queen-mini-kalanchoe-p-1b90943",34,""],
