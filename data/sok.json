@@ -1,7 +1,7 @@
-{"updated": "2026-11-20T20:55:26+00:00", "market": "sok", "prefix": {"sok": {"image": "https://images.ceptesok.com/cdn-cgi/image/width=216,height=216,fit=pad,quality=80,format=webp/product-assets/sub-folder/", "url": "https://www.sokmarket.com.tr/"}}, "cats": {"sok": ["Anne - Bebek & Çocuk", "Atıştırmalık", "Atıştırmalık & Şekerleme", "Bahçe & Yapı Market", "Bakliyat & Temel Gıda", "Diğer", "Dondurma", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et & Tavuk & Şarküteri", "Ev & Mutfak", "Ev & Yaşam", "Evcil Dostlar", "Giyim & Aksesuar", "Kahvaltılık", "Kağıt Ürünleri", "Kişisel Bakım & Kozmetik", "Meyve & Sebze", "Oyuncak", "Süt & Süt Ürünleri", "Temizlik", "Yemeklik Malzemeler", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat", "promo"],"products":[
+{"updated": "2026-11-20T21:52:46+00:00", "market": "sok", "prefix": {"sok": {"image": "https://images.ceptesok.com/cdn-cgi/image/width=216,height=216,fit=pad,quality=80,format=webp/product-assets/sub-folder/", "url": "https://www.sokmarket.com.tr/"}}, "cats": {"sok": ["Anne - Bebek & Çocuk", "Atıştırmalık", "Atıştırmalık & Şekerleme", "Bahçe & Yapı Market", "Bakliyat & Temel Gıda", "Diğer", "Dondurma", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et & Tavuk & Şarküteri", "Ev & Mutfak", "Ev & Yaşam", "Evcil Dostlar", "Giyim & Aksesuar", "Kahvaltılık", "Kağıt Ürünleri", "Kişisel Bakım & Kozmetik", "Meyve & Sebze", "Oyuncak", "Süt & Süt Ürünleri", "Temizlik", "Yemeklik Malzemeler", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat", "promo"],"products":[
 ["sok:10","Crown Cola Pet 250 ml",14.0,14.0,1,"7287ee89-01d2-4b88-9f7c-23ad45e4d12c.jpg","crown-cola-pet-250-ml-p-10",23,""],
 ["sok:1009","İnci Soğan Halkası 450 g",55.0,55.0,1,"3b7dfe2d-f53e-4263-9011-3a26030cdc54.jpg","inci-sogan-halkasi-450-g-p-1009",7,""],
-["sok:1025","Ülker Dankek Pöti Fındıklı Kakaolu 24*35 g",240.0,240.0,1,"566ca857-8d91-4a6a-9148-50ff03db6e10.png","ulker-dankek-poti-findikli-kakaolu-24-35-g-p-1025",1,"50 TL ve üzeri alışverişte 165.00 TL!"],
+["sok:1025","Ülker Dankek Pöti Fındıklı Kakaolu 24*35 g",240.0,240.0,1,"566ca857-8d91-4a6a-9148-50ff03db6e10.png","ulker-dankek-poti-findikli-kakaolu-24-35-g-p-1025",1,"50 TL ve üzeri alışverişte 179.00 TL!"],
 ["sok:102753","Nescafe Classic Ekonomik Paket 200 g",399.0,399.0,1,"941433f2-792d-4b41-9a51-5c0d0a11a64e.jpg","nescafe-classic-ekonomik-paket-200-g-p-102753",23,"50 TL ve üzeri alışverişte 279.00 TL!"],
 ["sok:102793","Fanta Mandalina 2.5 L",79.9,90.0,1,"2d222e42-d00e-4438-9cc9-16292960e453.png","fanta-mandalina-2-5-l-p-102793",23,""],
 ["sok:10511","Alpina Cam Ankastre Set",10699.0,10699.0,1,"5b13e389-0977-4691-ba14-7c01cf465b8d.jpg","alpina-cam-ankastre-set-p-10511",9,""],
@@ -2133,7 +2133,7 @@
 ["sok:796484","Bizim Usta Sade Dondurma 600 ml",165.0,165.0,1,"459ae313-fe88-45b9-81fb-5aec4b3efbfd.jpg","bizim-usta-sade-dondurma-600-ml-p-796484",6,""],
 ["sok:797401","Bizim Usta Sade Kakao Dondurma 600 ml",165.0,165.0,1,"e4ef290a-3273-47bb-8218-461e938f6db9.jpg","bizim-usta-sade-kakao-dondurma-600-ml-p-797401",6,""],
 ["sok:797408","Morfose Ossion Mat Putty Wax Güçlü Tutuş 100 Ml",159.0,229.0,1,"fdd7edc0-afd9-4ce8-b98c-eab679f63437.jpg","morfose-ossion-mat-putty-wax-guclu-tutus-100-ml-p-797408",17,""],
-["sok:797409","Colgate Twister 2+1 Diş Fırçası",299.0,299.0,1,"73171b55-2e86-407f-9bec-82fca46e9fcf.png","colgate-twister-2-1-dis-fircasi-p-797409",17,""],
+["sok:797409","Colgate Twister 2+1 Diş Fırçası",299.0,299.0,1,"73171b55-2e86-407f-9bec-82fca46e9fcf.png","colgate-twister-2-1-dis-fircasi-p-797409",17,"50 TL ve üzeri alışverişte 159.00 TL!"],
 ["sok:797410","Perwoll Yumuşatıcı Derin Ferahlık 1.2 L",199.0,299.0,1,"472b6163-c23c-4391-bcd3-c1db7c27ab1f.png","perwoll-yumusatici-derin-ferahlik-1-2-l-p-797410",21,""],
 ["sok:797411","Perwoll Yumuşatıcı Çiçek Ferahlığı 1.2 L",199.0,299.0,1,"056c72c5-2df5-4430-ae6f-eb096eb22e84.png","perwoll-yumusatici-cicek-ferahligi-1-2-l-p-797411",21,""],
 ["sok:797418","Dory Tüy Toplayıcı Rulo",39.95,39.95,1,"d594aeb6-5ad1-4893-bebf-a84e9bcc3d6c.png","dory-tuy-toplayici-rulo-p-797418",12,""],
@@ -2565,7 +2565,7 @@
 ["sok:856590","Molfix Tatlı Rüyalar Junior 5 58'li",455.0,455.0,1,"cf4c02b6-66ea-44c1-acd9-2743728058f6.jpg","molfix-tatli-ruyalar-junior-5-58-li-p-856590",0,""],
 ["sok:856595","Primanova Siyah Havluluk Askı",50.0,50.0,1,"18388fe8-6402-47f5-9de7-0b7d4a1a03b0.jpg","primanova-siyah-havluluk-aski-p-856595",12,""],
 ["sok:857","Tempo Muz Kremalı Bisküvi 4'lü 300 g",37.5,37.5,1,"ee7f8610-57cf-4f55-9663-131e8e91221b.jpg","tempo-muz-kremali-biskuvi-4-lu-300-g-p-857",1,""],
-["sok:857503","Colgate Çay Kahve 50 Ml+Total Diş Macunu 50 Ml",299.0,299.0,1,"073db5de-c44d-480f-b384-a17c1b814237.png","colgate-cay-kahve-50-ml-total-dis-macunu-50-ml-p-857503",17,""],
+["sok:857503","Colgate Çay Kahve 50 Ml+Total Diş Macunu 50 Ml",299.0,299.0,1,"073db5de-c44d-480f-b384-a17c1b814237.png","colgate-cay-kahve-50-ml-total-dis-macunu-50-ml-p-857503",17,"50 TL ve üzeri alışverişte 159.00 TL!"],
 ["sok:857504","Clear Men 3in1 Mentol Şampuan 500 Ml",349.0,349.0,1,"d11f9626-6eed-4c9d-8231-7d3f702795c2.jpg","clear-men-3in1-mentol-sampuan-500-ml-p-857504",17,""],
 ["sok:857505","Clear Men 3in1 Kömür Şampuan 500 Ml",349.0,349.0,1,"87498418-ada0-4b47-9509-a093775eb686.jpg","clear-men-3in1-komur-sampuan-500-ml-p-857505",17,""],
 ["sok:857510","Auren Emaye Siyah Tencere 14 Cm",350.0,350.0,1,"573be443-b469-4c87-b706-aace949262b2.jpg","auren-emaye-siyah-tencere-14-cm-p-857510",12,""],
