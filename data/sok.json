@@ -1,4 +1,4 @@
-{"updated": "2026-11-20T07:20:50+00:00", "market": "sok", "prefix": {"sok": {"image": "https://images.ceptesok.com/cdn-cgi/image/width=216,height=216,fit=pad,quality=80,format=webp/product-assets/sub-folder/", "url": "https://www.sokmarket.com.tr/"}}, "cats": {"sok": ["Anne - Bebek & Çocuk", "Atıştırmalık", "Diğer", "Dondurma", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et & Tavuk & Şarküteri", "Ev & Mutfak", "Ev & Yaşam", "Evcil Dostlar", "Giyim & Aksesuar", "Kahvaltılık", "Kağıt Ürünleri", "Kişisel Bakım & Kozmetik", "Meyve & Sebze", "Oyuncak", "Süt & Süt Ürünleri", "Temizlik", "Yemeklik Malzemeler", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat", "promo"],"products":[
+{"updated": "2026-11-20T08:43:31+00:00", "market": "sok", "prefix": {"sok": {"image": "https://images.ceptesok.com/cdn-cgi/image/width=216,height=216,fit=pad,quality=80,format=webp/product-assets/sub-folder/", "url": "https://www.sokmarket.com.tr/"}}, "cats": {"sok": ["Anne - Bebek & Çocuk", "Atıştırmalık", "Diğer", "Dondurma", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et & Tavuk & Şarküteri", "Ev & Mutfak", "Ev & Yaşam", "Evcil Dostlar", "Giyim & Aksesuar", "Kahvaltılık", "Kağıt Ürünleri", "Kişisel Bakım & Kozmetik", "Meyve & Sebze", "Oyuncak", "Süt & Süt Ürünleri", "Temizlik", "Yemeklik Malzemeler", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat", "promo"],"products":[
 ["sok:10","Crown Cola Pet 250 ml",14.0,14.0,1,"7287ee89-01d2-4b88-9f7c-23ad45e4d12c.jpg","crown-cola-pet-250-ml-p-10",20,""],
 ["sok:1009","İnci Soğan Halkası 450 g",55.0,55.0,1,"3b7dfe2d-f53e-4263-9011-3a26030cdc54.jpg","inci-sogan-halkasi-450-g-p-1009",4,""],
 ["sok:1025","Ülker Dankek Pöti Fındıklı Kakaolu 24*35 g",240.0,240.0,1,"566ca857-8d91-4a6a-9148-50ff03db6e10.png","ulker-dankek-poti-findikli-kakaolu-24-35-g-p-1025",1,"50 TL ve üzeri alışverişte 165.00 TL!"],
@@ -972,7 +972,7 @@
 ["sok:49363","Knorr Çabuk Çorba Ezogelin 22 g",19.95,19.95,1,"4520e8e0-0c70-49c1-86b4-2bf8770b8c7f.jpg","knorr-cabuk-corba-ezogelin-22-g-p-49363",19,""],
 ["sok:493742","Hacı Şakir Katı Sabun Hamam Keyfi 4*200 G",189.0,189.0,1,"884c883b-9b8b-41c5-a92f-8602376dbb29.jpg","haci-sakir-kati-sabun-hamam-keyfi-4-200-g-p-493742",18,"50TLHACISAKIR129TL"],
 ["sok:493745","Algida Plombir Dondurma 120 ml",90.0,90.0,1,"fae72092-645f-4cdd-866f-060182e13983.jpg","algida-plombir-dondurma-120-ml-p-493745",3,""],
-["sok:493746","Golf Woopie Sandwıch Karamel&Çikolata 125 ml",60.0,60.0,1,"7ff9a146-ae12-4275-a445-99ca2305364d.jpg","golf-woopie-sandwich-karamel-cikolata-125-ml-p-493746",3,""],
+["sok:493746","Golf Woopie Sandwıch Karamel&Çikolata 125 ml",45.0,60.0,1,"7ff9a146-ae12-4275-a445-99ca2305364d.jpg","golf-woopie-sandwich-karamel-cikolata-125-ml-p-493746",3,""],
 ["sok:4941","Lio Siyah Zeytin Kuru Sele (351-380) 500 g",149.0,149.0,1,"9b4d42f5-df3f-4f6e-8cb4-622fa0a981d9.jpg","lio-siyah-zeytin-kuru-sele-351-380-500-g-p-4941",12,""],
 ["sok:4944","Ülker Dido Trio 36.5 g",30.0,30.0,1,"ec53c495-b522-4566-b722-1c4836f3f3b2.png","ulker-dido-trio-36-5-g-p-4944",1,""],
 ["sok:4946","Ülker Metro 36 g",17.0,17.0,1,"4204b823-86fd-49b9-b9ee-89318e98cf3e.jpg","ulker-metro-36-g-p-4946",1,""],
@@ -1914,7 +1914,7 @@
 ["sok:729095","Uludağ Meyvelim Ananaslı İçecek 1 l",59.5,59.5,1,"61c07ce7-9e58-4efc-928a-1e7c9353ee79.jpg","uludag-meyvelim-ananasli-icecek-1-l-p-729095",20,""],
 ["sok:7292","Bingo Fresh Pembe Düşler Yüzey Temizleyici 2.5 L",129.0,129.0,1,"2e8a1b12-9a23-43e8-a3c8-e2e00c112e77.png","bingo-fresh-pembe-dusler-yuzey-temizleyici-2-5-l-p-7292",18,""],
 ["sok:7293","Cif Sprey Ultra Hız Mutfak 1000 Ml",95.0,95.0,1,"2be59618-d8dd-4c23-aee6-d4a95218323c.png","cif-sprey-ultra-hiz-mutfak-1000-ml-p-7293",18,""],
-["sok:7300","Golf Bravo Junior Tria-Antep-Badem 6'lı Paket 360 ml",325.0,325.0,1,"63850901-3fd9-40dd-ad14-6544520c83ce.jpg","golf-bravo-junior-tria-antep-badem-6-li-paket-360-ml-p-7300",3,""],
+["sok:7300","Golf Bravo Junior Tria-Antep-Badem 6'lı Paket 360 ml",243.75,325.0,1,"63850901-3fd9-40dd-ad14-6544520c83ce.jpg","golf-bravo-junior-tria-antep-badem-6-li-paket-360-ml-p-7300",3,""],
 ["sok:730022","Miskets Carnival Sütlü Çikolata Mini Bisküvi 50 g",39.9,39.9,1,"8e7f778a-4fa0-4f17-9dab-bd204c866c80.jpg","miskets-carnival-sutlu-cikolata-mini-biskuvi-50-g-p-730022",1,""],
 ["sok:73010","Sensodyne Derin Temizlik Diş Macunu 75 Ml",229.0,229.0,1,"2267376b-b5c3-4676-ae0e-9ef00a4a7f87.png","sensodyne-derin-temizlik-dis-macunu-75-ml-p-73010",14,"50 TL ve üzeri alışverişte 119.00 TL!"],
 ["sok:730141","Pantene Saç Yağı Argan 100 Ml",369.0,369.0,1,"4110067b-92dc-465b-9307-dec92e5ccc0f.jpg","pantene-sac-yagi-argan-100-ml-p-730141",14,""],
