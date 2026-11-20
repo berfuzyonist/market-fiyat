@@ -1,15 +1,15 @@
 {
- "updated": "2026-11-20T09:39:39+00:00",
- "checked_at": "2026-11-20T09:39:39+00:00",
- "data_updated": "2026-11-20T09:39:39+00:00",
- "last_successful_data_at": "2026-11-20T09:39:39+00:00",
+ "updated": "2026-11-20T10:39:30+00:00",
+ "checked_at": "2026-11-20T10:39:30+00:00",
+ "data_updated": "2026-11-20T10:39:30+00:00",
+ "last_successful_data_at": "2026-11-20T10:39:30+00:00",
  "market": "migros",
  "mode": "deals",
  "status": "tamam",
  "complete": true,
  "found": 3024,
  "total": 16459,
- "seconds": 341,
+ "seconds": 347,
  "notes": [
   "money-indirimli-market-urunleri-dt-5: 97/97 sayfa",
   "coklu-indirim-kampanyalari-ve-hediyeli-urunler-dt-1: 6/6 sayfa",
@@ -70,16 +70,16 @@
   }
  },
  "errors": [],
- "run_id": "44711788920",
+ "run_id": "44720262745",
  "last_attempt_by_mode": {
   "deals": {
-   "checked_at": "2026-11-20T09:39:39+00:00",
+   "checked_at": "2026-11-20T10:39:30+00:00",
    "status": "tamam",
    "complete": true,
    "found": 3024,
    "total": 16459,
-   "seconds": 341,
-   "data_updated": "2026-11-20T09:39:39+00:00",
+   "seconds": 347,
+   "data_updated": "2026-11-20T10:39:30+00:00",
    "errors": [],
    "notes": [
     "money-indirimli-market-urunleri-dt-5: 97/97 sayfa",
