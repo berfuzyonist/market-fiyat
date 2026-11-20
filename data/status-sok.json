@@ -1,19 +1,19 @@
 {
- "updated": "2026-11-20T16:35:53+00:00",
- "checked_at": "2026-11-20T16:35:53+00:00",
- "data_updated": "2026-11-20T16:35:53+00:00",
- "last_successful_data_at": "2026-11-20T16:35:53+00:00",
+ "updated": "2026-11-20T17:37:42+00:00",
+ "checked_at": "2026-11-20T17:37:42+00:00",
+ "data_updated": "2026-11-20T17:37:42+00:00",
+ "last_successful_data_at": "2026-11-20T17:37:42+00:00",
  "market": "sok",
  "mode": "deals",
  "status": "tamam",
  "complete": true,
- "found": 383,
+ "found": 386,
  "total": 2837,
- "seconds": 95,
+ "seconds": 103,
  "notes": [
   "kampanyalar: 88 ürün",
-  "indirimli-urunler-cms-pl1: sitede 396, okunan 396, 20/20 sayfa (son sayfa)",
-  "383 indirimli ürün güncellendi"
+  "indirimli-urunler-cms-pl1: sitede 396, okunan 399, 20/20 sayfa (son sayfa)",
+  "386 indirimli ürün güncellendi"
  ],
  "quality": {
   "category_count": 24,
@@ -35,6 +35,7 @@
    "Süt & Süt Ürünleri": 165,
    "Ev & Yaşam": 262,
    "Et & Tavuk & Şarküteri": 54,
+   "Ev & Mutfak": 2,
    "Kağıt Ürünleri": 50,
    "Dondurma": 82,
    "Giyim & Aksesuar": 41,
@@ -44,7 +45,6 @@
    "Atıştırmalık & Şekerleme": 1,
    "Diğer": 14,
    "Bahçe & Yapı Market": 1,
-   "Ev & Mutfak": 2,
    "Oyuncak": 3
   }
  },
@@ -58,21 +58,21 @@
   }
  },
  "errors": [],
- "run_id": "44774694905",
+ "run_id": "44784814566",
  "last_attempt_by_mode": {
   "deals": {
-   "checked_at": "2026-11-20T16:35:53+00:00",
+   "checked_at": "2026-11-20T17:37:42+00:00",
    "status": "tamam",
    "complete": true,
-   "found": 383,
+   "found": 386,
    "total": 2837,
-   "seconds": 95,
-   "data_updated": "2026-11-20T16:35:53+00:00",
+   "seconds": 103,
+   "data_updated": "2026-11-20T17:37:42+00:00",
    "errors": [],
    "notes": [
     "kampanyalar: 88 ürün",
-    "indirimli-urunler-cms-pl1: sitede 396, okunan 396, 20/20 sayfa (son sayfa)",
-    "383 indirimli ürün güncellendi"
+    "indirimli-urunler-cms-pl1: sitede 396, okunan 399, 20/20 sayfa (son sayfa)",
+    "386 indirimli ürün güncellendi"
    ],
    "quality_warnings": [],
    "quality": {
@@ -95,6 +95,7 @@
      "Süt & Süt Ürünleri": 165,
      "Ev & Yaşam": 262,
      "Et & Tavuk & Şarküteri": 54,
+     "Ev & Mutfak": 2,
      "Kağıt Ürünleri": 50,
      "Dondurma": 82,
      "Giyim & Aksesuar": 41,
@@ -104,7 +105,6 @@
      "Atıştırmalık & Şekerleme": 1,
      "Diğer": 14,
      "Bahçe & Yapı Market": 1,
-     "Ev & Mutfak": 2,
      "Oyuncak": 3
     }
    },

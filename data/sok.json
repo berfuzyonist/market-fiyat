@@ -1,4 +1,4 @@
-{"updated": "2026-11-20T16:35:53+00:00", "market": "sok", "prefix": {"sok": {"image": "https://images.ceptesok.com/cdn-cgi/image/width=216,height=216,fit=pad,quality=80,format=webp/product-assets/sub-folder/", "url": "https://www.sokmarket.com.tr/"}}, "cats": {"sok": ["Anne - Bebek & Çocuk", "Atıştırmalık", "Atıştırmalık & Şekerleme", "Bahçe & Yapı Market", "Bakliyat & Temel Gıda", "Diğer", "Dondurma", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et & Tavuk & Şarküteri", "Ev & Mutfak", "Ev & Yaşam", "Evcil Dostlar", "Giyim & Aksesuar", "Kahvaltılık", "Kağıt Ürünleri", "Kişisel Bakım & Kozmetik", "Meyve & Sebze", "Oyuncak", "Süt & Süt Ürünleri", "Temizlik", "Yemeklik Malzemeler", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat", "promo"],"products":[
+{"updated": "2026-11-20T17:37:42+00:00", "market": "sok", "prefix": {"sok": {"image": "https://images.ceptesok.com/cdn-cgi/image/width=216,height=216,fit=pad,quality=80,format=webp/product-assets/sub-folder/", "url": "https://www.sokmarket.com.tr/"}}, "cats": {"sok": ["Anne - Bebek & Çocuk", "Atıştırmalık", "Atıştırmalık & Şekerleme", "Bahçe & Yapı Market", "Bakliyat & Temel Gıda", "Diğer", "Dondurma", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et & Tavuk & Şarküteri", "Ev & Mutfak", "Ev & Yaşam", "Evcil Dostlar", "Giyim & Aksesuar", "Kahvaltılık", "Kağıt Ürünleri", "Kişisel Bakım & Kozmetik", "Meyve & Sebze", "Oyuncak", "Süt & Süt Ürünleri", "Temizlik", "Yemeklik Malzemeler", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat", "promo"],"products":[
 ["sok:10","Crown Cola Pet 250 ml",14.0,14.0,1,"7287ee89-01d2-4b88-9f7c-23ad45e4d12c.jpg","crown-cola-pet-250-ml-p-10",23,""],
 ["sok:1009","İnci Soğan Halkası 450 g",55.0,55.0,1,"3b7dfe2d-f53e-4263-9011-3a26030cdc54.jpg","inci-sogan-halkasi-450-g-p-1009",7,""],
 ["sok:1025","Ülker Dankek Pöti Fındıklı Kakaolu 24*35 g",240.0,240.0,1,"566ca857-8d91-4a6a-9148-50ff03db6e10.png","ulker-dankek-poti-findikli-kakaolu-24-35-g-p-1025",1,"50 TL ve üzeri alışverişte 165.00 TL!"],
@@ -1366,7 +1366,7 @@
 ["sok:6049","Domates Salçası Bizim Vatan 830 g",67.5,67.5,1,"a58688cd-62ee-45a0-b485-d378ccbb311c.png","domates-salcasi-bizim-vatan-830-g-p-6049",22,""],
 ["sok:6050","Amigo Kaju Fıstığı 150 g",115.0,115.0,1,"1e8d04ff-05bc-4b84-87f2-2f82c419db0c.jpg","amigo-kaju-fistigi-150-g-p-6050",1,""],
 ["sok:6057","Cappy Karışık Meyve Nektarı 200 mL",20.0,20.0,1,"6292a63c-f0b9-4796-b597-673bc2e57b33.jpg","cappy-karisik-meyve-nektari-200-ml-p-6057",23,""],
-["sok:6058","Golf Maraşım %81 Sütlü Kesme Sade 650 ml",225.0,225.0,1,"f00ef2f3-178d-4272-b3b2-5f3e282a82ca.jpg","golf-marasim-81-sutlu-kesme-sade-650-ml-p-6058",6,""],
+["sok:6058","Golf Maraşım %81 Sütlü Kesme Sade 650 ml",168.75,225.0,1,"f00ef2f3-178d-4272-b3b2-5f3e282a82ca.jpg","golf-marasim-81-sutlu-kesme-sade-650-ml-p-6058",6,""],
 ["sok:6061","Amigo Karışık Kuruyemiş 150 g",129.0,129.0,1,"2a325a4f-0d1f-45cc-88ee-64e5c4e4c874.png","amigo-karisik-kuruyemis-150-g-p-6061",1,""],
 ["sok:6062","Mis Meyve Nektarı Şeftali 1 L",50.0,50.0,1,"94e7f6c8-870f-426d-9168-70e757cbfbc5.jpg","mis-meyve-nektari-seftali-1-l-p-6062",23,""],
 ["sok:6063","Namet Dana Macar Salam 60 g",56.5,56.5,1,"2161ae63-1fbd-459b-86ed-056afd7e3bab.png","namet-dana-macar-salam-60-g-p-6063",10,""],
@@ -1514,7 +1514,7 @@
 ["sok:652330","Kinder Joy Sürpriz Yumurta Erkek 3'lü 60 g",115.0,115.0,1,"340711b5-f3af-4d76-927c-3a7434ab17ae.jpg","kinder-joy-surpriz-yumurta-erkek-3-lu-60-g-p-652330",1,""],
 ["sok:652342","Golf Mcvities 90 ml",71.25,95.0,1,"d46e4ed7-8270-4168-ba89-0720ddac7fe0.png","golf-mcvities-90-ml-p-652342",6,""],
 ["sok:652345","Peros Sıvı Bakım Deterjanı Siyahlar 4 L",399.0,399.0,1,"69bcd6ea-1f08-43e0-9739-f876b43e9fb5.png","peros-sivi-bakim-deterjani-siyahlar-4-l-p-652345",21,""],
-["sok:653251","Golf Mcvities 430 ml",250.0,250.0,1,"a44dd57c-a5e7-4937-a472-3d0c7c22b097.png","golf-mcvities-430-ml-p-653251",6,""],
+["sok:653251","Golf Mcvities 430 ml",187.5,250.0,1,"a44dd57c-a5e7-4937-a472-3d0c7c22b097.png","golf-mcvities-430-ml-p-653251",6,""],
 ["sok:653254","Doritos Turca Haşhaş Domates 130 g",72.0,72.0,1,"62dba798-c51a-4c9f-95a2-2ef2da7e746c.jpg","doritos-turca-hashas-domates-130-g-p-653254",1,""],
 ["sok:653255","Peros Sıvı Bakım Deterjanı Renkliler 4 L",399.0,399.0,1,"9c8ccbee-b66b-4c1e-b8a0-460ae42320a2.png","peros-sivi-bakim-deterjani-renkliler-4-l-p-653255",21,""],
 ["sok:653274","Batman Spor Motor Oyuncak Kutulu",199.0,199.0,1,"edbe7656-e489-47f1-a157-198bb3cb86b8.jpg","batman-spor-motor-oyuncak-kutulu-p-653274",0,""],
@@ -2761,7 +2761,7 @@
 ["sok:8811","Oneo Nane Aromalı Draje Sakız 21 g",31.0,31.0,1,"86895c30-d10f-4974-8e9c-47dd0e3e5c54.png","oneo-nane-aromali-draje-sakiz-21-g-p-8811",1,""],
 ["sok:8815","Eti Browni Intense 50 g",24.95,24.95,1,"8dd1f86a-8d40-484e-bf43-ae58e5e341dd.jpg","eti-browni-intense-50-g-p-8815",1,""],
 ["sok:8824","Amigo Dalından Kuru Üzüm 500 g",99.5,99.5,1,"02c48b78-2f97-45cd-81b3-01bb170a36fb.png","amigo-dalindan-kuru-uzum-500-g-p-8824",18,""],
-["sok:8825","Golf Maraşım %81 Sütlü Sade Dondurma 500 ml",225.0,225.0,1,"622487fd-9ce5-490b-b8db-68167a6a63b1.jpg","golf-marasim-81-sutlu-sade-dondurma-500-ml-p-8825",6,""],
+["sok:8825","Golf Maraşım %81 Sütlü Sade Dondurma 500 ml",168.75,225.0,1,"622487fd-9ce5-490b-b8db-68167a6a63b1.jpg","golf-marasim-81-sutlu-sade-dondurma-500-ml-p-8825",6,""],
 ["sok:887","Tuttaze Alüminyum Folyo 8 M",69.9,69.9,1,"a81f7371-0b52-43b2-a569-4ea949f4c1a1.png","tuttaze-aluminyum-folyo-8-m-p-887",12,""],
 ["sok:8891","Algida Maraş Usulü Sade Dondurma 500 ml",200.0,200.0,1,"2abbbada-cbb0-4423-863d-0c146871309d.png","algida-maras-usulu-sade-dondurma-500-ml-p-8891",6,""],
 ["sok:8893","Raid Electro Sistem 10 Gece",199.0,289.0,1,"11a1e813-d251-44d5-81b7-8483bb418d54.png","raid-electro-sistem-10-gece-p-8893",21,""],
