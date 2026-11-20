@@ -1,19 +1,19 @@
 {
- "updated": "2026-11-20T11:08:42+00:00",
- "checked_at": "2026-11-20T11:08:42+00:00",
- "data_updated": "2026-11-20T11:08:42+00:00",
- "last_successful_data_at": "2026-11-20T11:08:42+00:00",
+ "updated": "2026-11-20T12:06:15+00:00",
+ "checked_at": "2026-11-20T12:06:15+00:00",
+ "data_updated": "2026-11-20T12:06:15+00:00",
+ "last_successful_data_at": "2026-11-20T12:06:15+00:00",
  "market": "sok",
  "mode": "deals",
  "status": "tamam",
  "complete": true,
- "found": 393,
+ "found": 365,
  "total": 2930,
- "seconds": 103,
+ "seconds": 108,
  "notes": [
-  "kampanyalar: 88 ürün",
-  "indirimli-urunler-cms-pl1: sitede 401, okunan 403, 21/21 sayfa (son sayfa)",
-  "393 indirimli ürün güncellendi"
+  "kampanyalar: 87 ürün",
+  "indirimli-urunler-cms-pl1: sitede 399, okunan 399, 20/20 sayfa (son sayfa)",
+  "365 indirimli ürün güncellendi"
  ],
  "quality": {
   "category_count": 21,
@@ -48,28 +48,28 @@
  "quality_warnings": [],
  "traffic": {
   "www.sokmarket.com.tr": {
-   "requests": 22,
+   "requests": 21,
    "retries": 0,
-   "megabytes": 12.4,
+   "megabytes": 11.8,
    "errors": 0
   }
  },
  "errors": [],
- "run_id": "44724887698",
+ "run_id": "44732702767",
  "last_attempt_by_mode": {
   "deals": {
-   "checked_at": "2026-11-20T11:08:42+00:00",
+   "checked_at": "2026-11-20T12:06:15+00:00",
    "status": "tamam",
    "complete": true,
-   "found": 393,
+   "found": 365,
    "total": 2930,
-   "seconds": 103,
-   "data_updated": "2026-11-20T11:08:42+00:00",
+   "seconds": 108,
+   "data_updated": "2026-11-20T12:06:15+00:00",
    "errors": [],
    "notes": [
-    "kampanyalar: 88 ürün",
-    "indirimli-urunler-cms-pl1: sitede 401, okunan 403, 21/21 sayfa (son sayfa)",
-    "393 indirimli ürün güncellendi"
+    "kampanyalar: 87 ürün",
+    "indirimli-urunler-cms-pl1: sitede 399, okunan 399, 20/20 sayfa (son sayfa)",
+    "365 indirimli ürün güncellendi"
    ],
    "quality_warnings": [],
    "quality": {
@@ -104,9 +104,9 @@
    },
    "traffic": {
     "www.sokmarket.com.tr": {
-     "requests": 22,
+     "requests": 21,
      "retries": 0,
-     "megabytes": 12.4,
+     "megabytes": 11.8,
      "errors": 0
     }
    }
