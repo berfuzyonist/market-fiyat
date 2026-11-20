@@ -1,26 +1,26 @@
 {
- "updated": "2026-11-20T10:39:30+00:00",
- "checked_at": "2026-11-20T10:39:30+00:00",
- "data_updated": "2026-11-20T10:39:30+00:00",
- "last_successful_data_at": "2026-11-20T10:39:30+00:00",
+ "updated": "2026-11-20T11:36:06+00:00",
+ "checked_at": "2026-11-20T11:36:06+00:00",
+ "data_updated": "2026-11-20T11:36:06+00:00",
+ "last_successful_data_at": "2026-11-20T11:36:06+00:00",
  "market": "migros",
  "mode": "deals",
  "status": "tamam",
  "complete": true,
- "found": 3024,
- "total": 16459,
- "seconds": 347,
+ "found": 3033,
+ "total": 16468,
+ "seconds": 342,
  "notes": [
   "money-indirimli-market-urunleri-dt-5: 97/97 sayfa",
   "coklu-indirim-kampanyalari-ve-hediyeli-urunler-dt-1: 6/6 sayfa",
-  "3024 indirimli ürün güncellendi"
+  "3033 indirimli ürün güncellendi"
  ],
  "quality": {
   "category_count": 36,
   "empty_category_count": 0,
   "campaign_date_category_count": 0,
   "other_count": 5751,
-  "other_ratio": 0.3494,
+  "other_ratio": 0.3492,
   "category_counts": {
    "Bakliyat & Temel Gıda": 462,
    "Diğer": 5751,
@@ -30,7 +30,7 @@
    "İçecek": 823,
    "Ev & Mutfak": 448,
    "Süt & Süt Ürünleri": 398,
-   "Atıştırmalık": 592,
+   "Atıştırmalık": 595,
    "Süt, Kahvaltılık": 324,
    "Kişisel Bakım, Kozmetik, Sağlık": 746,
    "Et, Tavuk & Şarküteri": 413,
@@ -44,7 +44,7 @@
    "Dondurulmuş Ürünler": 106,
    "Fırın, Pastane": 29,
    "Oyuncak & Hobi": 130,
-   "Elektronik": 328,
+   "Elektronik": 330,
    "Evcil Hayvan": 67,
    "Dondurma": 34,
    "Dondurulmuş Gıda": 68,
@@ -55,9 +55,9 @@
    "Kağıt Ürünleri": 24,
    "Kağıt, Islak Mendil": 86,
    "Giyim & Aksesuar": 353,
-   "Ev, Yaşam": 523,
+   "Ev, Yaşam": 524,
    "Bahçe & Yapı Market": 70,
-   "Kitap, Kırtasiye, Oyuncak": 941
+   "Kitap, Kırtasiye, Oyuncak": 944
   }
  },
  "quality_warnings": [],
@@ -70,21 +70,21 @@
   }
  },
  "errors": [],
- "run_id": "44720262745",
+ "run_id": "44728139569",
  "last_attempt_by_mode": {
   "deals": {
-   "checked_at": "2026-11-20T10:39:30+00:00",
+   "checked_at": "2026-11-20T11:36:06+00:00",
    "status": "tamam",
    "complete": true,
-   "found": 3024,
-   "total": 16459,
-   "seconds": 347,
-   "data_updated": "2026-11-20T10:39:30+00:00",
+   "found": 3033,
+   "total": 16468,
+   "seconds": 342,
+   "data_updated": "2026-11-20T11:36:06+00:00",
    "errors": [],
    "notes": [
     "money-indirimli-market-urunleri-dt-5: 97/97 sayfa",
     "coklu-indirim-kampanyalari-ve-hediyeli-urunler-dt-1: 6/6 sayfa",
-    "3024 indirimli ürün güncellendi"
+    "3033 indirimli ürün güncellendi"
    ],
    "quality_warnings": [],
    "quality": {
@@ -92,7 +92,7 @@
     "empty_category_count": 0,
     "campaign_date_category_count": 0,
     "other_count": 5751,
-    "other_ratio": 0.3494,
+    "other_ratio": 0.3492,
     "category_counts": {
      "Bakliyat & Temel Gıda": 462,
      "Diğer": 5751,
@@ -102,7 +102,7 @@
      "İçecek": 823,
      "Ev & Mutfak": 448,
      "Süt & Süt Ürünleri": 398,
-     "Atıştırmalık": 592,
+     "Atıştırmalık": 595,
      "Süt, Kahvaltılık": 324,
      "Kişisel Bakım, Kozmetik, Sağlık": 746,
      "Et, Tavuk & Şarküteri": 413,
@@ -116,7 +116,7 @@
      "Dondurulmuş Ürünler": 106,
      "Fırın, Pastane": 29,
      "Oyuncak & Hobi": 130,
-     "Elektronik": 328,
+     "Elektronik": 330,
      "Evcil Hayvan": 67,
      "Dondurma": 34,
      "Dondurulmuş Gıda": 68,
@@ -127,9 +127,9 @@
      "Kağıt Ürünleri": 24,
      "Kağıt, Islak Mendil": 86,
      "Giyim & Aksesuar": 353,
-     "Ev, Yaşam": 523,
+     "Ev, Yaşam": 524,
      "Bahçe & Yapı Market": 70,
-     "Kitap, Kırtasiye, Oyuncak": 941
+     "Kitap, Kırtasiye, Oyuncak": 944
     }
    },
    "traffic": {
