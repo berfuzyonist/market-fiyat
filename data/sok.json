@@ -1,4 +1,4 @@
-{"updated": "2026-11-20T12:06:15+00:00", "market": "sok", "prefix": {"sok": {"image": "https://images.ceptesok.com/cdn-cgi/image/width=216,height=216,fit=pad,quality=80,format=webp/product-assets/sub-folder/", "url": "https://www.sokmarket.com.tr/"}}, "cats": {"sok": ["Anne - Bebek & Çocuk", "Atıştırmalık", "Diğer", "Dondurma", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et & Tavuk & Şarküteri", "Ev & Mutfak", "Ev & Yaşam", "Evcil Dostlar", "Giyim & Aksesuar", "Kahvaltılık", "Kağıt Ürünleri", "Kişisel Bakım & Kozmetik", "Meyve & Sebze", "Oyuncak", "Süt & Süt Ürünleri", "Temizlik", "Yemeklik Malzemeler", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat", "promo"],"products":[
+{"updated": "2026-11-20T13:17:59+00:00", "market": "sok", "prefix": {"sok": {"image": "https://images.ceptesok.com/cdn-cgi/image/width=216,height=216,fit=pad,quality=80,format=webp/product-assets/sub-folder/", "url": "https://www.sokmarket.com.tr/"}}, "cats": {"sok": ["Anne - Bebek & Çocuk", "Atıştırmalık", "Diğer", "Dondurma", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et & Tavuk & Şarküteri", "Ev & Mutfak", "Ev & Yaşam", "Evcil Dostlar", "Giyim & Aksesuar", "Kahvaltılık", "Kağıt Ürünleri", "Kişisel Bakım & Kozmetik", "Meyve & Sebze", "Oyuncak", "Süt & Süt Ürünleri", "Temizlik", "Yemeklik Malzemeler", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat", "promo"],"products":[
 ["sok:10","Crown Cola Pet 250 ml",14.0,14.0,1,"7287ee89-01d2-4b88-9f7c-23ad45e4d12c.jpg","crown-cola-pet-250-ml-p-10",20,""],
 ["sok:1009","İnci Soğan Halkası 450 g",55.0,55.0,1,"3b7dfe2d-f53e-4263-9011-3a26030cdc54.jpg","inci-sogan-halkasi-450-g-p-1009",4,""],
 ["sok:1025","Ülker Dankek Pöti Fındıklı Kakaolu 24*35 g",240.0,240.0,1,"566ca857-8d91-4a6a-9148-50ff03db6e10.png","ulker-dankek-poti-findikli-kakaolu-24-35-g-p-1025",1,"50 TL ve üzeri alışverişte 165.00 TL!"],
@@ -1119,7 +1119,7 @@
 ["sok:527743","Sobe Saç ve Vücut Parfümü 100 Ml",150.0,150.0,1,"79ac37b6-d74f-4487-ae62-abb97322929e.jpg","sobe-sac-ve-vucut-parfumu-100-ml-p-527743",14,""],
 ["sok:5278","Amigo İç Ay Çekirdeği 100 g",20.5,20.5,1,"047d4081-b0f9-41f7-b350-b6f209a0da9a.png","amigo-ic-ay-cekirdegi-100-g-p-5278",1,""],
 ["sok:5279","Superfresh Mısır Konservesi 3*200 g",89.0,89.0,1,"40508f4e-499c-46bf-b42d-a494ebd2e92f.png","superfresh-misir-konservesi-3-200-g-p-5279",19,""],
-["sok:5280","Golf Roko Çikolata 65 ml",40.0,40.0,1,"06f273c2-7fb4-4a62-b0a5-357af921362d.jpg","golf-roko-cikolata-65-ml-p-5280",3,""],
+["sok:5280","Golf Roko Çikolata 65 ml",30.0,40.0,1,"06f273c2-7fb4-4a62-b0a5-357af921362d.jpg","golf-roko-cikolata-65-ml-p-5280",3,""],
 ["sok:5283","Eti Puf Kakaolu 18 g",6.75,6.75,1,"a86a67eb-72dc-4ae8-a824-eb839ac7e6b0.jpg","eti-puf-kakaolu-18-g-p-5283",1,""],
 ["sok:528651","Karmen Bol Sütlü Çikolata 33 g",29.0,29.0,1,"a60bf87c-3c0b-45ab-a46d-e1e90256999e.jpg","karmen-bol-sutlu-cikolata-33-g-p-528651",1,""],
 ["sok:528668","Asperox Sparx Bulaşık Makinesi Parlatıcısı 400 Ml",99.0,139.0,1,"f21c7688-51c3-4af6-a717-9f760c5936c3.png","asperox-sparx-bulasik-makinesi-parlaticisi-400-ml-p-528668",18,""],
@@ -1352,7 +1352,7 @@
 ["sok:5872","Amigo Yer Fıstığı Ezmesi 340 g",115.0,115.0,1,"839a1f27-cafe-4506-8777-877f21fb53ec.png","amigo-yer-fistigi-ezmesi-340-g-p-5872",12,""],
 ["sok:5873","Mintax Bulaşık Makinesi Temizleyici 250 ml",45.0,45.0,1,"ac7e80c8-322c-4bb9-adc9-2f8db2489cd8.jpg","mintax-bulasik-makinesi-temizleyici-250-ml-p-5873",18,""],
 ["sok:5874","Bioblas Botanicoils Sarımsak Şampuanı 360 ml",209.0,209.0,1,"ff32ed6c-c7bf-423c-8995-c01cbbe0defe.png","bioblas-botanicoils-sarimsak-sampuani-360-ml-p-5874",14,""],
-["sok:5875","Golf Lungo Kakao-Vanilya 105 ml",25.0,25.0,1,"be834017-4052-4620-a7d1-25258718ca2e.jpg","golf-lungo-kakao-vanilya-105-ml-p-5875",3,""],
+["sok:5875","Golf Lungo Kakao-Vanilya 105 ml",18.75,25.0,1,"be834017-4052-4620-a7d1-25258718ca2e.jpg","golf-lungo-kakao-vanilya-105-ml-p-5875",3,""],
 ["sok:587571","Power Tuning Ledli Nemlendirici",250.0,250.0,1,"d275ef81-821f-47a6-b453-aabd93d4bc7c.jpg","power-tuning-ledli-nemlendirici-p-587571",9,""],
 ["sok:5876","Ozmo Yumurta Kafalar 20 g",44.0,44.0,1,"333b8658-c848-437a-aeda-d43c08c9c948.png","ozmo-yumurta-kafalar-20-g-p-5876",1,""],
 ["sok:5879","Biscolata Mood Sütlü Çikolatalı 110 g",69.0,69.0,1,"aea1aaf5-8953-43a6-b605-d5864d5af6fd.png","biscolata-mood-sutlu-cikolatali-110-g-p-5879",1,""],
