@@ -1,4 +1,4 @@
-{"updated": "2026-11-20T15:34:54+00:00", "market": "sok", "prefix": {"sok": {"image": "https://images.ceptesok.com/cdn-cgi/image/width=216,height=216,fit=pad,quality=80,format=webp/product-assets/sub-folder/", "url": "https://www.sokmarket.com.tr/"}}, "cats": {"sok": ["Anne - Bebek & Çocuk", "Atıştırmalık", "Atıştırmalık & Şekerleme", "Bahçe & Yapı Market", "Bakliyat & Temel Gıda", "Diğer", "Dondurma", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et & Tavuk & Şarküteri", "Ev & Mutfak", "Ev & Yaşam", "Evcil Dostlar", "Giyim & Aksesuar", "Kahvaltılık", "Kağıt Ürünleri", "Kişisel Bakım & Kozmetik", "Meyve & Sebze", "Oyuncak", "Süt & Süt Ürünleri", "Temizlik", "Yemeklik Malzemeler", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat", "promo"],"products":[
+{"updated": "2026-11-20T16:35:53+00:00", "market": "sok", "prefix": {"sok": {"image": "https://images.ceptesok.com/cdn-cgi/image/width=216,height=216,fit=pad,quality=80,format=webp/product-assets/sub-folder/", "url": "https://www.sokmarket.com.tr/"}}, "cats": {"sok": ["Anne - Bebek & Çocuk", "Atıştırmalık", "Atıştırmalık & Şekerleme", "Bahçe & Yapı Market", "Bakliyat & Temel Gıda", "Diğer", "Dondurma", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et & Tavuk & Şarküteri", "Ev & Mutfak", "Ev & Yaşam", "Evcil Dostlar", "Giyim & Aksesuar", "Kahvaltılık", "Kağıt Ürünleri", "Kişisel Bakım & Kozmetik", "Meyve & Sebze", "Oyuncak", "Süt & Süt Ürünleri", "Temizlik", "Yemeklik Malzemeler", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat", "promo"],"products":[
 ["sok:10","Crown Cola Pet 250 ml",14.0,14.0,1,"7287ee89-01d2-4b88-9f7c-23ad45e4d12c.jpg","crown-cola-pet-250-ml-p-10",23,""],
 ["sok:1009","İnci Soğan Halkası 450 g",55.0,55.0,1,"3b7dfe2d-f53e-4263-9011-3a26030cdc54.jpg","inci-sogan-halkasi-450-g-p-1009",7,""],
 ["sok:1025","Ülker Dankek Pöti Fındıklı Kakaolu 24*35 g",240.0,240.0,1,"566ca857-8d91-4a6a-9148-50ff03db6e10.png","ulker-dankek-poti-findikli-kakaolu-24-35-g-p-1025",1,"50 TL ve üzeri alışverişte 165.00 TL!"],
@@ -59,6 +59,7 @@
 ["sok:1422","Uludağ Frutti Extra Orman Meyveli 1 L",59.5,59.5,1,"3f543a93-1504-493d-b1d2-793e7ab50561.png","uludag-frutti-extra-orman-meyveli-1-l-p-1422",23,""],
 ["sok:1425","Mintax Sıvı Bulasık Deterjanı Losyon 750 ml",59.9,59.9,1,"a48c99f4-1a07-443f-810b-04c00e38dbcd.jpg","mintax-sivi-bulasik-deterjani-losyon-750-ml-p-1425",21,""],
 ["sok:1445","Deren Seylan Çayı 400 g",290.0,290.0,1,"6534e6fa-ff91-44fe-b942-ad733d9a6ee7.jpg","deren-seylan-cayi-400-g-p-1445",15,""],
+["sok:14521","Elit Rattan Sehpa",199.0,249.0,1,"35490949-db80-418f-9e81-2965161ec942.jpg","elit-rattan-sehpa-p-14521",11,""],
 ["sok:1453","Kotex Günlük Ped Normal 34'lü",60.0,60.0,1,"1e192541-3fe5-4178-9324-655b2f60428d.png","kotex-gunluk-ped-normal-34-lu-p-1453",16,""],
 ["sok:1460","Deren Ice Tea Mango&Ananas 330 ml",24.5,24.5,1,"04875409-efff-453a-8921-b3292c73e807.jpg","deren-ice-tea-mango-ananas-330-ml-p-1460",23,""],
 ["sok:1462","Ülker Dankek Tart Kek Mini 150 g",59.95,59.95,1,"6871bd96-10f6-425d-ad0f-8add71c67c5e.png","ulker-dankek-tart-kek-mini-150-g-p-1462",1,""],
@@ -1568,6 +1569,7 @@
 ["sok:670287","Anadolu Mutfağı Mardin Bulguru 1 kg",54.9,54.9,1,"104a6e07-2869-4aa3-85d5-e8182c37f8dc.png","anadolu-mutfagi-mardin-bulguru-1-kg-p-670287",22,""],
 ["sok:670296","Rexona Men Sport Defence Deodorant 150 Ml",250.0,250.0,1,"f6d249c1-1c56-41f9-99dc-deed56a089d3.png","rexona-men-sport-defence-deodorant-150-ml-p-670296",17,""],
 ["sok:671211","Clear Men Saç Dökülmesine Karşı Şampuan 600 Ml",379.0,379.0,1,"a20a498a-fa31-400e-a46e-894a4410cc86.jpg","clear-men-sac-dokulmesine-karsi-sampuan-600-ml-p-671211",17,""],
+["sok:672","Golf Fantasia Choco Ring Vanilya-Karamel 130 ml",56.25,75.0,1,"fe33c203-d7ea-4f33-93a7-e25b74bd5b09.jpg","golf-fantasia-choco-ring-vanilya-karamel-130-ml-p-672",5,""],
 ["sok:672140","Morfose Milk Therapy Saç Maskesi 25 Ml",25.0,39.9,1,"d1f623e3-2d13-4cd3-a9b7-a4642a7cba51.png","morfose-milk-therapy-sac-maskesi-25-ml-p-672140",17,""],
 ["sok:673058","Morfose Milk Therapy Çift Fazlı Fön Sütü 240 Ml",199.0,289.0,1,"295c109e-37cf-478e-b798-cd512ec030a7.png","morfose-milk-therapy-cift-fazli-fon-sutu-240-ml-p-673058",17,""],
 ["sok:6751","Anavarza Süzme Ciçek Balı 450 g",349.0,349.0,1,"0fecc8b2-4963-47e2-8dab-4b3d5fcd7a65.png","anavarza-suzme-cicek-bali-450-g-p-6751",15,""],
@@ -1782,7 +1784,7 @@
 ["sok:7200","Amigo Sarı Leblebi 200 g",52.0,52.0,1,"4423c636-b13d-41bf-af30-c680afd2bfbe.png","amigo-sari-leblebi-200-g-p-7200",1,""],
 ["sok:7201","Şölen Ozmo Kornet Fındıklı 25 g",17.0,17.0,1,"53aed527-6b5f-4983-b651-52b2a77f5894.png","solen-ozmo-kornet-findikli-25-g-p-7201",1,""],
 ["sok:7202","Ülker Kremini Şeker Çilekli 44 g",29.95,29.95,1,"ac2dd0c2-bd2f-4ddc-a858-5c7c3c4feb5b.png","ulker-kremini-seker-cilekli-44-g-p-7202",1,""],
-["sok:7203","Golf Maraşım Kornet Sade 120 ml",65.0,65.0,1,"ba1327a0-4e78-42b9-a86a-e819bf19f765.jpg","golf-marasim-kornet-sade-120-ml-p-7203",6,""],
+["sok:7203","Golf Maraşım Kornet Sade 120 ml",48.75,65.0,1,"ba1327a0-4e78-42b9-a86a-e819bf19f765.jpg","golf-marasim-kornet-sade-120-ml-p-7203",6,""],
 ["sok:7204","Mis Tereyağı 500 g",239.0,239.0,1,"1fdd46a9-d0dc-4ebc-b90d-0fb66e790419.jpg","mis-tereyagi-500-g-p-7204",20,""],
 ["sok:720513","Rakle Desenli Floral Tatlı Kup 300 Cc 3'lü",299.0,299.0,1,"71b0cdf0-aaed-49e3-a64e-51f0be4819ed.jpg","rakle-desenli-floral-tatli-kup-300-cc-3-lu-p-720513",12,""],
 ["sok:7209","Mis Meyve Nektarı Kayısı 1 L",50.0,50.0,1,"088b0f0b-3a04-4ee7-b282-dca7a9cfab54.jpg","mis-meyve-nektari-kayisi-1-l-p-7209",23,""],
