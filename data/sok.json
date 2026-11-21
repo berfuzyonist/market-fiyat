@@ -1,4 +1,4 @@
-{"updated": "2026-11-20T23:51:43+00:00", "market": "sok", "prefix": {"sok": {"image": "https://images.ceptesok.com/cdn-cgi/image/width=216,height=216,fit=pad,quality=80,format=webp/product-assets/sub-folder/", "url": "https://www.sokmarket.com.tr/"}}, "cats": {"sok": ["Anne - Bebek & Çocuk", "Atıştırmalık", "Atıştırmalık & Şekerleme", "Bahçe & Yapı Market", "Bakliyat & Temel Gıda", "Diğer", "Dondurma", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et & Tavuk & Şarküteri", "Ev & Mutfak", "Ev & Yaşam", "Evcil Dostlar", "Giyim & Aksesuar", "Kahvaltılık", "Kağıt Ürünleri", "Kişisel Bakım & Kozmetik", "Meyve & Sebze", "Oyuncak", "Oyuncak & Hobi", "Süt & Süt Ürünleri", "Temizlik", "Yemeklik Malzemeler", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat", "promo"],"products":[
+{"updated": "2026-11-21T01:11:38+00:00", "market": "sok", "prefix": {"sok": {"image": "https://images.ceptesok.com/cdn-cgi/image/width=216,height=216,fit=pad,quality=80,format=webp/product-assets/sub-folder/", "url": "https://www.sokmarket.com.tr/"}}, "cats": {"sok": ["Anne - Bebek & Çocuk", "Atıştırmalık", "Atıştırmalık & Şekerleme", "Bahçe & Yapı Market", "Bakliyat & Temel Gıda", "Diğer", "Dondurma", "Dondurulmuş Ürünler", "Ekmek & Pastane", "Elektronik", "Et & Tavuk & Şarküteri", "Ev & Mutfak", "Ev & Yaşam", "Evcil Dostlar", "Giyim & Aksesuar", "Kahvaltılık", "Kağıt Ürünleri", "Kişisel Bakım & Kozmetik", "Meyve & Sebze", "Oyuncak", "Oyuncak & Hobi", "Süt & Süt Ürünleri", "Temizlik", "Yemeklik Malzemeler", "İçecek"]}, "fields": ["id", "name", "price", "regular", "in_stock", "image", "url", "cat", "promo"],"products":[
 ["sok:10","Crown Cola Pet 250 ml",14.0,14.0,1,"7287ee89-01d2-4b88-9f7c-23ad45e4d12c.jpg","crown-cola-pet-250-ml-p-10",24,""],
 ["sok:1009","İnci Soğan Halkası 450 g",55.0,55.0,1,"3b7dfe2d-f53e-4263-9011-3a26030cdc54.jpg","inci-sogan-halkasi-450-g-p-1009",7,""],
 ["sok:1025","Ülker Dankek Pöti Fındıklı Kakaolu 24*35 g",240.0,240.0,1,"566ca857-8d91-4a6a-9148-50ff03db6e10.png","ulker-dankek-poti-findikli-kakaolu-24-35-g-p-1025",1,"50 TL ve üzeri alışverişte 179.00 TL!"],
@@ -927,7 +927,7 @@
 ["sok:491771","Koza Kadın Krinkıl Şort Siyah L-xl",139.0,139.0,1,"d582ba18-8795-4149-838b-baa6e09c396f.jpg","koza-kadin-krinkil-sort-siyah-l-xl-p-491771",14,""],
 ["sok:491774","Koza Kadın Krinkıl Şort Bej L-xl",139.0,139.0,1,"3023fd85-2130-414c-a56c-01eecbbbf3d0.jpg","koza-kadin-krinkil-sort-bej-l-xl-p-491774",14,""],
 ["sok:4922","Mintax Ultra Güç Sprey 1000 ml",79.0,79.0,1,"72e6e6fb-ec87-4946-b7c3-d088682bbd0c.jpg","mintax-ultra-guc-sprey-1000-ml-p-4922",22,""],
-["sok:4924","Asperox Mavi Güç  1 L",159.0,159.0,1,"51dea291-912f-481c-b7f0-1644b14d1838.png","asperox-mavi-guc-1-l-p-4924",22,""],
+["sok:4924","Asperox Mavi Güç  1 L",89.0,159.0,1,"51dea291-912f-481c-b7f0-1644b14d1838.png","asperox-mavi-guc-1-l-p-4924",22,""],
 ["sok:4931","Jagler Edt 50 ml + Deodorant Kofre 100 ml",549.0,549.0,1,"c451f153-c756-45d7-a876-049a93314226.png","jagler-edt-50-ml-deodorant-kofre-100-ml-p-4931",17,""],
 ["sok:4934","Mis Çikolatalı Süt 200 ml",16.5,16.5,1,"56b6f2b2-7ff6-4b23-b3b6-be235c9624ff.jpg","mis-cikolatali-sut-200-ml-p-4934",21,""],
 ["sok:493612","Elidor Summer Rescue Onarıcı Bakım Kremi 150 Ml",75.0,75.0,1,"9f19110b-6cfc-4f00-b1c5-c3ae4a222951.jpg","elidor-summer-rescue-onarici-bakim-kremi-150-ml-p-493612",17,""],
@@ -2830,7 +2830,7 @@
 ["sok:9200","Amigo İri Boy Tuzsuz Ay Çekirdeği 400 g",79.0,79.0,1,"f5fda05b-bb49-4cec-87a8-8e98ca0da8e1.png","amigo-iri-boy-tuzsuz-ay-cekirdegi-400-g-p-9200",1,""],
 ["sok:9205","Paşabahçe Renkli Kapaklı Saklama Kabı 4'lü 310 Cc",250.0,250.0,1,"44c49dcc-1e63-4796-837c-f7535c856eec.png","pasabahce-renkli-kapakli-saklama-kabi-4-lu-310-cc-p-9205",12,""],
 ["sok:9222","Mis Tuzlu Tereyağı 500 g",295.0,295.0,1,"7163c101-f8d3-4028-913d-07cec6594707.png","mis-tuzlu-tereyagi-500-g-p-9222",21,""],
-["sok:9225","Asperox Sarı Güç 1 L",159.0,159.0,1,"223473af-f67b-486e-b145-e708025e861b.png","asperox-sari-guc-1-l-p-9225",22,""],
+["sok:9225","Asperox Sarı Güç 1 L",89.0,159.0,1,"223473af-f67b-486e-b145-e708025e861b.png","asperox-sari-guc-1-l-p-9225",22,""],
 ["sok:9252","Sensodyne Ferah Nefes Diş Macunu 100 ml",219.0,219.0,1,"450ca025-6af8-4ef4-bb65-2cae81603ce2.jpg","sensodyne-ferah-nefes-dis-macunu-100-ml-p-9252",17,""],
 ["sok:9255","Bingo Soft Yumuşatıcı Lovely 960 Ml",179.0,179.0,1,"24874861-1ffb-4189-a519-2a3daf382c80.png","bingo-soft-yumusatici-lovely-960-ml-p-9255",22,"50 TL ve üzeri alışverişte 99.00 TL!"],
 ["sok:926","Veet Klasik Tüy Dökücü Krem 100 Ml",174.0,249.0,1,"8405e42a-10a1-4632-92fe-4000b9c58b6b.png","veet-klasik-tuy-dokucu-krem-100-ml-p-926",17,""],

@@ -1,19 +1,19 @@
 {
- "updated": "2026-11-20T23:51:43+00:00",
- "checked_at": "2026-11-20T23:51:43+00:00",
- "data_updated": "2026-11-20T23:51:43+00:00",
- "last_successful_data_at": "2026-11-20T23:51:43+00:00",
+ "updated": "2026-11-21T01:11:38+00:00",
+ "checked_at": "2026-11-21T01:11:38+00:00",
+ "data_updated": "2026-11-21T01:11:38+00:00",
+ "last_successful_data_at": "2026-11-21T01:11:38+00:00",
  "market": "sok",
  "mode": "deals",
  "status": "tamam",
  "complete": true,
- "found": 387,
+ "found": 365,
  "total": 2854,
- "seconds": 98,
+ "seconds": 93,
  "notes": [
   "kampanyalar: 91 ürün",
-  "indirimli-urunler-cms-pl1: sitede 416, okunan 412, 21/21 sayfa (son sayfa)",
-  "387 indirimli ürün güncellendi"
+  "indirimli-urunler-cms-pl1: sitede 416, okunan 415, 21/21 sayfa (son sayfa)",
+  "365 indirimli ürün güncellendi"
  ],
  "quality": {
   "category_count": 25,
@@ -40,13 +40,13 @@
    "Dondurma": 82,
    "Giyim & Aksesuar": 41,
    "Evcil Dostlar": 42,
+   "Diğer": 22,
    "Meyve & Sebze": 47,
    "Bakliyat & Temel Gıda": 1,
    "Atıştırmalık & Şekerleme": 1,
-   "Diğer": 22,
    "Bahçe & Yapı Market": 1,
-   "Oyuncak": 3,
-   "Oyuncak & Hobi": 2
+   "Oyuncak & Hobi": 2,
+   "Oyuncak": 3
   }
  },
  "quality_warnings": [],
@@ -59,21 +59,21 @@
   }
  },
  "errors": [],
- "run_id": "44839637197",
+ "run_id": "44848493917",
  "last_attempt_by_mode": {
   "deals": {
-   "checked_at": "2026-11-20T23:51:43+00:00",
+   "checked_at": "2026-11-21T01:11:38+00:00",
    "status": "tamam",
    "complete": true,
-   "found": 387,
+   "found": 365,
    "total": 2854,
-   "seconds": 98,
-   "data_updated": "2026-11-20T23:51:43+00:00",
+   "seconds": 93,
+   "data_updated": "2026-11-21T01:11:38+00:00",
    "errors": [],
    "notes": [
     "kampanyalar: 91 ürün",
-    "indirimli-urunler-cms-pl1: sitede 416, okunan 412, 21/21 sayfa (son sayfa)",
-    "387 indirimli ürün güncellendi"
+    "indirimli-urunler-cms-pl1: sitede 416, okunan 415, 21/21 sayfa (son sayfa)",
+    "365 indirimli ürün güncellendi"
    ],
    "quality_warnings": [],
    "quality": {
@@ -101,13 +101,13 @@
      "Dondurma": 82,
      "Giyim & Aksesuar": 41,
      "Evcil Dostlar": 42,
+     "Diğer": 22,
      "Meyve & Sebze": 47,
      "Bakliyat & Temel Gıda": 1,
      "Atıştırmalık & Şekerleme": 1,
-     "Diğer": 22,
      "Bahçe & Yapı Market": 1,
-     "Oyuncak": 3,
-     "Oyuncak & Hobi": 2
+     "Oyuncak & Hobi": 2,
+     "Oyuncak": 3
     }
    },
    "traffic": {
