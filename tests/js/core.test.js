@@ -95,3 +95,18 @@ test("Fiyat güncel mi: doğrulama yaşına ve tarama durumuna göre karar, hiç
   assert.equal(C.freshness(soon,null,NOW).level,"na");
   const before=JSON.stringify(o(1));C.freshness(o(1),null,NOW);assert.equal(JSON.stringify(o(1)),before);
 });
+test("birim fiyat karşılaştırması: boy boy en ucuz, ilgisiz ürün ve aykırı fiyat dışarıda",()=>{
+  const MF=require("../../js/match.js");
+  const mk=(id,market,name,price)=>({id,market,name,price,regular:price,in_stock:true});
+  const rows=[mk("sok:1","sok","Saka Su 5 L",50),mk("migros:2","migros","Erikli Su 0.5 L",10),mk("sok:3","sok","Kardelen Su 0.5 lt",7),
+    mk("migros:4","migros","Erikli Su 6 x 1,5 L",180),mk("migros:5","migros","Sıcak Su Torbası 2 L",400),mk("migros:6","migros","Sucuk 500 g",300),
+    mk("migros:7","migros","Bee Home Su Şişesi 1.650 Ml",220)];
+  MF.group(rows);
+  assert.deepEqual(MF.parse("Su Şişesi 1.650 Ml").qty,{n:1650,u:"ml"});
+  const r=MF.unitCompare(rows,"su");
+  assert.equal(r.unit,"L");assert.equal(r.best.o.id,"sok:1");assert.equal(r.best.u.v,10);
+  assert.deepEqual(r.sizes.map(s=>s.label),["500 ml","5 L","6 × 1,5 L"]);
+  assert.equal(r.sizes[0].best.o.id,"sok:3");
+  assert.ok(!r.sizes.some(s=>s.items));
+  assert.equal(MF.unitCompare(rows,"çikolata"),null);
+});

@@ -16,7 +16,8 @@ const stem=t=>/\d/.test(t)||t.length<5?t:t.replace(/(lari|leri|si|su|i|u)$/,"");
 // Ürün adını çözümler: marka (ilk kelime), boyut imzası, miktar ve kelimeler
 function parse(name){
   const sizes=[],meas=[];let count=0;
-  let s=fold(name).replace(/(\d)[,](\d)/g,"$1.$2").replace(/[’'`]/g,"");
+  // "1.650 Ml" binlik ayraçtır (1650 ml); "1.5 L" ondalıktır
+  let s=fold(name).replace(/(\d)\.(\d{3})\s*(ml|gr|g)\b/g,"$1$2 $3").replace(/(\d)[,](\d)/g,"$1.$2").replace(/[’'`]/g,"");
   s=s.replace(new RegExp("(\\d+)\\s*[x×*]\\s*(\\d+(?:\\.\\d+)?)\\s*"+U+"\\b","g"),(m,k,n,u)=>{const a=amount(n,u);sizes.push(k+"x"+a+UNIT[u][0]);meas.push([k*a,UNIT[u][0]]);return" "});
   s=s.replace(new RegExp("(\\d+(?:\\.\\d+)?)\\s*"+U+"\\b","g"),(m,n,u)=>{const a=amount(n,u);sizes.push(a+UNIT[u][0]);meas.push([a,UNIT[u][0]]);return" "});
   s=s.replace(/(\d+)\s*(li|lu|adet|ad|tablet|yikama|yaprak|rulo)\b/g,(m,n)=>{sizes.push(n+"ad");count=+n;return" "});
@@ -98,6 +99,43 @@ function staples(rows){
       const u=unitPrice(o);if(!best[o.market]||u.v<best[o.market].u.v)best[o.market]={o,u}}
     return{name:r.n,best}}).filter(x=>Object.keys(x.best).length>1);
 }
-const api={fold,parse,group,families,unitPrice,staples};
+/* Birim fiyat karşılaştırması: "su", "yüzey temizleyici" gibi bir ürün grubunda marka fark etmeksizin
+   boy boy (0,5 L, 1 L, 1,5 L…) en ucuz teklifler ve genel en ucuz ₺/L (₺/kg, ₺/adet).
+   Kelime eşleşmesi: 4 harften kısa kelime tam eşleşmeli ("su" → "sucuk" değil), uzun kelime başlangıçla
+   ("temizleyici" → "temizleyicisi"). Farklı birim türleri karışmaz; en çok ürün olan tür seçilir. */
+function sizeLabel(q,size){
+  const one=(n,u)=>u==="ad"?n+" adet":u==="g"?(n>=1000?(n/1000).toLocaleString("tr-TR")+" kg":n+" g"):(n>=1000?(n/1000).toLocaleString("tr-TR")+" L":n+" ml");
+  const m=/(\d+)x(\d+)(g|ml)/.exec(size||"");
+  return m?`${m[1]} × ${one(+m[2],m[3])}`:one(q.n,q.u);
+}
+// Ürünün kendisi değil, onunla ilgili eşya olduğunu gösteren kelimeler (sorguda yoksa elenir)
+const ACCESSORY=new Set("sise sisesi torba torbasi kova kovasi matara kap kabi sebil pompa pompasi isitici figurlu oyuncak aparat aparati dispenser aski askisi stand standi firca fircasi kapak kapagi tabanca tabancasi hazne hazneli".split(" "));
+function unitCompare(rows,query){
+  const words=fold(query).replace(/[^a-z0-9 ]+/g," ").split(" ").filter(Boolean);
+  if(!words.length)return null;
+  const hits=[];
+  for(const o of rows){const p=o._p;if(!p||!p.qty)continue;
+    const toks=(o._t||(o._t=fold(o.name).replace(/[^a-z0-9]+/g," ").split(" ")));
+    if(!words.every(w=>toks.some(t=>w.length<4?t===w:t.startsWith(w))))continue;
+    if(toks.some(t=>ACCESSORY.has(t)&&!words.includes(t)))continue;
+    const u=unitPrice(o);if(u&&u.v>0&&isFinite(u.v))hits.push({o,u,q:p.qty,size:p.size})}
+  if(hits.length<2)return null;
+  const by={};hits.forEach(h=>{(by[h.q.u]=by[h.q.u]||[]).push(h)});
+  const kind=Object.keys(by).sort((a,b)=>by[b].length-by[a].length)[0];
+  // Aykırı değerler (su şişesi, figürlü sıcak su torbası, ıslak tuvalet kağıdı gibi başka ürünler):
+  // birim fiyatı grubun ortancasının 4 katından fazla ya da 4'te birinden az olanlar dışarıda kalır.
+  const vs=by[kind].map(h=>h.u.v).sort((a,b)=>a-b),med=vs[Math.floor(vs.length/2)];
+  const list=by[kind].filter(h=>h.u.v<=med*4&&h.u.v>=med/4),dropped=by[kind].length-list.length;
+  if(list.length<2)return null;
+  const sizes=new Map();
+  for(const h of list){const label=sizeLabel(h.q,h.size),k=label;
+    if(!sizes.has(k))sizes.set(k,{label,n:h.q.n,items:[]});sizes.get(k).items.push(h)}
+  const out=[...sizes.values()].map(s=>{s.items.sort((a,b)=>a.u.v-b.u.v);
+    const per={};s.items.forEach(h=>{if(!per[h.o.market])per[h.o.market]=h});
+    return{label:s.label,n:s.n,count:s.items.length,best:s.items[0],markets:Object.values(per)}}).sort((a,b)=>a.n-b.n||a.label.localeCompare(b.label));
+  list.sort((a,b)=>a.u.v-b.u.v);
+  return{unit:list[0].u.u,count:list.length,dropped,best:list[0],top:list.slice(0,5),sizes:out};
+}
+const api={fold,parse,group,families,unitPrice,staples,unitCompare};
 if(typeof module!=="undefined"&&module.exports)module.exports=api;else root.MF=api;
 })(typeof window!=="undefined"?window:globalThis);
