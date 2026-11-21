@@ -1,19 +1,17 @@
 {
- "updated": "2026-11-21T01:55:59+00:00",
- "checked_at": "2026-11-21T01:55:59+00:00",
+ "updated": "2026-11-21T03:10:30+00:00",
+ "checked_at": "2026-11-21T03:10:30+00:00",
  "data_updated": "2026-11-21T01:55:59+00:00",
  "last_successful_data_at": "2026-11-21T01:55:59+00:00",
  "market": "migros",
- "mode": "deals",
- "status": "tamam",
- "complete": true,
- "found": 3019,
+ "mode": "full",
+ "status": "durduruldu: Migros kategori isteği başarısız: HTTP 404 (powerbank-c-12090)",
+ "complete": false,
+ "found": 16296,
  "total": 16482,
- "seconds": 348,
+ "seconds": 6277,
  "notes": [
-  "money-indirimli-market-urunleri-dt-5: 97/97 sayfa",
-  "coklu-indirim-kampanyalari-ve-hediyeli-urunler-dt-1: 6/6 sayfa",
-  "3019 indirimli ürün güncellendi"
+  "yeni sonuç eksik (16296 ürün), eski veri (16482 ürün) korundu"
  ],
  "quality": {
   "category_count": 36,
@@ -60,17 +58,19 @@
    "Kitap, Kırtasiye, Oyuncak": 944
   }
  },
- "quality_warnings": [],
+ "quality_warnings": [
+  "Tarama başarılı değil: durduruldu: Migros kategori isteği başarısız: HTTP 404 (powerbank-c-12090)"
+ ],
  "traffic": {
   "www.migros.com.tr": {
-   "requests": 103,
+   "requests": 1964,
    "retries": 0,
-   "megabytes": 1.8,
+   "megabytes": 12.0,
    "errors": 0
   }
  },
  "errors": [],
- "run_id": "44852475527",
+ "run_id": "44850123671",
  "last_attempt_by_mode": {
   "deals": {
    "checked_at": "2026-11-21T01:55:59+00:00",
@@ -142,72 +142,70 @@
    }
   },
   "full": {
-   "checked_at": "2026-11-20T01:38:33+00:00",
-   "status": "durduruldu: Migros kategori sayfası eksik/boş: kisisel-bakim-kozmetik-saglik-c-8, sayfa 78",
+   "checked_at": "2026-11-21T03:10:30+00:00",
+   "status": "durduruldu: Migros kategori isteği başarısız: HTTP 404 (powerbank-c-12090)",
    "complete": false,
-   "found": 7563,
-   "total": 16431,
-   "seconds": 965,
-   "data_updated": "2026-11-20T00:25:54+00:00",
+   "found": 16296,
+   "total": 16482,
+   "seconds": 6277,
+   "data_updated": "2026-11-21T00:29:26+00:00",
    "errors": [],
    "notes": [
-    "yeni sonuç eksik (7563 ürün), eski veri (16431 ürün) korundu"
+    "yeni sonuç eksik (16296 ürün), eski veri (16482 ürün) korundu"
    ],
    "quality_warnings": [
-    "Tarama başarılı değil: durduruldu: Migros kategori sayfası eksik/boş: kisisel-bakim-kozmetik-saglik-c-8, sayfa 78",
-    "'Diğer' kategorisi yüksek: %35.0",
-    "Ürün sayısı önceki veri setine göre belirgin düştü: 7563/16431"
+    "Tarama başarılı değil: durduruldu: Migros kategori isteği başarısız: HTTP 404 (powerbank-c-12090)"
    ],
    "quality": {
     "category_count": 36,
     "empty_category_count": 0,
     "campaign_date_category_count": 0,
-    "other_count": 5752,
-    "other_ratio": 0.3501,
+    "other_count": 5746,
+    "other_ratio": 0.3486,
     "category_counts": {
-     "Bakliyat & Temel Gıda": 462,
-     "Diğer": 5752,
-     "Temel Gıda": 497,
+     "Bakliyat & Temel Gıda": 461,
+     "Temel Gıda": 499,
+     "Diğer": 5746,
      "Meyve & Sebze": 814,
      "Atıştırmalık & Şekerleme": 741,
-     "İçecek": 823,
+     "İçecek": 826,
      "Ev & Mutfak": 448,
-     "Süt & Süt Ürünleri": 398,
-     "Atıştırmalık": 591,
-     "Süt, Kahvaltılık": 323,
-     "Kişisel Bakım, Kozmetik, Sağlık": 744,
-     "Et, Tavuk & Şarküteri": 414,
+     "Süt & Süt Ürünleri": 397,
+     "Atıştırmalık": 595,
+     "Süt, Kahvaltılık": 330,
+     "Kişisel Bakım, Kozmetik, Sağlık": 748,
+     "Et, Tavuk & Şarküteri": 413,
      "Hazır Yemek, Meze": 100,
-     "Et, Tavuk, Balık": 108,
+     "Et, Tavuk, Balık": 114,
      "Ekmek & Pastane": 147,
-     "Bebek": 180,
-     "Anne & Bebek": 65,
+     "Bebek": 181,
+     "Anne & Bebek": 64,
      "Kişisel Bakım & Kozmetik": 325,
      "Kahvaltılık": 212,
      "Dondurulmuş Ürünler": 106,
      "Fırın, Pastane": 29,
      "Oyuncak & Hobi": 130,
-     "Elektronik": 318,
+     "Elektronik": 330,
      "Evcil Hayvan": 67,
      "Dondurma": 34,
      "Dondurulmuş Gıda": 68,
      "Meyve, Sebze": 3,
-     "Çiçek": 30,
+     "Çiçek": 35,
      "Temizlik": 166,
-     "Deterjan, Temizlik": 347,
+     "Deterjan, Temizlik": 351,
      "Kağıt Ürünleri": 24,
-     "Kağıt, Islak Mendil": 86,
+     "Kağıt, Islak Mendil": 87,
      "Giyim & Aksesuar": 353,
-     "Ev, Yaşam": 519,
+     "Ev, Yaşam": 524,
      "Bahçe & Yapı Market": 70,
-     "Kitap, Kırtasiye, Oyuncak": 937
+     "Kitap, Kırtasiye, Oyuncak": 944
     }
    },
    "traffic": {
     "www.migros.com.tr": {
-     "requests": 292,
+     "requests": 1964,
      "retries": 0,
-     "megabytes": 3.5,
+     "megabytes": 12.0,
      "errors": 0
     }
    }
