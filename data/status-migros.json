@@ -1,21 +1,21 @@
 {
- "updated": "2026-11-21T20:23:11+00:00",
- "started_at": "2026-11-21T20:17:27+00:00",
- "finished_at": "2026-11-21T20:23:11+00:00",
- "checked_at": "2026-11-21T20:23:11+00:00",
- "data_updated": "2026-11-21T20:23:11+00:00",
- "last_successful_data_at": "2026-11-21T20:23:11+00:00",
+ "updated": "2026-11-21T21:22:08+00:00",
+ "started_at": "2026-11-21T21:16:29+00:00",
+ "finished_at": "2026-11-21T21:22:08+00:00",
+ "checked_at": "2026-11-21T21:22:08+00:00",
+ "data_updated": "2026-11-21T21:22:08+00:00",
+ "last_successful_data_at": "2026-11-21T21:22:08+00:00",
  "market": "migros",
  "mode": "deals",
  "status": "tamam",
  "complete": true,
- "found": 3000,
- "total": 16486,
- "seconds": 345,
+ "found": 2992,
+ "total": 16487,
+ "seconds": 339,
  "notes": [
   "money-indirimli-market-urunleri-dt-5: 96/96 sayfa",
   "coklu-indirim-kampanyalari-ve-hediyeli-urunler-dt-1: 6/6 sayfa",
-  "3000 indirimli ürün güncellendi"
+  "2992 indirimli ürün güncellendi"
  ],
  "quality": {
   "category_count": 36,
@@ -34,7 +34,7 @@
    "Süt & Süt Ürünleri": 397,
    "Atıştırmalık": 595,
    "Süt, Kahvaltılık": 330,
-   "Kişisel Bakım, Kozmetik, Sağlık": 748,
+   "Kişisel Bakım, Kozmetik, Sağlık": 749,
    "Et, Tavuk & Şarküteri": 413,
    "Hazır Yemek, Meze": 100,
    "Et, Tavuk, Balık": 116,
@@ -72,10 +72,10 @@
   }
  },
  "errors": [],
- "run_id": "44945476924",
- "collected_products": 3000,
- "total_products": 16486,
- "discounted_products": 4803,
+ "run_id": "44950666529",
+ "collected_products": 2992,
+ "total_products": 16487,
+ "discounted_products": 4804,
  "invalid_products": 0,
  "data_quality": {
   "missing_id": 0,
@@ -86,21 +86,21 @@
   "suspicious_discount": 0,
   "bad_url": 0
  },
- "duration_seconds": 345,
+ "duration_seconds": 339,
  "last_attempt_by_mode": {
   "deals": {
-   "checked_at": "2026-11-21T20:23:11+00:00",
+   "checked_at": "2026-11-21T21:22:08+00:00",
    "status": "tamam",
    "complete": true,
-   "found": 3000,
-   "total": 16486,
-   "seconds": 345,
-   "data_updated": "2026-11-21T20:23:11+00:00",
+   "found": 2992,
+   "total": 16487,
+   "seconds": 339,
+   "data_updated": "2026-11-21T21:22:08+00:00",
    "errors": [],
    "notes": [
     "money-indirimli-market-urunleri-dt-5: 96/96 sayfa",
     "coklu-indirim-kampanyalari-ve-hediyeli-urunler-dt-1: 6/6 sayfa",
-    "3000 indirimli ürün güncellendi"
+    "2992 indirimli ürün güncellendi"
    ],
    "quality_warnings": [],
    "quality": {
@@ -120,7 +120,7 @@
      "Süt & Süt Ürünleri": 397,
      "Atıştırmalık": 595,
      "Süt, Kahvaltılık": 330,
-     "Kişisel Bakım, Kozmetik, Sağlık": 748,
+     "Kişisel Bakım, Kozmetik, Sağlık": 749,
      "Et, Tavuk & Şarküteri": 413,
      "Hazır Yemek, Meze": 100,
      "Et, Tavuk, Balık": 116,
