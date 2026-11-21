@@ -1,1 +1,21 @@
-{}
+{
+ "checks": {
+  "migros:05040605": {
+   "change": 0.0,
+   "change_pct": 0.0,
+   "checked_at": "2026-11-21T06:47:40+00:00",
+   "in_stock": true,
+   "issue": "15",
+   "market": "migros",
+   "message": "",
+   "name": "Humm Organic Tam Tahıllı Ballı Kahvaltılık Gevrek 80 Gr",
+   "new_price": 119.95,
+   "new_regular": 119.95,
+   "old_price": 119.95,
+   "old_regular": 119.95,
+   "status": "unchanged"
+  }
+ },
+ "updated": "2026-11-21T06:47:41+00:00",
+ "v": 1
+}
