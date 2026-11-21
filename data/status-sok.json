@@ -1,21 +1,21 @@
 {
- "updated": "2026-11-21T09:52:26+00:00",
- "started_at": "2026-11-21T09:50:40+00:00",
- "finished_at": "2026-11-21T09:52:26+00:00",
- "checked_at": "2026-11-21T09:52:26+00:00",
- "data_updated": "2026-11-21T09:52:26+00:00",
- "last_successful_data_at": "2026-11-21T09:52:26+00:00",
+ "updated": "2026-11-21T10:52:37+00:00",
+ "started_at": "2026-11-21T10:50:48+00:00",
+ "finished_at": "2026-11-21T10:52:37+00:00",
+ "checked_at": "2026-11-21T10:52:37+00:00",
+ "data_updated": "2026-11-21T10:52:37+00:00",
+ "last_successful_data_at": "2026-11-21T10:52:37+00:00",
  "market": "sok",
  "mode": "deals",
  "status": "tamam",
  "complete": true,
- "found": 374,
- "total": 2911,
- "seconds": 106,
+ "found": 382,
+ "total": 2912,
+ "seconds": 108,
  "notes": [
   "kampanyalar: 92 ürün",
   "indirimli-urunler-cms-pl1: sitede 413, okunan 412, 21/21 sayfa (son sayfa)",
-  "374 indirimli ürün güncellendi"
+  "382 indirimli ürün güncellendi"
  ],
  "quality": {
   "category_count": 21,
@@ -24,7 +24,7 @@
   "other_count": 6,
   "other_ratio": 0.0021,
   "category_counts": {
-   "İçecek": 209,
+   "İçecek": 210,
    "Anne - Bebek & Çocuk": 224,
    "Dondurulmuş Ürünler": 44,
    "Atıştırmalık": 528,
@@ -57,10 +57,10 @@
   }
  },
  "errors": [],
- "run_id": "44891480452",
- "collected_products": 374,
- "total_products": 2911,
- "discounted_products": 402,
+ "run_id": "44896251581",
+ "collected_products": 382,
+ "total_products": 2912,
+ "discounted_products": 403,
  "invalid_products": 0,
  "data_quality": {
   "missing_id": 0,
@@ -71,21 +71,21 @@
   "suspicious_discount": 0,
   "bad_url": 0
  },
- "duration_seconds": 106,
+ "duration_seconds": 108,
  "last_attempt_by_mode": {
   "deals": {
-   "checked_at": "2026-11-21T09:52:26+00:00",
+   "checked_at": "2026-11-21T10:52:37+00:00",
    "status": "tamam",
    "complete": true,
-   "found": 374,
-   "total": 2911,
-   "seconds": 106,
-   "data_updated": "2026-11-21T09:52:26+00:00",
+   "found": 382,
+   "total": 2912,
+   "seconds": 108,
+   "data_updated": "2026-11-21T10:52:37+00:00",
    "errors": [],
    "notes": [
     "kampanyalar: 92 ürün",
     "indirimli-urunler-cms-pl1: sitede 413, okunan 412, 21/21 sayfa (son sayfa)",
-    "374 indirimli ürün güncellendi"
+    "382 indirimli ürün güncellendi"
    ],
    "quality_warnings": [],
    "quality": {
@@ -95,7 +95,7 @@
     "other_count": 6,
     "other_ratio": 0.0021,
     "category_counts": {
-     "İçecek": 209,
+     "İçecek": 210,
      "Anne - Bebek & Çocuk": 224,
      "Dondurulmuş Ürünler": 44,
      "Atıştırmalık": 528,
