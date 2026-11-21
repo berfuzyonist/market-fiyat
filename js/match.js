@@ -64,7 +64,7 @@ function unitPrice(o){const q=o._p&&o._p.qty;if(!q||!q.n)return null;
    Dönen: {key, offers:[...]} — en az iki marketten birim fiyatı hesaplanabilen teklif içerenler */
 function families(rows){
   const fam=new Map();
-  for(const o of rows){const p=o._p;if(!p||!p.qty||!o.in_stock||p.core.split(" ").length<2)continue;
+  for(const o of rows){const p=o._p;if(!p||!p.qty||!o.in_stock||o.na||p.core.split(" ").length<2)continue;
     const k=p.qty.u+"|"+p.core;(fam.get(k)||fam.set(k,[]).get(k)).push(o)}
   const out=[];
   for(const [key,offers] of fam){if(new Set(offers.map(o=>o.market)).size>1)out.push({key,offers})}
@@ -93,7 +93,7 @@ const STAPLES=[
 ];
 function staples(rows){
   return STAPLES.map(r=>{const best={};
-    for(const o of rows){const p=o._p;if(!p||!p.qty||!o.in_stock||p.qty.u!==r.u||p.qty.n<r.min||p.qty.n>r.max)continue;
+    for(const o of rows){const p=o._p;if(!p||!p.qty||!o.in_stock||o.na||p.qty.u!==r.u||p.qty.n<r.min||p.qty.n>r.max)continue;
       const f=o._f||(o._f=fold(o.name));if(!r.re.test(f)||r.not.test(f))continue;
       const u=unitPrice(o);if(!best[o.market]||u.v<best[o.market].u.v)best[o.market]={o,u}}
     return{name:r.n,best}}).filter(x=>Object.keys(x.best).length>1);

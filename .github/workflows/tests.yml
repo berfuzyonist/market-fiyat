@@ -4,31 +4,47 @@ on:
     branches-ignore: [main]
     paths:
       - "collector/**"
+      - "scripts/**"
+      - "js/**"
       - "tests/**"
       - "config.json"
-      - "scripts/publish-market-data.sh"
       - ".github/workflows/**"
   pull_request:
     branches: [main]
     paths:
       - "collector/**"
+      - "scripts/**"
+      - "js/**"
       - "tests/**"
       - "config.json"
-      - "scripts/publish-market-data.sh"
       - ".github/workflows/**"
 permissions:
   contents: read
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
       - name: Python sözdizimini denetle
-        run: python -m py_compile collector/collect.py
+        run: python -m py_compile collector/collect.py scripts/update_one_product.py scripts/pricehist.py
       - name: Publisher shell sözdizimini denetle
         run: bash -n scripts/publish-market-data.sh
-      - name: Birim testleri
+      - name: Python birim testleri
         run: python -m unittest discover -s tests -v
+      - name: JavaScript testleri
+        run: |
+          node --check js/app.js && node --check js/core.js && node --check js/match.js
+          node --test tests/js/*.test.js
+      - name: Yayımlanan JSON dosyalarını doğrula
+        run: |
+          python - <<'PY'
+          import glob, json
+          for path in sorted(glob.glob("data/*.json")):
+              with open(path, encoding="utf-8") as f:
+                  json.load(f)
+              print("ok", path)
+          PY
