@@ -45,6 +45,7 @@ function categoryOf(o){
 let O=[],G=[],GI={},CMP={same:[],size:[],staple:[]},PROMO=[];
 const FRESH=new Set(); // "Fiyat güncel mi?" paneli açık ürünler (kaydedilmez)
 let done=load("done",{}),HIST={},S={sort:"rel"},UOPEN=false;
+let QTY=load("qty",{});
 let cart=load("cart",[]),bmap=load("bmap",{}),reqs=load("req",{}),pending=null,only=null,updated="",UPD={},CHECK={},CHECKS={},view="home";
 const C={seg:"same",three:false,sort:"pct",page:0},K={kind:"multi",m:"",sort:"gain",page:0},B={m:"",grp:"",cat:"",disc:false,sort:"disc",page:0};
 // Ana kategori yuvarlakları: marketlerin farklı kategori adlarını tek grupta toplar
@@ -86,6 +87,13 @@ const best=g=>avail(g).reduce((a,o)=>!a||o.price<a.price?o:a,null);
 const worst=g=>Math.max(...avail(g).map(o=>o.price));
 const inCart=g=>cart.some(k=>GI[k]===g);
 const uniq=a=>[...new Set(a.map(k=>GI[k]).filter(Boolean))];
+// Adet: listede kaç tane; çoklu alım kampanyası (2 Al 1 Öde vb.) adede göre uygulanır
+const qtyOf=g=>Math.max(1,QTY[g.key]|0||1);
+function lineTotal(o,q){const p=o._promo;
+  if(p&&p.kind==="multi"&&p.need>1&&q>=p.need){const k=Math.floor(q/p.need);return k*p.need*p.eff+(q-k*p.need)*o.price}
+  return q*o.price}
+const totalUnits=()=>uniq(cart).reduce((a,g)=>a+qtyOf(g),0);
+const stepper=(g,cls="")=>`<div class="stepper ${cls}"><button data-dec="${esc(g.key)}" aria-label="Bir azalt"><i data-lucide="${qtyOf(g)>1?"minus":"trash-2"}" class="w-4 h-4"></i></button><span class="tabular">${qtyOf(g)}</span><button data-inc="${esc(g.key)}" aria-label="Bir artır"><i data-lucide="plus" class="w-4 h-4"></i></button></div>`;
 const disc=MFC.disc;
 const unitTxt=o=>{const u=MF.unitPrice(o);return u?`${tl(u.v)}/${u.u}`:""};
 
@@ -146,7 +154,7 @@ function pcard(o,opt={}){
     ${moneyChip(o)}${stateChip(o)?`<div class="mt-0.5">${stateChip(o)}</div>`:""}
   </div>
   ${opt.strip?"":`<button data-fresh="${esc(o.id)}" data-open="${esc(key)}" class="self-start mt-1 text-[11px] font-bold text-blue-700 dark:text-blue-300 flex items-center gap-1"><i data-lucide="badge-check" class="w-3.5 h-3.5"></i>Güncel mi?</button>`}
-  <button data-add="${esc(key)}" ${ok||inC?"":"disabled"} aria-label="${inC?"Listeden çıkar":"Listeye ekle"}" class="add ${inC?"in":""} ${ok||inC?"":"opacity-30"}"><i data-lucide="${inC?"check":"plus"}" class="w-5 h-5"></i></button>
+  ${inC?stepper(g):`<button data-add="${esc(key)}" ${ok?"":"disabled"} aria-label="Listeye ekle" class="add ${ok?"":"opacity-30"}"><i data-lucide="plus" class="w-5 h-5"></i></button>`}
 </article>`}
 // ---------- Karşılaştırma verisi ----------
 function buildCompare(){
@@ -351,8 +359,8 @@ function productPage(g){
   <div class="buybar"><div class="max-w-6xl mx-auto flex items-center gap-3">
     <div class="min-w-0 flex-1 hidden sm:block"><p class="text-sm font-bold truncate">${esc(g.name)}</p></div>
     ${b?`<p class="leading-tight"><span class="block text-[11px] text-stone-500">${M[b.market].n}</span><span class="price text-xl tabular">${tl(b.price)}</span></p>`:""}
-    <button data-add="${esc(g.key)}" ${b||inC?"":"disabled"} class="flex-1 sm:flex-none sm:px-8 flex items-center justify-center gap-2 py-3.5 rounded-2xl font-extrabold transition active:scale-95 ${inC?"bg-stone-200 dark:bg-stone-800 text-stone-800 dark:text-stone-100":b?"bg-emerald-600 text-white shadow-lg shadow-emerald-600/30":"bg-stone-200 text-stone-500"}">
-      <i data-lucide="${inC?"check":"shopping-cart"}" class="w-5 h-5"></i>${inC?"Listede · çıkar":b?"Listeye ekle":"Eklenemez"}</button></div></div>
+    ${inC?`<div class="flex-1 sm:flex-none flex items-center justify-end gap-2"><span class="text-xs font-bold text-stone-500 text-right leading-tight">Listede<br><span class="${good}">${tl(lineTotal(b||g.offers[0],qtyOf(g)))}</span></span>${stepper(g,"big")}</div>`:`<button data-add="${esc(g.key)}" ${b?"":"disabled"} class="flex-1 sm:flex-none sm:px-8 flex items-center justify-center gap-2 py-3.5 rounded-2xl font-extrabold transition active:scale-95 ${inC?"bg-stone-200 dark:bg-stone-800 text-stone-800 dark:text-stone-100":b?"bg-emerald-600 text-white shadow-lg shadow-emerald-600/30":"bg-stone-200 text-stone-500"}">
+      <i data-lucide="shopping-cart" class="w-5 h-5"></i>${b?"Listeye ekle":"Eklenemez"}</button>`}</div></div>
   </div>`}
 function drawS(){
   const raw=$("q").value.trim(),w=norm(raw).split(/\s+/).filter(Boolean);
@@ -389,28 +397,28 @@ function drawB(){
 // ---------- Listem ----------
 function drawL(){
   const items=uniq(cart);
-  ["n","n2"].forEach(i=>{$(i).textContent=items.length;$(i).style.display=items.length?"grid":"none"});
+  const units=totalUnits();["n","n2"].forEach(i=>{$(i).textContent=units;$(i).style.display=items.length?"grid":"none"});
   if(!items.length){$("list").innerHTML=`<div class="col-span-full">${empty("shopping-cart","Listen boş","Ürünlerdeki yeşil + düğmesiyle ekle. Liste en ucuz markete göre gruplanır; mağazada aldıklarını işaretlersin.")}</div>`;return}
   let sum=0,max=0,h="",stops=0,got=0;
   ORD.forEach(m=>{const it=items.filter(g=>(best(g)||{}).market===m);if(!it.length)return;stops++;let t=0,dn=0;
-    const rows=it.map(g=>{const b=best(g),ok=!!done[g.key];t+=b.price;max+=worst(g);if(ok){dn++;got++}
+    const rows=it.map(g=>{const b=best(g),ok=!!done[g.key],q=qtyOf(g),lt=lineTotal(b,q),promoOn=lt<q*b.price-0.005;t+=lt;max+=worst(g)*q;if(ok){dn++;got++}
       return`<div class="flex items-center gap-3 py-3 ${ok?"opacity-50":""} transition">
         <button data-done="${esc(g.key)}" aria-label="Alındı" class="w-7 h-7 shrink-0 rounded-full grid place-items-center border-2 ${ok?"bg-emerald-600 border-emerald-600 text-white":"border-stone-300"} transition active:scale-90">${ok?'<i data-lucide="check" class="w-4 h-4"></i>':""}</button>
         ${img(g.image,"w-12 h-12 shrink-0")}
         <div data-show="${esc(g.key)}" class="flex-1 min-w-0"><p class="text-sm font-bold leading-snug ${ok?"line-through":""}">${esc(b.name)}</p>
           ${b._promo&&b._promo.kind!=="bim"?`<p class="text-[11px] text-violet-700 dark:text-violet-300 mt-0.5">${promoLine(b)}</p>`:""}
-          ${worst(g)-b.price>0.005?`<p class="text-[11px] ${good} font-bold">${tl(worst(g)-b.price)} tasarruf</p>`:""}</div>
-        <span class="price tabular text-base">${tl(b.price)}</span>
-        <button data-add="${esc(g.key)}" aria-label="Listeden çıkar" class="text-stone-400 hover:text-red-600 p-1"><i data-lucide="x" class="w-4 h-4"></i></button></div>`}).join("");
+          ${promoOn?`<p class="text-[11px] font-extrabold text-violet-700">✓ Kampanya uygulandı: ${tl(q*b.price-lt)} indirim</p>`:b._promo&&b._promo.kind==="multi"&&q<b._promo.need?`<p class="text-[11px] font-bold text-violet-700">${b._promo.need-q} tane daha eklersen kampanya geçerli</p>`:""}
+          ${(worst(g)-b.price)*q>0.005?`<p class="text-[11px] ${good} font-bold">${tl((worst(g)-b.price)*q)} tasarruf</p>`:""}</div>
+        <div class="flex flex-col items-end gap-1.5 shrink-0"><span class="price tabular text-base">${tl(lt)}</span>${q>1?`<span class="text-[11px] text-stone-500 tabular -mt-1">${q} × ${tl(b.price)}</span>`:""}${stepper(g,"sm")}</div></div>`}).join("");
     h+=`<section class="${card} overflow-hidden enter"><div class="px-4 py-3 flex items-center justify-between st-${m} text-white"><span class="font-display font-extrabold text-lg flex items-center gap-2"><span class="bg-black/20 rounded-full w-7 h-7 grid place-items-center text-sm">${stops}</span>${M[m].n}</span><span class="text-sm font-bold">${dn}/${it.length} alındı</span></div>
       <div class="px-4 ${div}">${rows}</div><div class="px-4 py-3 bg-stone-50 dark:bg-stone-800/50 flex justify-between font-bold"><span>Ara toplam</span><span class="price tabular">${tl(t)}</span></div></section>`;sum+=t});
   const out=items.filter(g=>!best(g));
   if(out.length)h+=`<section class="${card} overflow-hidden"><div class="bg-stone-300 dark:bg-stone-700 px-4 py-3 font-extrabold">Şu an alınamayanlar</div><div class="px-4 ${div}">${out.map(g=>`<div class="flex items-center gap-3 py-3">${img(g.image,"w-10 h-10 shrink-0")}<span data-show="${esc(g.key)}" class="flex-1 text-sm">${esc(g.name)}</span><button data-add="${esc(g.key)}" class="text-stone-400 p-1"><i data-lucide="x" class="w-4 h-4"></i></button></div>`).join("")}</div></section>`;
   const pctDone=Math.round(got/items.length*100);
   $("list").innerHTML=`<div class="col-span-full rounded-[24px] p-5 text-white relative overflow-hidden" style="background:linear-gradient(135deg,#047857,#0d9488)">
-    <p class="text-emerald-100 text-sm font-bold">Alışveriş listem · ${items.length} ürün · ${stops} market</p>
+    <p class="text-emerald-100 text-sm font-bold">Alışveriş listem · ${items.length} çeşit · ${units} adet · ${stops} market</p>
     <p class="font-display font-extrabold text-4xl tabular mt-1">${tl(sum)}</p>
-    ${max-sum>0.005?`<p class="mt-1 text-sm font-bold">Hepsini en pahalı marketten alsan ${tl(max)} olurdu · <span class="text-amber-300">${tl(max-sum)} kazancın</span></p>`:""}
+    ${max-sum>0.005?`<p class="mt-1 text-sm font-bold"><span class="text-amber-300">${tl(max-sum)} kazancın</span> · market farkı ve kampanyalar sayesinde (kampanyasız, en pahalı markette ${tl(max)})</p>`:""}
     <div class="mt-4 h-2.5 rounded-full bg-white/20 overflow-hidden"><div class="h-full rounded-full bg-amber-300 transition-all duration-500" style="width:${pctDone}%"></div></div>
     <div class="mt-2 flex items-center justify-between text-xs font-bold"><span>${got}/${items.length} ürün alındı</span>${got?`<button data-undone class="underline">İşaretleri sıfırla</button>`:""}</div>
     <span class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-white/10"></span></div>`+h}
@@ -467,11 +475,12 @@ async function scan(){
 
 // ---------- Animasyonlar ----------
 const calm=()=>matchMedia("(prefers-reduced-motion: reduce)").matches;
+function bumpCount(){["n","n2"].forEach(i=>{const b=$(i);b.classList.remove("bump");void b.offsetWidth;b.classList.add("bump")})}
 // Listeye eklenen ürünün resmi sepet simgesine uçar
 function fly(btn){
   const card=btn.closest("article,.pc"),src=card&&card.querySelector("img");
   const target=[$("navList"),$("cartBtn")].find(x=>x&&x.offsetParent);
-  const bump=()=>{["n","n2"].forEach(i=>{const b=$(i);b.classList.remove("bump");void b.offsetWidth;b.classList.add("bump")})};
+  const bump=bumpCount;
   if(!src||!target||calm()){setTimeout(bump,30);return}
   const a=src.getBoundingClientRect(),b=target.getBoundingClientRect(),c=src.cloneNode();c.className="fly";
   Object.assign(c.style,{left:a.left+"px",top:a.top+"px",width:a.width+"px",height:a.height+"px"});document.body.appendChild(c);
@@ -488,8 +497,10 @@ $("deals").innerHTML=Array.from({length:6},()=>`<div class="sk-card skel"></div>
 // ---------- Olaylar ----------
 document.addEventListener("click",e=>{const t=s=>e.target.closest(s);let el;
   if(el=t("[data-add]")){const g=GI[el.dataset.add];if(g){const adding=!inCart(g);
-    if(adding)fly(el);cart=adding?[...cart,g.key]:cart.filter(x=>GI[x]!==g);save("cart",cart);redraw();
+    if(adding)fly(el);else delete QTY[g.key];cart=adding?[...cart,g.key]:cart.filter(x=>GI[x]!==g);save("cart",cart);save("qty",QTY);redraw();
     if(adding){const nb=document.querySelector(`[data-add="${CSS.escape(g.key)}"].add`);if(nb)nb.classList.add("pop")}}}
+  else if(el=t("[data-inc]")){const g=GI[el.dataset.inc];if(g){QTY[g.key]=qtyOf(g)+1;save("qty",QTY);if(!inCart(g)){cart=[...cart,g.key];save("cart",cart)}if(navigator.vibrate)navigator.vibrate(10);redraw();bumpCount()}}
+  else if(el=t("[data-dec]")){const g=GI[el.dataset.dec];if(g){const q=qtyOf(g);if(q>1)QTY[g.key]=q-1;else{delete QTY[g.key];cart=cart.filter(x=>GI[x]!==g);save("cart",cart)}save("qty",QTY);redraw()}}
   else if(el=t("[data-done]")){const k=el.dataset.done;done[k]?delete done[k]:done[k]=1;save("done",done);if(navigator.vibrate)navigator.vibrate(15);redraw()}
   else if(t("[data-undone]")){done={};save("done",done);redraw()}
   else if(el=t("[data-ss]")){S.sort=el.dataset.ss;redraw()}
