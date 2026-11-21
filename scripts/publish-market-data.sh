@@ -39,9 +39,9 @@ for attempt in 1 2 3 4 5 6 7 8 9 10; do
   git fetch --no-tags origin main
   git reset --hard origin/main
 
-  python3 - "$tmp/market.json" "$tmp/status.json" "$data_rel" "$status_rel" <<'PY'
+  python3 - "$tmp/market.json" "$tmp/status.json" "$data_rel" "$status_rel" "$market" "$mode" <<'PY'
 import json, shutil, sys
-incoming_data_path, incoming_status_path, data_path, status_path = sys.argv[1:]
+incoming_data_path, incoming_status_path, data_path, status_path, market, mode = sys.argv[1:]
 def load(path):
     try:
         with open(path, encoding="utf-8") as f:
@@ -99,6 +99,16 @@ incoming_data_time = stamp(incoming_data.get("updated"))
 publish_data = bool(incoming_success and incoming_data_time and
                     (not current_data_time or incoming_data_time > current_data_time))
 if publish_data:
+    # Fiyat geçmişi, ana daldaki son yayımlanmış sürümle karşılaştırılarak çıkarılır.
+    # Geçmiş yazılamazsa fiyat verisinin yayımlanması engellenmez.
+    try:
+        sys.path.insert(0, "scripts")
+        import pricehist
+        changed = pricehist.record_publish(f"data/history-{market}.json", market,
+                                           current_data, incoming_data, mode)
+        print("Price history changes:", changed)
+    except Exception as exc:  # noqa: BLE001
+        print("WARNING: price history not updated:", repr(exc))
     shutil.copyfile(incoming_data_path, data_path)
     current_data_time = incoming_data_time
 
@@ -122,6 +132,7 @@ print("Published status for", incoming.get("market"), "mode", incoming.get("mode
 PY
 
   git add "$status_rel" "$data_rel"
+  if [ -f "data/history-${market}.json" ]; then git add "data/history-${market}.json"; fi
   if git diff --cached --quiet; then
     echo "No newer status or data to publish for $market."
     exit 0
