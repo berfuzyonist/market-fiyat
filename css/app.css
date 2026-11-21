@@ -1,5 +1,5 @@
 /* Market Fiyat — market sitesi görünümü. Renkler: yeşil (güven/ana), turuncu (fırsat), mor (kampanya). */
-:root{--g:#059669;--g2:#047857;--o:#f97316;--ease:cubic-bezier(.2,.8,.2,1);--spring:cubic-bezier(.34,1.56,.64,1)}
+:root{color-scheme:light;--g:#059669;--g2:#047857;--o:#f97316;--ease:cubic-bezier(.2,.8,.2,1);--spring:cubic-bezier(.34,1.56,.64,1)}
 .font-display,h1,h2,.page-title{font-family:Rubik,system-ui,sans-serif}
 .tabular{font-variant-numeric:tabular-nums}
 .noscroll{scrollbar-width:none}.noscroll::-webkit-scrollbar{display:none}
@@ -139,3 +139,12 @@ button,a,[data-show],[data-add]{cursor:pointer;-webkit-tap-highlight-color:trans
 }
 @keyframes popin{from{opacity:0;transform:scale(.85) rotate(-3deg)}}
 @keyframes draw{to{stroke-dashoffset:0}}
+
+/* Adet seçici */
+.stepper{position:absolute;right:.55rem;bottom:.55rem;display:flex;align-items:center;height:38px;border-radius:12px;background:var(--g);color:#fff;box-shadow:0 6px 14px -6px rgb(5 150 105/.9);overflow:hidden;animation:widen .3s var(--spring)}
+.stepper button{width:34px;height:38px;display:grid;place-items:center;transition:background .15s}
+.stepper button:active{background:rgb(0 0 0/.15)}
+.stepper span{min-width:22px;text-align:center;font-family:Rubik,sans-serif;font-weight:800;font-size:15px}
+.stepper.big{position:static;height:52px;border-radius:16px}.stepper.big button{width:48px;height:52px}.stepper.big span{min-width:30px;font-size:18px}
+.stepper.sm{position:static;height:32px;border-radius:10px;box-shadow:none}.stepper.sm button{width:30px;height:32px}.stepper.sm span{min-width:18px;font-size:14px}
+@keyframes widen{from{transform:scaleX(.4);opacity:.4}}
