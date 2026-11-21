@@ -110,3 +110,25 @@ test("birim fiyat karşılaştırması: boy boy en ucuz, ilgisiz ürün ve aykı
   assert.ok(!r.sizes.some(s=>s.items));
   assert.equal(MF.unitCompare(rows,"çikolata"),null);
 });
+test("esnek eşleştirme: yazım farkları birleşir, farklı çeşitler birleşmez",()=>{
+  const MF=require("../../js/match.js");
+  const mk=(id,name,price)=>({id,market:id.split(":")[0],name,price,regular:price,in_stock:true});
+  const pairs=[
+    ["sok:1","Nescafe Gold 50 g Ekonomik Paket",200,"migros:1","Nescafe Gold 50 G",210,true],
+    ["sok:2","Pepsi 1.5 L",50,"migros:2","Pepsi Kola 1,5 L",52,true],
+    ["sok:3","Ülker O'lala Tiramisu 45 g",20,"migros:3","Ülker Olala Tiramisu Dolgulu Kek 45 G",21,true],
+    ["sok:4","Head&Shoulders Şampuan Mentol 330 ml",150,"migros:4","Head & Shoulders Mentol Şampuan 330 Ml",155,true],
+    ["sok:5","Hero Baby Organik Elma Şeftali 120 Gr",85,"migros:5","Hero Baby Organik Erik Püreli Kavanoz Mama 120 G",85,false],
+    ["sok:6","Axe Black Deodorant 150 ml",300,"migros:6","Axe Black Vanilla Erkek Sprey Deodorant 150 Ml",230,false],
+    ["sok:7","Anadolu Mutfağı Basmati Pirinç 1 kg",90,"migros:7","Anadolu Lezzetleri Gönen Baldo Pirinç 1 Kg",95,false],
+    ["sok:8","Sensodyne Beyazlatıcı Diş Macunu 75 ml",240,"migros:8","Sensodyne Promine Onarım Beyazlatıcı Diş Macunu 75 Ml",440,false],
+  ];
+  for(const [a,an,ap,b,bn,bp,want] of pairs){
+    const rows=[mk(a,an,ap),mk(b,bn,bp)];const G=MF.group(rows);
+    assert.equal(G.length===1,want,`${an} <> ${bn}`);
+  }
+  // Karşılıklı en iyi aday: iki Migros adayından ayırt edici kelimesi tutan seçilir
+  const rows=[mk("sok:9","Pepsi 1.5 L",50),mk("migros:9","Pepsi Kola 1,5 L",52),mk("migros:10","Pepsi Zero Sugar Kola 1,5 L",52)];
+  const G=MF.group(rows);const g=G.find(x=>x.offers.some(o=>o.id==="sok:9"));
+  assert.deepEqual(g.offers.map(o=>o.id).sort(),["migros:9","sok:9"]);
+});

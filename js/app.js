@@ -580,6 +580,8 @@ function build(rows){
   G=MF.group(O);
   G.forEach(g=>{g.offers.sort((a,b)=>ORD.indexOf(a.market)-ORD.indexOf(b.market));g.key=g.offers[0].id;g.name=g.offers[0].name;g.image=(g.offers.find(o=>o.image)||{}).image;
     g.s=norm(g.offers.map(o=>o.name).join(" "));g.offers.forEach(o=>GI[o.id]=g)});
+  // 48 saatten uzun süredir doğrulanmayan ürünün kampanyası güncel sayılmaz
+  O.forEach(o=>{if(o.stale&&o._promo&&o._promo.kind!=="bim")o._promo=null});
   PROMO=O.filter(o=>o._promo&&usable(o));FAM=null;
   buildCompare();
 }

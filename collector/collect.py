@@ -129,6 +129,11 @@ def migros_promo(p):
             if value and value not in found:
                 found.append(value)
 
+    # Ürün sayfasında "2 Al 1 Öde" gibi gösterilen kampanyalar crmDiscountTags alanındadır;
+    # bunların çoğu Migros'un "çoklu indirim" listesinde yer almaz, yalnızca tam taramada görülür.
+    for tag in p.get("crmDiscountTags") or []:
+        if isinstance(tag, dict):
+            add(str(tag.get("tag") or ""))
     for badge in p.get("badges") or []:
         if not isinstance(badge, dict):
             continue
@@ -912,10 +917,9 @@ def main():
 
     promos_before = {k: p.get("promo") or "" for k, p in merged.items()}
     if state == "tamam":
-        if market == "migros" and mode == "deals":
-            for k, p in merged.items():
-                if k not in fresh and p.get("promo"):
-                    merged[k] = {**p, "promo": ""}
+        # Migros indirim modu yalnızca iki listeyi okur; listede olmayan ürünün kampanyası
+        # (crmDiscountTags) burada silinmez, gece tam taramasında yenilenir. Doğrulaması
+        # 48 saati geçen ürünün kampanyası arayüzde gösterilmez.
         if market == "sok" and SOK_PROMOS is not None:
             for k, p in merged.items():
                 want = SOK_PROMOS.get(k, "")
