@@ -50,7 +50,21 @@ Bilinen alan durumu: ad, fiyat, normal fiyat, stok, görsel, adres ve kampanya m
 
 GitHub Actions zamanlaması en iyi çaba esaslıdır; dakikası garanti değildir.
 
-## Fiyatı Güncelle (tek ürün kontrolü)
+## Fiyat güncel mi? (herkes için, kayıt yapmaz)
+
+Her ürünün ayrıntısında **Fiyat güncel mi?** düğmesi vardır. GitHub hesabı gerektirmez, hiçbir veri yazmaz. Market siteleri başka sitelerden tarayıcı isteğine izin vermediği (CORS başlığı yok) ve proje harici sunucu kullanmadığı için uygulama canlı fiyatı kendisi okuyamaz; karar, fiyatın marketin sitesinden en son ne zaman doğrulandığına (`seen`) ve marketin son tarama sonucuna göre verilir:
+
+- 6 saatten yeni: **Güncel**
+- 6–30 saat: **Büyük olasılıkla güncel**
+- 30 saatten eski veya bilinmiyor: **Eski olabilir**
+- BİM tarihi gelmemiş/geçmiş ürün: **Henüz satışta değil / Satış dönemi geçmiş**
+
+Son otomatik tarama başarısızsa bu ayrıca söylenir. Panelde marketin ürün sayfasına canlı fiyatı görmek için bağlantı bulunur.
+
+## Fiyatı Güncelle (depo sahibi için, tek ürün kontrolü)
+
+GitHub hesabı ve depoda yetki gerektirir; sonucu veriye kaydeder. Arayüzde "Fiyat güncel mi?" panelinin altında ikincil bağlantı olarak durur.
+
 
 1. Uygulamada ürün kartındaki veya ürün ayrıntısındaki **Fiyatı Güncelle** GitHub'da hazır doldurulmuş bir talep sayfası açar; **Create** ile gönderilir. Talep gövdesinde gizli işaret vardır: `{"market","id","name"}`.
 2. İş akışı işareti doğrular (market, kimlik biçimi, ürünün katalogda olması, adın kayıtla aynı olması). Elle değiştirilmiş/sahte talepler markete istek atılmadan reddedilir. Kullanıcı metni kabuğa gömülmez, yalnızca ortam değişkeniyle Python'a aktarılır.
