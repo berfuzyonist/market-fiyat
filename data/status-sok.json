@@ -1,24 +1,24 @@
 {
- "updated": "2026-11-21T16:50:20+00:00",
- "started_at": "2026-11-21T16:48:31+00:00",
- "finished_at": "2026-11-21T16:50:20+00:00",
- "checked_at": "2026-11-21T16:50:20+00:00",
- "data_updated": "2026-11-21T16:50:20+00:00",
- "last_successful_data_at": "2026-11-21T16:50:20+00:00",
+ "updated": "2026-11-21T17:46:37+00:00",
+ "started_at": "2026-11-21T17:44:54+00:00",
+ "finished_at": "2026-11-21T17:46:37+00:00",
+ "checked_at": "2026-11-21T17:46:37+00:00",
+ "data_updated": "2026-11-21T17:46:37+00:00",
+ "last_successful_data_at": "2026-11-21T17:46:37+00:00",
  "market": "sok",
  "mode": "deals",
  "status": "tamam",
  "complete": true,
- "found": 363,
- "total": 2916,
- "seconds": 108,
+ "found": 356,
+ "total": 2917,
+ "seconds": 103,
  "notes": [
   "kampanyalar: 92 ürün",
-  "indirimli-urunler-cms-pl1: sitede 411, okunan 412, 21/21 sayfa (son sayfa)",
-  "363 indirimli ürün güncellendi"
+  "indirimli-urunler-cms-pl1: sitede 412, okunan 416, 21/21 sayfa (son sayfa)",
+  "356 indirimli ürün güncellendi"
  ],
  "quality": {
-  "category_count": 21,
+  "category_count": 22,
   "empty_category_count": 0,
   "campaign_date_category_count": 0,
   "other_count": 6,
@@ -44,7 +44,8 @@
    "Meyve & Sebze": 48,
    "Diğer": 6,
    "Ev & Mutfak": 1,
-   "Oyuncak": 1
+   "Oyuncak": 1,
+   "Bakliyat & Temel Gıda": 1
   }
  },
  "quality_warnings": [],
@@ -57,10 +58,10 @@
   }
  },
  "errors": [],
- "run_id": "44926570967",
- "collected_products": 363,
- "total_products": 2916,
- "discounted_products": 410,
+ "run_id": "44931718898",
+ "collected_products": 356,
+ "total_products": 2917,
+ "discounted_products": 414,
  "invalid_products": 0,
  "data_quality": {
   "missing_id": 0,
@@ -71,25 +72,25 @@
   "suspicious_discount": 0,
   "bad_url": 0
  },
- "duration_seconds": 108,
+ "duration_seconds": 103,
  "last_attempt_by_mode": {
   "deals": {
-   "checked_at": "2026-11-21T16:50:20+00:00",
+   "checked_at": "2026-11-21T17:46:37+00:00",
    "status": "tamam",
    "complete": true,
-   "found": 363,
-   "total": 2916,
-   "seconds": 108,
-   "data_updated": "2026-11-21T16:50:20+00:00",
+   "found": 356,
+   "total": 2917,
+   "seconds": 103,
+   "data_updated": "2026-11-21T17:46:37+00:00",
    "errors": [],
    "notes": [
     "kampanyalar: 92 ürün",
-    "indirimli-urunler-cms-pl1: sitede 411, okunan 412, 21/21 sayfa (son sayfa)",
-    "363 indirimli ürün güncellendi"
+    "indirimli-urunler-cms-pl1: sitede 412, okunan 416, 21/21 sayfa (son sayfa)",
+    "356 indirimli ürün güncellendi"
    ],
    "quality_warnings": [],
    "quality": {
-    "category_count": 21,
+    "category_count": 22,
     "empty_category_count": 0,
     "campaign_date_category_count": 0,
     "other_count": 6,
@@ -115,7 +116,8 @@
      "Meyve & Sebze": 48,
      "Diğer": 6,
      "Ev & Mutfak": 1,
-     "Oyuncak": 1
+     "Oyuncak": 1,
+     "Bakliyat & Temel Gıda": 1
     }
    },
    "traffic": {
