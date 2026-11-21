@@ -109,6 +109,23 @@ function priceUpdateLink(o){
   return`https://github.com/${REPO}/issues/new?`+new URLSearchParams({title,body}).toString();
 }
 
-const api={fold,toTs,rowsOf,promoOf,bimWhen,enrich,usable,disc,ago,priceUpdateLink,MONEY,STALE_HOURS};
+// "Fiyat güncel mi?": hesap gerektirmez, hiçbir şey kaydetmez. Market siteleri tarayıcıdan
+// okunmaya izin vermediği (CORS) için canlı sorgu yapılamaz; karar, fiyatın marketin sitesinden
+// en son ne zaman doğrulandığına ve marketin son tarama sonucuna göre verilir.
+const FRESH_HOURS=6,LIKELY_HOURS=30;
+function freshness(o,status,now){
+  now=now||Date.now();
+  const age=o.seen?(now/1000-o.seen)/3600:null,when=ago(o.seen,now);
+  const failed=status&&status.status&&status.status!=="tamam";
+  const failTxt=failed?" Marketin son otomatik taraması başarısız oldu; yeni fiyat alınamadı, son doğrulanan fiyat gösteriliyor.":"";
+  if(o.na==="soon")return{level:"na",title:"Henüz satışta değil",text:"Bu BİM aktüel ürünü ileri tarihte satışa çıkacak. Fiyat BİM'in duyurduğu fiyattır."};
+  if(o.na==="ended")return{level:"old",title:"Satış dönemi geçmiş",text:"Bu BİM kampanyasının süresi dolmuş veya ürün tükenmiş olabilir. Mağazada fiyat farklı olabilir."};
+  if(age==null)return{level:"old",title:"Doğrulama zamanı bilinmiyor",text:"Bu fiyatın ne zaman alındığı kayıtlı değil. Marketin sayfasından kontrol edin."+failTxt};
+  if(age<=FRESH_HOURS)return{level:"ok",title:"Güncel",text:`Fiyat ${when} marketin sitesinden doğrulandı.`+failTxt};
+  if(age<=LIKELY_HOURS)return{level:"likely",title:"Büyük olasılıkla güncel",text:`Fiyat en son ${when} doğrulandı. Market gün içinde fiyat değiştirmiş olabilir.`+failTxt};
+  return{level:"old",title:"Eski olabilir",text:`Fiyat en son ${when} doğrulandı. Güncel olmayabilir; marketin sayfasından kontrol edin.`+failTxt};
+}
+
+const api={fold,toTs,rowsOf,promoOf,bimWhen,enrich,usable,disc,ago,priceUpdateLink,freshness,MONEY,STALE_HOURS};
 if(typeof module!=="undefined"&&module.exports)module.exports=api;else root.MFC=api;
 })(typeof window!=="undefined"?window:globalThis);

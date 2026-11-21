@@ -83,3 +83,15 @@ test("eksik veya hatalı ürünle talep bağlantısı üretilmez",()=>{
 test("göreli zaman",()=>{
   assert.equal(C.ago(NOW/1000-30,NOW),"az önce");assert.equal(C.ago(NOW/1000-7200,NOW),"2 sa önce");assert.equal(C.ago(null,NOW),"");
 });
+test("Fiyat güncel mi: doğrulama yaşına ve tarama durumuna göre karar, hiçbir şey yazmaz",()=>{
+  const o=h=>C.enrich({id:"sok:1",market:"sok",price:10,regular:10,in_stock:true,seen:NOW/1000-h*3600},{now:NOW});
+  assert.equal(C.freshness(o(1),{status:"tamam"},NOW).level,"ok");
+  assert.match(C.freshness(o(1),{status:"tamam"},NOW).text,/1 sa önce/);
+  assert.equal(C.freshness(o(12),{status:"tamam"},NOW).level,"likely");
+  assert.equal(C.freshness(o(40),{status:"tamam"},NOW).level,"old");
+  assert.match(C.freshness(o(1),{status:"durduruldu: 403"},NOW).text,/başarısız/);
+  assert.equal(C.freshness({...o(1),seen:null},null,NOW).level,"old");
+  const soon=C.enrich({id:"bim:x",market:"bim",price:10,regular:10,in_stock:true,promo:"Aktüel · 24 Kasım Salı",seen:NOW/1000},{now:NOW});
+  assert.equal(C.freshness(soon,null,NOW).level,"na");
+  const before=JSON.stringify(o(1));C.freshness(o(1),null,NOW);assert.equal(JSON.stringify(o(1)),before);
+});

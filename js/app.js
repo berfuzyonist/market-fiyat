@@ -43,6 +43,7 @@ function categoryOf(o){
 
 // O: tek tek market ürünleri, G: aynı ürünün marketlerdeki teklifleri, CMP: karşılaştırma listeleri
 let O=[],G=[],GI={},CMP={same:[],size:[],staple:[]},PROMO=[];
+const FRESH=new Set(); // "Fiyat güncel mi?" paneli açık ürünler (kaydedilmez)
 let cart=load("cart",[]),bmap=load("bmap",{}),reqs=load("req",{}),pending=null,only=null,updated="",UPD={},CHECK={},CHECKS={},view="home";
 const C={seg:"same",three:false,sort:"pct",page:0},K={kind:"multi",m:"",sort:"gain",page:0},B={m:"",cat:"",disc:false,sort:"disc",page:0};
 const PER=20,PERC=12;
@@ -101,6 +102,15 @@ function checkLine(o){
   if(waiting)t+=` <span class="text-blue-700 dark:text-blue-300 font-semibold">· talep gönderildi, sonuç birkaç dakika içinde</span>`;
   return t;
 }
+// Herkes için: kayıt yapmayan tazelik kontrolü
+const freshBtn=(o,cls)=>`<button data-fresh="${esc(o.id)}" class="${cls}"><i data-lucide="badge-check" class="w-3.5 h-3.5 inline -mt-0.5"></i> Fiyat güncel mi?</button>`;
+function freshPanel(o){
+  const f=MFC.freshness(o,CHECK[o.market]),c={ok:"bg-emerald-50 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-200",likely:"bg-sky-50 text-sky-900 dark:bg-sky-950 dark:text-sky-200",old:"bg-amber-50 text-amber-900 dark:bg-amber-950 dark:text-amber-200",na:"bg-stone-100 text-stone-700 dark:bg-stone-800 dark:text-stone-200"}[f.level];
+  const ic={ok:"circle-check",likely:"clock",old:"triangle-alert",na:"calendar-clock"}[f.level];
+  return`<div class="mt-2 rounded-xl p-3 text-xs leading-snug ${c}"><p class="font-extrabold text-sm flex items-center gap-1.5"><i data-lucide="${ic}" class="w-4 h-4"></i>${f.title}: ${tl(o.price)}</p>
+  <p class="mt-1">${esc(f.text)}</p>
+  ${o.url&&o.url.startsWith("https://")?`<a href="${esc(o.url)}" target="_blank" rel="noopener" class="mt-2 inline-flex items-center gap-1 font-bold underline">${M[o.market].n} sayfasında canlı fiyatı gör <i data-lucide="external-link" class="w-3.5 h-3.5"></i></a>`:""}
+  <p class="mt-2 opacity-70">Bu kontrol hiçbir şeyi kaydetmez ve hesap gerektirmez. Market siteleri başka sitelerden canlı sorguya izin vermediği için uygulama canlı fiyatı kendisi okuyamaz.</p></div>`}
 const updBtn=(o,cls)=>{const u=priceUpdateLink(o);return u?`<a href="${esc(u)}" data-req="${esc(o.id)}" target="_blank" rel="noopener noreferrer" class="${cls}"><i data-lucide="refresh-cw" class="w-3.5 h-3.5 inline -mt-0.5"></i> Fiyatı Güncelle</a>`:""};
 function pcard(o,opt={}){
   const g=GI[o.id],key=g?g.key:o.id,d=disc(o),p=o._promo,inC=g&&inCart(g);
@@ -114,7 +124,7 @@ function pcard(o,opt={}){
   ${stateChip(o)?`<p class="mt-1">${stateChip(o)}</p>`:""}
   ${p&&usable(o)?`<p class="text-xs text-violet-700 dark:text-violet-300 mt-1 leading-snug">${promoLine(o)}</p>`:""}
   <p class="text-[11px] mt-1 ${o.stale?"text-amber-700 font-semibold":"text-stone-400"}">${o.checked&&!o.stale?"✓ ":""}${MFC.ago(o.seen)}${o.stale?" · eski veri":""}</p>
-  ${opt.strip?"":`${updBtn(o,"mt-2 block text-center py-2 rounded-lg text-xs font-bold text-blue-700 bg-blue-50 hover:bg-blue-100 dark:bg-blue-950 dark:text-blue-300")}<button data-add="${esc(key)}" class="mt-auto pt-2"><span class="w-full flex items-center justify-center gap-1 py-2 rounded-lg text-sm font-bold ${inC?"bg-stone-100 dark:bg-stone-800":"bg-emerald-600 text-white"}"><i data-lucide="${inC?"check":"plus"}" class="w-4 h-4"></i>${inC?"Listede":"Ekle"}</span></button>`}</article>`}
+  ${opt.strip?"":`<button data-fresh="${esc(o.id)}" data-open="${esc(key)}" class="mt-2 w-full py-2 rounded-lg text-xs font-bold text-blue-700 bg-blue-50 hover:bg-blue-100 dark:bg-blue-950 dark:text-blue-300"><i data-lucide="badge-check" class="w-3.5 h-3.5 inline -mt-0.5"></i> Fiyat güncel mi?</button><button data-add="${esc(key)}" class="mt-auto pt-2"><span class="w-full flex items-center justify-center gap-1 py-2 rounded-lg text-sm font-bold ${inC?"bg-stone-100 dark:bg-stone-800":"bg-emerald-600 text-white"}"><i data-lucide="${inC?"check":"plus"}" class="w-4 h-4"></i>${inC?"Listede":"Ekle"}</span></button>`}</article>`}
 
 // ---------- Karşılaştırma verisi ----------
 function buildCompare(){
@@ -210,13 +220,14 @@ function drawH(){
 // ---------- Ara ----------
 function offerRow(o,isB){
   const out=!usable(o),d=disc(o)>0,u=unitTxt(o);
-  return`<div class="py-2 ${isB?"bg-emerald-50 dark:bg-emerald-950/40 -mx-4 px-4":""} ${out?"opacity-40":""}"><div class="flex items-center gap-2">
+  return`<div class="py-2 ${isB?"bg-emerald-50 dark:bg-emerald-950/40 -mx-4 px-4":""}"><div class="flex items-center gap-2 ${out?"opacity-40":""}">
   ${badge(o.market)}${isB?`<span class="flex items-center gap-1 ${good} text-xs font-bold"><i data-lucide="trophy" class="w-3.5 h-3.5"></i>En ucuz</span>`:""}
   <span class="flex-1"></span>${stateChip(o)}${moneyChip(o)}${d?`<span class="text-xs text-stone-400 line-through tabular">${tl(o.regular)}</span>`:""}
   <span class="tabular font-bold text-right ${isB||d?good:""} ${out?"line-through":""}">${tl(o.price)}</span>
   ${o.url&&o.url.startsWith("https://")?`<a href="${esc(o.url)}" target="_blank" rel="noopener" aria-label="Markette aç" class="text-stone-400 p-1"><i data-lucide="external-link" class="w-4 h-4"></i></a>`:""}</div>
   ${o._promo||u?`<p class="text-xs mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">${o._promo?`${o._promo.kind==="multi"?promoChip(o):""}<span class="text-violet-700 dark:text-violet-300">${promoLine(o)}</span>`:""}${u?`<span class="text-stone-500 tabular">${u}</span>`:""}</p>`:""}
-  <div class="text-[11px] mt-1 flex items-center gap-2 flex-wrap"><span class="flex-1 min-w-0">${checkLine(o)}</span>${updBtn(o,"shrink-0 px-2.5 py-1.5 rounded-lg font-bold text-blue-700 bg-blue-50 dark:bg-blue-950 dark:text-blue-300")}</div></div>`}
+  <div class="text-[11px] mt-1 flex items-center gap-2 flex-wrap"><span class="flex-1 min-w-0">${checkLine(o)}</span>${freshBtn(o,"shrink-0 px-2.5 py-1.5 rounded-lg font-bold text-blue-700 bg-blue-50 dark:bg-blue-950 dark:text-blue-300")}</div>
+  ${FRESH.has(o.id)?freshPanel(o)+`<p class="mt-1 text-[11px] text-stone-500">Depo sahibiyseniz: ${updBtn(o,"font-semibold underline")} (GitHub hesabı gerekir, sonucu kaydeder)</p>`:""}</div>`}
 function drawS(){
   const w=norm($("q").value.trim()).split(/\s+/).filter(Boolean);
   let r=only&&GI[only]?[GI[only]]:(w.length||pending?G.filter(g=>w.every(x=>g.s.includes(x))):[]);
@@ -297,6 +308,8 @@ document.addEventListener("click",e=>{const t=s=>e.target.closest(s);let el;
   if(el=t("[data-add]")){const g=GI[el.dataset.add];if(g){cart=inCart(g)?cart.filter(x=>GI[x]!==g):[...cart,g.key];save("cart",cart);redraw()}}
   else if(el=t("[data-map]")){bmap[pending]=el.dataset.map;save("bmap",bmap);only=el.dataset.map;pending=null;redraw();note("Barkod eşleştirildi. Bir dahaki okutmada ürün doğrudan açılır.")}
   else if(t("[data-cancel]")){pending=null;redraw()}
+  else if(el=t("[data-fresh]")){const id=el.dataset.fresh;
+    if(el.dataset.open){FRESH.add(id);show(el.dataset.open)}else{FRESH.has(id)?FRESH.delete(id):FRESH.add(id);redraw()}}
   else if(el=t("a[data-req]")){reqs[el.dataset.req]=Math.floor(Date.now()/1000);save("req",reqs);
     note("GitHub talep sayfası açıldı. Orada “Create” düğmesine basın: GitHub Actions yalnızca bu ürünü marketin sitesinden kontrol eder ve sonucu talebe yazar (genellikle 1-2 dakika). Sonra bu sayfayı yenileyin.")}
   else if(t("a")){}
