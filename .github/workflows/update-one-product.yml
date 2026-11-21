@@ -1,0 +1,62 @@
+name: Tek Ürün Fiyat Güncelleme
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: single-product-price-update
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    if: >-
+      github.event.issue.pull_request == null &&
+      startsWith(github.event.issue.title, '[FİYAT GÜNCELLE]') &&
+      contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association)
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - name: Depoyu al
+        uses: actions/checkout@v7
+        with:
+          ref: main
+
+      - name: Ürün fiyatını kaynaktan doğrula
+        id: refresh
+        env:
+          ISSUE_BODY: \${{ github.event.issue.body }}
+        run: python3 scripts/update_one_product.py
+
+      - name: Doğrulanmış veriyi yayımla
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/price-checks.json data/migros.json data/sok.json data/bim.json
+          if git diff --cached --quiet; then
+            echo "Yayımlanacak değişiklik yok."
+          else
+            git commit -m "Ürün fiyat kontrolü: #\${{ github.event.issue.number }}"
+            git push
+          fi
+
+      - name: Sonucu talebe yaz
+        if: always()
+        env:
+          GH_TOKEN: \${{ github.token }}
+          GH_REPO: \${{ github.repository }}
+          ISSUE_NUMBER: \${{ github.event.issue.number }}
+          JOB_STATUS: \${{ job.status }}
+          SUMMARY: \${{ steps.refresh.outputs.summary }}
+        run: |
+          if [ "$JOB_STATUS" = "success" ]; then
+            gh issue comment "$ISSUE_NUMBER" --repo "$GH_REPO" --body "**İşlem tamamlandı.**\n\n$SUMMARY"
+            gh issue close "$ISSUE_NUMBER" --repo "$GH_REPO"
+          else
+            gh issue comment "$ISSUE_NUMBER" --repo "$GH_REPO" --body "## Fiyat güncellenemedi\n\nKaynak doğrulaması başarısız oldu veya işlem güvenlik kontrolünde durduruldu. Mevcut fiyat korunmuştur. Ayrıntı için Actions çalıştırma kayıtlarına bakın."
+          fi
