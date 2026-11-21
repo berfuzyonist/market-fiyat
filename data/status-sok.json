@@ -1,21 +1,21 @@
 {
- "updated": "2026-11-21T11:49:53+00:00",
- "started_at": "2026-11-21T11:48:06+00:00",
- "finished_at": "2026-11-21T11:49:53+00:00",
- "checked_at": "2026-11-21T11:49:53+00:00",
- "data_updated": "2026-11-21T11:49:53+00:00",
- "last_successful_data_at": "2026-11-21T11:49:53+00:00",
+ "updated": "2026-11-21T12:58:07+00:00",
+ "started_at": "2026-11-21T12:56:18+00:00",
+ "finished_at": "2026-11-21T12:58:07+00:00",
+ "checked_at": "2026-11-21T12:58:07+00:00",
+ "data_updated": "2026-11-21T12:58:07+00:00",
+ "last_successful_data_at": "2026-11-21T12:58:07+00:00",
  "market": "sok",
  "mode": "deals",
  "status": "tamam",
  "complete": true,
- "found": 369,
+ "found": 388,
  "total": 2929,
- "seconds": 106,
+ "seconds": 109,
  "notes": [
   "kampanyalar: 92 ürün",
   "indirimli-urunler-cms-pl1: sitede 413, okunan 412, 21/21 sayfa (son sayfa)",
-  "369 indirimli ürün güncellendi"
+  "388 indirimli ürün güncellendi"
  ],
  "quality": {
   "category_count": 22,
@@ -42,8 +42,8 @@
    "Giyim & Aksesuar": 41,
    "Evcil Dostlar": 42,
    "Dondurma": 85,
-   "Meyve & Sebze": 48,
    "Diğer": 14,
+   "Meyve & Sebze": 48,
    "Ev & Mutfak": 3,
    "Oyuncak & Hobi": 2
   }
@@ -58,8 +58,8 @@
   }
  },
  "errors": [],
- "run_id": "44900806570",
- "collected_products": 369,
+ "run_id": "44906341848",
+ "collected_products": 388,
  "total_products": 2929,
  "discounted_products": 420,
  "invalid_products": 0,
@@ -72,21 +72,21 @@
   "suspicious_discount": 0,
   "bad_url": 0
  },
- "duration_seconds": 106,
+ "duration_seconds": 109,
  "last_attempt_by_mode": {
   "deals": {
-   "checked_at": "2026-11-21T11:49:53+00:00",
+   "checked_at": "2026-11-21T12:58:07+00:00",
    "status": "tamam",
    "complete": true,
-   "found": 369,
+   "found": 388,
    "total": 2929,
-   "seconds": 106,
-   "data_updated": "2026-11-21T11:49:53+00:00",
+   "seconds": 109,
+   "data_updated": "2026-11-21T12:58:07+00:00",
    "errors": [],
    "notes": [
     "kampanyalar: 92 ürün",
     "indirimli-urunler-cms-pl1: sitede 413, okunan 412, 21/21 sayfa (son sayfa)",
-    "369 indirimli ürün güncellendi"
+    "388 indirimli ürün güncellendi"
    ],
    "quality_warnings": [],
    "quality": {
@@ -114,8 +114,8 @@
      "Giyim & Aksesuar": 41,
      "Evcil Dostlar": 42,
      "Dondurma": 85,
-     "Meyve & Sebze": 48,
      "Diğer": 14,
+     "Meyve & Sebze": 48,
      "Ev & Mutfak": 3,
      "Oyuncak & Hobi": 2
     }
