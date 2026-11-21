@@ -284,3 +284,28 @@ class MainMergeTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class BimDiscountTests(unittest.TestCase):
+    """BİM indirimli üründe üstü çizili eski fiyat ile satış fiyatı karışmamalı (gerçek sayfa kesiti)."""
+
+    def test_list_card_uses_sale_price(self):
+        body = (FIX / "bim_list_discount.html").read_text(encoding="utf-8")
+        cards = collect.bim_cards(body, "21-27 Kasım")
+        x = cards["bim:hazir-kahve-3u1-arada--2si1-arada-17-5-g--10-g-21-11"]
+        self.assertEqual((x["price"], x["regular"]), (12.0, 15.0))
+        self.assertTrue(x["image"].startswith("https://"))
+
+    def test_product_page_uses_sale_price(self):
+        body = (FIX / "bim_product_discount.html").read_text(encoding="utf-8")
+        p = prod("bim:hazir-kahve-3u1-arada--2si1-arada-17-5-g--10-g-21-11",
+                 url="https://www.bim.com.tr/aktuel-urunler/hazir-kahve-3u1-arada--2si1-arada-17-5-g--10-g-21-11/aktuel.aspx")
+        with patch.object(collect, "get", lambda u, a="": (200, body)):
+            out = collect.bim_one(p)
+        self.assertEqual((out["price"], out["regular"]), (12.0, 15.0))
+
+    def test_price_parts(self):
+        blk = ('<div class="priceArea"><div class="CountButton strikethrough"><div class="text quantify">1.325,</div>'
+               '<div class="kusurArea"><span class="number">50</span></div></div><a class="gButton triangle" href="#">'
+               '<div class="text quantify">1.099,</div><div class="kusurArea"><span class="number">9</span></div></a></div>')
+        self.assertEqual(collect.bim_price(blk), (1099.9, 1325.5))

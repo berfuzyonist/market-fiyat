@@ -416,11 +416,34 @@ def migros_deals(products, notes):
 
 # ---------- BİM aktüel ----------
 
+_BIM_NUM = r'<div class="text quantify">\s*([\d.]+)\s*,?\s*(\d{0,2})\s*</div>(?:\s*<div class="kusurArea">\s*<span class="number">\s*(\d{1,2})\s*</span>)?'
+
+
+def _bim_num(m):
+    cents = m.group(2) or m.group(3) or "00"
+    return float(m.group(1).replace(".", "") + "." + cents.ljust(2, "0"))
+
+
+def bim_price(blk):
+    """BİM fiyat alanı: indirimli üründe üstü çizili eski fiyat (CountButton strikethrough)
+    ve satış fiyatı (gButton) ayrı yazılır. Döner: (satış fiyatı, normal fiyat) veya None."""
+    area = blk[blk.find('class="priceArea"'):] if 'class="priceArea"' in blk else blk
+    sale = re.search(r'class="gButton triangle"[^>]*>\s*' + _BIM_NUM, area)
+    if not sale:
+        return None
+    price = _bim_num(sale)
+    old = re.search(r'strikethrough"[^>]*>\s*' + _BIM_NUM, area)
+    regular = _bim_num(old) if old else price
+    return price, max(regular, price)
+
+
 def bim_cards(body, label):
-    out, parts = {}, re.split(r'(?=<a[^>]+href="/aktuel-urunler/[^"]+/aktuel\.aspx")', body)
+    # Her ürün kutusu '<div class="product ...">' ile başlar; kutuda aynı adrese giden iki bağlantı
+    # (görsel ve fiyat düğmesi) vardır, bu yüzden bağlantıdan değil kutudan bölünür.
+    out, parts = {}, re.split(r'(?=<div class="product[ "])', body)
     for blk in parts[1:]:
-        m = re.match(r'<a[^>]+href="(/aktuel-urunler/([^"/]+)/aktuel\.aspx)"', blk)
-        blk = blk[:5000]
+        m = re.search(r'<a[^>]+href="(/aktuel-urunler/([^"/]+)/aktuel\.aspx)"', blk[:3000])
+        blk = blk[:6000]
         heads = [html.unescape(re.sub(r"<[^>]+>", " ", h)).strip() for h in re.findall(r"<h2[^>]*>(.*?)</h2>", blk, re.S)]
         heads = [" ".join(h.split()) for h in heads if h.strip()]
         text = " ".join(html.unescape(re.sub(r"<[^>]+>", " ", blk)).split())
@@ -437,8 +460,12 @@ def bim_cards(body, label):
             size = ""
         name = " ".join(heads[:2] + ([size] if size else []))
         value = float(price.group(1).replace(".", "") + "." + (price.group(2) or "00"))
+        regular = value
+        structured = bim_price(blk)
+        if structured:
+            value, regular = structured
         out["bim:" + m.group(2)] = {
-            "id": "bim:" + m.group(2), "market": "bim", "name": name, "price": value, "regular": value,
+            "id": "bim:" + m.group(2), "market": "bim", "name": name, "price": value, "regular": regular,
             "in_stock": True, "image": src if src.startswith("https://") else "",
             "url": "https://www.bim.com.tr" + m.group(1),
             "cat": ("İndirim · " if re.match(r"\d+\s*-\s*\d+", label) else "Aktüel · ") + label,
@@ -564,15 +591,14 @@ def bim_one(product):
         raise NotFound(product["id"])
     blk = body[i:i + 8000]
     title = re.search(r'<h2 class="title">\s*(.*?)\s*</h2>', blk, re.S)
-    whole = re.search(r'class="text quantify">\s*([\d.]+)\s*,?\s*</div>', blk)
-    cents = re.search(r'class="number">\s*(\d{1,2})\s*</span>', blk)
-    if not title or not whole:
+    prices = bim_price(blk)
+    if not title or not prices:
         raise Stop("BİM ürün sayfasında ad veya fiyat bulunamadı")
-    price = float(whole.group(1).replace(".", "") + "." + (cents.group(1).ljust(2, "0") if cents else "00"))
+    price, regular = prices
     return {
         "name": " ".join(html.unescape(re.sub(r"<[^>]+>", " ", title.group(1))).split()),
         "price": price,
-        "regular": price,
+        "regular": regular,
         "in_stock": True,  # BİM stok bilgisi yayımlamaz
         "source": url,
     }
