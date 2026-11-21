@@ -18,6 +18,7 @@ import datetime
 import gzip
 import html
 import json
+import math
 import os
 import pathlib
 import re
@@ -37,6 +38,10 @@ ROBOTS, STATS, ERRORS = {}, {}, []
 
 class Stop(Exception):
     """Site bizi istemiyor ya da hata veriyor: bu market için dur."""
+
+
+class NotFound(Exception):
+    """Kaynak 404 döndü: kategori/ürün kaldırılmış olabilir."""
 
 
 def _fetch(url, accept):
@@ -152,17 +157,24 @@ def migros_promo(p):
     return " · ".join(found)
 
 
+MONEY = "Money kartlı fiyat"  # Migros'ta indirimli fiyat yalnızca Money üyelerine geçerliyse
+
+
 def migros_item(p):
     img = ((p.get("images") or [{}])[0].get("urls") or {}).get("PRODUCT_DETAIL")
     asc = p.get("categoryAscendants") or []
     top = (asc[-1] if asc else p.get("category") or {}).get("name") or ""
     promo = migros_promo(p)
+    shown, regular = p.get("shownPrice") or 0, p.get("regularPrice") or 0
+    # loyaltyPromotionId: sitede "Money'siz fiyat / Money ile" diye gösterilen kart fiyatı.
+    if p.get("loyaltyPromotionId") and shown < regular and MONEY not in promo:
+        promo = " · ".join(x for x in (promo, MONEY) if x)
     return {
         "id": f"migros:{p.get('sku')}",
         "market": "migros",
         "name": p.get("name") or "",
-        "price": p.get("shownPrice", 0) / 100,
-        "regular": p.get("regularPrice", 0) / 100,
+        "price": shown / 100,
+        "regular": regular / 100,
         "in_stock": p.get("status") == "IN_SALE",
         "image": img or "",
         "url": "https://www.migros.com.tr/" + (p.get("prettyName") or ""),
@@ -182,6 +194,8 @@ def migros(products, notes):
             return page_cache[key]
         safe_slug = urllib.parse.quote(urllib.parse.unquote(slug), safe="-")
         status, body = get(f"https://www.migros.com.tr/rest/search/screens/{safe_slug}?sayfa={page}")
+        if status == 404:
+            raise NotFound(slug)
         if status != 200:
             raise Stop(f"Migros kategori isteği başarısız: HTTP {status} ({slug})")
         try:
@@ -257,7 +271,7 @@ def migros(products, notes):
         raise Stop(f"Migros kategori sitemap isteği başarısız: HTTP {status}")
     slugs = [urllib.parse.unquote(urllib.parse.urlsplit(html.unescape(u)).path.rstrip("/").rsplit("/", 1)[-1])
              for u in re.findall(r"<loc>(.*?)</loc>", body) if "-c-" in u]
-    extra = 0
+    extra, gone = 0, []
     for slug in slugs:
         base_slug = slug.rsplit("-c-", 1)[0]
         if _category_key(base_slug) in covered_names or slug in visited_slugs:
@@ -265,7 +279,16 @@ def migros(products, notes):
         if extra >= c["max_discovery"]:
             raise Stop(f"kategori keşfi sınırı ({c['max_discovery']}) doldu; tam tarama doğrulanamadı")
         extra += 1
-        visit(slug)
+        try:
+            visit(slug)
+        except NotFound:
+            # Site haritasında kalmış ama kaldırılmış kategori (ör. powerbank-c-12090).
+            # Ürünleri başka kategoride zaten taranıyor; tüm gece taramasını düşürmez.
+            gone.append(slug)
+            if len(gone) > int(c.get("max_missing_categories", 25)):
+                raise Stop(f"çok sayıda site haritası kategorisi 404 döndü ({len(gone)}); tarama güvenilir değil")
+    if gone:
+        notes.append(f"site haritasındaki {len(gone)} kategori artık yok (404), atlandı: {', '.join(gone[:10])}")
     notes.append(f"{len(crawled)} üst kategori tarandı; {len(page_cache)} kategori sayfası tekrar istek yapılmadan önbellekten kullanıldı")
 # ---------- Şok ----------
 
@@ -451,9 +474,120 @@ def bim(products, notes):
         raise Stop("BİM aktüel taraması sıfır ürün döndürdü")
 
 
+# ---------- Tek ürün sorgusu ----------
+# "Fiyatı Güncelle" talepleri için: bütün kataloğu taramadan yalnızca hedef ürünü okur.
+# Her fonksiyon {"name","price","regular","in_stock","promo"?, "image"?, "source"} döner;
+# ürün bulunamazsa NotFound, kaynak yanıtı çözümlenemezse Stop yükseltir.
+
+def _flight(body):
+    """Next.js akış verisindeki kaçışlı JSON parçalarını tek metne çevirir."""
+    return re.sub(r'"\]\)</script><script>self\.__next_f\.push\(\[1,"', "", body).replace('\\"', '"')
+
+
+def migros_one(product):
+    sku = product["id"].split(":", 1)[1]
+    if not sku.isdigit():
+        raise Stop("Migros ürün kimliği sayısal değil")
+    # Mağaza ürün kimliği = 20000000000000 + SKU (ürün adresindeki "-p-<hex>" de aynı sayıdır).
+    store_product_id = 20000000000000 + int(sku)
+    url = f"https://www.migros.com.tr/rest/products/screens/{store_product_id}"
+    status, body = get(url)
+    if status == 404:
+        raise NotFound(product["id"])
+    if status != 200:
+        raise Stop(f"Migros ürün isteği başarısız: HTTP {status}")
+    try:
+        data = json.loads(body)
+    except ValueError:
+        raise Stop("Migros ürün yanıtı JSON değil")
+    if not data.get("successful", True):
+        raise NotFound(product["id"])
+    dto = (data.get("data") or {}).get("storeProductInfoDTO") or {}
+    if str(dto.get("sku") or "") != sku:
+        raise NotFound(product["id"])
+    item = migros_item(dto)
+    item["in_stock"] = dto.get("status") == "IN_SALE" and dto.get("saleable", True) is not False
+    item["source"] = url
+    return item
+
+
+def sok_one(product):
+    pid = product["id"].split(":", 1)[1]
+    url = str(product.get("url") or "")
+    if not re.fullmatch(r"https://www\.sokmarket\.com\.tr/[a-z0-9-]+-p-" + re.escape(pid), url):
+        raise Stop("Şok ürün adresi beklenen biçimde değil")
+    status, body = get(url, "text/html")
+    if status == 404:
+        raise NotFound(product["id"])
+    if status != 200:
+        raise Stop(f"Şok ürün sayfası başarısız: HTTP {status}")
+    flat = _flight(body)
+    variant = None
+    for m in re.finditer(r'"initialVariant":', flat):
+        try:
+            obj, _ = json.JSONDecoder().raw_decode(flat, m.end())
+        except ValueError:
+            continue
+        if isinstance(obj, dict) and str(obj.get("id", "")).split(".")[0] == pid:
+            variant = obj
+            break
+    if not variant:
+        raise NotFound(product["id"])
+    prices = variant.get("prices") or {}
+    original = (prices.get("original") or {}).get("value")
+    discounted = (prices.get("discounted") or {}).get("value")
+    price = discounted if discounted is not None else original
+    if price is None:
+        raise Stop("Şok ürün sayfasında fiyat yok")
+    name = re.search(r'\{"id":"' + re.escape(pid) + r'","name":"([^"]+)"', flat)
+    return {
+        "name": html.unescape(name.group(1)).strip() if name else "",
+        "price": float(price),
+        "regular": float(max(v for v in (original, price) if v is not None)),
+        "in_stock": bool(variant.get("hasStock")),
+        "source": url,
+    }
+
+
+def bim_one(product):
+    slug = product["id"].split(":", 1)[1]
+    url = str(product.get("url") or "")
+    if url != f"https://www.bim.com.tr/aktuel-urunler/{slug}/aktuel.aspx":
+        raise Stop("BİM ürün adresi beklenen biçimde değil")
+    status, body = get(url, "text/html")
+    if status == 404:
+        raise NotFound(product["id"])
+    if status != 200:
+        raise Stop(f"BİM ürün sayfası başarısız: HTTP {status}")
+    i = body.find('class="productDetailPage"')
+    if i < 0:
+        raise NotFound(product["id"])
+    blk = body[i:i + 8000]
+    title = re.search(r'<h2 class="title">\s*(.*?)\s*</h2>', blk, re.S)
+    whole = re.search(r'class="text quantify">\s*([\d.]+)\s*,?\s*</div>', blk)
+    cents = re.search(r'class="number">\s*(\d{1,2})\s*</span>', blk)
+    if not title or not whole:
+        raise Stop("BİM ürün sayfasında ad veya fiyat bulunamadı")
+    price = float(whole.group(1).replace(".", "") + "." + (cents.group(1).ljust(2, "0") if cents else "00"))
+    return {
+        "name": " ".join(html.unescape(re.sub(r"<[^>]+>", " ", title.group(1))).split()),
+        "price": price,
+        "regular": price,
+        "in_stock": True,  # BİM stok bilgisi yayımlamaz
+        "source": url,
+    }
+
+
+ONE = {"migros": migros_one, "sok": sok_one, "bim": bim_one}
+
+
 # ---------- Çıktı ----------
 
-FIELDS = ["id", "name", "price", "regular", "in_stock", "image", "url", "cat", "promo"]
+# "seen": ürün fiyatının kaynaktan en son doğrulandığı an (Unix saniye, UTC).
+# Eski dosyalarda bu sütun yoktur; okuyucular eksik sütunu None kabul eder.
+FIELDS = ["id", "name", "price", "regular", "in_stock", "image", "url", "cat", "promo", "seen"]
+HOSTS = {"migros": "https://www.migros.com.tr/", "sok": "https://www.sokmarket.com.tr/", "bim": "https://www.bim.com.tr/"}
+ID_RE = {"migros": r"migros:\d{4,12}", "sok": r"sok:\d{1,12}", "bim": r"bim:[A-Za-z0-9_.-]{1,160}"}
 JOBS = {
     ("migros", "full"): migros, ("migros", "deals"): migros_deals,
     ("sok", "full"): sok, ("sok", "deals"): sok_deals,
@@ -542,16 +676,75 @@ def parse_file(path, market=None):
         p["cat"] = (cats[cat] if isinstance(cat, int) and cat < len(cats) else cat) or ""
         p["market"], p["in_stock"] = m, bool(p.get("in_stock"))
         p["promo"] = p.get("promo") or ""
+        p["seen"] = p.get("seen") if isinstance(p.get("seen"), int) else None
         out[p["id"]] = {k: p.get(k) for k in FIELDS + ["market"]}
     return out
 
 
 def read_old(market):
-    own = ROOT / "data" / f"{market}.json"
-    return parse_file(own) if own.exists() else parse_file(ROOT / "data" / "products.json", market)
+    return parse_file(ROOT / "data" / f"{market}.json")
 
 
-def write(market, products, updated):
+def iso_to_ts(value):
+    """ISO 8601 zaman damgasını Unix saniyeye çevirir; geçersizse None."""
+    try:
+        dt = datetime.datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+    except (TypeError, ValueError):
+        return None
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=datetime.timezone.utc)
+    return int(dt.timestamp())
+
+
+def validate_products(market, products):
+    """Yayımlanmadan önce kayıtları denetler.
+
+    Döner: (temiz kayıtlar, sorun sayaçları). Geçersiz kayıt yayımlanmaz; normal fiyatı
+    güncel fiyattan düşük olan veya şüpheli derecede yüksek indirim gösteren kayıtlarda
+    indirim üretilmez (normal fiyat = güncel fiyat).
+    """
+    issues = {"missing_id": 0, "bad_id": 0, "missing_name": 0, "bad_price": 0,
+              "regular_below_price": 0, "suspicious_discount": 0, "bad_url": 0}
+    clean = {}
+    id_re = re.compile(ID_RE.get(market, r".+") + r"\Z")
+    for key, raw in products.items():
+        p = dict(raw)
+        pid = str(p.get("id") or key or "")
+        if not pid:
+            issues["missing_id"] += 1
+            continue
+        if not id_re.match(pid) or pid != key:
+            issues["bad_id"] += 1
+            continue
+        if not str(p.get("name") or "").strip():
+            issues["missing_name"] += 1
+            continue
+        try:
+            price = float(p.get("price"))
+            regular = float(p.get("regular") if p.get("regular") not in (None, "") else price)
+        except (TypeError, ValueError):
+            issues["bad_price"] += 1
+            continue
+        if not (math.isfinite(price) and math.isfinite(regular)) or price <= 0 or price > 1_000_000:
+            issues["bad_price"] += 1
+            continue
+        if regular < price:
+            issues["regular_below_price"] += 1
+            regular = price
+        elif regular > price * 10:  # %90'dan büyük indirim: büyük olasılıkla hatalı normal fiyat
+            issues["suspicious_discount"] += 1
+            regular = price
+        url = str(p.get("url") or "")
+        if url and not url.startswith(HOSTS.get(market, "https://")):
+            issues["bad_url"] += 1
+            url = ""
+        p.update(id=pid, name=" ".join(str(p["name"]).split()), price=round(price, 2),
+                 regular=round(regular, 2), url=url, in_stock=bool(p.get("in_stock")))
+        clean[pid] = p
+    return clean, issues
+
+
+def encode(market, products, updated):
     rows = sorted(products.values(), key=lambda p: p["id"])
     prefix = {}
     for f in ("image", "url"):
@@ -562,11 +755,28 @@ def write(market, products, updated):
         [p["id"], p["name"], p["price"], p["regular"], int(p["in_stock"]),
          p["image"][len(prefix["image"]):] if p["image"] else "",
          p["url"][len(prefix["url"]):] if p["url"] else "",
-         cats.index(p.get("cat") or ""), p.get("promo") or ""], ensure_ascii=False, separators=(",", ":")) for p in rows]
+         cats.index(p.get("cat") or ""), p.get("promo") or "",
+         p.get("seen") if isinstance(p.get("seen"), int) else None],
+        ensure_ascii=False, separators=(",", ":")) for p in rows]
     head = json.dumps({"updated": updated, "market": market, "prefix": {market: prefix},
                        "cats": {market: cats}, "fields": FIELDS}, ensure_ascii=False)
-    (ROOT / "data" / f"{market}.json").write_text(
-        head[:-1] + ',"products":[\n' + ",\n".join(lines) + "\n]}\n", encoding="utf-8")
+    return head[:-1] + ',"products":[\n' + ",\n".join(lines) + "\n]}\n"
+
+
+def atomic_write(path, text):
+    """Geçici dosyaya yaz, JSON olarak doğrula, sonra tek adımda yerine koy."""
+    path = pathlib.Path(path)
+    json.loads(text)  # bozuk JSON asla yayımlanmaz
+    tmp = path.with_name(f".{path.name}.{os.getpid()}.tmp")
+    tmp.write_text(text, encoding="utf-8")
+    os.replace(tmp, path)
+
+
+def write(market, products, updated, path=None):
+    text = encode(market, products, updated)
+    if not json.loads(text).get("products"):
+        raise ValueError("boş ürün listesi yazılmaz")
+    atomic_write(path or ROOT / "data" / f"{market}.json", text)
 
 
 def data_updated(market):
@@ -606,8 +816,14 @@ def main():
     fn = JOBS[(market, mode)]
     (ROOT / "data").mkdir(exist_ok=True)
     t0 = time.time()
+    started = datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")
     old, fresh, notes, state = read_old(market), {}, [], "tamam"
     previous_data_update = data_updated(market)
+    # Eski dosyalarda ürün bazlı doğrulama zamanı yoksa dosyanın güncellenme zamanı kullanılır.
+    fallback_seen = iso_to_ts(previous_data_update)
+    for p in old.values():
+        if p.get("seen") is None:
+            p["seen"] = fallback_seen
     status_path = ROOT / "data" / f"status-{market}.json"
     try:
         previous_status = json.loads(status_path.read_text(encoding="utf-8"))
@@ -619,8 +835,19 @@ def main():
         fn(fresh, notes)
     except Stop as e:
         state = f"durduruldu: {e}"
+    except NotFound as e:
+        state = f"durduruldu: kaynak 404 döndü ({e})"
     except Exception as e:
         state = f"hata: {e!r}"
+
+    # Kaynaktan gelen kayıtlar yayımlanmadan önce denetlenir; geçersiz kayıt eski haliyle kalır.
+    fresh, invalid = validate_products(market, fresh)
+    invalid_total = sum(invalid.values()) - invalid["regular_below_price"] - invalid["suspicious_discount"]
+    if any(invalid.values()):
+        notes.append("veri denetimi: " + ", ".join(f"{k}={v}" for k, v in invalid.items() if v))
+    now_ts = int(time.time())
+    for p in fresh.values():
+        p["seen"] = now_ts
 
     if state == "tamam" and not fresh:
         state = "hata: tarama sıfır ürün döndürdü"
@@ -640,6 +867,8 @@ def main():
         merged = dict(old)
         for k, p in fresh.items():
             merged[k] = {**p, "cat": p.get("cat") or (old.get(k) or {}).get("cat") or ""}
+            if market == "sok" and not p.get("promo") and (old.get(k) or {}).get("promo"):
+                merged[k]["promo"] = old[k]["promo"]  # kampanya eşlemesi aşağıda yeniden uygulanır
         notes.append(f"{len(fresh)} indirimli ürün güncellendi")
     else:
         min_aktuel_ratio = float(quality_cfg.get("aktuel_min_product_ratio", 0.50))
@@ -714,8 +943,11 @@ def main():
     if state != "tamam" or not complete:
         warnings.insert(0, f"Tarama başarılı değil: {state}")
 
+    discounted = sum(1 for p in merged.values() if p.get("in_stock") and p["regular"] > p["price"])
     status = {
         "updated": attempted,
+        "started_at": started,
+        "finished_at": attempted,
         "checked_at": attempted,
         "data_updated": last_data_update,
         "last_successful_data_at": last_data_update,
@@ -737,6 +969,14 @@ def main():
         } for h, s in STATS.items()},
         "errors": ERRORS,
         "run_id": os.environ.get("GITHUB_RUN_ID"),
+        # Açık adlı özet alanlar (found/total ile aynı anlam): collected = bu denemede
+        # kaynaktan okunan, total = yayımlanan katalogdaki ürün sayısı.
+        "collected_products": len(fresh),
+        "total_products": len(merged),
+        "discounted_products": discounted,
+        "invalid_products": invalid_total,
+        "data_quality": invalid,
+        "duration_seconds": round(time.time() - t0),
     }
 
     # Tek durum dosyasında mod başına son denemeyi sakla.
@@ -755,7 +995,7 @@ def main():
     }
     status["last_attempt_by_mode"] = last_by_mode
 
-    status_path.write_text(json.dumps(status, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    atomic_write(status_path, json.dumps(status, ensure_ascii=False, indent=1) + "\n")
     print(json.dumps(status, ensure_ascii=False, indent=1)[:6000])
     if status["status"] != "tamam" or not status["complete"]:
         sys.exit(1)
