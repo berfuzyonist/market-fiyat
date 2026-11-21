@@ -29,7 +29,7 @@ jobs:
       - name: Ürün fiyatını kaynaktan doğrula
         id: refresh
         env:
-          ISSUE_BODY: \${{ github.event.issue.body }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
         run: python3 scripts/update_one_product.py
 
       - name: Doğrulanmış veriyi yayımla
@@ -41,22 +41,22 @@ jobs:
           if git diff --cached --quiet; then
             echo "Yayımlanacak değişiklik yok."
           else
-            git commit -m "Ürün fiyat kontrolü: #\${{ github.event.issue.number }}"
+            git commit -m "Ürün fiyat kontrolü: #${{ github.event.issue.number }}"
             git push
           fi
 
       - name: Sonucu talebe yaz
         if: always()
         env:
-          GH_TOKEN: \${{ github.token }}
-          GH_REPO: \${{ github.repository }}
-          ISSUE_NUMBER: \${{ github.event.issue.number }}
-          JOB_STATUS: \${{ job.status }}
-          SUMMARY: \${{ steps.refresh.outputs.summary }}
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          JOB_STATUS: ${{ job.status }}
+          SUMMARY: ${{ steps.refresh.outputs.summary }}
         run: |
           if [ "$JOB_STATUS" = "success" ]; then
-            gh issue comment "$ISSUE_NUMBER" --repo "$GH_REPO" --body "**İşlem tamamlandı.**\n\n$SUMMARY"
+            gh issue comment "$ISSUE_NUMBER" --repo "$GH_REPO" --body "**İşlem tamamlandı.** — $SUMMARY"
             gh issue close "$ISSUE_NUMBER" --repo "$GH_REPO"
           else
-            gh issue comment "$ISSUE_NUMBER" --repo "$GH_REPO" --body "## Fiyat güncellenemedi\n\nKaynak doğrulaması başarısız oldu veya işlem güvenlik kontrolünde durduruldu. Mevcut fiyat korunmuştur. Ayrıntı için Actions çalıştırma kayıtlarına bakın."
+            gh issue comment "$ISSUE_NUMBER" --repo "$GH_REPO" --body "Fiyat güncellenemedi. Kaynak doğrulaması başarısız oldu veya işlem güvenlik kontrolünde durduruldu. Mevcut fiyat korunmuştur. Ayrıntı için Actions çalıştırma kayıtlarına bakın."
           fi
