@@ -88,6 +88,12 @@ function promoLine(o){const p=o._promo;if(!p)return"";
 const promoChip=o=>o._promo?chip(`<i data-lucide="gift" class="w-3 h-3 inline -mt-0.5"></i> ${esc(o._promo.kind==="basket"?o._promo.label:o._promo.label)}`,"bg-violet-100 text-violet-700 dark:bg-violet-950 dark:text-violet-300"):"";
 
 // ---------- Ürün kartı (şerit ve ızgaralarda) ----------
+function priceUpdateLink(o){
+  const marker={market:o.market,id:o.id,name:o.name};
+  const title="[FİYAT GÜNCELLE] "+o.market.toUpperCase()+" · "+o.name;
+  const body="Bu talep Market Fiyat ürün kartından oluşturuldu.\n\n<!-- market-fiyat-price-update\n"+JSON.stringify(marker)+"\n-->\n\nGitHub Actions ürünü marketin herkese açık kaynağından doğrulayacak. Başarısız kontrolde mevcut fiyat korunur.";
+  return "https://github.com/berfuzyonist/market-fiyat/issues/new?"+new URLSearchParams({title,body}).toString();
+}
 function pcard(o,opt={}){
   const g=GI[o.id],key=g?g.key:o.id,d=disc(o),p=o._promo,inC=g&&inCart(g);
   const flag=p&&p.kind!=="bim"?`<span class="absolute top-0 left-0 bg-violet-600 text-white text-[11px] font-extrabold px-2 py-1 rounded-lg">${esc(p.label)}</span>`:"";
@@ -98,7 +104,7 @@ function pcard(o,opt={}){
   ${d?`<p class="text-xs text-stone-400 line-through tabular mt-2">${tl(o.regular)}</p>`:`<p class="mt-2"></p>`}
   <p class="font-extrabold tabular ${d?good:""}">${tl(o.price)}</p>
   ${p?`<p class="text-xs text-violet-700 dark:text-violet-300 mt-1 leading-snug">${promoLine(o)}</p>`:""}
-  ${opt.strip?"":`<button data-add="${esc(key)}" class="mt-auto pt-2"><span class="w-full flex items-center justify-center gap-1 py-2 rounded-lg text-sm font-bold ${inC?"bg-stone-100 dark:bg-stone-800":"bg-emerald-600 text-white"}"><i data-lucide="${inC?"check":"plus"}" class="w-4 h-4"></i>${inC?"Listede":"Ekle"}</span></button>`}</article>`}
+  ${opt.strip?"":`<a href="${esc(priceUpdateLink(o))}" target="_blank" rel="noopener noreferrer" class="mt-2 block text-center py-2 rounded-lg text-xs font-bold text-blue-700 bg-blue-50 hover:bg-blue-100 dark:bg-blue-950 dark:text-blue-300">Fiyatı Güncelle</a><button data-add="${esc(key)}" class="mt-auto pt-2"><span class="w-full flex items-center justify-center gap-1 py-2 rounded-lg text-sm font-bold ${inC?"bg-stone-100 dark:bg-stone-800":"bg-emerald-600 text-white"}"><i data-lucide="${inC?"check":"plus"}" class="w-4 h-4"></i>${inC?"Listede":"Ekle"}</span></button>`}</article>`}
 
 // ---------- Karşılaştırma verisi ----------
 function buildCompare(){
