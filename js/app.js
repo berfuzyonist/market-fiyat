@@ -282,13 +282,36 @@ function icons(){lucide.createIcons()}
 function redraw(){DRAW[view]();if(view!=="list")drawL();icons()}
 const NB="flex flex-col items-center gap-0.5 py-2 rounded-xl text-[11px] font-semibold relative ";
 const NT="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition ";
+// ---------- Adres (yenileme ve geri tuşu için) ----------
+// #urun/<id>, #ara/<sorgu>, #kesfet, #kampanya, #karsilastir, #listem; ana sayfa: adres eki yok
+const HV={home:"",compare:"karsilastir",promos:"kampanya",browse:"kesfet",search:"ara",list:"listem"};
+let routing=false;
+function hashOf(){
+  if(view==="search"){if(only)return"#urun/"+encodeURIComponent(only);const q=$("q").value.trim();return q?"#ara/"+encodeURIComponent(q):"#ara"}
+  return HV[view]?"#"+HV[view]:"";
+}
+function sync(replace){
+  if(routing)return;const h=hashOf();if(h===location.hash)return;
+  const url=h||location.pathname+location.search;
+  replace?history.replaceState(null,"",url):history.pushState(null,"",url);
+}
+function route(){
+  const h=decodeURIComponent(location.hash.slice(1)),[k,...rest]=h.split("/"),arg=rest.join("/");
+  routing=true;
+  try{
+    if(k==="urun"&&arg){only=arg;pending=null;$("q").value="";go("search")}
+    else if(k==="ara"){only=null;$("q").value=arg;go("search")}
+    else{const v=Object.keys(HV).find(x=>HV[x]===k&&x!=="search")||"home";go(v)}
+  }finally{routing=false}
+}
+addEventListener("popstate",route);
 function go(v,keep){
   view=v;VIEWS.forEach(id=>$(id).classList.toggle("hidden",id!==v));
   document.querySelectorAll("nav [data-view]").forEach(b=>{if(b.dataset.plain)return;const on=b.dataset.view===v;
     b.className=b.dataset.top?NT+(on?"bg-emerald-600 text-white shadow":"text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800"):NB+(on?"bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400":"text-stone-500")});
   $("hero").classList.toggle("hidden",v!=="home");
   const el=$(v);el.classList.remove("enter");void el.offsetWidth;el.classList.add("enter");
-  redraw();if(!keep)scrollTo(0,0)}
+  redraw();if(!keep)scrollTo(0,0);sync()}
 let noteT;function note(m){$("note").textContent=m;$("note").classList.remove("hidden");clearTimeout(noteT);noteT=setTimeout(()=>$("note").classList.add("hidden"),7000)}
 function show(key){only=key;$("q").value="";go("search")}
 
@@ -321,7 +344,7 @@ document.addEventListener("click",e=>{const t=s=>e.target.closest(s);let el;
   else if(el=t("[data-go]")){Object.assign(B,{m:"",cat:"",disc:true,sort:"disc",page:0});go("browse")}
   else if(el=t("[data-bm]")){B.m=el.dataset.bm;B.page=0;if(el.dataset.open){Object.assign(B,{cat:"",disc:false,sort:"disc"});go("browse")}else redraw()}
   else if(el=t("[data-view]")){if(el.dataset.view==="search"){only=null}go(el.dataset.view);if(el.dataset.focus)$("q").focus()}});
-let qT;$("q").oninput=()=>{only=null;clearTimeout(qT);qT=setTimeout(()=>{drawS();icons()},150)};
+let qT;$("q").oninput=()=>{only=null;clearTimeout(qT);qT=setTimeout(()=>{drawS();icons();sync(true)},150)};
 $("q").onchange=()=>{const v=$("q").value.trim();if(/^\d{8,14}$/.test(v))onCode(v)};
 $("scan").onclick=scan;
 const bind=(id,obj,key,prop)=>$(id).onchange=e=>{obj[key]=e.target[prop||"value"];obj.page=0;redraw()};
@@ -339,7 +362,7 @@ function build(rows){
   PROMO=O.filter(o=>o._promo&&usable(o));
   buildCompare();
 }
-go("home");
+route(); // açılışta adresteki sayfaya git (yenilemede aynı ürün açık kalır)
 Promise.all([Promise.all(DATA_M.map(m=>get(`data/${m}.json`))),Promise.all(DATA_M.map(m=>get(`data/status-${m}.json`))),get("data/price-checks.json")]).then(([files,statuses,checks])=>{
   statuses.forEach((s,i)=>{if(s)CHECK[DATA_M[i]]=s});
   CHECKS=(checks&&checks.checks)||{};
