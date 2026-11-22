@@ -1,21 +1,21 @@
 {
- "updated": "2026-11-22T11:48:01+00:00",
- "started_at": "2026-11-22T11:46:04+00:00",
- "finished_at": "2026-11-22T11:48:01+00:00",
- "checked_at": "2026-11-22T11:48:01+00:00",
- "data_updated": "2026-11-22T11:48:01+00:00",
- "last_successful_data_at": "2026-11-22T11:48:01+00:00",
+ "updated": "2026-11-22T12:57:19+00:00",
+ "started_at": "2026-11-22T12:55:24+00:00",
+ "finished_at": "2026-11-22T12:57:19+00:00",
+ "checked_at": "2026-11-22T12:57:19+00:00",
+ "data_updated": "2026-11-22T12:57:19+00:00",
+ "last_successful_data_at": "2026-11-22T12:57:19+00:00",
  "market": "sok",
  "mode": "deals",
  "status": "tamam",
  "complete": true,
- "found": 371,
+ "found": 394,
  "total": 2916,
- "seconds": 117,
+ "seconds": 115,
  "notes": [
   "kampanyalar: 89 ürün",
-  "indirimli-urunler-cms-pl1: sitede 435, okunan 433, 22/22 sayfa (son sayfa)",
-  "371 indirimli ürün güncellendi"
+  "indirimli-urunler-cms-pl1: sitede 435, okunan 435, 22/22 sayfa (son sayfa)",
+  "394 indirimli ürün güncellendi"
  ],
  "quality": {
   "category_count": 23,
@@ -59,8 +59,8 @@
   }
  },
  "errors": [],
- "run_id": "45018913680",
- "collected_products": 371,
+ "run_id": "45024763287",
+ "collected_products": 394,
  "total_products": 2916,
  "discounted_products": 464,
  "invalid_products": 0,
@@ -73,21 +73,21 @@
   "suspicious_discount": 0,
   "bad_url": 0
  },
- "duration_seconds": 117,
+ "duration_seconds": 115,
  "last_attempt_by_mode": {
   "deals": {
-   "checked_at": "2026-11-22T11:48:01+00:00",
+   "checked_at": "2026-11-22T12:57:19+00:00",
    "status": "tamam",
    "complete": true,
-   "found": 371,
+   "found": 394,
    "total": 2916,
-   "seconds": 117,
-   "data_updated": "2026-11-22T11:48:01+00:00",
+   "seconds": 115,
+   "data_updated": "2026-11-22T12:57:19+00:00",
    "errors": [],
    "notes": [
     "kampanyalar: 89 ürün",
-    "indirimli-urunler-cms-pl1: sitede 435, okunan 433, 22/22 sayfa (son sayfa)",
-    "371 indirimli ürün güncellendi"
+    "indirimli-urunler-cms-pl1: sitede 435, okunan 435, 22/22 sayfa (son sayfa)",
+    "394 indirimli ürün güncellendi"
    ],
    "quality_warnings": [],
    "quality": {
