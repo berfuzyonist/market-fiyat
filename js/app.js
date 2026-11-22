@@ -66,7 +66,12 @@ const GROUPS=[
   ["ev","Ev & Yaşam","sofa","#f1f5f9","#334155",/^ev\b|yasam|mutfak|elektronik|giyim|oyuncak|bahce|kitap|cicek|otomotiv|hobi/],
 ];
 const grpOf=o=>o._g!==undefined?o._g:(o._g=(GROUPS.find(g=>g[5].test(fold(o.cat)))||[""])[0]);
-const UNIT_Q=[["su","Su","droplet"],["süt","Süt","milk"],["ayçiçek yağı","Ayçiçek yağı","flask-conical"],["yüzey temizleyici","Yüzey temizleyici","spray-can"],["çamaşır deterjanı","Çamaşır deterjanı","shirt"],["tuvalet kağıdı","Tuvalet kağıdı","scroll"],["pirinç","Pirinç","wheat"],["makarna","Makarna","utensils"],["yumurta","Yumurta","egg"],["un","Un","package"]];
+const UNIT_Q=[["su","Su","droplet"],["süt","Süt","milk"],["yumurta","Yumurta","egg"],["ekmek","Ekmek","croissant"],["beyaz peynir","Beyaz peynir","square"],["kaşar","Kaşar","square"],["yoğurt","Yoğurt","cup-soda"],["tereyağı","Tereyağı","square"],["zeytin","Zeytin","circle"],
+  ["ayçiçek yağı","Ayçiçek yağı","flask-conical"],["zeytinyağı","Zeytinyağı","flask-conical"],["toz şeker","Şeker","candy"],["un","Un","package"],["pirinç","Pirinç","wheat"],["bulgur","Bulgur","wheat"],["mercimek","Mercimek","bean"],["nohut","Nohut","bean"],["makarna","Makarna","utensils"],["salça","Salça","soup"],
+  ["çay","Çay","coffee"],["kahve","Kahve","coffee"],["tavuk","Tavuk","drumstick"],["kıyma","Kıyma","beef"],["domates","Domates","apple"],["patates","Patates","apple"],["soğan","Soğan","apple"],["muz","Muz","banana"],["elma","Elma","apple"],
+  ["maden suyu","Maden suyu","cup-soda"],["kola","Kola","cup-soda"],["meyve suyu","Meyve suyu","cup-soda"],["çikolata","Çikolata","cookie"],["bisküvi","Bisküvi","cookie"],["cips","Cips","cookie"],
+  ["çamaşır deterjanı","Çamaşır deterjanı","shirt"],["yumuşatıcı","Yumuşatıcı","shirt"],["bulaşık deterjanı","Bulaşık deterjanı","utensils-crossed"],["bulaşık makinesi tableti","Bulaşık tableti","utensils-crossed"],["yüzey temizleyici","Yüzey temizleyici","spray-can"],["çamaşır suyu","Çamaşır suyu","spray-can"],
+  ["tuvalet kağıdı","Tuvalet kağıdı","scroll"],["kağıt havlu","Kağıt havlu","scroll"],["peçete","Peçete","scroll"],["şampuan","Şampuan","sparkles"],["duş jeli","Duş jeli","sparkles"],["diş macunu","Diş macunu","sparkles"],["sıvı sabun","Sıvı sabun","sparkles"],["bebek bezi","Bebek bezi","baby"],["ıslak mendil","Islak mendil","baby"],["kedi maması","Kedi maması","paw-print"],["köpek maması","Köpek maması","paw-print"]];
 const PER=20,PERC=12;
 
 // ---------- Küçük parçalar ----------
@@ -582,9 +587,7 @@ function productPage(g){
           ${(h=>h&&(h.lastDisc||h.lastPromo)?`<p class="mt-1.5 text-[11px] text-stone-500">${[h.lastDisc?`Son indirim ${dshort(h.lastDisc.ts)}`:"",h.lastPromo?`son kampanya ${dshort(h.lastPromo.ts)}`:""].filter(Boolean).join(" · ")}</p>`:"")(HIST[o.market]&&HIST[o.market]!=="…"?MFC.histInfo(HIST[o.market][o.id],o):null)}
         </div>`}).join("")}</div>
       ${histCard(g)}
-      ${(alts=>alts.length?`<div class="${card} p-4 mt-4 enter"><h2 class="font-extrabold flex items-center gap-2"><i data-lucide="arrow-down-wide-narrow" class="w-5 h-5 text-sky-600"></i>Daha ucuz muadiller</h2>
-        <p class="text-xs text-stone-500 mt-0.5">Aynı tür, benzer boy; birim fiyatı daha düşük ürünler.</p>
-        <div class="mt-2 ${div}">${alts.map(a=>{const v=MF.unitPrice(a.o);return`<div data-show="${esc(a.g.key)}" class="flex items-center gap-3 py-2.5 cursor-pointer">${img(a.o.image,"w-12 h-12 shrink-0")}<div class="flex-1 min-w-0"><p class="text-sm font-bold leading-snug line-clamp-2">${esc(a.o.name)}</p><p class="text-[11px] text-stone-500">${badge(a.o.market,1)} ${v?tl(v.v)+"/"+v.u:""}</p></div><div class="text-right shrink-0"><p class="price tabular text-base">${tl(a.o.price)}</p><p class="text-[11px] font-extrabold text-sky-700">%${Math.round(a.save*100)} ucuz</p></div></div>`}).join("")}</div></div>`:"")(alternatives(g,3))}
+      ${sameSizeCard(g)}
       ${productInfo(g)}
       ${pending?`<button data-map="${esc(g.key)}" class="mt-3 w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold bg-amber-500 text-white"><i data-lucide="link" class="w-5 h-5"></i>Bu barkodla eşleştir</button>`:""}
     </div>
@@ -651,6 +654,30 @@ function alternatives(g,limit=3){
     out.sort((a,b)=>b.save-a.save)}
   const seen=new Set(),uniqOut=out.filter(x=>!seen.has(x.g.key)&&seen.add(x.g.key));
   ALT.set(g.key,uniqOut);return uniqOut.slice(0,limit)}
+
+// Ürün sayfası: aynı boyda diğer markalar (pahalı ve ucuz hepsi, birim fiyata göre); bu ürün işaretli.
+// Hiç yoksa benzer boylu (±%25) daha ucuz muadiller gösterilir.
+function sameSizeCard(g){
+  const b=best(g)||g.offers[0],u=b&&MF.unitPrice(b);
+  const seen=new Set(),rows=[];
+  if(u)for(const h of MF.sameSize(b,O.filter(o=>usable(o)&&o.in_stock))){const og=GI[h.o.id];if(!og||og===g||seen.has(og.key))continue;
+    if(best(og)!==h.o)continue;seen.add(og.key);rows.push({o:h.o,g:og,u:h.u})}
+  if(!rows.length){const alts=alternatives(g,3);if(!alts.length)return"";
+    return`<div class="${card} p-4 mt-4 enter"><h2 class="font-extrabold flex items-center gap-2"><i data-lucide="arrow-down-wide-narrow" class="w-5 h-5 text-sky-600"></i>Daha ucuz muadiller</h2><p class="text-xs text-stone-500 mt-0.5">Aynı tür, benzer boy; birim fiyatı daha düşük.</p>
+      <div class="mt-2 ${div}">${alts.map(a=>brandRow(a.o,a.g,MF.unitPrice(a.o),`%${Math.round(a.save*100)} ucuz`)).join("")}</div></div>`}
+  const me={o:b,g,u,me:true},all=[...rows,me].sort((x,y)=>x.u.v-y.u.v),pos=all.indexOf(me),cheaper=pos,SHOW=10;
+  const list=all.length>SHOW?[...all.slice(0,SHOW-1),...(pos>=SHOW-1?[me]:[])]:all;
+  const sz=MF.sizeLabel(b._p.qty,b._p.size);
+  return`<div class="${card} p-4 mt-4 enter"><h2 class="font-extrabold flex items-center gap-2"><i data-lucide="layers" class="w-5 h-5 text-sky-600"></i>Aynı boyda diğer markalar · ${esc(sz)}</h2>
+    <p class="text-xs text-stone-500 mt-0.5">${num(rows.length)} seçenek daha var${cheaper?`; <b class="text-sky-700">${cheaper} tanesi daha ucuz</b>`:"; bu ürün birim fiyatta en ucuzu"}. Birim fiyata göre sıralı.</p>
+    <div class="mt-2 ${div}">${list.map(x=>x.me?brandRow(x.o,x.g,x.u,"Bu ürün",true):brandRow(x.o,x.g,x.u,x.u.v<u.v-1e-9?`%${Math.round((1-x.u.v/u.v)*100)} ucuz`:x.u.v>u.v+1e-9?`%${Math.round((x.u.v/u.v-1)*100)} pahalı`:"aynı")).join("")}</div>
+    ${all.length>list.length?`<p class="mt-1 text-[11px] text-stone-500">${all.length-list.length} seçenek daha; tümü için “${esc(sz)}” boyunu birim fiyat aramasında aç.</p>`:""}</div>`}
+function brandRow(o,g,u,tag,me){const key=g?g.key:o.id,inC=g&&inCart(g),cheap=/ucuz/.test(tag);
+  return`<div class="flex items-center gap-2.5 py-2 ${me?"bg-emerald-50 -mx-4 px-4":""}">${img(o.image,"w-11 h-11 shrink-0")}
+    <div ${me?"":`data-show="${esc(key)}"`} class="flex-1 min-w-0 ${me?"":"cursor-pointer"}"><p class="text-[13px] font-bold leading-snug line-clamp-2">${esc(o.name)}</p>
+      <p class="text-[11px] text-stone-500 mt-0.5">${badge(o.market,1)} <span class="tabular">${u?tl(u.v)+"/"+u.u:""}</span> · <span class="font-extrabold ${me?good:cheap?"text-sky-700":"text-stone-500"}">${esc(tag)}</span></p></div>
+    <span class="price tabular text-[15px] shrink-0">${tl(o.price)}</span>
+    ${me||!g?"":`<button data-add="${esc(key)}" aria-label="${inC?"Listeden çıkar":"Listeye ekle"}" class="w-9 h-9 shrink-0 rounded-xl grid place-items-center ${inC?"bg-stone-200 text-stone-700":"bg-emerald-600 text-white"} active:scale-90 transition"><i data-lucide="${inC?"check":"plus"}" class="w-4 h-4"></i></button>`}</div>`}
 
 // ---------- Listem ----------
 function drawL(){

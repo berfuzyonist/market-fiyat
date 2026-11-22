@@ -187,6 +187,26 @@ function unitCompare(rows,query){
   list.sort((a,b)=>a.u.v-b.u.v);
   return{unit:list[0].u.u,count:list.length,dropped,best:list[0],top:list.slice(0,5),sizes:out};
 }
-const api={fold,parse,group,families,unitPrice,staples,unitCompare};
+/* Aynı boyda diğer markalar (ürün sayfası): aynı ölçü birimi, boy ±%10, markadan sonraki ilk iki ayırt
+   edici kelime aynı, en çok iki fazladan kelime ("Uht", "Yağsız"); ürün bir temel ürünse (süt, su, yumurta…)
+   o ürünün dışlama listesi uygulanır (kakaolu süt, maden suyu çıkmaz). Ürün adından çalışır; yeni gelen
+   ürünler de otomatik dahil olur. Dönen: birim fiyata göre sıralı [{o,u}] (ürünün kendisi hariç). */
+function sameSize(o,rows){
+  const p=o&&o._p;if(!p||!p.qty||p.toks.length<2)return[];
+  const own=p.toks.slice(1),f=o._f||(o._f=fold(o.name)),st=STAPLES.find(r=>r.re.test(f));
+  const run=(need,extraMax)=>{const out=[];
+    for(const c of rows){if(c===o)continue;const q=c._p;if(!q||!q.qty||q.qty.u!==p.qty.u)continue;
+      if(Math.abs(q.qty.n/p.qty.n-1)>0.1)continue;
+      if(!need.every(t=>q.toks.includes(t)))continue;
+      if(q.toks.slice(1).filter(t=>!own.includes(t)).length>extraMax)continue;
+      if(st&&st.not.test(c._f||(c._f=fold(c.name))))continue;
+      const u=unitPrice(c);if(u&&u.v>0)out.push({o:c,u})}
+    return out.sort((a,b)=>a.u.v-b.u.v)};
+  let out=run(own.slice(0,2),2);
+  // Bulunamazsa asıl ürün adı sondaki iki kelimedir: "Extra Pamuksu Tuvalet Kağıdı" → "tuvalet kagid"
+  const tail=own.filter(t=>!/^[\d%]/.test(t)).slice(-2);
+  if(!out.length&&tail.length===2)out=run(tail,3);
+  return out}
+const api={fold,parse,group,families,unitPrice,staples,unitCompare,sameSize,sizeLabel};
 if(typeof module!=="undefined"&&module.exports)module.exports=api;else root.MF=api;
 })(typeof window!=="undefined"?window:globalThis);

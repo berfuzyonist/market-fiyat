@@ -163,3 +163,13 @@ test("fiyat geçmişi: indirim, kampanya ve zam olayları, en düşük fiyat",()
   assert.equal(C.histInfo([],{price:9,regular:9,seen:1}).changes,0);
   assert.equal(C.histInfo([[1,10,10,"",""],[2,8,8,"",""]],{price:8,regular:8,seen:3}).atLow,true);
 });
+
+test("aynı boyda diğer markalar: tür ve boy aynı, aromalı/kakaolu çeşit ve farklı boy dışarıda",()=>{
+  const MF=require("../../js/match.js");
+  const mk=(id,name,price)=>({id,market:id.split(":")[0],name,price,regular:price,in_stock:true});
+  const rows=[mk("sok:1","Pınar Süt 1 L",60),mk("migros:2","Sek Süt 1 L",55),mk("migros:3","Mis Uht Süt Yağsız 1 L",36),
+    mk("migros:4","Danone Kakaolu Süt 1 L",70),mk("migros:5","Sek Süt 500 ml",35),mk("sok:6","Pınar Yoğurt 1 kg",90)];
+  MF.group(rows);
+  assert.deepEqual(MF.sameSize(rows[0],rows).map(h=>h.o.id),["migros:3","migros:2"]);
+  assert.equal(MF.sizeLabel(rows[0]._p.qty,rows[0]._p.size),"1 L");
+});
