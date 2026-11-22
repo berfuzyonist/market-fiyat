@@ -107,7 +107,12 @@ test("birim fiyat karşılaştırması: boy boy en ucuz, ilgisiz ürün ve aykı
   assert.equal(r.unit,"L");assert.equal(r.best.o.id,"sok:1");assert.equal(r.best.u.v,10);
   assert.deepEqual(r.sizes.map(s=>s.label),["500 ml","5 L","6 × 1,5 L"]);
   assert.equal(r.sizes[0].best.o.id,"sok:3");
-  assert.ok(!r.sizes.some(s=>s.items));
+  // Boya dokununca o boydaki tüm markalar: birim fiyata göre sıralı
+  assert.deepEqual(r.sizes[0].items.map(h=>h.o.id),["sok:3","migros:2"]);
+  // Temel ürün sorgusunda dışlama listesi: "süt" boylarında kakaolu süt yok
+  const milk=[mk("sok:10","sok","Pınar Süt 1 L",60),mk("migros:11","migros","Sek Süt 1 L",55),mk("migros:12","migros","Danone Kakaolu Süt 1 L",70)];
+  MF.group(milk);
+  assert.deepEqual(MF.unitCompare(milk,"süt").sizes[0].items.map(h=>h.o.id),["migros:11","sok:10"]);
   assert.equal(MF.unitCompare(rows,"çikolata"),null);
 });
 test("esnek eşleştirme: yazım farkları birleşir, farklı çeşitler birleşmez",()=>{
