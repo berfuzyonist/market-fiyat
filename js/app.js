@@ -1,7 +1,7 @@
 "use strict";
 /* Market Fiyat arayüzü. Eşleştirme mantığı js/match.js içinde (MF). */
 const M={sok:{n:"Şok",at:"Şok'ta",c:"bg-yellow-400 text-yellow-950",bar:"#eab308"},migros:{n:"Migros",at:"Migros'ta",c:"bg-orange-500 text-white",bar:"#f97316"},a101:{n:"A101",at:"A101'de",c:"bg-cyan-600 text-white",bar:"#0891b2"},bim:{n:"BİM",at:"BİM'de",c:"bg-red-600 text-white",bar:"#dc2626"}},ORD=Object.keys(M);
-const VIEWS=["home","compare","promos","browse","search","list"];
+const VIEWS=["home","compare","promos","browse","search","list","posters"];
 const $=id=>document.getElementById(id);
 const tl=x=>x.toLocaleString("tr-TR",{minimumFractionDigits:2,maximumFractionDigits:2})+" ₺";
 const num=x=>x.toLocaleString("tr-TR");
@@ -221,6 +221,42 @@ function drawK(){
   $("kGrid").innerHTML=r.slice(K.page*PER,(K.page+1)*PER).map((o,i)=>pcard(o,{i})).join("")||empty("gift","Kampanya bulunamadı","Kampanya verisi bir sonraki güncellemede gelir.");
   $("kPager").innerHTML=pager("K",K.page,pages)}
 
+// ---------- Afişler: marketlerin herkese açık afiş ve kampanya görselleri ----------
+let POST=[],PV={m:""},VIEW_I=-1;
+// Afişini otomatik okuyamadığımız marketler için marketin kendi sayfasına bağlantı
+const POSTER_LINKS=[
+  {market:"migros",title:"Migros kampanyaları",text:"Kampanya afişleri ve “2 Al 1 Öde” listeleri Migros sitesinde.",url:"https://www.migros.com.tr/kampanyalar"},
+  {market:"migros",title:"Migroskop dijital dergi",text:"Migros'un haftalık indirim dergisi.",url:"https://www.money.com.tr/mc/kampanyalara-bak/migroskop-dijital/83"},
+  {market:"a101",title:"A101 aktüel afişleri",text:"A101 sitesi otomatik erişime kapalı; afişleri kendi sitesinde görebilirsin.",url:"https://www.a101.com.tr/afisler"},
+];
+function posterState(it){if(it.market!=="bim")return null;const w=MFC.bimWhen(it.label);return w}
+function posterCard(it,i,cls=""){
+  const w=posterState(it),soon=w&&w.state==="soon",old=w&&(w.state==="old"||w.state==="expired");
+  return`<button data-poster="${i}" class="pc !p-0 overflow-hidden text-left ${cls} ${old?"opacity-60":""}" style="--i:${i%12}">
+    <div class="relative bg-white ${it.market==="bim"?"aspect-[3/4]":"aspect-[16/9]"} overflow-hidden"><img src="${esc(it.thumb||it.image)}" alt="${esc(it.title)}" loading="lazy" class="w-full h-full object-cover transition duration-500 hover:scale-105" onerror="this.closest('button').remove()">
+      <span class="absolute top-1.5 left-1.5">${badge(it.market,1)}</span>${soon?`<span class="absolute top-1.5 right-1.5 chipx bg-sky-600 text-white">Yakında</span>`:old?`<span class="absolute top-1.5 right-1.5 chipx bg-stone-700 text-white">Geçmiş</span>`:""}</div>
+    <div class="p-2.5"><p class="text-[13px] font-extrabold leading-snug line-clamp-2">${esc(it.market==="bim"?(it.group+" · "+it.label):it.title)}</p>${it.market!=="bim"&&it.label?`<p class="text-[11px] text-stone-500 mt-0.5 line-clamp-1">${esc(it.label)}</p>`:""}</div></button>`}
+const linkCard=(l,cls="")=>`<a href="${esc(l.url)}" target="_blank" rel="noopener" class="pc ${cls} justify-between gap-2"><span>${badge(l.market,1)}</span><span class="font-extrabold text-sm leading-snug">${esc(l.title)}</span><span class="text-[11px] text-stone-500 leading-snug">${esc(l.text)}</span><span class="text-xs font-extrabold text-emerald-700 flex items-center gap-1">Sitesinde aç<i data-lucide="external-link" class="w-3.5 h-3.5"></i></span></a>`;
+// Güncel olanlar önce: BİM'de tarihi yakın/gelmemiş afişler, sonra Şok kampanyaları, geçmiş BİM afişleri en sonda
+function sortedPosters(){
+  // Önce şu an satışta olan BİM afişleri (en yenisi başta), sonra Şok kampanyaları, sonra yakında
+  // çıkacak BİM afişleri (tarih sırasıyla), en sonda geçmiş olanlar
+  const rank=it=>{const w=posterState(it);return!w?1:w.state==="active"?0:w.state==="soon"?2:3};
+  const when=it=>{const w=posterState(it);return w&&w.start?(w.state==="active"?-w.start:+w.start):0};
+  return POST.map((it,i)=>({it,i})).sort((a,b)=>rank(a.it)-rank(b.it)||when(a.it)-when(b.it)||a.i-b.i).map(x=>x.it)}
+function drawP(){
+  const list=sortedPosters(),ms=[...new Set(list.map(x=>x.market))];
+  $("pMk").innerHTML=["",...ms].map(m=>pill("data-pm",m,m?M[m].n:"Tümü",PV.m===m,m?M[m].c:"")).join("");
+  const r=list.filter(x=>!PV.m||x.market===PV.m);
+  $("pGrid").innerHTML=r.map(it=>posterCard(it,POST.indexOf(it))).join("")+POSTER_LINKS.filter(l=>!PV.m||l.market===PV.m||!ms.includes(PV.m)).map(l=>linkCard(l)).join("");
+  $("pInfo").textContent=r.length?`${num(r.length)} afiş · görsele dokun, büyüt`:"Afişler bir sonraki güncellemede gelir.";
+}
+function openViewer(i){VIEW_I=i;const it=POST[i];if(!it)return;
+  $("vImg").src=it.image;$("vImg").alt=it.title;$("vTitle").textContent=it.market==="bim"?`BİM ${it.group} · ${it.label}`:it.title;
+  $("vSub").textContent=it.market==="bim"?"Stoklarla sınırlıdır":it.label||"";$("vLink").href=it.url;$("viewer").classList.remove("hidden");document.body.style.overflow="hidden"}
+function closeViewer(){$("viewer").classList.add("hidden");document.body.style.overflow="";VIEW_I=-1}
+function stepViewer(d){const list=sortedPosters(),k=list.indexOf(POST[VIEW_I]);const n=list[(k+d+list.length)%list.length];if(n)openViewer(POST.indexOf(n))}
+
 // ---------- Ana sayfa ----------
 let slideT=null,slideI=0;
 function slides(st){
@@ -257,6 +293,8 @@ function drawH(){
   const sl=slides(st);$("banner").innerHTML=sl.join("")||`<div class="slide s-green"><h3>Market Fiyat</h3></div>`;slideI=0;$("banner").scrollLeft=0;startSlides();
   $("cats").innerHTML=GROUPS.map(([k,l,ic,bg,fg])=>`<button data-grp="${k}" class="cat"><span class="ic" style="background:${bg};color:${fg}"><i data-lucide="${ic}" class="w-7 h-7"></i></span>${l}</button>`).join("");
   $("deals").innerHTML=st.filter(o=>disc(o)>0).sort((a,b)=>disc(b)-disc(a)).slice(0,20).map((o,i)=>pcard(o,{strip:1,i})).join("")||`<p class="text-sm text-stone-500">Şu an indirim görünmüyor.</p>`;
+  const ps=sortedPosters().filter(it=>{const w=posterState(it);return!w||w.state!=="old"&&w.state!=="expired"}).slice(0,14);
+  $("hPost").innerHTML=ps.map(it=>posterCard(it,POST.indexOf(it),"w-40 shrink-0")).join("")+POSTER_LINKS.map(l=>linkCard(l,"w-44 shrink-0")).join("");
   $("units").innerHTML=UNIT_Q.map(([q,l,ic])=>`<button data-uq="${esc(q)}" class="uchip"><i data-lucide="${ic}" class="w-4 h-4 text-emerald-600"></i>${l}</button>`).join("");
   $("stores").innerHTML=DATA_M.filter(m=>O.some(o=>o.market===m)).map(m=>{const n=st.filter(o=>o.market===m),d=n.filter(o=>disc(o)>0).length,s=CHECK[m],failed=s&&s.status!=="tamam"&&!s.partial,part=s&&s.partial;
     return`<button data-bm="${m}" data-open="1" class="store st-${m}"><span class="font-display font-extrabold text-lg lg:text-2xl">${M[m].n}</span>
@@ -467,14 +505,14 @@ function drawL(){
     <span class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-white/10"></span></div>`+h}
 
 // ---------- Gezinme ----------
-const DRAW={home:drawH,compare:drawC,promos:drawK,browse:drawB,search:drawS,list:drawL};
+const DRAW={home:drawH,compare:drawC,promos:drawK,browse:drawB,search:drawS,list:drawL,posters:drawP};
 function icons(){lucide.createIcons()}
 function redraw(){DRAW[view]();if(view!=="list")drawL();icons()}
 const NB="flex flex-col items-center gap-0.5 py-2 rounded-2xl text-[11px] font-bold relative transition active:scale-90 ";
 const NT="flex items-center gap-2 px-3.5 py-1.5 rounded-full text-sm font-bold transition ";
 // ---------- Adres (yenileme ve geri tuşu için) ----------
 // #urun/<id>, #ara/<sorgu>, #kesfet, #kampanya, #karsilastir, #listem; ana sayfa: adres eki yok
-const HV={home:"",compare:"karsilastir",promos:"kampanya",browse:"kesfet",search:"ara",list:"listem"};
+const HV={home:"",compare:"karsilastir",promos:"kampanya",browse:"kesfet",search:"ara",list:"listem",posters:"afisler"};
 let routing=false;
 function hashOf(){
   if(view==="search"){if(only)return"#urun/"+encodeURIComponent(only);const q=$("q").value.trim();return q?"#ara/"+encodeURIComponent(q):"#ara"}
@@ -537,6 +575,12 @@ document.querySelectorAll("[data-reveal]").forEach(x=>seen.observe(x));
 $("deals").innerHTML=Array.from({length:6},()=>`<div class="sk-card skel"></div>`).join("");
 ["hCmp","hPromo"].forEach(id=>$(id).innerHTML=Array.from({length:4},()=>`<div class="sk-card skel"></div>`).join(""));
 
+// Afiş görüntüleyici: klavye ve kaydırma
+addEventListener("keydown",e=>{if(VIEW_I<0)return;if(e.key==="Escape")closeViewer();else if(e.key==="ArrowRight")stepViewer(1);else if(e.key==="ArrowLeft")stepViewer(-1)});
+{let sx=null;$("vBox").addEventListener("touchstart",e=>{sx=e.touches[0].clientX},{passive:true});
+ $("vBox").addEventListener("touchend",e=>{if(sx==null)return;const dx=e.changedTouches[0].clientX-sx;sx=null;if(Math.abs(dx)>60)stepViewer(dx<0?1:-1)})}
+addEventListener("popstate",()=>{if(VIEW_I>=0)closeViewer()});
+
 // ---------- Olaylar ----------
 document.addEventListener("click",e=>{const t=s=>e.target.closest(s);let el;
   if(el=t("[data-add]")){const g=GI[el.dataset.add];if(g){const adding=!inCart(g);
@@ -544,6 +588,11 @@ document.addEventListener("click",e=>{const t=s=>e.target.closest(s);let el;
     if(adding){const nb=document.querySelector(`[data-add="${CSS.escape(g.key)}"].add`);if(nb)nb.classList.add("pop")}}}
   else if(el=t("[data-inc]")){const g=GI[el.dataset.inc];if(g){QTY[g.key]=qtyOf(g)+1;save("qty",QTY);if(!inCart(g)){cart=[...cart,g.key];save("cart",cart)}if(navigator.vibrate)navigator.vibrate(10);redraw();bumpCount()}}
   else if(el=t("[data-dec]")){const g=GI[el.dataset.dec];if(g){const q=qtyOf(g);if(q>1)QTY[g.key]=q-1;else{delete QTY[g.key];cart=cart.filter(x=>GI[x]!==g);save("cart",cart)}save("qty",QTY);redraw()}}
+  else if(el=t("[data-poster]")){openViewer(+el.dataset.poster)}
+  else if(el=t("[data-pm]")){PV.m=el.dataset.pm;redraw()}
+  else if(t("[data-vx]")){closeViewer()}
+  else if(t("[data-vprev]")){stepViewer(-1)}
+  else if(t("[data-vnext]")){stepViewer(1)}
   else if(el=t("[data-done]")){const k=el.dataset.done;done[k]?delete done[k]:done[k]=1;save("done",done);if(navigator.vibrate)navigator.vibrate(15);redraw()}
   else if(t("[data-undone]")){done={};save("done",done);redraw()}
   else if(el=t("[data-ss]")){S.sort=el.dataset.ss;redraw()}
@@ -590,7 +639,8 @@ function build(rows){
   buildCompare();
 }
 route(); // açılışta adresteki sayfaya git (yenilemede aynı ürün açık kalır)
-Promise.all([Promise.all(DATA_M.map(m=>get(`data/${m}.json`))),Promise.all(DATA_M.map(m=>get(`data/status-${m}.json`))),get("data/price-checks.json")]).then(([files,statuses,checks])=>{
+Promise.all([Promise.all(DATA_M.map(m=>get(`data/${m}.json`))),Promise.all(DATA_M.map(m=>get(`data/status-${m}.json`))),get("data/price-checks.json"),Promise.all(["bim","sok"].map(m=>get(`data/posters-${m}.json`)))]).then(([files,statuses,checks,posters])=>{
+  POST=posters.flatMap(p=>(p&&Array.isArray(p.items)?p.items:[]).filter(it=>it&&/^https:\/\//.test(it.image||"")));
   statuses.forEach((s,i)=>{if(s)CHECK[DATA_M[i]]=s});
   CHECKS=(checks&&checks.checks)||{};
   const rows=[],miss=[];

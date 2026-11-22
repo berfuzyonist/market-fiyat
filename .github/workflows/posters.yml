@@ -1,0 +1,46 @@
+name: Afişler
+
+# BİM afişleri ve Şok kampanya görselleri günde iki kez okunur (her market tek istek).
+# Görseller indirilmez; data/posters-<market>.json yalnızca marketin kendi adreslerini tutar.
+on:
+  schedule:
+    - cron: "43 5 * * *"   # TR 08:43
+    - cron: "43 13 * * *"  # TR 16:43
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: posters
+  cancel-in-progress: false
+jobs:
+  posters:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - name: Afişleri oku
+        run: |
+          mkdir -p "$RUNNER_TEMP/p"
+          ok=0
+          for m in bim sok; do
+            if python3 collector/collect.py posters "$m"; then ok=1; fi
+            [ -f "data/posters-$m.json" ] && cp "data/posters-$m.json" "$RUNNER_TEMP/p/"
+          done
+          [ "$ok" = 1 ] || { echo "Hiçbir marketin afişi okunamadı" >&2; exit 1; }
+      - name: Yayımla (en güncel main üzerine, yeniden denemeli)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for attempt in 1 2 3 4 5 6; do
+            git fetch --no-tags origin main
+            git reset --hard origin/main
+            cp "$RUNNER_TEMP"/p/posters-*.json data/ 2>/dev/null || true
+            git add data/posters-*.json
+            if git diff --cached --quiet; then echo "Değişiklik yok."; exit 0; fi
+            git commit -m "Afişler güncellendi"
+            if git push origin HEAD:refs/heads/main; then exit 0; fi
+            sleep $((attempt * 3))
+          done
+          exit 1

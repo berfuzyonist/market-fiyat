@@ -395,3 +395,37 @@ class HealthTests(unittest.TestCase):
         self.assertFalse(r["ok"])
         self.assertEqual(len([p for p in r["problems"] if p.startswith("Migros")]), 2)  # 36 saatlik veri + %0 doğrulama
         self.assertFalse(any(p.startswith(("Şok", "BİM")) for p in r["problems"]))
+
+
+class PosterTests(unittest.TestCase):
+    """Afiş ayrıştırıcıları (gerçek sayfa yapısından kısaltılmış örneklerle)."""
+
+    def test_bim_posters(self):
+        body = ('<div class="row no-gutters"><div style="display:none" class="grup1 afis=\'1710\' genelgrup col-12">'
+                '<a class="subTabArea triangle">\n<span class="text">17 Kasım Salı</span>\n</a>'
+                '<a href="https://cdn1.bim.com.tr/uploads/afisler/aaa.jpg" class="fancyboxImage" rel="gallery1"></a>'
+                '<a href="javascript:;" data-img="https://cdn1.bim.com.tr/uploads/afisler/k_bbb.jpg" '
+                'data-bigimg="https://cdn1.bim.com.tr/uploads/afisler/bbb.jpg" class="small"></a></div>'
+                '<div style="display:none" class="grup2 afis=\'1719\' genelgrup col-12">'
+                '<a class="subTabArea triangle"><span class="text">21-27 Kasım</span></a>'
+                '<a href="https://cdn1.bim.com.tr/uploads/afisler/ccc.jpg" class="fancyboxImage"></a></div></div>')
+        with patch.object(collect, "get", lambda u, a="": (200, body)):
+            items = collect.bim_posters()
+        self.assertEqual([(i["group"], i["label"], i["image"][-7:], i["thumb"][-9:]) for i in items], [
+            ("Aktüel", "17 Kasım Salı", "bbb.jpg", "k_bbb.jpg"),
+            ("Aktüel", "17 Kasım Salı", "aaa.jpg", "k_aaa.jpg"),
+            ("İndirim", "21-27 Kasım", "ccc.jpg", "k_ccc.jpg")])
+
+    def test_sok_posters(self):
+        body = ('<script>self.__next_f.push([1,"{\\"campaignId\\":\\"c1\\",\\"campaignUrl\\":\\"1-alana-1-bedava-prm-c1\\",'
+                '\\"title\\":\\"1 ALANA 1 BEDAVA\\",\\"description\\":\\"Stoklarla sınırlıdır.\\",\\"images\\":[{\\"path\\":'
+                '\\"promotion-assets/sub-folder/x.jpg\\",\\"host\\":\\"https://images.ceptesok.com\\"}],\\"skuIds\\":[]}"])</script>')
+        with patch.object(collect, "get", lambda u, a="": (200, body)):
+            items = collect.sok_posters()
+        self.assertEqual(items[0]["image"], "https://images.ceptesok.com/promotion-assets/sub-folder/x.jpg")
+        self.assertEqual(items[0]["url"], "https://www.sokmarket.com.tr/1-alana-1-bedava-prm-c1")
+
+    def test_poster_failure_keeps_old_file(self):
+        with patch.object(collect, "get", lambda u, a="": (500, "")):
+            with self.assertRaises(collect.Stop):
+                collect.bim_posters()

@@ -521,6 +521,86 @@ def bim(products, notes):
         raise Stop("BİM aktüel taraması sıfır ürün döndürdü")
 
 
+# ---------- Afişler / kampanya görselleri ----------
+# Marketlerin herkese açık yayımladığı afiş ve kampanya görselleri. Görseller indirilmez;
+# yalnızca marketin kendi adresleri (görsel + kaynak sayfa) listelenir, arayüz bağlantı verir.
+
+def bim_posters():
+    url = "https://www.bim.com.tr/Categories/680/afisler.aspx"
+    status, body = get(url, "text/html")
+    if status != 200:
+        raise Stop(f"BİM afiş sayfası başarısız: HTTP {status}")
+    out = []
+    parts = re.split(r"(?=<div[^>]+class=\"grup(\d) afis=)", body)
+    for blk in parts:
+        m = re.match(r"<div[^>]+class=\"grup(\d) afis='?(\d+)", blk)
+        if not m:
+            continue
+        group = {"1": "Aktüel", "2": "İndirim"}.get(m.group(1), "Afiş")
+        label = re.search(r'class="subTabArea[^"]*">\s*<span class="text">\s*(.*?)\s*</span>', blk, re.S)
+        label = " ".join(html.unescape(label.group(1)).split()) if label else ""
+        bigs = re.findall(r'data-bigimg="(https://cdn\d?\.bim\.com\.tr/uploads/afisler/[^"]+)"', blk)
+        bigs += re.findall(r'href="(https://cdn\d?\.bim\.com\.tr/uploads/afisler/[^"]+)" class="fancyboxImage"', blk)
+        seen = []
+        for big in bigs:
+            if big not in seen:
+                seen.append(big)
+        for i, big in enumerate(seen):
+            thumb = big.rsplit("/", 1)[0] + "/k_" + big.rsplit("/", 1)[1]
+            out.append({"market": "bim", "id": f"bim:{m.group(2)}:{i}", "title": f"BİM {group} · {label}".strip(" ·"),
+                        "group": group, "label": label, "image": big, "thumb": thumb, "url": url})
+    if not out:
+        raise Stop("BİM afiş sayfasında afiş bulunamadı")
+    return out
+
+
+def sok_posters():
+    url = "https://www.sokmarket.com.tr/" + CFG["sok"]["campaigns"]
+    status, body = get(url, "text/html")
+    if status != 200:
+        raise Stop(f"Şok kampanya sayfası başarısız: HTTP {status}")
+    flat = _flight(body)
+    out, seen = [], set()
+    for m in re.finditer(r'\{"campaignId":"([^"]+)","campaignUrl":"([^"]*)","title":"([^"]*)","description":"([^"]*)","images":\[(.*?)\]', flat):
+        cid, path, title, desc, imgs = m.groups()
+        img = re.search(r'"path":"([^"]+)","host":"(https://images\.ceptesok\.com)"', imgs)
+        if not img or cid in seen:
+            continue
+        seen.add(cid)
+        out.append({"market": "sok", "id": f"sok:{cid}", "title": " ".join(html.unescape(title).split()),
+                    "group": "Kampanya", "label": " ".join(html.unescape(desc).split()),
+                    "image": img.group(2) + "/" + img.group(1).lstrip("/"), "thumb": "",
+                    "url": "https://www.sokmarket.com.tr/" + path if re.fullmatch(r"[a-z0-9-]+", path) else url})
+    if not out:
+        raise Stop("Şok kampanya sayfasında görsel bulunamadı")
+    return out
+
+
+POSTERS = {"bim": bim_posters, "sok": sok_posters}
+
+
+def posters_main(market):
+    """collect.py posters <market>: data/posters-<market>.json yazar; hata olursa eskisi korunur."""
+    path = ROOT / "data" / f"posters-{market}.json"
+    now = datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")
+    try:
+        items = POSTERS[market]()
+    except Stop as e:
+        print(f"{market} afişleri alınamadı: {e}; önceki dosya korunuyor")
+        raise SystemExit(1)
+    old = {}
+    try:
+        old = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        pass
+    if [i["image"] for i in old.get("items", [])] == [i["image"] for i in items]:
+        print(f"{market}: afişler değişmedi ({len(items)})")
+        return
+    atomic_write(path, json.dumps({"updated": now, "market": market, "items": items},
+                                  ensure_ascii=False, indent=1) + "\n")
+    print(f"{market}: {len(items)} afiş yazıldı")
+
+
 # ---------- Tek ürün sorgusu ----------
 # "Fiyatı Güncelle" talepleri için: bütün kataloğu taramadan yalnızca hedef ürünü okur.
 # Her fonksiyon {"name","price","regular","in_stock","promo"?, "image"?, "source"} döner;
@@ -858,6 +938,8 @@ def category_quality(products):
 
 
 def main():
+    if sys.argv[1] == "posters":
+        return posters_main(sys.argv[2])
     market, mode = sys.argv[1], sys.argv[2]
     fn = JOBS[(market, mode)]
     (ROOT / "data").mkdir(exist_ok=True)
