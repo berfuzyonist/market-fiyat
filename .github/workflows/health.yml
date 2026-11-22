@@ -1,0 +1,42 @@
+name: Veri sağlığı
+
+# Her 3 saatte bir market verilerinin tazeliğini denetler. Sorun varsa "[SAĞLIK]" başlıklı
+# bir talep açar (GitHub depo sahibine bildirim gönderir) veya açık talebi günceller;
+# sorun giderilince talebi kapatır. Depoya hiçbir şey yazmaz.
+on:
+  schedule:
+    - cron: "41 */3 * * *"
+  workflow_dispatch:
+permissions:
+  contents: read
+  issues: write
+concurrency:
+  group: health
+  cancel-in-progress: true
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - name: Denetle ve talebi güncelle
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          python3 scripts/health.py "$RUNNER_TEMP/health.md" | tee "$RUNNER_TEMP/out.txt"
+          state=$(tail -n 1 "$RUNNER_TEMP/out.txt")
+          title="[SAĞLIK] Market verisi güncellenmiyor"
+          num=$(gh api "repos/$GH_REPO/issues?state=open&per_page=50" --jq "map(select(.title == \"$title\" and .pull_request == null)) | .[0].number // empty")
+          if [ "$state" = "PROBLEM" ]; then
+            if [ -n "$num" ]; then
+              gh issue edit "$num" --body-file "$RUNNER_TEMP/health.md"
+            else
+              gh issue create --title "$title" --body-file "$RUNNER_TEMP/health.md"
+            fi
+          elif [ -n "$num" ]; then
+            gh issue comment "$num" --body-file "$RUNNER_TEMP/health.md"
+            gh issue close "$num" --reason completed
+          fi

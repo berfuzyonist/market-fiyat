@@ -116,7 +116,7 @@ const FRESH_HOURS=6,LIKELY_HOURS=30;
 function freshness(o,status,now){
   now=now||Date.now();
   const age=o.seen?(now/1000-o.seen)/3600:null,when=ago(o.seen,now);
-  const failed=status&&status.status&&status.status!=="tamam";
+  const failed=status&&status.status&&status.status!=="tamam"&&!status.partial;
   const failTxt=failed?" Marketin son otomatik taraması başarısız oldu; yeni fiyat alınamadı, son doğrulanan fiyat gösteriliyor.":"";
   if(o.na==="soon")return{level:"na",title:"Henüz satışta değil",text:"Bu BİM aktüel ürünü ileri tarihte satışa çıkacak. Fiyat BİM'in duyurduğu fiyattır."};
   if(o.na==="ended")return{level:"old",title:"Satış dönemi geçmiş",text:"Bu BİM kampanyasının süresi dolmuş veya ürün tükenmiş olabilir. Mağazada fiyat farklı olabilir."};

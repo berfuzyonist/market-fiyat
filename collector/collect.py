@@ -289,9 +289,11 @@ def migros(products, notes):
         except NotFound:
             # Site haritasında kalmış ama kaldırılmış kategori (ör. powerbank-c-12090).
             # Ürünleri başka kategoride zaten taranıyor; tüm gece taramasını düşürmez.
+            # Taramanın güvenilirliğini okunan ürün oranı belirler (main: full_min_product_ratio);
+            # yalnızca keşif denemelerinin yarısından fazlası 404 ise site düzeni değişmiş demektir.
             gone.append(slug)
-            if len(gone) > int(c.get("max_missing_categories", 25)):
-                raise Stop(f"çok sayıda site haritası kategorisi 404 döndü ({len(gone)}); tarama güvenilir değil")
+            if len(gone) > 50 and len(gone) > 0.5 * extra:
+                raise Stop(f"site haritası kategorilerinin çoğu 404 döndü ({len(gone)}/{extra}); site düzeni değişmiş olabilir")
     if gone:
         notes.append(f"site haritasındaki {len(gone)} kategori artık yok (404), atlandı: {', '.join(gone[:10])}")
     notes.append(f"{len(crawled)} üst kategori tarandı; {len(page_cache)} kategori sayfası tekrar istek yapılmadan önbellekten kullanıldı")
@@ -911,9 +913,29 @@ def main():
         else:
             merged = fresh if (state == "tamam" and fresh) else dict(old)
 
+    # Yarıda kalan tam tarama (403, ağ hatası…): kaynaktan okunan ürünler gerçek ve doğrulanmış
+    # fiyatlardır; atılmaz. Eski katalogdaki kayıtlar korunur, okunanlar güncellenir (kısmi yayım).
+    partial = False
     if state != "tamam":
         merged = dict(old)
         complete = False
+        if mode == "full" and fresh and old:
+            for k, p in fresh.items():
+                merged[k] = {**p, "cat": p.get("cat") or (old.get(k) or {}).get("cat") or ""}
+                if not p.get("promo") and (old.get(k) or {}).get("promo") and market == "sok":
+                    merged[k]["promo"] = old[k]["promo"]
+            partial = True
+            notes.append(f"kısmi yayım: {len(fresh)} ürünün fiyatı güncellendi, kalan {len(old) - len(set(old) & set(fresh))} ürün önceki doğrulamasıyla korundu")
+
+    # Uzun süredir hiçbir taramada görülmeyen ürün katalogdan kaldırılmış sayılır.
+    stale_days = int(quality_cfg.get("drop_unseen_days", 10))
+    if mode == "full" and (state == "tamam" or partial):
+        limit = now_ts - stale_days * 86400
+        dropped = [k for k, p in merged.items() if isinstance(p.get("seen"), int) and p["seen"] < limit]
+        for k in dropped:
+            del merged[k]
+        if dropped:
+            notes.append(f"{len(dropped)} ürün {stale_days} gündür görülmediği için katalogdan çıkarıldı")
 
     promos_before = {k: p.get("promo") or "" for k, p in merged.items()}
     if state == "tamam":
@@ -930,7 +952,7 @@ def main():
     categories_changed = complete_categories(merged)
     attempted = datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")
     data_file_exists = (ROOT / "data" / f"{market}.json").exists()
-    has_new_prices = state == "tamam" and complete and bool(fresh)
+    has_new_prices = (state == "tamam" and complete and bool(fresh)) or partial
     should_write = bool(merged) and (has_new_prices or categories_changed or promos_changed or not data_file_exists)
     last_data_update = previous_data_update
     if should_write:
@@ -985,6 +1007,8 @@ def main():
         "mode": mode,
         "status": state,
         "complete": complete and state == "tamam",
+        # Tarama yarıda kaldı ama okunan ürünlerin fiyatları yayımlandı.
+        "partial": partial,
         "found": len(fresh),
         "total": len(merged),
         "seconds": round(time.time() - t0),

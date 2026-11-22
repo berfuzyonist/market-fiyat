@@ -254,10 +254,10 @@ function drawH(){
   $("cats").innerHTML=GROUPS.map(([k,l,ic,bg,fg])=>`<button data-grp="${k}" class="cat"><span class="ic" style="background:${bg};color:${fg}"><i data-lucide="${ic}" class="w-7 h-7"></i></span>${l}</button>`).join("");
   $("deals").innerHTML=st.filter(o=>disc(o)>0).sort((a,b)=>disc(b)-disc(a)).slice(0,20).map((o,i)=>pcard(o,{strip:1,i})).join("")||`<p class="text-sm text-stone-500">Şu an indirim görünmüyor.</p>`;
   $("units").innerHTML=UNIT_Q.map(([q,l,ic])=>`<button data-uq="${esc(q)}" class="uchip"><i data-lucide="${ic}" class="w-4 h-4 text-emerald-600"></i>${l}</button>`).join("");
-  $("stores").innerHTML=DATA_M.filter(m=>O.some(o=>o.market===m)).map(m=>{const n=st.filter(o=>o.market===m),d=n.filter(o=>disc(o)>0).length,s=CHECK[m],failed=s&&(s.status!=="tamam"||s.complete===false);
+  $("stores").innerHTML=DATA_M.filter(m=>O.some(o=>o.market===m)).map(m=>{const n=st.filter(o=>o.market===m),d=n.filter(o=>disc(o)>0).length,s=CHECK[m],failed=s&&s.status!=="tamam"&&!s.partial,part=s&&s.partial;
     return`<button data-bm="${m}" data-open="1" class="store st-${m}"><span class="font-display font-extrabold text-lg lg:text-2xl">${M[m].n}</span>
       <span class="block text-xs lg:text-sm font-bold mt-1 tabular opacity-95">${num(n.length)} ürün</span><span class="block text-xs lg:text-sm font-extrabold tabular">${num(d)} indirim</span>
-      <span class="block text-[10px] mt-1 opacity-80">${failed?"⚠ son tarama başarısız":UPD[m]?"Güncellendi "+MFC.ago(MFC.toTs(UPD[m])):""}</span></button>`}).join("");
+      <span class="block text-[10px] mt-1 opacity-90">${UPD[m]?"Veri: "+MFC.ago(MFC.toTs(UPD[m])):""}${failed?" · ⚠ son deneme başarısız":part?" · kısmen güncellendi":""}</span></button>`}).join("");
   $("hCmp").innerHTML=CMP.same.filter(it=>it.diff>=1).sort((a,b)=>b.pct-a.pct).slice(0,14).map((it,i)=>`<article data-show="${esc(it.key)}" class="pc w-60 shrink-0" style="--i:${i}">
     <div class="flex gap-2 items-center"><div class="ph w-16 shrink-0">${it.image?`<img src="${esc(it.image)}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">`:""}</div><p class="text-[13px] font-bold leading-snug max-h-[3.4rem] overflow-hidden">${esc(it.title)}</p></div>
     <div class="mt-2 space-y-1">${it.rows.map(r=>`<div class="flex items-center justify-between">${badge(r.o.market,1)}<span class="tabular text-sm font-extrabold ${r.o===it.win?good:"text-stone-400 line-through"}">${tl(r.o.price)}</span></div>`).join("")}</div>

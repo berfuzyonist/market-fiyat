@@ -30,7 +30,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Python sözdizimini denetle
-        run: python -m py_compile collector/collect.py scripts/update_one_product.py scripts/pricehist.py
+        run: python -m py_compile collector/collect.py scripts/update_one_product.py scripts/pricehist.py scripts/datamerge.py scripts/health.py
       - name: Publisher shell sözdizimini denetle
         run: bash -n scripts/publish-market-data.sh
       - name: Python birim testleri
