@@ -567,7 +567,15 @@ def sok_posters():
         if not img or cid in seen:
             continue
         seen.add(cid)
-        out.append({"market": "sok", "id": f"sok:{cid}", "title": " ".join(html.unescape(title).split()),
+        # Kampanyadaki ürünler: aynı nesnenin "skuIds" alanı (ürün numaraları; katalogda "sok:<no>")
+        rest = flat[m.end(): m.end() + 20000]
+        rest = rest[: rest.find('"campaignId"')] if '"campaignId"' in rest else rest
+        sku = re.search(r'"skuIds":\[([^\]]*)\]', rest)
+        ids = []
+        for no in re.findall(r'"(\d+)(?:\.\d+)?"', sku.group(1) if sku else ""):  # "1025.1" → ürün 1025
+            if f"sok:{no}" not in ids:
+                ids.append(f"sok:{no}")
+        out.append({"market": "sok", "id": f"sok:{cid}", "title": " ".join(html.unescape(title).split()), "ids": ids,
                     "group": "Kampanya", "label": " ".join(html.unescape(desc).split()),
                     "image": img.group(2) + "/" + img.group(1).lstrip("/"), "thumb": "",
                     "url": "https://www.sokmarket.com.tr/" + path if re.fullmatch(r"[a-z0-9-]+", path) else url})
@@ -668,7 +676,7 @@ def posters_main(market):
         old = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, ValueError):
         pass
-    if [i["image"] for i in old.get("items", [])] == [i["image"] for i in items]:
+    if old.get("items") == items:
         print(f"{market}: afişler değişmedi ({len(items)})")
         return
     atomic_write(path, json.dumps({"updated": now, "market": market, "items": items},

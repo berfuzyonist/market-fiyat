@@ -1,11 +1,12 @@
 {
- "updated": "2026-11-22T21:34:06+00:00",
+ "updated": "2026-11-22T22:13:24+00:00",
  "market": "sok",
  "items": [
   {
    "market": "sok",
    "id": "sok:9fa957cf-74ce-468d-9ee6-6e514e932d7a",
    "title": "Paraf500",
+   "ids": [],
    "group": "Kampanya",
    "label": "1 ve 30 Kasım 2026 tarihleri arasında geçerlidir.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/57049046-49f8-4d6f-bf69-685eff597bcc.jpg",
@@ -16,6 +17,9 @@
    "market": "sok",
    "id": "sok:d5afdcca-c4f7-43b7-817f-39de3e6181ef",
    "title": "50 TL ve üzeri alışverişte 179.00 TL!",
+   "ids": [
+    "sok:1025"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/18386c63-b4a3-4404-bcc1-b557ab2407e5.jpg",
@@ -26,6 +30,11 @@
    "market": "sok",
    "id": "sok:76933d2e-a14a-4813-9719-7cb3ae0551fd",
    "title": "50 TL ve üzeri alışverişte 159.00 TL!",
+   "ids": [
+    "sok:857503",
+    "sok:797409",
+    "sok:856582"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/507e419e-2d5d-4f85-9f3e-d1d9c6fa6b0e.jpg",
@@ -36,6 +45,9 @@
    "market": "sok",
    "id": "sok:a2398a73-4b0b-453c-9e3f-0ef01ee5a868",
    "title": "1 ALANA 1 BEDAVA",
+   "ids": [
+    "sok:558"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/6be88593-619d-4f2b-9dfe-b1c539232d09.jpg",
@@ -46,6 +58,9 @@
    "market": "sok",
    "id": "sok:ac3d405d-ad56-44a0-91b9-a7c1eeeac3f4",
    "title": "50 TL ve üzeri alışverişte 199.00 TL!",
+   "ids": [
+    "sok:318376"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/ba2ac38d-6e66-42b0-a258-fd6161c5c4b3.jpg",
@@ -56,6 +71,11 @@
    "market": "sok",
    "id": "sok:407e08f2-834c-47d6-8dd1-5ff7525de88d",
    "title": "50 TL ve üzeri alışverişte 145.00 TL!",
+   "ids": [
+    "sok:4115",
+    "sok:995",
+    "sok:520631"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/5cb5f133-ef23-414e-aa04-f7814f4e03d4.jpg",
@@ -66,6 +86,10 @@
    "market": "sok",
    "id": "sok:f6010a15-a2b1-4867-b919-4c6891d37c91",
    "title": "50 TL ve üzeri alışverişte 75.00 TL!",
+   "ids": [
+    "sok:700475",
+    "sok:701389"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/93cdec50-095f-477b-b606-3d4fcb010796.jpg",
@@ -76,6 +100,10 @@
    "market": "sok",
    "id": "sok:cf1e3039-5a85-4f44-86b9-fe810a5a1d82",
    "title": "50 TL ve üzeri alışverişte 119.00 TL!",
+   "ids": [
+    "sok:425387",
+    "sok:2626"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/35761cf9-d3d7-4a43-a79b-2ef0fef4ec85.jpg",
@@ -86,6 +114,9 @@
    "market": "sok",
    "id": "sok:5394ec9e-3582-46ef-b8ae-5a9d0d81e670",
    "title": "50 TL ve üzeri alışverişte 249.00 TL!",
+   "ids": [
+    "sok:49732"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/f4240ac3-089b-460e-85b4-add84b5a44db.jpg",
@@ -96,6 +127,12 @@
    "market": "sok",
    "id": "sok:256b900f-60cf-4c73-9fc6-a49170570b6c",
    "title": "50 TL ve üzeri alışverişte 139.00 TL!",
+   "ids": [
+    "sok:783426",
+    "sok:866201",
+    "sok:783427",
+    "sok:781588"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/cbde5463-43bd-42d7-8d49-66fbeca1c580.jpg",
@@ -106,6 +143,9 @@
    "market": "sok",
    "id": "sok:3dd69a3c-33b3-4a51-82be-9ad9c2db9b63",
    "title": "50 TL ve üzeri alışverişte 49.00 TL!",
+   "ids": [
+    "sok:4540"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/7279cfa7-6f1d-48a8-bf6a-a31b989fef58.jpg",
@@ -116,6 +156,10 @@
    "market": "sok",
    "id": "sok:5f8d8251-734b-4737-9f38-670add22549a",
    "title": "50 TL ve üzeri alışverişte 49.00 TL!",
+   "ids": [
+    "sok:325106",
+    "sok:2395"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/59616f0e-6088-4174-a2b6-72fdb64ffe4e.jpg",
@@ -126,6 +170,10 @@
    "market": "sok",
    "id": "sok:10bacc7c-45b6-4fd9-a258-e4adfc3b7305",
    "title": "50 TL ve üzeri alışverişte 119.00 TL!",
+   "ids": [
+    "sok:486082",
+    "sok:73010"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/417ab433-0a2d-44bf-bae0-7a83c4cfbc22.jpg",
@@ -136,6 +184,12 @@
    "market": "sok",
    "id": "sok:6825a5cd-0530-4fe3-9d04-f25d9ca05009",
    "title": "50 TL ve üzeri alışverişte 129.00 TL!",
+   "ids": [
+    "sok:542785",
+    "sok:73390",
+    "sok:858431",
+    "sok:240610"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/cb818168-2fcd-4b72-8908-9b97c9218547.jpg",
@@ -146,6 +200,10 @@
    "market": "sok",
    "id": "sok:4a325a3c-5fab-4852-8928-bb37d951aad3",
    "title": "50 TL ve üzeri alışverişte 30.00 TL!",
+   "ids": [
+    "sok:849995",
+    "sok:851955"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/26de96e5-04df-44ce-a93d-9a53d175cb35.jpg",
@@ -156,6 +214,9 @@
    "market": "sok",
    "id": "sok:84f365df-33e3-4768-bb0c-9aa5ede897f2",
    "title": "50 TL ve üzeri alışverişte 119.00 TL!",
+   "ids": [
+    "sok:116258"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/d7693262-3df7-4bcd-8be5-01c4fa758b31.jpg",
@@ -166,6 +227,11 @@
    "market": "sok",
    "id": "sok:598ac565-8ada-4c13-b241-fcf4130a5942",
    "title": "50 TL ve üzeri alışverişte 139.00 TL!",
+   "ids": [
+    "sok:743709",
+    "sok:851031",
+    "sok:851030"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/39f17f59-8053-4633-bbc5-b62302c714b1.jpg",
@@ -176,6 +242,10 @@
    "market": "sok",
    "id": "sok:2958efe0-2212-47c8-b691-d9ecb72a8c77",
    "title": "50 TL ve üzeri alışverişte 139.00 TL!",
+   "ids": [
+    "sok:744631",
+    "sok:745552"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/dce4e073-d489-4552-a9f5-ec07de02a15d.jpg",
@@ -186,6 +256,9 @@
    "market": "sok",
    "id": "sok:e8f1918c-1a5d-42bd-9263-5d967db9f643",
    "title": "50 TL ve üzeri alışverişte 279.00 TL!",
+   "ids": [
+    "sok:102753"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/82a97cc8-2adf-44d1-a5d2-7c733df0e004.jpg",
@@ -196,6 +269,9 @@
    "market": "sok",
    "id": "sok:198ca6d8-4b09-495f-b9fb-002aa54f61ca",
    "title": "50 TL ve üzeri alışverişte 79.00 TL!",
+   "ids": [
+    "sok:9030"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/78d0d9a9-4f57-4ba2-8bd2-b676861a3f61.jpg",
@@ -206,6 +282,11 @@
    "market": "sok",
    "id": "sok:b96cd9ca-1a8c-4520-8737-f489d250e67b",
    "title": "50 TL ve üzeri alışverişte 139.00 TL!",
+   "ids": [
+    "sok:650358",
+    "sok:164993",
+    "sok:411938"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/fccc7def-f0cd-4241-ad0e-47741d9040c4.jpg",
@@ -216,6 +297,9 @@
    "market": "sok",
    "id": "sok:5203c1ac-558b-4c62-965b-3ef3bc4dceda",
    "title": "50 TL ve üzeri alışverişte 179.00 TL!",
+   "ids": [
+    "sok:7639"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/94020eae-4d78-4377-900f-2049daed94a9.jpg",
@@ -226,6 +310,9 @@
    "market": "sok",
    "id": "sok:6340bf4d-5566-4d1c-8c56-97588b106f96",
    "title": "50 TL ve üzeri alışverişte 89.00 TL!",
+   "ids": [
+    "sok:4374"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/a63cac96-2622-402f-abf4-97be6f626315.jpg",
@@ -236,6 +323,9 @@
    "market": "sok",
    "id": "sok:df825855-3402-4661-a8d2-96e4f5030a14",
    "title": "50 TL ve üzeri alışverişte 140.00 TL!",
+   "ids": [
+    "sok:117384"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/d8cf8d7c-8dd7-481b-a983-e576373c07a5.jpg",
@@ -246,6 +336,10 @@
    "market": "sok",
    "id": "sok:f90e1d77-09bc-41e3-9556-7cb3e37ba2df",
    "title": "50 TL ve üzeri alışverişte 189.00 TL!",
+   "ids": [
+    "sok:348265",
+    "sok:348264"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/af06f3f4-a786-489a-9c1e-c14c57f1239e.jpg",
@@ -256,6 +350,9 @@
    "market": "sok",
    "id": "sok:562bdb9b-b6da-4d53-b889-348c34479b71",
    "title": "50 TL ve üzeri alışverişte 199.00 TL!",
+   "ids": [
+    "sok:39627"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/6e3988ad-4f8a-44e1-a325-8a41309766b2.jpg",
@@ -266,6 +363,11 @@
    "market": "sok",
    "id": "sok:022050eb-918d-4645-9680-87207d4d2376",
    "title": "50 TL ve üzeri alışverişte 99.00 TL!",
+   "ids": [
+    "sok:9255",
+    "sok:1276",
+    "sok:486089"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/6bf26c33-5c69-4a3e-aa09-3dd0d314fe1d.jpg",
@@ -276,6 +378,9 @@
    "market": "sok",
    "id": "sok:8065a065-f187-4530-b828-38446a3a88f1",
    "title": "50 TL ve üzeri alışverişte 175.00 TL!",
+   "ids": [
+    "sok:839990"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/9c6ab7f4-bd30-4de5-90b7-dfb4829bbcd3.jpg",
@@ -286,6 +391,9 @@
    "market": "sok",
    "id": "sok:085792c4-b323-45f3-8ef0-4395eb7583d3",
    "title": "1 ALANA 1 BEDAVA",
+   "ids": [
+    "sok:556785"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/b53543c1-5c8b-4a84-a335-c5f5940c30cf.jpg",
@@ -296,6 +404,9 @@
    "market": "sok",
    "id": "sok:ae97d819-156f-43a8-af31-786ad64d0762",
    "title": "50 TL ve üzeri alışverişte 125.00 TL!",
+   "ids": [
+    "sok:3185"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/a4bb491b-fdb6-4424-a829-e72b6e1cf28b.jpg",
@@ -306,6 +417,10 @@
    "market": "sok",
    "id": "sok:0e4cfdb1-4fd9-434f-bcc6-b7fe16291ee6",
    "title": "50 TL ve üzeri alışverişte 249.00 TL!",
+   "ids": [
+    "sok:826674",
+    "sok:3879"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/f0553cdd-b91f-4356-81c5-fd8ba8d89e6f.jpg",
@@ -316,6 +431,9 @@
    "market": "sok",
    "id": "sok:c1b11b9c-089e-4eba-9ee6-a769bee78923",
    "title": "50 TL ve üzeri alışverişte 79.00 TL!",
+   "ids": [
+    "sok:2507"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/e4ff7bdc-ca92-4e53-88b8-ab4ed2e1db2c.jpg",
@@ -326,6 +444,10 @@
    "market": "sok",
    "id": "sok:faee7253-3364-4fd9-b5ac-76ee5fc5fc9c",
    "title": "50 TL ve üzeri alışverişte 179.00 TL!",
+   "ids": [
+    "sok:631365",
+    "sok:630440"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/1674e30f-2958-466e-a894-547ef6cf4112.jpg",
@@ -336,6 +458,9 @@
    "market": "sok",
    "id": "sok:82dc65f0-4e42-4f17-a45d-dc82ac4eb92b",
    "title": "50 TL ve üzeri alışverişte 145.00 TL!",
+   "ids": [
+    "sok:1972"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/e89983a6-e6ee-4685-9e07-375efc910440.jpg",
@@ -346,6 +471,10 @@
    "market": "sok",
    "id": "sok:1c820a7b-880e-483c-8222-e798d8476a2d",
    "title": "50 TL ve üzeri alışverişte 129.00 TL!",
+   "ids": [
+    "sok:826675",
+    "sok:2321"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/0749afc5-532b-4fbf-9560-9445ff62f80c.jpg",
@@ -356,6 +485,9 @@
    "market": "sok",
    "id": "sok:620384e8-8fcf-4c8d-a4ad-eca0a23df3ec",
    "title": "50 TL ve üzeri alışverişte 325.00 TL!",
+   "ids": [
+    "sok:812279"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/97dba62a-45ad-41e4-90b2-bc7974ad4564.jpg",
@@ -366,6 +498,9 @@
    "market": "sok",
    "id": "sok:869fa852-b2b3-4b76-a20e-72a0ad194efc",
    "title": "50 TL ve üzeri alışverişte 49.00 TL!",
+   "ids": [
+    "sok:391523"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/d8aa9179-0aee-4e28-bfeb-cf89c7455199.jpg",
@@ -376,6 +511,9 @@
    "market": "sok",
    "id": "sok:b8d75048-2605-47b8-bb57-24756e0df717",
    "title": "50 TL ve üzeri alışverişte 99.00 TL!",
+   "ids": [
+    "sok:412858"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/cee3f159-a5a2-49dd-99d9-f54dfb506410.jpg",
@@ -386,6 +524,9 @@
    "market": "sok",
    "id": "sok:b9d2ed96-5550-4582-a12e-98e0614fe9eb",
    "title": "50 TL ve üzeri alışverişte 159.00 TL!",
+   "ids": [
+    "sok:7409"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/011d6e79-ed48-4770-847c-98b1fccd63a2.jpg",
@@ -396,6 +537,12 @@
    "market": "sok",
    "id": "sok:9b2789b5-09d0-4e7c-8235-b4bbea881b42",
    "title": "50 TL ve üzeri alışverişte 149.00 TL!",
+   "ids": [
+    "sok:1576",
+    "sok:319312",
+    "sok:319311",
+    "sok:2313"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/11b2695d-d579-4e8e-a11d-ef3047c6cd7a.jpg",
@@ -406,6 +553,10 @@
    "market": "sok",
    "id": "sok:1bb51653-fb43-4e27-b6de-cbfaa14a2d3a",
    "title": "50 TL ve üzeri alışverişte 179.00 TL!",
+   "ids": [
+    "sok:155103",
+    "sok:153149"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/110f8172-6a11-48a1-972d-013d2cd36e90.jpg",
@@ -416,6 +567,9 @@
    "market": "sok",
    "id": "sok:b0c8d35c-f529-4c9e-bacc-b271e44b026b",
    "title": "50 TL ve üzeri alışverişte 45.00 TL!",
+   "ids": [
+    "sok:5156"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/57c2eb54-5374-4508-8fe8-d8461eea6152.jpg",
@@ -426,6 +580,9 @@
    "market": "sok",
    "id": "sok:a1c2d476-e01b-4d03-80fd-9e29cd2bfe09",
    "title": "50 TL ve üzeri alışverişte 125.00 TL!",
+   "ids": [
+    "sok:300495"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/35926a52-41e6-449f-a7c6-f95a41f461e6.jpg",
@@ -436,6 +593,10 @@
    "market": "sok",
    "id": "sok:14b251a9-d637-42e6-bb2b-8b59ba92c751",
    "title": "50 TL ve üzeri alışverişte 99.00 TL!",
+   "ids": [
+    "sok:502426",
+    "sok:498750"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/fb0969f7-9470-4eb6-a43c-6b0917abd401.jpg",
@@ -446,6 +607,9 @@
    "market": "sok",
    "id": "sok:1dbe574a-1233-4570-9017-acab0453c165",
    "title": "50 TL ve üzeri alışverişte 199.00 TL!",
+   "ids": [
+    "sok:754824"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/58b8d7a8-7065-4265-ac2f-73277800c36c.jpg",
@@ -456,6 +620,9 @@
    "market": "sok",
    "id": "sok:5dbb1a03-4a74-457b-9e2a-14b012695c04",
    "title": "50 TL ve üzeri alışverişte 55.00 TL!",
+   "ids": [
+    "sok:6915"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/8b3fcd08-87f9-48f0-888c-555f91e06850.jpg",
@@ -466,6 +633,9 @@
    "market": "sok",
    "id": "sok:0a4dd6c2-0191-44b1-a8ff-baff82d069df",
    "title": "50 TL ve üzeri alışverişte 65.00 TL!",
+   "ids": [
+    "sok:2612"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/a0991303-76f5-486f-84f0-612882884773.jpg",
@@ -476,6 +646,12 @@
    "market": "sok",
    "id": "sok:141b6210-9311-424e-abb9-2b617189bde9",
    "title": "50 TL ve üzeri alışverişte 120.00 TL!",
+   "ids": [
+    "sok:7119",
+    "sok:637955",
+    "sok:638080",
+    "sok:2134"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/da341320-2096-46f2-adad-e94251d912e5.jpg",
@@ -486,6 +662,9 @@
    "market": "sok",
    "id": "sok:21bb1651-4a1f-4cb9-8ee5-64f2ee311f68",
    "title": "50 TL ve üzeri alışverişte 109.00 TL!",
+   "ids": [
+    "sok:709962"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/64aef65c-be84-48bb-93e9-843d5f6ca454.png",
@@ -496,6 +675,9 @@
    "market": "sok",
    "id": "sok:c940b153-87b4-49d7-b73a-aa86b21a2f26",
    "title": "1 ALANA 1 BEDAVA",
+   "ids": [
+    "sok:2392"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/de95df14-56a8-4037-ae8f-a398744e7892.jpg",
@@ -506,6 +688,9 @@
    "market": "sok",
    "id": "sok:85824f24-d6d7-4339-8a15-ff0b18e0c283",
    "title": "50 TL ve üzeri alışverişte 139.00 TL!",
+   "ids": [
+    "sok:522601"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/5c266b08-7119-4241-8953-aa582937ee7a.jpg",
@@ -516,6 +701,11 @@
    "market": "sok",
    "id": "sok:a2e68322-ebaf-4ee0-a1ff-d52fcf9e59ce",
    "title": "50 TL ve üzeri alışverişte 110.00 TL!",
+   "ids": [
+    "sok:481452",
+    "sok:506142",
+    "sok:480531"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/423f5ad3-20ed-4468-b772-d9154f65aa6c.jpg",
@@ -526,6 +716,9 @@
    "market": "sok",
    "id": "sok:eac0815c-f546-4d0d-9767-c0f7bb29f4df",
    "title": "50TLHACISAKIR129TL",
+   "ids": [
+    "sok:493742"
+   ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/cc4db898-524b-4348-8035-74ea8eb0a2b8.jpg",
