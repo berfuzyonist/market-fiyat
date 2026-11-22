@@ -14,8 +14,23 @@
    "old_price": 119.95,
    "old_regular": 119.95,
    "status": "unchanged"
+  },
+  "migros:30610382": {
+   "change": 0.0,
+   "change_pct": 0.0,
+   "checked_at": "2026-11-22T19:35:48+00:00",
+   "in_stock": true,
+   "issue": "18",
+   "market": "migros",
+   "message": "",
+   "name": "Fairy Sıvı Bulaşık Deterjanı Limon 1350 Ml",
+   "new_price": 299.95,
+   "new_regular": 299.95,
+   "old_price": 299.95,
+   "old_regular": 299.95,
+   "status": "unchanged"
   }
  },
- "updated": "2026-11-21T06:47:41+00:00",
+ "updated": "2026-11-22T19:35:48+00:00",
  "v": 1
 }
