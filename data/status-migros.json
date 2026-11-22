@@ -1,19 +1,21 @@
 {
- "updated": "2026-11-22T03:11:34+00:00",
- "started_at": "2026-11-22T01:23:49+00:00",
- "finished_at": "2026-11-22T03:11:34+00:00",
- "checked_at": "2026-11-22T03:11:34+00:00",
- "data_updated": "2026-11-22T01:54:08+00:00",
- "last_successful_data_at": "2026-11-22T01:54:08+00:00",
+ "updated": "2026-11-22T03:30:34+00:00",
+ "started_at": "2026-11-22T03:24:49+00:00",
+ "finished_at": "2026-11-22T03:30:34+00:00",
+ "checked_at": "2026-11-22T03:30:34+00:00",
+ "data_updated": "2026-11-22T03:30:34+00:00",
+ "last_successful_data_at": "2026-11-22T03:30:34+00:00",
  "market": "migros",
- "mode": "full",
- "status": "durduruldu: çok sayıda site haritası kategorisi 404 döndü (26); tarama güvenilir değil",
- "complete": false,
- "found": 16272,
+ "mode": "deals",
+ "status": "tamam",
+ "complete": true,
+ "found": 2996,
  "total": 16487,
- "seconds": 6465,
+ "seconds": 344,
  "notes": [
-  "yeni sonuç eksik (16272 ürün), eski veri (16487 ürün) korundu"
+  "money-indirimli-market-urunleri-dt-5: 96/96 sayfa",
+  "coklu-indirim-kampanyalari-ve-hediyeli-urunler-dt-1: 6/6 sayfa",
+  "2996 indirimli ürün güncellendi"
  ],
  "quality": {
   "category_count": 36,
@@ -60,20 +62,18 @@
    "Kitap, Kırtasiye, Oyuncak": 945
   }
  },
- "quality_warnings": [
-  "Tarama başarılı değil: durduruldu: çok sayıda site haritası kategorisi 404 döndü (26); tarama güvenilir değil"
- ],
+ "quality_warnings": [],
  "traffic": {
   "www.migros.com.tr": {
-   "requests": 1986,
+   "requests": 102,
    "retries": 0,
-   "megabytes": 12.0,
+   "megabytes": 1.8,
    "errors": 0
   }
  },
  "errors": [],
- "run_id": "44971260368",
- "collected_products": 16272,
+ "run_id": "44980502796",
+ "collected_products": 2996,
  "total_products": 16487,
  "discounted_products": 4804,
  "invalid_products": 0,
@@ -86,21 +86,21 @@
   "suspicious_discount": 0,
   "bad_url": 0
  },
- "duration_seconds": 6465,
+ "duration_seconds": 344,
  "last_attempt_by_mode": {
   "deals": {
-   "checked_at": "2026-11-22T01:54:08+00:00",
+   "checked_at": "2026-11-22T03:30:34+00:00",
    "status": "tamam",
    "complete": true,
-   "found": 2987,
+   "found": 2996,
    "total": 16487,
-   "seconds": 337,
-   "data_updated": "2026-11-22T01:54:08+00:00",
+   "seconds": 344,
+   "data_updated": "2026-11-22T03:30:34+00:00",
    "errors": [],
    "notes": [
     "money-indirimli-market-urunleri-dt-5: 96/96 sayfa",
     "coklu-indirim-kampanyalari-ve-hediyeli-urunler-dt-1: 6/6 sayfa",
-    "2987 indirimli ürün güncellendi"
+    "2996 indirimli ürün güncellendi"
    ],
    "quality_warnings": [],
    "quality": {
