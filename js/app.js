@@ -47,7 +47,7 @@ const FRESH=new Set(); // "Fiyat güncel mi?" paneli açık ürünler (kaydedilm
 let done=load("done",{}),HIST={},S={sort:"rel"},UOPEN=false;
 let QTY=load("qty",{});
 let cart=load("cart",[]),bmap=load("bmap",{}),reqs=load("req",{}),pending=null,only=null,updated="",UPD={},CHECK={},CHECKS={},view="home";
-const C={seg:"same",three:false,sort:"pct",page:0},K={kind:"multi",m:"",sort:"gain",page:0},B={m:"",grp:"",cat:"",disc:false,sort:"disc",page:0};
+const C={seg:"same",three:false,sort:"pct",page:0},K={kind:"free",m:"",sort:"gain",page:0},B={m:"",grp:"",cat:"",disc:false,sort:"disc",page:0};
 // Ana kategori yuvarlakları: marketlerin farklı kategori adlarını tek grupta toplar
 const GROUPS=[
   ["meyve","Meyve & Sebze","apple","#dcfce7","#15803d",/meyve|sebze/],
@@ -206,16 +206,18 @@ function drawC(){
 
 // ---------- Kampanyalar ----------
 function drawK(){
-  const kinds=[["multi","Çoklu alım"],["basket","Sepet fırsatı"],["bim","BİM aktüel"],["","Tümü"]];
-  const cnt=k=>PROMO.filter(o=>!k||o._promo.kind===k||(k==="multi"&&o._promo.kind==="other")).length;
+  const kinds=[["free","Bedava ürünlü"],["nth","2. ürün indirimli"],["basket","Sepet fırsatı"],["bim","BİM aktüel"],["","Tümü"]];
+  const is=(o,k)=>!k||o._promo.sub===k||o._promo.kind===k||(k==="nth"&&o._promo.kind==="other");
+  const cnt=k=>PROMO.filter(o=>is(o,k)).length;
+  if(K.kind&&!cnt(K.kind))K.kind=kinds.find(([k])=>k&&cnt(k))?.[0]||"";
   $("kKind").innerHTML=kinds.filter(([k])=>!k||cnt(k)).map(([k,l])=>pill("data-kind",k,`${l} <span class="opacity-60 tabular">${cnt(k)}</span>`,K.kind===k,"bg-violet-600 text-white")).join("");
-  let r=PROMO.filter(o=>!K.kind||o._promo.kind===K.kind||(K.kind==="multi"&&o._promo.kind==="other"));
+  let r=PROMO.filter(o=>is(o,K.kind));
   const ms=ORD.filter(m=>r.some(o=>o.market===m));if(K.m&&!ms.includes(K.m))K.m="";
   $("kMk").innerHTML=ms.length>1?["",...ms].map(m=>pill("data-km",m,m?M[m].n:"Tüm marketler",K.m===m,m?M[m].c:"")).join(""):"";
   r=r.filter(o=>!K.m||o.market===K.m);$("kSort").value=K.sort;
   r.sort({gain:(a,b)=>gain(b)-gain(a)||a._promo.eff-b._promo.eff,pa:(a,b)=>a._promo.eff-b._promo.eff,name:(a,b)=>a.name.localeCompare(b.name,"tr")}[K.sort]);
   const pages=Math.max(1,Math.ceil(r.length/PER));K.page=Math.min(K.page,pages-1);
-  $("kInfo").textContent=num(r.length)+" ürün"+(K.kind==="basket"?" · Sepet tutarı belirtilen sınırı geçince geçerli fiyat":K.kind==="bim"?" · BİM'in yayımladığı haftalık ürünler":"");
+  $("kInfo").textContent=num(r.length)+" ürün"+(K.kind==="free"?" · 1 Alana 1 Bedava, 2 Al 1 Öde, 3 Al 2 Öde… Tane fiyatı kampanyalı hesaplanmıştır":K.kind==="basket"?" · Sepet tutarı belirtilen sınırı geçince geçerli fiyat":K.kind==="bim"?" · BİM'in yayımladığı haftalık ürünler":"");
   $("kGrid").innerHTML=r.slice(K.page*PER,(K.page+1)*PER).map((o,i)=>pcard(o,{i})).join("")||empty("gift","Kampanya bulunamadı","Kampanya verisi bir sonraki güncellemede gelir.");
   $("kPager").innerHTML=pager("K",K.page,pages)}
 
@@ -227,8 +229,10 @@ function slides(st){
   const out=[];
   if(deals.length){const mx=Math.round(disc(deals[0])*100);
     out.push(`<div class="slide s-red"><div class="relative z-10"><p class="text-xs font-extrabold uppercase tracking-wider opacity-90">Günün fırsatları</p><h3>%${mx}'e varan indirim</h3><p>${num(deals.length)} üründe indirim. Hepsi tek yerde.</p></div><button data-go="deals" class="cta relative z-10">İndirimleri gör<i data-lucide="arrow-right" class="w-4 h-4"></i></button><div class="imgs">${pics(deals.slice(0,12).filter((o,i)=>i%3===0))}</div></div>`)}
-  const multi=PROMO.filter(o=>o._promo.kind==="multi").sort((a,b)=>gain(b)-gain(a));
-  if(multi.length)out.push(`<div class="slide s-violet"><div class="relative z-10"><p class="text-xs font-extrabold uppercase tracking-wider opacity-90">Çoklu alım</p><h3>2 Al 1 Öde, 1 Alana 1 Bedava</h3><p>${num(multi.length)} kampanyada tanesinin kaça geldiğini hesapladık.</p></div><button data-view="promos" data-plain="1" class="cta relative z-10">Kampanyalar<i data-lucide="arrow-right" class="w-4 h-4"></i></button><div class="imgs">${pics(multi)}</div></div>`);
+  // Bedava ürünlü kampanyalar önce (1 Alana 1 Bedava, 2 Al 1 Öde), sonra kazanca göre
+  const multi=PROMO.filter(o=>o._promo.kind==="multi").sort((a,b)=>(b._promo.sub==="free")-(a._promo.sub==="free")||gain(b)-gain(a));
+  const freeN=multi.filter(o=>o._promo.sub==="free").length,alana=multi.filter(o=>/bedava/i.test(o._promo.label)).length;
+  if(multi.length)out.push(`<div class="slide s-violet"><div class="relative z-10"><p class="text-xs font-extrabold uppercase tracking-wider opacity-90">Bedava ürünlü kampanyalar</p><h3>${alana?"1 Alana 1 Bedava":"2 Al 1 Öde"} ve dahası</h3><p>${num(freeN)} üründe bedava ürün kazanırsın${alana?` · ${alana} tanesi “1 Alana 1 Bedava”`:""}. Tane fiyatını hesapladık.</p></div><button data-view="promos" data-plain="1" class="cta relative z-10">Bedavaları gör<i data-lucide="arrow-right" class="w-4 h-4"></i></button><div class="imgs">${pics(multi)}</div></div>`);
   const water=MF.unitCompare(st,"su");
   if(water){const b=water.best;out.push(`<div class="slide s-blue"><div class="relative z-10"><p class="text-xs font-extrabold uppercase tracking-wider opacity-90">Birim fiyat</p><h3>Suyun litresi en ucuz nerede?</h3><p>${esc(b.o.name)} · ${M[b.o.market].at} <b>${tl(b.u.v)}/L</b></p></div><button data-uq="su" class="cta relative z-10">Boy boy karşılaştır<i data-lucide="arrow-right" class="w-4 h-4"></i></button><div class="imgs">${pics(water.top.map(h=>h.o))}</div></div>`)}
   const wins={};CMP.staple.forEach(it=>{if(it.diff>=0.005)wins[it.win.market]=(wins[it.win.market]||0)+1});
@@ -262,7 +266,7 @@ function drawH(){
     <div class="flex gap-2 items-center"><div class="ph w-16 shrink-0">${it.image?`<img src="${esc(it.image)}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">`:""}</div><p class="text-[13px] font-bold leading-snug max-h-[3.4rem] overflow-hidden">${esc(it.title)}</p></div>
     <div class="mt-2 space-y-1">${it.rows.map(r=>`<div class="flex items-center justify-between">${badge(r.o.market,1)}<span class="tabular text-sm font-extrabold ${r.o===it.win?good:"text-stone-400 line-through"}">${tl(r.o.price)}</span></div>`).join("")}</div>
     <p class="mt-2 chipx bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"><i data-lucide="piggy-bank" class="w-3.5 h-3.5"></i>${tl(it.diff)} tasarruf</p></article>`).join("")||`<p class="text-sm text-stone-500">Ortak ürün bulunamadı.</p>`;
-  $("hPromo").innerHTML=PROMO.filter(o=>o._promo.kind==="multi").sort((a,b)=>gain(b)-gain(a)).slice(0,16).map((o,i)=>pcard(o,{strip:1,i})).join("")||`<p class="text-sm text-stone-500">Kampanya verisi bir sonraki güncellemede gelir.</p>`;
+  $("hPromo").innerHTML=PROMO.filter(o=>o._promo.kind==="multi").sort((a,b)=>(b._promo.sub==="free")-(a._promo.sub==="free")||(/bedava/i.test(b._promo.label))-(/bedava/i.test(a._promo.label))||gain(b)-gain(a)).slice(0,16).map((o,i)=>pcard(o,{strip:1,i})).join("")||`<p class="text-sm text-stone-500">Kampanya verisi bir sonraki güncellemede gelir.</p>`;
   const wins={};CMP.staple.forEach(it=>{if(it.diff>=0.005)wins[it.win.market]=(wins[it.win.market]||0)+1});
   $("hStaple").innerHTML=CMP.staple.length?`<button data-seg="staple" data-open="1" class="pc w-full p-4 lg:p-5 text-left flex-row items-center gap-4">
     <span class="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 grid place-items-center shrink-0"><i data-lucide="shopping-basket" class="w-6 h-6"></i></span>

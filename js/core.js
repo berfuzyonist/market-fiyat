@@ -37,9 +37,10 @@ function rowsOf(d){
 // promo metninden kampanya türü ve "tanesi kaça gelir" hesabı
 function promoOf(o){
   const t=(o.promo||"").trim();if(!t)return null;const f=fold(t);let m;
-  if(m=f.match(/(\d+)\s*al\s*(\d+)\s*ode/))return{kind:"multi",label:t,need:+m[1],eff:o.price*m[2]/m[1]};
-  if(m=f.match(/(\d+)\s*alana\s*(\d+)\s*bedava/)){const n=+m[1]+ +m[2];return{kind:"multi",label:`${m[1]} Alana ${m[2]} Bedava`,need:n,eff:o.price*m[1]/n}}
-  if(m=f.match(/(\d+)\.\s*si\s*%\s*(\d+)/))return{kind:"multi",label:t,need:+m[1],eff:o.price*(m[1]-m[2]/100)/m[1]};
+  // sub: "free" = bedava ürünlü (X Al Y Öde, X Alana Y Bedava), "nth" = 2. ürün indirimli
+  if(m=f.match(/(\d+)\s*al\s*(\d+)\s*ode/))return{kind:"multi",sub:"free",label:`${m[1]} Al ${m[2]} Öde`,need:+m[1],eff:o.price*m[2]/m[1]};
+  if(m=f.match(/(\d+)\s*alana\s*(\d+)\s*bedava/)){const n=+m[1]+ +m[2];return{kind:"multi",sub:"free",label:`${m[1]} Alana ${m[2]} Bedava`,need:n,eff:o.price*m[1]/n}}
+  if(m=f.match(/(\d+)\.\s*si\s*%\s*(\d+)/))return{kind:"multi",sub:"nth",label:`${m[1]}. ürün %${m[2]} indirimli`,need:+m[1],eff:o.price*(m[1]-m[2]/100)/m[1]};
   if(m=f.match(/(\d+)\s*tl ve uzeri alisveriste\s*(\d+(?:[.,]\d+)?)\s*tl/)){const p=parseFloat(m[2].replace(",","."));return{kind:"basket",label:`${m[1]} TL üzeri sepette`,need:1,eff:p,min:+m[1]}}
   if(m=f.match(/sepette\s*%?\s*(\d{1,2})\s*(?:indirimli|indirim)?/))return{kind:"basket",label:t,need:1,eff:o.price,percent:+m[1]};
   if(/^(aktuel|indirim)/.test(f))return{kind:"bim",label:t,need:1,eff:o.price};
