@@ -11,7 +11,7 @@
 <meta name="color-scheme" content="light">
 <script>tailwind.config={darkMode:"class",theme:{extend:{fontFamily:{sans:['"Nunito Sans"','system-ui','sans-serif'],display:['Rubik','system-ui','sans-serif']}}}}</script>
 <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
-<link rel="stylesheet" href="css/app.css?v=12">
+<link rel="stylesheet" href="css/app.css?v=13">
 </head>
 <body class="bg-[#f3f6f4] text-stone-900 font-sans antialiased">
 
@@ -180,6 +180,8 @@
   <p class="text-xs text-stone-500 mt-10 leading-relaxed">Fiyatlar marketlerin online satış fiyatıdır; şube rafındaki fiyat, stok ve kampanya farklı olabilir. BİM yalnızca haftalık aktüel ve indirim ürünlerini yayımlar. Eşleştirme ürün adına göre otomatik yapılır; satın almadan önce ürünü kontrol edin.</p>
 </main>
 
+<div id="printArea" aria-hidden="true"></div>
+
 <div id="viewer" class="hidden fixed inset-0 z-[55] bg-black/95 flex flex-col" role="dialog" aria-label="Afiş">
   <div class="flex items-center gap-2 p-3 text-white">
     <div class="flex-1 min-w-0"><p id="vTitle" class="font-extrabold truncate"></p><p id="vSub" class="text-xs opacity-70 truncate"></p></div>
@@ -207,6 +209,6 @@
   </div>
 </nav>
 <script src="js/match.js?v=8"></script>
-<script src="js/core.js?v=5"></script>
-<script src="js/app.js?v=22"></script>
+<script src="js/core.js?v=6"></script>
+<script src="js/app.js?v=24"></script>
 </body></html>

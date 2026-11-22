@@ -3,12 +3,13 @@
 
 Dosya: data/history-<market>.json
 {
-  "v": 1, "market": "migros", "updated": "<ISO 8601 UTC>",
-  "items": {"migros:123": [[ts, price, regular, "kaynak"], ...]}
+  "v": 2, "market": "migros", "updated": "<ISO 8601 UTC>", "since": <takibin başladığı Unix saniye>,
+  "items": {"migros:123": [[ts, price, regular, "kaynak", "kampanya"], ...]}
 }
-- ts: Unix saniye (UTC). kaynak: full | deals | aktuel | manual
-- Aynı fiyat tekrar eklenmez; bir ürün için ilk değişimde eski fiyat da (bilinen
-  doğrulama zamanıyla) başlangıç noktası olarak yazılır.
+- ts: Unix saniye (UTC). kaynak: full | deals | aktuel | manual. kampanya: "2 Al 1 Öde" gibi metin ya da "".
+- Her yayımda fiyat, etiket (indirimsiz) fiyatı ve kampanya metni karşılaştırılır; biri değiştiyse nokta eklenir.
+  Aynı değerler tekrar eklenmez; bir ürün için ilk değişimde eski durum da (bilinen doğrulama zamanıyla)
+  başlangıç noktası olarak yazılır. v1 dosyalarındaki 4 alanlı noktalar kampanyasız sayılır.
 - Büyüme sınırı: ürün başına en fazla MAX_POINTS nokta, MAX_AGE_DAYS günden eski
   noktalar silinir (son nokta her zaman kalır); katalogdan çıkan ürünlerin geçmişi
   MAX_AGE_DAYS sonra düşer.
@@ -19,7 +20,7 @@ import math
 import os
 import pathlib
 
-MAX_POINTS = 12
+MAX_POINTS = 40
 MAX_AGE_DAYS = 180
 
 
@@ -37,8 +38,12 @@ def _ts(value):
     return int(dt.timestamp())
 
 
+def _promo(value):
+    return " ".join(str(value or "").split())[:80]
+
+
 def rows(data):
-    """Market veri dosyasını id -> (price, regular, seen) sözlüğüne çevirir."""
+    """Market veri dosyasını id -> (price, regular, seen, promo) sözlüğüne çevirir."""
     out = {}
     if not isinstance(data, dict):
         return out
@@ -54,7 +59,7 @@ def rows(data):
         if not pid or not math.isfinite(price) or price <= 0:
             continue
         seen = rec.get("seen") if isinstance(rec.get("seen"), int) else fallback
-        out[pid] = (round(price, 2), round(max(regular, price), 2), seen)
+        out[pid] = (round(price, 2), round(max(regular, price), 2), seen, _promo(rec.get("promo")))
     return out
 
 
@@ -62,10 +67,14 @@ def load(path, market):
     try:
         data = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
         if isinstance(data, dict) and isinstance(data.get("items"), dict):
+            if data.get("v") != 2:
+                data["v"] = 2
+                firsts = [p[0] for pts in data["items"].values() for p in _clean(pts)]
+                data["since"] = min(firsts) if firsts else _ts(data.get("updated"))
             return data
     except (OSError, ValueError):
         pass
-    return {"v": 1, "market": market, "updated": None, "items": {}}
+    return {"v": 2, "market": market, "updated": None, "since": None, "items": {}}
 
 
 def _clean(points):
@@ -73,26 +82,33 @@ def _clean(points):
     for p in points or []:
         if (isinstance(p, list) and len(p) >= 3 and isinstance(p[0], int)
                 and all(isinstance(x, (int, float)) and math.isfinite(x) and x > 0 for x in p[1:3])):
-            good.append([p[0], round(float(p[1]), 2), round(float(p[2]), 2), str(p[3]) if len(p) > 3 else ""])
+            good.append([p[0], round(float(p[1]), 2), round(float(p[2]), 2), str(p[3]) if len(p) > 3 else "",
+                         _promo(p[4]) if len(p) > 4 else ""])
     good.sort(key=lambda p: p[0])
     return good
 
 
+def _same(a_price, a_regular, a_promo, b):
+    return abs(a_price - b[0]) < 0.005 and abs(a_regular - b[1]) < 0.005 and a_promo == (b[3] if len(b) > 3 else "")
+
+
 def add_change(history, pid, old, new, ts, source):
-    """old/new: (price, regular, seen) veya None. Değişim kaydedildiyse True döner."""
+    """old/new: (price, regular, seen, promo) veya None. Değişim kaydedildiyse True döner."""
     if not new:
         return False
+    new = tuple(new) + ("",) * (4 - len(new))
     points = _clean(history["items"].get(pid))
     last = points[-1] if points else None
-    if last and abs(last[1] - new[0]) < 0.005 and abs(last[2] - new[1]) < 0.005:
+    if last and _same(last[1], last[2], last[4], new):
         return False
     if not last and old:
-        if abs(old[0] - new[0]) < 0.005 and abs(old[1] - new[1]) < 0.005:
+        old = tuple(old) + ("",) * (4 - len(old))
+        if _same(old[0], old[1], old[3], new):
             return False
-        points.append([int(old[2] or ts), old[0], old[1], "önceki"])
+        points.append([int(old[2] or ts), old[0], old[1], "önceki", old[3]])
     elif not last:
         return False  # ilk kez görülen ürün: karşılaştırılacak eski fiyat yok
-    points.append([int(ts), new[0], new[1], source])
+    points.append([int(ts), new[0], new[1], source, new[3]])
     history["items"][pid] = points
     return True
 
@@ -128,6 +144,8 @@ def record_publish(history_path, market, current_data, incoming_data, source):
     old_rows, new_rows = rows(current_data), rows(incoming_data)
     history = load(history_path, market)
     ts = _ts(incoming_data.get("updated")) or int(datetime.datetime.now(datetime.timezone.utc).timestamp())
+    if not history.get("since"):
+        history["since"] = ts
     changed = 0
     for pid, new in new_rows.items():
         old = old_rows.get(pid)

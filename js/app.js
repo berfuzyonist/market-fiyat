@@ -445,7 +445,52 @@ function freshPill(o){
   const ic={ok:"circle-check",likely:"clock",old:"triangle-alert",na:"calendar-clock"}[f.level];
   return`<button data-fresh="${esc(o.id)}" class="chipx ${c} dark:bg-stone-800 dark:text-stone-200"><i data-lucide="${ic}" class="w-3.5 h-3.5"></i>${f.title}${o.seen&&f.level!=="na"?" · "+MFC.ago(o.seen):""}</button>`}
 // Fiyat geçmişi: istenince market başına bir kez indirilir
-function loadHist(m){if(HIST[m])return;HIST[m]="…";get(`data/history-${m}.json`).then(d=>{HIST[m]=(d&&d.items)||{};if(view==="search"&&only)redraw()})}
+const HSINCE={};
+function loadHist(m){if(HIST[m])return;HIST[m]="…";get(`data/history-${m}.json`).then(d=>{HIST[m]=(d&&d.items)||{};HSINCE[m]=(d&&d.since)||null;if(view==="search"&&only)redraw()})}
+// Ürün sayfası fiyat geçmişi: her market için basamaklı fiyat çizgisi, en düşük/en yüksek, son indirim,
+// kampanya ve zam tarihleri; olay listesi. Veri: data/history-<market>.json (yalnızca değişimler saklanır).
+const dshort=ts=>new Date(ts*1000).toLocaleDateString("tr-TR",{day:"numeric",month:"short"});
+function evText(e){
+  if(e.type==="disc")return e.first?`İndirimdeydi: %${e.pct} (${tl(e.from)} → ${tl(e.to)})`:`İndirim: %${e.pct} (${tl(e.from)} → ${tl(e.to)})`;
+  if(e.type==="discEnd")return`İndirim bitti, fiyat ${tl(e.to)}`;
+  if(e.type==="hike")return`Zam: etiket fiyatı ${tl(e.from)} → ${tl(e.to)} (+%${e.pct})`;
+  if(e.type==="cut")return`Etiket fiyatı düştü: ${tl(e.from)} → ${tl(e.to)}`;
+  if(e.type==="promo")return`Kampanya: ${e.text}`;
+  return`Kampanya bitti: ${e.text}`}
+function histCard(g){
+  if(g.offers.some(o=>!HIST[o.market]||HIST[o.market]==="…"))return`<div class="${card} p-4 mt-4"><div class="skel h-40 rounded-xl"></div></div>`;
+  const now=Math.floor(Date.now()/1000);
+  const S=g.offers.map(o=>({o,h:MFC.histInfo(HIST[o.market][o.id],o)})).filter(x=>x.h);
+  if(!S.length)return"";
+  const since=Math.min(...S.map(x=>HSINCE[x.o.market]||x.h.points[0].ts));
+  const head=`<h2 class="font-extrabold flex items-center gap-2"><i data-lucide="chart-line" class="w-5 h-5 text-emerald-600"></i>Fiyat geçmişi</h2>`;
+  if(!S.some(x=>x.h.changes>0))return`<div class="${card} p-4 mt-4 enter">${head}<p class="mt-2 text-sm text-stone-600">Fiyat takibi ${dshort(since)} tarihinde başladı; o günden beri ${S.length>1?"bu marketlerde ":""}fiyat değişmedi.</p></div>`;
+  // Grafik
+  const W=340,H=150,L=46,R=8,T=10,B=24,all=S.flatMap(x=>x.h.points);
+  const x0=Math.min(since,...all.map(p=>p.ts)),x1=Math.max(now,...all.map(p=>p.ts));
+  let y0=Math.min(...all.map(p=>p.price)),y1=Math.max(...all.map(p=>p.price));const pad=(y1-y0)*0.12||y1*0.05;y0=Math.max(0,y0-pad);y1+=pad;
+  const X=t=>L+(x1>x0?(t-x0)/(x1-x0):1)*(W-L-R),Y=v=>T+(1-(v-y0)/(y1-y0))*(H-T-B);
+  const lines=S.map(({o,h})=>{const c=M[o.market].bar,pts=h.points;let d=`M${X(pts[0].ts).toFixed(1)} ${Y(pts[0].price).toFixed(1)}`;
+    pts.slice(1).forEach(p=>{d+=` H${X(p.ts).toFixed(1)} V${Y(p.price).toFixed(1)}`});d+=` H${X(x1).toFixed(1)}`;
+    return`<path d="${d}" fill="none" stroke="${c}" stroke-width="2.5" stroke-linejoin="round" class="draw"/>`+
+      pts.map(p=>`<circle cx="${X(p.ts).toFixed(1)}" cy="${Y(p.price).toFixed(1)}" r="${p.regular>p.price+0.005?3.5:2.5}" fill="${p.regular>p.price+0.005?"#dc2626":c}" stroke="#fff" stroke-width="1"><title>${dshort(p.ts)} · ${tl(p.price)}${p.promo?" · "+esc(p.promo):""}</title></circle>`).join("")}).join("");
+  const grid=[y0+(y1-y0)*0.08,(y0+y1)/2,y1-(y1-y0)*0.08].map(v=>`<line x1="${L}" x2="${W-R}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" stroke="#e7e5e4" stroke-dasharray="3 3"/><text x="${L-4}" y="${(Y(v)+3).toFixed(1)}" text-anchor="end" font-size="9" fill="#78716c">${tl(v).replace(" ₺","")}</text>`).join("");
+  const svg=`<svg viewBox="0 0 ${W} ${H}" class="w-full mt-2" role="img" aria-label="Fiyat grafiği">${grid}${lines}
+    <text x="${L}" y="${H-6}" font-size="9" fill="#78716c">${dshort(x0)}</text><text x="${W-R}" y="${H-6}" font-size="9" fill="#78716c" text-anchor="end">Bugün</text></svg>`;
+  const legend=S.length>1?`<div class="flex flex-wrap gap-3 mt-1 text-[11px] font-bold">${S.map(({o})=>`<span class="flex items-center gap-1"><span class="w-3 h-1 rounded" style="background:${M[o.market].bar}"></span>${M[o.market].n}</span>`).join("")}<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-600"></span>İndirimli</span></div>`:`<p class="mt-1 text-[11px] text-stone-500"><span class="inline-block w-2 h-2 rounded-full bg-red-600"></span> indirimli fiyat</p>`;
+  // Özet
+  const rows=S.map(({o,h})=>{const f=[];
+    if(h.atLow)f.push(`<span class="chipx bg-emerald-600 text-white">Kayıtlı en düşük fiyat</span>`);
+    else if(h.changes&&o.price>h.low+0.005)f.push(`<span class="chipx bg-amber-100 text-amber-900">En düşüğün %${Math.round((o.price/h.low-1)*100)} üstünde</span>`);
+    const facts=[h.changes?`En düşük <b>${tl(h.low)}</b> (${dshort(h.lowTs)}) · en yüksek <b>${tl(h.high)}</b>`:`${dshort(since)}'den beri fiyat sabit`,
+      h.lastDisc?`Son indirim: <b>${dshort(h.lastDisc.ts)}</b> (%${h.lastDisc.pct})${h.lastDisc.first?" veya öncesi":""}`:"Kayıtlı indirim yok",
+      h.lastPromo?`Son kampanya: <b>${esc(h.lastPromo.text)}</b> · ${dshort(h.lastPromo.ts)}${h.lastPromo.first?" veya öncesi":""}`:"",
+      h.lastHike?`Son zam: ${dshort(h.lastHike.ts)} (+%${h.lastHike.pct})`:""].filter(Boolean);
+    return`<div class="py-2.5"><div class="flex items-center gap-2 flex-wrap">${badge(o.market,1)}${f.join("")}</div><ul class="mt-1 text-[13px] text-stone-700 space-y-0.5">${facts.map(x=>`<li>${x}</li>`).join("")}</ul></div>`}).join("");
+  const evs=S.flatMap(({o,h})=>h.events.map(e=>({...e,m:o.market}))).sort((a,b)=>b.ts-a.ts).slice(0,8);
+  return`<div class="${card} p-4 mt-4 enter">${head}${svg}${legend}<div class="mt-2 ${div}">${rows}</div>
+    ${evs.length?`<details class="mt-2"><summary class="text-sm font-bold text-emerald-700 cursor-pointer">Değişim geçmişi (${evs.length})</summary><ol class="mt-2 space-y-1.5">${evs.map(e=>`<li class="flex gap-2 text-[13px]"><span class="tabular text-stone-500 w-14 shrink-0">${dshort(e.ts)}</span>${S.length>1?badge(e.m,1):""}<span>${esc(evText(e))}</span></li>`).join("")}</ol></details>`:""}
+    <p class="mt-2 text-[11px] text-stone-400">Her taramada fiyat, etiket fiyatı ve kampanya karşılaştırılır; değişiklik olunca kaydedilir. Takip ${dshort(since)} tarihinde başladı.</p></div>`}
 function spark(o){
   const h=HIST[o.market];if(!h||h==="…")return"";const pts=h[o.id];if(!pts||pts.length<2)return"";
   const xs=pts.map(p=>p[0]),ys=pts.map(p=>p[1]),x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.min(...ys),y1=Math.max(...ys);
@@ -486,7 +531,7 @@ function productInfo(g){
   if(b.market==="bim"&&b.when){const d=x=>x.toLocaleDateString("tr-TR",{day:"numeric",month:"long"});
     out.push(b.na==="soon"?`BİM'de ${d(b.when.start)} tarihinde satışa çıkacak aktüel üründür.`:b.when.end?`BİM indirim dönemi: ${d(b.when.start)} – ${d(b.when.end)}.`:`BİM aktüel ürünüdür (${d(b.when.start)}); stoklarla sınırlıdır.`)}
   const h=HIST[b.market],pts=h&&h!=="…"&&h[b.id];
-  if(pts&&pts.length>=2){const ys=pts.map(x=>x[1]);out.push(`Kayıtlı fiyat geçmişinde ${pts.length-1} değişim var; en düşük ${tl(Math.min(...ys))}, en yüksek ${tl(Math.max(...ys))}.`)}
+  if(pts&&pts.length>=2){const hi=MFC.histInfo(pts,b);if(hi&&hi.changes)out.push(`Kayıtlı fiyat geçmişinde ${hi.changes} değişim var; en düşük ${tl(hi.low)}, en yüksek ${tl(hi.high)}.${hi.atLow?" Şu anki fiyat kayıtlı en düşük fiyat.":""}`)}
   out.push((TIPS[grp]?TIPS[grp]+" ":"")+"İçindekiler, alerjen ve son tüketim bilgisi için ambalaj etiketine bakın.");
   return`<div class="${card} p-4 mt-4 enter"><h2 class="font-extrabold flex items-center gap-2"><i data-lucide="info" class="w-5 h-5 text-emerald-600"></i>Ürün bilgisi</h2>
     <div class="mt-2 space-y-2 text-[14px] leading-relaxed text-stone-700">${out.map(x=>`<p>${x}</p>`).join("")}</div>
@@ -521,8 +566,9 @@ function productPage(g){
           <p class="text-[13px] text-stone-600 dark:text-stone-300 mt-1 leading-snug">${esc(o.name)}${unitTxt(o)?` · <span class="tabular">${unitTxt(o)}</span>`:""}</p>
           <div class="flex items-center gap-2 mt-2 flex-wrap">${freshPill(o)}${o.url&&o.url.startsWith("https://")?`<a href="${esc(o.url)}" target="_blank" rel="noopener" class="chipx bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-200">${M[o.market].n} sitesinde aç<i data-lucide="external-link" class="w-3 h-3"></i></a>`:""}</div>
           ${FRESH.has(o.id)?freshPanel(o)+`<p class="mt-1 text-[11px] text-stone-500">${checkLine(o)} · Depo sahibiyseniz: ${updBtn(o,"font-semibold underline")}</p>`:""}
-          ${spark(o)}
+          ${(h=>h&&(h.lastDisc||h.lastPromo)?`<p class="mt-1.5 text-[11px] text-stone-500">${[h.lastDisc?`Son indirim ${dshort(h.lastDisc.ts)}`:"",h.lastPromo?`son kampanya ${dshort(h.lastPromo.ts)}`:""].filter(Boolean).join(" · ")}</p>`:"")(HIST[o.market]&&HIST[o.market]!=="…"?MFC.histInfo(HIST[o.market][o.id],o):null)}
         </div>`}).join("")}</div>
+      ${histCard(g)}
       ${(alts=>alts.length?`<div class="${card} p-4 mt-4 enter"><h2 class="font-extrabold flex items-center gap-2"><i data-lucide="arrow-down-wide-narrow" class="w-5 h-5 text-sky-600"></i>Daha ucuz muadiller</h2>
         <p class="text-xs text-stone-500 mt-0.5">Aynı tür, benzer boy; birim fiyatı daha düşük ürünler.</p>
         <div class="mt-2 ${div}">${alts.map(a=>{const v=MF.unitPrice(a.o);return`<div data-show="${esc(a.g.key)}" class="flex items-center gap-3 py-2.5 cursor-pointer">${img(a.o.image,"w-12 h-12 shrink-0")}<div class="flex-1 min-w-0"><p class="text-sm font-bold leading-snug line-clamp-2">${esc(a.o.name)}</p><p class="text-[11px] text-stone-500">${badge(a.o.market,1)} ${v?tl(v.v)+"/"+v.u:""}</p></div><div class="text-right shrink-0"><p class="price tabular text-base">${tl(a.o.price)}</p><p class="text-[11px] font-extrabold text-sky-700">%${Math.round(a.save*100)} ucuz</p></div></div>`}).join("")}</div></div>`:"")(alternatives(g,3))}
@@ -625,7 +671,8 @@ function drawL(){
     ${max-sum>0.005?`<p class="mt-1 text-sm font-bold"><span class="text-amber-300">${tl(max-sum)} kazancın</span> · market farkı ve kampanyalar sayesinde (kampanyasız, en pahalı markette ${tl(max)})</p>`:""}
     <div class="mt-4 h-2.5 rounded-full bg-white/20 overflow-hidden"><div class="h-full rounded-full bg-amber-300 transition-all duration-500" style="width:${pctDone}%"></div></div>
     <div class="mt-2 flex items-center justify-between text-xs font-bold"><span>${got}/${items.length} ürün alındı</span>${got?`<button data-undone class="underline">İşaretleri sıfırla</button>`:""}</div>
-    <button data-share class="relative z-10 mt-4 w-full flex items-center justify-center gap-2 py-3 rounded-2xl bg-white text-emerald-800 font-extrabold active:scale-95 transition"><i data-lucide="share-2" class="w-5 h-5"></i>Listeyi paylaş (WhatsApp, SMS…)</button>
+    <div class="relative z-10 mt-4 grid grid-cols-2 gap-2"><button data-share class="flex items-center justify-center gap-2 py-3 rounded-2xl bg-white text-emerald-800 font-extrabold active:scale-95 transition"><i data-lucide="share-2" class="w-5 h-5"></i>Paylaş</button>
+      <button data-pdf class="flex items-center justify-center gap-2 py-3 rounded-2xl bg-white/15 ring-1 ring-white/40 text-white font-extrabold active:scale-95 transition"><i data-lucide="file-down" class="w-5 h-5"></i>PDF aktar</button></div>
     <span class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-white/10"></span></div>`+noteBox+h+notesHtml}
 
 // Listeyi düz metin olarak paylaş: market market, adet ve fiyatla; notlar en sonda
@@ -638,6 +685,25 @@ function listText(){
   if(sum)L.push("",`Toplam: ${tl(sum)}`);
   L.push("","Fiyatlar marketlerin online fiyatıdır; mağazada farklı olabilir.",location.origin+location.pathname);
   return L.join("\n")}
+// Listeyi PDF olarak aktar: görselli, market market tablo; tarayıcının yazdırma ekranından
+// "PDF olarak kaydet" ile dosya olur (Android Chrome'da Yazdır → PDF olarak kaydet).
+async function exportPdf(){
+  const items=uniq(cart);if(!items.length&&!NOTES.length){note("Listen boş.");return}
+  const d=new Date().toLocaleDateString("tr-TR",{day:"numeric",month:"long",year:"numeric",weekday:"long"});let sum=0,n=0;
+  const secs=ORD.map(m=>{const it=items.filter(g=>(best(g)||{}).market===m);if(!it.length)return"";let t=0;
+    const rows=it.map(g=>{const b=best(g),q=qtyOf(g),lt=lineTotal(b,q);t+=lt;n++;const pr=b._promo&&b._promo.kind!=="bim"?b._promo.label:"";
+      return`<tr><td class="pc-box">${done[g.key]?"✓":""}</td><td class="pc-img">${b.image&&b.image.startsWith("https://")?`<img src="${esc(b.image)}" alt="">`:""}</td>
+        <td><b>${esc(b.name)}</b>${pr?`<br><span class="pc-promo">${esc(pr)}</span>`:""}</td><td class="pc-num">${q}</td><td class="pc-num">${tl(b.price)}</td><td class="pc-num"><b>${tl(lt)}</b></td></tr>`}).join("");
+    sum+=t;return`<h2 style="border-color:${M[m].bar}"><span style="background:${M[m].bar}">${M[m].n}</span> ${it.length} ürün · ${tl(t)}</h2>
+      <table><thead><tr><th></th><th></th><th>Ürün</th><th>Adet</th><th>Birim</th><th>Tutar</th></tr></thead><tbody>${rows}</tbody></table>`}).join("");
+  const notes=NOTES.length?`<h2 style="border-color:#57534e"><span style="background:#57534e">Notlar</span></h2><ul class="pc-notes">${NOTES.map(x=>`<li><span class="pc-box">${x.d?"✓":""}</span>${esc(x.t)}</li>`).join("")}</ul>`:"";
+  $("printArea").innerHTML=`<header><div><h1>Alışveriş listem</h1><p>${d} · ${n} ürün${NOTES.length?` · ${NOTES.length} not`:""}</p></div><div class="pc-total">${tl(sum)}</div></header>${secs}${notes}
+    <footer>Fiyatlar marketlerin online fiyatlarıdır (${esc(new Date().toLocaleString("tr-TR"))}); mağazada farklı olabilir. ${esc(location.origin+location.pathname)}</footer>`;
+  // Görseller yüklenmeden yazdırılırsa PDF'te boş kutu kalır: en çok 6 sn bekle
+  await Promise.all([...$("printArea").querySelectorAll("img")].map(i=>i.complete?0:new Promise(r=>{i.onload=i.onerror=r;setTimeout(r,6000)})));
+  document.body.classList.add("printing");note("Yazdır ekranında hedef olarak “PDF olarak kaydet”i seç.");
+  setTimeout(()=>{print()},100)}
+addEventListener("afterprint",()=>document.body.classList.remove("printing"));
 async function shareList(){
   const text=listText();
   try{if(navigator.share){await navigator.share({title:"Alışveriş listem",text});return}}catch(e){if(e&&e.name==="AbortError")return}
@@ -734,6 +800,7 @@ document.addEventListener("click",e=>{const t=s=>e.target.closest(s);let el;
   else if(el=t("[data-dec]")){const g=GI[el.dataset.dec];if(g){const q=qtyOf(g);if(q>1)QTY[g.key]=q-1;else{delete QTY[g.key];cart=cart.filter(x=>GI[x]!==g);save("cart",cart)}save("qty",QTY);redraw()}}
   else if(el=t("[data-camp]")){openCamp(el.dataset.camp)}
   else if(t("[data-share]")){shareList()}
+  else if(t("[data-pdf]")){exportPdf()}
   else if(el=t("[data-swap]")){const from=GI[el.dataset.swap],to=GI[el.dataset.to];if(from&&to){const q=qtyOf(from);cart=cart.map(k=>GI[k]===from?to.key:k);delete QTY[from.key];if(q>1)QTY[to.key]=q;delete done[from.key];save("cart",cart);save("qty",QTY);save("done",done);note("Değiştirildi: "+best(to).name);redraw()}}
   else if(el=t("[data-ndone]")){const n=NOTES[+el.dataset.ndone];if(n){n.d=n.d?0:1;save("notes",NOTES);if(navigator.vibrate)navigator.vibrate(15);redraw()}}
   else if(el=t("[data-ndel]")){NOTES.splice(+el.dataset.ndel,1);save("notes",NOTES);redraw()}

@@ -252,7 +252,8 @@ def apply(result_path, comment_path):
         hist_path = ROOT / "data" / f"history-{market}.json"
         history = pricehist.load(hist_path, market)
         old_seen = current.get("seen") if isinstance(current.get("seen"), int) else pricehist._ts(previous.get("updated"))
-        pricehist.add_change(history, pid, (old_price, old_regular, old_seen), (price, regular, ts), ts, "manual")
+        old_promo, new_promo = pricehist._promo(current.get("promo")), pricehist._promo(row.get("promo"))
+        pricehist.add_change(history, pid, (old_price, old_regular, old_seen, old_promo), (price, regular, ts, new_promo), ts, "manual")
         pricehist.prune(history)
         pricehist.save(hist_path, history)
         record.update(status="updated" if changed else "unchanged", new_price=price, new_regular=regular,
