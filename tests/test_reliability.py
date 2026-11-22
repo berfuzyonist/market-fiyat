@@ -419,11 +419,12 @@ class PosterTests(unittest.TestCase):
     def test_sok_posters(self):
         body = ('<script>self.__next_f.push([1,"{\\"campaignId\\":\\"c1\\",\\"campaignUrl\\":\\"1-alana-1-bedava-prm-c1\\",'
                 '\\"title\\":\\"1 ALANA 1 BEDAVA\\",\\"description\\":\\"Stoklarla sınırlıdır.\\",\\"images\\":[{\\"path\\":'
-                '\\"promotion-assets/sub-folder/x.jpg\\",\\"host\\":\\"https://images.ceptesok.com\\"}],\\"skuIds\\":[]}"])</script>')
+                '\\"promotion-assets/sub-folder/x.jpg\\",\\"host\\":\\"https://images.ceptesok.com\\"}],\\"skuIds\\":[\\"558.1\\",\\"1025.1\\"]}"])</script>')
         with patch.object(collect, "get", lambda u, a="": (200, body)):
             items = collect.sok_posters()
         self.assertEqual(items[0]["image"], "https://images.ceptesok.com/promotion-assets/sub-folder/x.jpg")
         self.assertEqual(items[0]["url"], "https://www.sokmarket.com.tr/1-alana-1-bedava-prm-c1")
+        self.assertEqual(items[0]["ids"], ["sok:558", "sok:1025"])
 
     def test_poster_failure_keeps_old_file(self):
         with patch.object(collect, "get", lambda u, a="": (500, "")):
