@@ -429,3 +429,41 @@ class PosterTests(unittest.TestCase):
         with patch.object(collect, "get", lambda u, a="": (500, "")):
             with self.assertRaises(collect.Stop):
                 collect.bim_posters()
+
+
+class MigrosCampaignTests(unittest.TestCase):
+    """Migros ana sayfa kampanya görselleri → kampanya ürün listeleri."""
+
+    def fake_get(self, url, accept=""):
+        if "/rest/banners/main-page-slider" in url:
+            return 200, json.dumps({"data": [
+                {"identifier": "iç ad", "callToActionUrl": "/kahve-2-al-1-ode-l-bbcd29a",
+                 "imageUrl": "https://images.migrosone.com/sanalmarket/banner/a.jpg"},
+                {"identifier": "Bilgi sayfası", "callToActionUrl": "/fit-pazartesi-x-2dd4",
+                 "imageUrl": "https://images.migrosone.com/sanalmarket/banner/b.jpg"},
+                {"identifier": "Elektronik", "callToActionUrl": "/elektronik/supurge-l-bbcd24e",
+                 "imageUrl": "https://images.migrosone.com/sanalmarket/banner/c.jpg"}]})
+        if "/rest/banners/" in url:
+            return 200, json.dumps({"data": []})
+        if "kahve-2-al-1-ode-l-bbcd29a" in url:
+            return 200, json.dumps({"data": {"metaInfo": {"title": "Kahvede 2 AL 1 ÖDE",
+                "description": "22-24 Kasım tarihleri arasında kahvelerde kampanya."},
+                "searchInfo": {"pageCount": 1, "hitCount": 1, "storeProductInfos": [
+                    {"sku": "1", "name": "Kahve 100 G", "shownPrice": 10000, "regularPrice": 10000, "status": "IN_SALE",
+                     "crmDiscountTags": [{"type": "CRM_DISCOUNT", "tag": "2 Al 1 Öde"}], "prettyName": "kahve-p-1"}]}}})
+        return 404, ""
+
+    def test_campaigns_with_products(self):
+        with patch.object(collect, "get", self.fake_get):
+            items, products = collect.migros_posters()
+        self.assertEqual([i["slug"] for i in items], ["kahve-2-al-1-ode-l-bbcd29a", "supurge-l-bbcd24e"])
+        first = items[0]
+        self.assertEqual((first["title"], first["label"], first["ids"]), ("Kahvede 2 AL 1 ÖDE", "22-24 Kasım", ["migros:1"]))
+        self.assertEqual(products["migros:1"]["promo"], "2 Al 1 Öde")
+        self.assertEqual(items[1]["ids"], [])  # açılamayan liste: yalnızca kapak + Migros bağlantısı
+        self.assertEqual(items[1]["url"], "https://www.migros.com.tr/elektronik/supurge-l-bbcd24e")
+
+    def test_banner_failure_keeps_old_file(self):
+        with patch.object(collect, "get", lambda u, a="": (500, "")):
+            with self.assertRaises(collect.Stop):
+                collect.migros_posters()

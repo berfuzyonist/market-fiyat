@@ -1,6 +1,6 @@
 name: Afişler
 
-# BİM afişleri ve Şok kampanya görselleri günde iki kez okunur (her market tek istek).
+# BİM afişleri, Şok kampanya görselleri ve Migros ana sayfa kampanyaları (kapak + ürün listesi) günde iki kez okunur.
 # Görseller indirilmez; data/posters-<market>.json yalnızca marketin kendi adreslerini tutar.
 on:
   schedule:
@@ -15,7 +15,7 @@ concurrency:
 jobs:
   posters:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7
         with:
@@ -24,7 +24,7 @@ jobs:
         run: |
           mkdir -p "$RUNNER_TEMP/p"
           ok=0
-          for m in bim sok; do
+          for m in bim migros sok; do
             if python3 collector/collect.py posters "$m"; then ok=1; fi
             [ -f "data/posters-$m.json" ] && cp "data/posters-$m.json" "$RUNNER_TEMP/p/"
           done

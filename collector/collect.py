@@ -576,7 +576,74 @@ def sok_posters():
     return out
 
 
-POSTERS = {"bim": bim_posters, "sok": sok_posters}
+MIGROS_BANNERS = ("main-page-slider", "main-page-under-slider")  # sitenin ana sayfa kampanya görselleri
+MIGROS_CAMPAIGN_PAGES = 10  # kampanya başına en çok 10 sayfa (300 ürün); kalanı için Migros'a bağlantı
+
+
+def migros_posters():
+    """Migros ana sayfasındaki kampanya görselleri ve her kampanyanın ürün listesi.
+
+    Ana sayfa kaydırmalı görselleri herkese açık /rest/banners/<yer> yanıtında; her görselin
+    bağlantısı bir ürün listesi (".../<ad>-l-<hex>"). Liste, kategori taramasında kullanılan
+    /rest/search/screens/<ad> yanıtıyla okunur; başlık ve kampanya metni listenin metaInfo alanındadır.
+    """
+    banners, seen_slugs = [], set()
+    for place in MIGROS_BANNERS:
+        status, body = get(f"https://www.migros.com.tr/rest/banners/{place}")
+        if status != 200:
+            raise Stop(f"Migros kampanya görselleri alınamadı: HTTP {status} ({place})")
+        try:
+            data = json.loads(body).get("data") or []
+        except ValueError:
+            raise Stop(f"Migros kampanya görseli yanıtı çözümlenemedi ({place})")
+        for b in data:
+            link = str(b.get("callToActionUrl") or "")
+            m = re.search(r"(?:^|/)([a-z0-9-]+-l-[0-9a-f]+)/?$", link)
+            img = str(b.get("imageUrl") or "")
+            if not m or not img.startswith("https://images.migrosone.com/") or m.group(1) in seen_slugs:
+                continue
+            seen_slugs.add(m.group(1))
+            banners.append((b, m.group(1), link))
+    if not banners:
+        raise Stop("Migros ana sayfasında kampanya görseli bulunamadı")
+    items, products, titles = [], {}, set()
+    now = int(time.time())
+    for b, slug, link in banners:
+        ids, meta, hits, page, pages = [], {}, 0, 1, 1
+        while page <= min(pages, MIGROS_CAMPAIGN_PAGES):
+            status, body = get(f"https://www.migros.com.tr/rest/search/screens/{slug}?sayfa={page}")
+            if status != 200:
+                break  # elektronik gibi ayrı mağaza listeleri burada açılmaz: yalnızca görsel + bağlantı
+            try:
+                d = json.loads(body)["data"]
+                info = d["searchInfo"]
+            except (ValueError, KeyError, TypeError):
+                break
+            meta = d.get("metaInfo") or meta
+            pages, hits = info.get("pageCount") or 1, info.get("hitCount") or 0
+            for x in info.get("storeProductInfos") or []:
+                it = migros_item(x)
+                if it["price"] > 0 and it["name"]:
+                    it["seen"] = now
+                    products[it["id"]] = it
+                    if it["id"] not in ids:
+                        ids.append(it["id"])
+            page += 1
+        title = " ".join(str(meta.get("title") or b.get("identifier") or "Migros kampanyası").split())
+        desc = " ".join(str(meta.get("description") or "").split())
+        when = re.match(r"(\d{1,2}(?: \w+)?\s*-\s*\d{1,2} \w+(?: \d{4})?) tarihleri arasında", desc)
+        key = (title.casefold(), hits)
+        if key in titles:  # aynı kampanya iki görselle yayımlanabiliyor
+            continue
+        titles.add(key)
+        items.append({"market": "migros", "id": f"migros:{slug}", "slug": slug, "title": title,
+                      "group": "Kampanya", "label": when.group(1) if when else "", "desc": desc[:600],
+                      "image": b["imageUrl"], "thumb": "", "url": "https://www.migros.com.tr" + (link if link.startswith("/") else "/" + link),
+                      "count": hits, "ids": ids})
+    return items, products
+
+
+POSTERS = {"bim": bim_posters, "sok": sok_posters, "migros": migros_posters}
 
 
 def posters_main(market):
@@ -588,6 +655,14 @@ def posters_main(market):
     except Stop as e:
         print(f"{market} afişleri alınamadı: {e}; önceki dosya korunuyor")
         raise SystemExit(1)
+    if market == "migros":
+        # Kampanya ürünleri, ana veriyle aynı sıkıştırılmış biçimde aynı dosyaya yazılır.
+        items, products = items
+        d = json.loads(encode(market, products, now)) if products else {"updated": now, "market": market}
+        d["items"] = items
+        atomic_write(path, json.dumps(d, ensure_ascii=False, separators=(",", ":")) + "\n")
+        print(f"{market}: {len(items)} kampanya, {len(products)} ürün yazıldı")
+        return
     old = {}
     try:
         old = json.loads(path.read_text(encoding="utf-8"))

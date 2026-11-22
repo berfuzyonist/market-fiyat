@@ -1,7 +1,7 @@
 "use strict";
 /* Market Fiyat arayüzü. Eşleştirme mantığı js/match.js içinde (MF). */
 const M={sok:{n:"Şok",at:"Şok'ta",c:"bg-yellow-400 text-yellow-950",bar:"#eab308"},migros:{n:"Migros",at:"Migros'ta",c:"bg-orange-500 text-white",bar:"#f97316"},a101:{n:"A101",at:"A101'de",c:"bg-cyan-600 text-white",bar:"#0891b2"},bim:{n:"BİM",at:"BİM'de",c:"bg-red-600 text-white",bar:"#dc2626"}},ORD=Object.keys(M);
-const VIEWS=["home","compare","promos","browse","search","list","posters"];
+const VIEWS=["home","compare","promos","browse","search","list","posters","camp"];
 const $=id=>document.getElementById(id);
 const tl=x=>x.toLocaleString("tr-TR",{minimumFractionDigits:2,maximumFractionDigits:2})+" ₺";
 const num=x=>x.toLocaleString("tr-TR");
@@ -42,7 +42,7 @@ function categoryOf(o){
 }
 
 // O: tek tek market ürünleri, G: aynı ürünün marketlerdeki teklifleri, CMP: karşılaştırma listeleri
-let O=[],G=[],GI={},CMP={same:[],size:[],staple:[]},PROMO=[];
+let O=[],OI={},G=[],GI={},CMP={same:[],size:[],staple:[]},PROMO=[];
 const FRESH=new Set(); // "Fiyat güncel mi?" paneli açık ürünler (kaydedilmez)
 let done=load("done",{}),HIST={},S={sort:"rel"},UOPEN=false;
 let QTY=load("qty",{});
@@ -225,17 +225,19 @@ function drawK(){
 let POST=[],PV={m:""},VIEW_I=-1;
 // Afişini otomatik okuyamadığımız marketler için marketin kendi sayfasına bağlantı
 const POSTER_LINKS=[
-  {market:"migros",title:"Migros kampanyaları",text:"Kampanya afişleri ve “2 Al 1 Öde” listeleri Migros sitesinde.",url:"https://www.migros.com.tr/kampanyalar"},
   {market:"migros",title:"Migroskop dijital dergi",text:"Migros'un haftalık indirim dergisi.",url:"https://www.money.com.tr/mc/kampanyalara-bak/migroskop-dijital/83"},
   {market:"a101",title:"A101 aktüel afişleri",text:"A101 sitesi otomatik erişime kapalı; afişleri kendi sitesinde görebilirsin.",url:"https://www.a101.com.tr/afisler"},
 ];
 function posterState(it){if(it.market!=="bim")return null;const w=MFC.bimWhen(it.label);return w}
+const isCamp=it=>it&&it.market==="migros"&&Array.isArray(it.ids)&&it.ids.length>0;
 function posterCard(it,i,cls=""){
-  const w=posterState(it),soon=w&&w.state==="soon",old=w&&(w.state==="old"||w.state==="expired");
-  return`<button data-poster="${i}" class="pc !p-0 overflow-hidden text-left ${cls} ${old?"opacity-60":""}" style="--i:${i%12}">
-    <div class="relative bg-white ${it.market==="bim"?"aspect-[3/4]":"aspect-[16/9]"} overflow-hidden"><img src="${esc(it.thumb||it.image)}" alt="${esc(it.title)}" loading="lazy" class="w-full h-full object-cover transition duration-500 hover:scale-105" onerror="this.closest('button').remove()">
+  const w=posterState(it),soon=w&&w.state==="soon",old=w&&(w.state==="old"||w.state==="expired"),wide=it.market==="migros";
+  // Migros görselleri yatay (yaklaşık 4:1): ızgarada iki sütun, rafta geniş kart
+  if(wide)cls=cls?cls.replace("w-40","w-72 self-start"):"col-span-2";
+  return`<button ${isCamp(it)?`data-camp="${esc(it.slug)}"`:`data-poster="${i}"`} class="pc !p-0 overflow-hidden text-left ${cls} ${old?"opacity-60":""}" style="--i:${i%12}">
+    <div class="relative bg-white ${it.market==="bim"?"aspect-[3/4]":wide?"aspect-[38/10]":"aspect-[16/9]"} overflow-hidden"><img src="${esc(it.thumb||it.image)}" alt="${esc(it.title)}" loading="lazy" class="w-full h-full object-cover transition duration-500 hover:scale-105" onerror="this.closest('button').remove()">
       <span class="absolute top-1.5 left-1.5">${badge(it.market,1)}</span>${soon?`<span class="absolute top-1.5 right-1.5 chipx bg-sky-600 text-white">Yakında</span>`:old?`<span class="absolute top-1.5 right-1.5 chipx bg-stone-700 text-white">Geçmiş</span>`:""}</div>
-    <div class="p-2.5"><p class="text-[13px] font-extrabold leading-snug line-clamp-2">${esc(it.market==="bim"?(it.group+" · "+it.label):it.title)}</p>${it.market!=="bim"&&it.label?`<p class="text-[11px] text-stone-500 mt-0.5 line-clamp-1">${esc(it.label)}</p>`:""}</div></button>`}
+    <div class="p-2.5"><p class="text-[13px] font-extrabold leading-snug line-clamp-2">${esc(it.market==="bim"?(it.group+" · "+it.label):it.title)}</p>${it.market!=="bim"&&(it.label||isCamp(it))?`<p class="text-[11px] text-stone-500 mt-0.5 line-clamp-1">${esc([it.label,isCamp(it)?num(it.count||it.ids.length)+" ürün":""].filter(Boolean).join(" · "))}</p>`:""}</div></button>`}
 const linkCard=(l,cls="")=>`<a href="${esc(l.url)}" target="_blank" rel="noopener" class="pc ${cls} justify-between gap-2"><span>${badge(l.market,1)}</span><span class="font-extrabold text-sm leading-snug">${esc(l.title)}</span><span class="text-[11px] text-stone-500 leading-snug">${esc(l.text)}</span><span class="text-xs font-extrabold text-emerald-700 flex items-center gap-1">Sitesinde aç<i data-lucide="external-link" class="w-3.5 h-3.5"></i></span></a>`;
 // Güncel olanlar önce: BİM'de tarihi yakın/gelmemiş afişler, sonra Şok kampanyaları, geçmiş BİM afişleri en sonda
 function sortedPosters(){
@@ -256,6 +258,29 @@ function openViewer(i){VIEW_I=i;const it=POST[i];if(!it)return;
   $("vSub").textContent=it.market==="bim"?"Stoklarla sınırlıdır":it.label||"";$("vLink").href=it.url;$("viewer").classList.remove("hidden");document.body.style.overflow="hidden"}
 function closeViewer(){$("viewer").classList.add("hidden");document.body.style.overflow="";VIEW_I=-1}
 function stepViewer(d){const list=sortedPosters(),k=list.indexOf(POST[VIEW_I]);const n=list[(k+d+list.length)%list.length];if(n)openViewer(POST.indexOf(n))}
+
+// ---------- Migros kampanya sayfası: orijinal kapak + kampanyadaki ürünler ----------
+let CAMP="",CV={sort:"",n:40};
+function drawCamp(){
+  const it=POST.find(x=>x.market==="migros"&&x.slug===CAMP);
+  if(!it){$("campHead").innerHTML=O.length?empty("gift","Kampanya bulunamadı","Kampanya sona ermiş ya da Migros ana sayfasından kaldırılmış olabilir."):`<div class="sk-card skel !h-40"></div>`;$("campGrid").innerHTML="";$("campMore").innerHTML="";return}
+  const objs=it.ids.map(id=>OI[id]).filter(Boolean);
+  const r=objs.slice();
+  if(CV.sort==="price")r.sort((a,b)=>(usable(b)-usable(a))||a.price-b.price);
+  else if(CV.sort==="disc")r.sort((a,b)=>disc(b)-disc(a)||a.price-b.price);
+  else if(CV.sort==="unit")r.sort((a,b)=>{const x=MF.unitPrice(a),y=MF.unitPrice(b);return(!x)-(!y)||(x&&y?x.v-y.v:0)});
+  const more=it.count>it.ids.length;
+  $("campHead").innerHTML=`<button onclick="history.length>1?history.back():go('posters')" class="flex items-center gap-1 text-sm font-bold text-stone-600 mb-3 active:scale-95 transition"><i data-lucide="chevron-left" class="w-5 h-5"></i>Geri</button>
+  <button data-cimg class="block w-full rounded-[20px] overflow-hidden bg-white ring-1 ring-stone-200 shadow-sm"><img src="${esc(it.image)}" alt="${esc(it.title)}" class="w-full h-auto pop-in"></button>
+  <div class="mt-3 flex flex-wrap items-center gap-1.5">${badge("migros",1)}${it.label?`<span class="chipx bg-orange-100 text-orange-800"><i data-lucide="calendar" class="w-3.5 h-3.5"></i>${esc(it.label)}</span>`:""}<span class="chipx bg-stone-200 text-stone-700">${num(it.count||objs.length)} ürün</span></div>
+  <h1 class="font-display font-extrabold text-2xl leading-tight tracking-tight mt-2">${esc(it.title)}</h1>
+  ${it.desc?`<details class="mt-1.5 text-sm text-stone-600 leading-relaxed group"><summary class="list-none cursor-pointer"><span class="line-clamp-2 group-open:line-clamp-none">${esc(it.desc)}</span><span class="text-xs font-bold text-emerald-700 group-open:hidden">Kampanya koşulları ›</span></summary></details>`:""}
+  <div class="flex gap-2 overflow-x-auto noscroll mt-3">${[["","Migros sırası"],["price","En ucuz"],["disc","En çok indirim"],["unit","Birim fiyat"]].map(([k,l])=>pill("data-csort",k,l,CV.sort===k)).join("")}</div>
+  <p class="text-xs text-stone-500 mt-2">${more?`Sitede ${num(it.count)} ürün var; ilk ${num(it.ids.length)} ürün gösteriliyor. `:""}Fiyatlar Migros'un kampanya listesinden günde iki kez okunur. <a href="${esc(it.url)}" target="_blank" rel="noopener" class="font-bold text-emerald-700 underline">Migros'ta aç</a></p>`;
+  $("campGrid").innerHTML=r.slice(0,CV.n).map((o,i)=>pcard(o,{i:i%12})).join("")||empty("package","Ürün okunamadı","Bu kampanyanın ürünleri Migros sitesinde.");
+  $("campMore").innerHTML=r.length>CV.n?`<button data-cmore class="px-5 py-2.5 rounded-xl font-bold bg-white ring-1 ring-stone-200">${num(r.length-CV.n)} ürün daha göster</button>`:"";
+}
+function openCamp(slug){CAMP=slug;CV={sort:"",n:40};closeViewer();go("camp")}
 
 // ---------- Ana sayfa ----------
 let slideT=null,slideI=0;
@@ -293,7 +318,10 @@ function drawH(){
   const sl=slides(st);$("banner").innerHTML=sl.join("")||`<div class="slide s-green"><h3>Market Fiyat</h3></div>`;slideI=0;$("banner").scrollLeft=0;startSlides();
   $("cats").innerHTML=GROUPS.map(([k,l,ic,bg,fg])=>`<button data-grp="${k}" class="cat"><span class="ic" style="background:${bg};color:${fg}"><i data-lucide="${ic}" class="w-7 h-7"></i></span>${l}</button>`).join("");
   $("deals").innerHTML=st.filter(o=>disc(o)>0).sort((a,b)=>disc(b)-disc(a)).slice(0,20).map((o,i)=>pcard(o,{strip:1,i})).join("")||`<p class="text-sm text-stone-500">Şu an indirim görünmüyor.</p>`;
-  const ps=sortedPosters().filter(it=>{const w=posterState(it);return!w||w.state!=="old"&&w.state!=="expired"}).slice(0,14);
+  // Rafta marketler sırayla karışık: BİM afişi, Migros kampanyası, Şok kampanyası…
+  const live=sortedPosters().filter(it=>{const w=posterState(it);return!w||w.state!=="old"&&w.state!=="expired"}),by={};
+  live.forEach(it=>(by[it.market]=by[it.market]||[]).push(it));const ps=[];
+  for(let k=0;ps.length<15&&Object.values(by).some(a=>a.length>k);k++)Object.values(by).forEach(a=>{if(a[k]&&ps.length<15)ps.push(a[k])});
   $("hPost").innerHTML=ps.map(it=>posterCard(it,POST.indexOf(it),"w-40 shrink-0")).join("")+POSTER_LINKS.map(l=>linkCard(l,"w-44 shrink-0")).join("");
   $("units").innerHTML=UNIT_Q.map(([q,l,ic])=>`<button data-uq="${esc(q)}" class="uchip"><i data-lucide="${ic}" class="w-4 h-4 text-emerald-600"></i>${l}</button>`).join("");
   $("stores").innerHTML=DATA_M.filter(m=>O.some(o=>o.market===m)).map(m=>{const n=st.filter(o=>o.market===m),d=n.filter(o=>disc(o)>0).length,s=CHECK[m],failed=s&&s.status!=="tamam"&&!s.partial,part=s&&s.partial;
@@ -505,7 +533,7 @@ function drawL(){
     <span class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-white/10"></span></div>`+h}
 
 // ---------- Gezinme ----------
-const DRAW={home:drawH,compare:drawC,promos:drawK,browse:drawB,search:drawS,list:drawL,posters:drawP};
+const DRAW={home:drawH,compare:drawC,promos:drawK,browse:drawB,search:drawS,list:drawL,posters:drawP,camp:drawCamp};
 function icons(){lucide.createIcons()}
 function redraw(){DRAW[view]();if(view!=="list")drawL();icons()}
 const NB="flex flex-col items-center gap-0.5 py-2 rounded-2xl text-[11px] font-bold relative transition active:scale-90 ";
@@ -516,6 +544,7 @@ const HV={home:"",compare:"karsilastir",promos:"kampanya",browse:"kesfet",search
 let routing=false;
 function hashOf(){
   if(view==="search"){if(only)return"#urun/"+encodeURIComponent(only);const q=$("q").value.trim();return q?"#ara/"+encodeURIComponent(q):"#ara"}
+  if(view==="camp")return"#afis/"+encodeURIComponent(CAMP);
   return HV[view]?"#"+HV[view]:"";
 }
 function sync(replace){
@@ -529,6 +558,7 @@ function route(){
   try{
     if(k==="urun"&&arg){only=arg;pending=null;setQ("");go("search")}
     else if(k==="ara"){only=null;setQ(arg);go("search")}
+    else if(k==="afis"&&arg){if(CAMP!==arg){CAMP=arg;CV={sort:"",n:40}}go("camp")}
     else{const v=Object.keys(HV).find(x=>HV[x]===k&&x!=="search")||"home";go(v)}
   }finally{routing=false}
 }
@@ -588,7 +618,11 @@ document.addEventListener("click",e=>{const t=s=>e.target.closest(s);let el;
     if(adding){const nb=document.querySelector(`[data-add="${CSS.escape(g.key)}"].add`);if(nb)nb.classList.add("pop")}}}
   else if(el=t("[data-inc]")){const g=GI[el.dataset.inc];if(g){QTY[g.key]=qtyOf(g)+1;save("qty",QTY);if(!inCart(g)){cart=[...cart,g.key];save("cart",cart)}if(navigator.vibrate)navigator.vibrate(10);redraw();bumpCount()}}
   else if(el=t("[data-dec]")){const g=GI[el.dataset.dec];if(g){const q=qtyOf(g);if(q>1)QTY[g.key]=q-1;else{delete QTY[g.key];cart=cart.filter(x=>GI[x]!==g);save("cart",cart)}save("qty",QTY);redraw()}}
+  else if(el=t("[data-camp]")){openCamp(el.dataset.camp)}
   else if(el=t("[data-poster]")){openViewer(+el.dataset.poster)}
+  else if(el=t("[data-csort]")){CV.sort=el.dataset.csort;redraw()}
+  else if(t("[data-cmore]")){CV.n+=40;redraw()}
+  else if(t("[data-cimg]")){const it=POST.find(x=>x.slug===CAMP);if(it)openViewer(POST.indexOf(it))}
   else if(el=t("[data-pm]")){PV.m=el.dataset.pm;redraw()}
   else if(t("[data-vx]")){closeViewer()}
   else if(t("[data-vprev]")){stepViewer(-1)}
@@ -629,7 +663,7 @@ bind("cSort",C,"sort");bind("cThree",C,"three","checked");bind("kSort",K,"sort")
 // Her market kendi dosyasından; dosyası okunamayan market gösterilmez (eski ortak dosyaya düşülmez).
 const get=u=>fetch(u,{cache:"no-cache"}).then(r=>r.ok?r.json():null).catch(()=>null);
 function build(rows){
-  O=rows;const now=Date.now();O.forEach(o=>{MFC.enrich(o,{checks:CHECKS,now});o.cat=categoryOf(o);o._promo=promoOf(o)});
+  O=rows;OI={};O.forEach(o=>OI[o.id]=o);const now=Date.now();O.forEach(o=>{MFC.enrich(o,{checks:CHECKS,now});o.cat=categoryOf(o);o._promo=promoOf(o)});
   G=MF.group(O);
   G.forEach(g=>{g.offers.sort((a,b)=>ORD.indexOf(a.market)-ORD.indexOf(b.market));g.key=g.offers[0].id;g.name=g.offers[0].name;g.image=(g.offers.find(o=>o.image)||{}).image;
     g.s=norm(g.offers.map(o=>o.name).join(" "));g.offers.forEach(o=>GI[o.id]=g)});
@@ -639,13 +673,17 @@ function build(rows){
   buildCompare();
 }
 route(); // açılışta adresteki sayfaya git (yenilemede aynı ürün açık kalır)
-Promise.all([Promise.all(DATA_M.map(m=>get(`data/${m}.json`))),Promise.all(DATA_M.map(m=>get(`data/status-${m}.json`))),get("data/price-checks.json"),Promise.all(["bim","sok"].map(m=>get(`data/posters-${m}.json`)))]).then(([files,statuses,checks,posters])=>{
+Promise.all([Promise.all(DATA_M.map(m=>get(`data/${m}.json`))),Promise.all(DATA_M.map(m=>get(`data/status-${m}.json`))),get("data/price-checks.json"),Promise.all(["bim","migros","sok"].map(m=>get(`data/posters-${m}.json`)))]).then(([files,statuses,checks,posters])=>{
   POST=posters.flatMap(p=>(p&&Array.isArray(p.items)?p.items:[]).filter(it=>it&&/^https:\/\//.test(it.image||"")));
+  // Migros kampanya listelerindeki ürünler: katalogda yoksa eklenir, liste daha yeni okunduysa fiyatı günceller
+  const campRows=MFC.rowsOf(posters[1]);
   statuses.forEach((s,i)=>{if(s)CHECK[DATA_M[i]]=s});
   CHECKS=(checks&&checks.checks)||{};
   const rows=[],miss=[];
   files.forEach((d,i)=>{const r=MFC.rowsOf(d);if(r.length){rows.push(...r);UPD[DATA_M[i]]=d.updated}else miss.push(M[DATA_M[i]].n)});
   if(!rows.length)throw new Error("veri yok");
+  if(campRows.length){const at=new Map(rows.map((o,i)=>[o.id,i]));
+    campRows.forEach(c=>{const i=at.get(c.id);if(i==null){at.set(c.id,rows.length);rows.push(c)}else if((c.seen||0)>(rows[i].seen||0)){const o=rows[i];Object.assign(o,{price:c.price,regular:c.regular,in_stock:c.in_stock,promo:c.promo,money:c.money,seen:c.seen});if(!o.cat)o.cat=c.cat}})}
   if(miss.length)note("Şu marketlerin verisi okunamadı: "+miss.join(", "));
   updated=Object.values(UPD).sort().pop();
   build(rows);redraw();
