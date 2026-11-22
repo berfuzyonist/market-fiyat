@@ -238,6 +238,13 @@ function posterCard(it,i,cls=""){
     <div class="relative bg-white ${it.market==="bim"?"aspect-[3/4]":wide?"aspect-[38/10]":"aspect-[16/9]"} overflow-hidden"><img src="${esc(it.thumb||it.image)}" alt="${esc(it.title)}" loading="lazy" class="w-full h-full object-cover transition duration-500 hover:scale-105" onerror="this.closest('button').remove()">
       <span class="absolute top-1.5 left-1.5">${badge(it.market,1)}</span>${soon?`<span class="absolute top-1.5 right-1.5 chipx bg-sky-600 text-white">Yakında</span>`:old?`<span class="absolute top-1.5 right-1.5 chipx bg-stone-700 text-white">Geçmiş</span>`:""}</div>
     <div class="p-2.5"><p class="text-[13px] font-extrabold leading-snug line-clamp-2">${esc(it.market==="bim"?(it.group+" · "+it.label):it.title)}</p>${it.market!=="bim"&&(it.label||isCamp(it))?`<p class="text-[11px] text-stone-500 mt-0.5 line-clamp-1">${esc([it.label,isCamp(it)?num(it.count||it.ids.length)+" ürün":""].filter(Boolean).join(" · "))}</p>`:""}</div></button>`}
+// Ana sayfa rafı için yatay Migros kartı: iki tanesi alt alta bir dikey afiş boyunu doldurur
+function campMini(it){
+  const mg=it.market==="migros",n=isCamp(it)?num(it.count||it.ids.length)+" ürün":mg?"Migros'ta aç":"";
+  return`<button ${isCamp(it)?`data-camp="${esc(it.slug)}"`:`data-poster="${POST.indexOf(it)}"`} class="pc !p-0 overflow-hidden text-left flex-1 !gap-0">
+    <div class="relative bg-white ${mg?"aspect-[38/10]":"aspect-[2/1]"} overflow-hidden shrink-0">${mg?"":`<span class="absolute top-1.5 left-1.5">${badge(it.market,1)}</span>`}<img src="${esc(it.image)}" alt="${esc(it.title)}" loading="lazy" class="w-full h-full object-cover" onerror="this.closest('button').remove()"></div>
+    <div class="px-2.5 py-2 flex-1 flex flex-col"><p class="text-[12.5px] font-extrabold leading-snug ${mg?"line-clamp-2":"line-clamp-1"}">${esc(it.title)}</p>
+      <p class="mt-auto pt-1 text-[11px] text-stone-500 flex items-center justify-between gap-1"><span class="truncate">${esc([it.label,n].filter(Boolean).join(" · "))}</span><span class="font-extrabold ${mg?"text-orange-600":"text-yellow-700"} shrink-0">Gör ›</span></p></div></button>`}
 const linkCard=(l,cls="")=>`<a href="${esc(l.url)}" target="_blank" rel="noopener" class="pc ${cls} justify-between gap-2"><span>${badge(l.market,1)}</span><span class="font-extrabold text-sm leading-snug">${esc(l.title)}</span><span class="text-[11px] text-stone-500 leading-snug">${esc(l.text)}</span><span class="text-xs font-extrabold text-emerald-700 flex items-center gap-1">Sitesinde aç<i data-lucide="external-link" class="w-3.5 h-3.5"></i></span></a>`;
 // Güncel olanlar önce: BİM'de tarihi yakın/gelmemiş afişler, sonra Şok kampanyaları, geçmiş BİM afişleri en sonda
 function sortedPosters(){
@@ -320,9 +327,14 @@ function drawH(){
   $("deals").innerHTML=st.filter(o=>disc(o)>0).sort((a,b)=>disc(b)-disc(a)).slice(0,20).map((o,i)=>pcard(o,{strip:1,i})).join("")||`<p class="text-sm text-stone-500">Şu an indirim görünmüyor.</p>`;
   // Rafta marketler sırayla karışık: BİM afişi, Migros kampanyası, Şok kampanyası…
   const live=sortedPosters().filter(it=>{const w=posterState(it);return!w||w.state!=="old"&&w.state!=="expired"}),by={};
-  live.forEach(it=>(by[it.market]=by[it.market]||[]).push(it));const ps=[];
-  for(let k=0;ps.length<15&&Object.values(by).some(a=>a.length>k);k++)Object.values(by).forEach(a=>{if(a[k]&&ps.length<15)ps.push(a[k])});
-  $("hPost").innerHTML=ps.map(it=>posterCard(it,POST.indexOf(it),"w-40 shrink-0")).join("")+POSTER_LINKS.map(l=>linkCard(l,"w-44 shrink-0")).join("");
+  live.forEach(it=>(by[it.market]=by[it.market]||[]).push(it));
+  // Her turda: bir BİM afişi, alt alta iki Migros kampanyası (dikey afişle aynı boyda), bir Şok kampanyası
+  const cols=[],take={},per={migros:2,sok:2};
+  for(let r=0;cols.length<12&&Object.keys(by).some(m=>(take[m]||0)<by[m].length);r++)
+    Object.keys(by).forEach(m=>{const n=per[m]||1,k=take[m]||0,part=by[m].slice(k,k+n);if(part.length&&cols.length<12){cols.push(part);take[m]=k+n}});
+  $("hPost").innerHTML=cols.map((c,j)=>per[c[0].market]
+    ?`<div class="${c[0].market==="migros"?"w-64":"w-44"} shrink-0 flex flex-col gap-2.5" style="--i:${j}">${c.map(it=>campMini(it)).join("")}</div>`
+    :posterCard(c[0],POST.indexOf(c[0]),"w-40 shrink-0")).join("")+POSTER_LINKS.map(l=>linkCard(l,"w-44 shrink-0")).join("");
   $("units").innerHTML=UNIT_Q.map(([q,l,ic])=>`<button data-uq="${esc(q)}" class="uchip"><i data-lucide="${ic}" class="w-4 h-4 text-emerald-600"></i>${l}</button>`).join("");
   $("stores").innerHTML=DATA_M.filter(m=>O.some(o=>o.market===m)).map(m=>{const n=st.filter(o=>o.market===m),d=n.filter(o=>disc(o)>0).length,s=CHECK[m],failed=s&&s.status!=="tamam"&&!s.partial,part=s&&s.partial;
     return`<button data-bm="${m}" data-open="1" class="store st-${m}"><span class="font-display font-extrabold text-lg lg:text-2xl">${M[m].n}</span>
