@@ -44,6 +44,7 @@
       <button data-view="home" data-top="1"><i data-lucide="house" class="w-4 h-4"></i>Ana sayfa</button>
       <button data-view="browse" data-top="1"><i data-lucide="layout-grid" class="w-4 h-4"></i>Tüm ürünler</button>
       <button data-view="promos" data-top="1"><i data-lucide="gift" class="w-4 h-4"></i>Kampanyalar</button>
+      <button data-view="posters" data-top="1"><i data-lucide="newspaper" class="w-4 h-4"></i>Afişler</button>
       <button data-view="compare" data-top="1"><i data-lucide="scale" class="w-4 h-4"></i>Karşılaştır</button>
       <button data-view="list" data-top="1"><i data-lucide="list-checks" class="w-4 h-4"></i>Listem</button>
     </div>
@@ -62,6 +63,11 @@
 
     <section data-reveal>
       <div id="cats" class="cats noscroll"></div>
+    </section>
+
+    <section data-reveal>
+      <div class="shelf-head"><h2><i data-lucide="newspaper" class="w-5 h-5 text-sky-600"></i>Haftanın afişleri</h2><button data-view="posters" data-plain="1" class="see-all">Tümü<i data-lucide="chevron-right" class="w-4 h-4"></i></button></div>
+      <div id="hPost" class="shelf noscroll stagger"></div>
     </section>
 
     <section data-reveal>
@@ -152,11 +158,31 @@
     <div id="res" class="grid grid-cols-1 gap-3 lg:grid-cols-2 items-start"></div>
   </div>
 
+  <!-- Afişler -->
+  <div id="posters" class="hidden">
+    <h2 class="page-title">Afişler ve kampanyalar</h2>
+    <p class="text-sm text-stone-500 mt-1">Marketlerin kendi yayımladığı haftalık afişler ve kampanya görselleri. Görsele dokunarak büyütebilirsin.</p>
+    <div id="pMk" class="flex gap-2 overflow-x-auto noscroll mt-3"></div>
+    <p id="pInfo" class="text-sm text-stone-500 mt-3 mb-2"></p>
+    <div id="pGrid" class="stagger grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2.5 lg:gap-3 items-start"></div>
+  </div>
+
   <!-- Listem -->
   <div id="list" class="hidden grid grid-cols-1 gap-3 lg:grid-cols-2 items-start"></div>
 
   <p class="text-xs text-stone-500 mt-10 leading-relaxed">Fiyatlar marketlerin online satış fiyatıdır; şube rafındaki fiyat, stok ve kampanya farklı olabilir. BİM yalnızca haftalık aktüel ve indirim ürünlerini yayımlar. Eşleştirme ürün adına göre otomatik yapılır; satın almadan önce ürünü kontrol edin.</p>
 </main>
+
+<div id="viewer" class="hidden fixed inset-0 z-[55] bg-black/95 flex flex-col" role="dialog" aria-label="Afiş">
+  <div class="flex items-center gap-2 p-3 text-white">
+    <div class="flex-1 min-w-0"><p id="vTitle" class="font-extrabold truncate"></p><p id="vSub" class="text-xs opacity-70 truncate"></p></div>
+    <a id="vLink" target="_blank" rel="noopener" class="chipx bg-white/15 text-white !py-2">Kaynakta aç<i data-lucide="external-link" class="w-3.5 h-3.5"></i></a>
+    <button data-vx class="icon-btn" aria-label="Kapat"><i data-lucide="x" class="w-5 h-5"></i></button>
+  </div>
+  <div id="vBox" class="flex-1 min-h-0 overflow-auto grid place-items-center px-2 pb-4"><img id="vImg" class="max-w-full max-h-full object-contain rounded-lg pop-in" alt=""></div>
+  <button data-vprev class="icon-btn absolute left-2 top-1/2 text-white" aria-label="Önceki"><i data-lucide="chevron-left" class="w-6 h-6"></i></button>
+  <button data-vnext class="icon-btn absolute right-2 top-1/2 text-white" aria-label="Sonraki"><i data-lucide="chevron-right" class="w-6 h-6"></i></button>
+</div>
 
 <div id="scanner" class="hidden fixed inset-0 z-50 bg-black">
   <video id="cam" class="w-full h-full object-cover" playsinline muted></video>
@@ -175,5 +201,5 @@
 </nav>
 <script src="js/match.js?v=8"></script>
 <script src="js/core.js?v=4"></script>
-<script src="js/app.js?v=16"></script>
+<script src="js/app.js?v=17"></script>
 </body></html>

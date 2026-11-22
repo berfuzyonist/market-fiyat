@@ -48,6 +48,7 @@ Bilinen alan durumu: ad, fiyat, normal fiyat, stok, görsel, adres ve kampanya m
 | `bim.yml` | günde 2 aktüel | |
 | `update-one-product.yml` | `[FİYAT GÜNCELLE]` başlıklı talep (issue) | yalnızca OWNER/MEMBER/COLLABORATOR; sıralı; 10 dk zaman aşımı |
 | `tests.yml` | PR ve main dışı itmeler | Python + JavaScript testleri, JSON doğrulama |
+| `posters.yml` | günde 2 (TR 08:43, 16:43) | BİM "Afişler" sayfası ve Şok kampanyalar sayfası (her biri tek istek) → `data/posters-<market>.json`. Görseller indirilmez, marketin kendi adresleri listelenir. Migros'un afiş listesi herkese açık yoldan tam alınamadığı, A101 de otomatik erişime kapalı olduğu için bu ikisi için yalnızca kendi sayfalarına bağlantı gösterilir. |
 | `health.yml` | 3 saatte bir | `scripts/health.py`: veri yaşı (Migros/Şok 6 sa, BİM 30 sa) ve son 48 saatte doğrulanan ürün oranı; sorun varsa `[SAĞLIK]` talebi açar/günceller, düzelince kapatır. Depoya yazmaz. |
 
 GitHub Actions zamanlaması en iyi çaba esaslıdır; dakikası garanti değildir.
