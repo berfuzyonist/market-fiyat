@@ -44,7 +44,7 @@ function categoryOf(o){
 // O: tek tek market ürünleri, G: aynı ürünün marketlerdeki teklifleri, CMP: karşılaştırma listeleri
 let O=[],OI={},G=[],GI={},CMP={same:[],size:[],staple:[]},PROMO=[];
 const FRESH=new Set(); // "Fiyat güncel mi?" paneli açık ürünler (kaydedilmez)
-let done=load("done",{}),HIST={},S={sort:"rel"},UOPEN=false;
+let done=load("done",{}),HIST={},S={sort:"rel"},UOPEN=false,USIZE="";
 let QTY=load("qty",{});
 let NOTES=load("notes",[]); // listedeki serbest notlar: [{t:"ekmek",d:0}]
 let cart=load("cart",[]),bmap=load("bmap",{}),reqs=load("req",{}),pending=null,only=null,updated="",UPD={},CHECK={},CHECKS={},view="home";
@@ -418,15 +418,28 @@ function unitPanel(q){
       <div class="w-16 h-16 rounded-2xl bg-white grid place-items-center shrink-0 relative z-10">${b.o.image?`<img src="${esc(b.o.image)}" alt="" class="w-14 h-14 object-contain">`:""}</div>
       <div class="min-w-0 relative z-10"><p class="text-[11px] font-extrabold uppercase tracking-wider text-emerald-100 flex items-center gap-1"><i data-lucide="trophy" class="w-3.5 h-3.5"></i>${u==="adet"?"Adedi":u==="kg"?"Kilosu":"Litresi"} en ucuz</p>
       <p class="font-bold leading-snug">${esc(b.o.name)}</p><p class="text-sm"><span class="font-display font-extrabold text-xl">${tl(b.u.v)}/${u}</span> · ${M[b.o.market].at} ${tl(b.o.price)}</p></div></button>
-    <p class="mt-4 mb-2 text-sm font-extrabold">Boy boy en ucuzlar <span class="text-stone-400 font-bold">· dokun, ürüne git</span></p>
-    <div class="space-y-1.5">${(UOPEN?r.sizes:r.sizes.slice(0,4)).map((s,i)=>{const h=s.best,w=h===b;
-      return`<div data-show="${esc((GI[h.o.id]||{}).key||h.o.id)}" class="urow ${w?"ring-2 ring-emerald-500":""}">
+    <p class="mt-4 mb-2 text-sm font-extrabold">Boy boy en ucuzlar <span class="text-stone-400 font-bold">· dokun, o boydaki tüm markalar</span></p>
+    <div class="space-y-1.5">${(UOPEN?r.sizes:r.sizes.slice(0,4)).map((s,i)=>{const h=s.best,w=h===b,key=q+"|"+s.label,open=USIZE===key;
+      return`<div data-usize="${esc(key)}" class="urow cursor-pointer ${w?"ring-2 ring-emerald-500":""} ${open?"!rounded-b-none":""}">
         <span class="fill" style="width:${Math.max(8,h.u.v/max*100)}%;animation-delay:${i*50}ms;${w?"background:#a7f3d0":""}"></span>
         <div class="relative flex items-center gap-2"><span class="w-[5.4rem] shrink-0 font-display font-extrabold text-[13px] leading-tight">${esc(s.label)}</span>
           <span class="flex-1 min-w-0"><span class="block text-xs font-semibold truncate">${esc(h.o.name)}</span><span class="text-[11px] text-stone-500">${badge(h.o.market,1)} ${tl(h.o.price)}${s.count>1?` · ${s.count} seçenek`:""}</span></span>
-          <span class="text-right shrink-0 tabular font-extrabold ${w?good:""}">${tl(h.u.v)}<span class="text-[11px] font-bold">/${u}</span></span></div></div>`}).join("")}</div>
+          <span class="text-right shrink-0 tabular font-extrabold ${w?good:""}">${tl(h.u.v)}<span class="text-[11px] font-bold">/${u}</span></span>
+          ${s.count>1?`<i data-lucide="${open?"chevron-up":"chevron-down"}" class="w-4 h-4 shrink-0 text-stone-500"></i>`:""}</div></div>${open?sizeBrands(s,u):""}`}).join("")}</div>
     ${r.sizes.length>4?`<button data-uopen class="mt-2 w-full py-2.5 rounded-xl bg-stone-100 dark:bg-stone-800 text-sm font-extrabold flex items-center justify-center gap-1 active:scale-[.98] transition">${UOPEN?"Daha az göster":`Tüm boyları göster (${r.sizes.length})`}<i data-lucide="${UOPEN?"chevron-up":"chevron-down"}" class="w-4 h-4"></i></button>`:""}
   </section>`}
+
+// Bir boydaki tüm markalar ve marketler: birim fiyata göre, her satırda listeye ekleme
+function sizeBrands(s,u){
+  const seen=new Set(),rows=s.items.filter(h=>{const k=(GI[h.o.id]||{}).key||h.o.id;if(seen.has(k+h.o.market))return false;seen.add(k+h.o.market);return true});
+  const SHOW=20,more=rows.length-SHOW;
+  return`<div class="enter rounded-b-2xl bg-white ring-1 ring-stone-200 -mt-1.5 px-3 pb-1 ${div}">${rows.slice(0,SHOW).map((h,i)=>{const g=GI[h.o.id],key=g?g.key:h.o.id,inC=g&&inCart(g);
+    return`<div class="flex items-center gap-2.5 py-2">${img(h.o.image,"w-11 h-11 shrink-0")}
+      <div data-show="${esc(key)}" class="flex-1 min-w-0 cursor-pointer"><p class="text-[13px] font-bold leading-snug line-clamp-2">${i===0?`<span class="${good}">★ </span>`:""}${esc(h.o.name)}</p>
+        <p class="text-[11px] text-stone-500 mt-0.5">${badge(h.o.market,1)} <span class="tabular">${tl(h.u.v)}/${u}</span>${disc(h.o)?` · <span class="text-red-600 font-bold">%${Math.round(disc(h.o)*100)} indirim</span>`:""}</p></div>
+      <span class="price tabular text-[15px] shrink-0">${tl(h.o.price)}</span>
+      ${g?`<button data-add="${esc(key)}" aria-label="${inC?"Listeden çıkar":"Listeye ekle"}" class="w-9 h-9 shrink-0 rounded-xl grid place-items-center ${inC?"bg-stone-200 text-stone-700":"bg-emerald-600 text-white"} active:scale-90 transition"><i data-lucide="${inC?"check":"plus"}" class="w-4 h-4"></i></button>`:""}</div>`}).join("")}
+    ${more>0?`<p class="py-2 text-center text-xs text-stone-500">${more} ürün daha var; aramayı daraltabilirsin (ör. “${esc(s.label)}”).</p>`:""}</div>`}
 
 // ---------- Ara ----------
 function offerRow(o,isB){
@@ -817,6 +830,7 @@ document.addEventListener("click",e=>{const t=s=>e.target.closest(s);let el;
   else if(t("[data-undone]")){done={};NOTES.forEach(n=>n.d=0);save("done",done);save("notes",NOTES);redraw()}
   else if(el=t("[data-ss]")){S.sort=el.dataset.ss;redraw()}
   else if(t("[data-uopen]")){UOPEN=!UOPEN;redraw()}
+  else if(el=t("[data-usize]")){USIZE=USIZE===el.dataset.usize?"":el.dataset.usize;redraw()}
   else if(el=t("[data-grp]")){const k=el.dataset.grp;B.grp=el.dataset.stay&&B.grp===k?"":k;B.cat="";B.page=0;if(!el.dataset.stay){Object.assign(B,{m:"",disc:false,sort:"disc"});go("browse")}else redraw()}
   else if(el=t("[data-uq]")){only=null;pending=null;setQ(el.dataset.uq);go("search")}
   else if(el=t("[data-map]")){bmap[pending]=el.dataset.map;save("bmap",bmap);only=el.dataset.map;pending=null;redraw();note("Barkod eşleştirildi. Bir dahaki okutmada ürün doğrudan açılır.")}

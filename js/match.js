@@ -160,8 +160,12 @@ const ACCESSORY=new Set("sise sisesi torba torbasi kova kovasi matara kap kabi s
 function unitCompare(rows,query){
   const words=fold(query).replace(/[^a-z0-9 ]+/g," ").split(" ").filter(Boolean);
   if(!words.length)return null;
+  // Sorgu bir temel ürünse ("süt", "su", "yumurta") o ürünün dışlama listesi de uygulanır:
+  // "süt" boylarında kakaolu/aromalı süt, "su"da maden suyu çıkmaz.
+  const fq=words.join(" "),staple=STAPLES.find(r=>r.re.test(fq)&&fq.length<=12);
   const hits=[];
   for(const o of rows){const p=o._p;if(!p||!p.qty)continue;
+    if(staple&&staple.not.test(o._f||(o._f=fold(o.name))))continue;
     const toks=(o._t||(o._t=fold(o.name).replace(/[^a-z0-9]+/g," ").split(" ")));
     if(!words.every(w=>toks.some(t=>w.length<4?t===w:t.startsWith(w))))continue;
     if(toks.some(t=>ACCESSORY.has(t)&&!words.includes(t)))continue;
@@ -179,7 +183,7 @@ function unitCompare(rows,query){
     if(!sizes.has(k))sizes.set(k,{label,n:h.q.n,items:[]});sizes.get(k).items.push(h)}
   const out=[...sizes.values()].map(s=>{s.items.sort((a,b)=>a.u.v-b.u.v);
     const per={};s.items.forEach(h=>{if(!per[h.o.market])per[h.o.market]=h});
-    return{label:s.label,n:s.n,count:s.items.length,best:s.items[0],markets:Object.values(per)}}).sort((a,b)=>a.n-b.n||a.label.localeCompare(b.label));
+    return{label:s.label,n:s.n,count:s.items.length,best:s.items[0],items:s.items,markets:Object.values(per)}}).sort((a,b)=>a.n-b.n||a.label.localeCompare(b.label));
   list.sort((a,b)=>a.u.v-b.u.v);
   return{unit:list[0].u.u,count:list.length,dropped,best:list[0],top:list.slice(0,5),sizes:out};
 }
