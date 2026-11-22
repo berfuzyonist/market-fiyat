@@ -231,13 +231,24 @@ def migros(products, notes):
                 votes[top] = votes.get(top, 0) + 1
         return max(votes, key=votes.get) if votes else None
 
+    gaps = []
+
     def crawl(slug):
         page, pages, prev = 1, 1, None
         while page <= min(pages, c["max_pages"]):
             info = page_of(slug, page)
             items = (info or {}).get("storeProductInfos") or []
             if not info or not items or items[0].get("id") == prev:
-                raise Stop(f"Migros kategori sayfası eksik/boş: {slug}, sayfa {page}")
+                # Ara sıra boş/yinelenen sayfa dönüyor: bir kez bekleyip yeniden dene; yine boşsa
+                # bu kategoriyi bırak ve taramaya devam et. Sonunda tarama "kısmi" sayılır, böylece
+                # okunamayan ürünler katalogdan silinmez.
+                time.sleep(20)
+                info = page_of(slug, page)
+                items = (info or {}).get("storeProductInfos") or []
+                if not info or not items or items[0].get("id") == prev:
+                    gaps.append(f"{slug} s.{page}")
+                    notes.append(f"{slug}: sayfa {page} boş döndü, kategorinin kalanı atlandı")
+                    return
             prev, pages = items[0].get("id"), info.get("pageCount", 1)
             if pages > c["max_pages"]:
                 raise Stop(f"Migros sayfa sınırı aşıldı: {slug}, {pages} sayfa")
@@ -296,6 +307,8 @@ def migros(products, notes):
                 raise Stop(f"site haritası kategorilerinin çoğu 404 döndü ({len(gone)}/{extra}); site düzeni değişmiş olabilir")
     if gone:
         notes.append(f"site haritasındaki {len(gone)} kategori artık yok (404), atlandı: {', '.join(gone[:10])}")
+    if gaps:
+        raise Stop(f"{len(gaps)} kategori sayfası boş döndü ({', '.join(gaps[:5])}); okunan ürünler kısmi olarak yayımlanır")
     notes.append(f"{len(crawled)} üst kategori tarandı; {len(page_cache)} kategori sayfası tekrar istek yapılmadan önbellekten kullanıldı")
 # ---------- Şok ----------
 

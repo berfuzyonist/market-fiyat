@@ -132,3 +132,9 @@ test("esnek eşleştirme: yazım farkları birleşir, farklı çeşitler birleş
   const G=MF.group(rows);const g=G.find(x=>x.offers.some(o=>o.id==="sok:9"));
   assert.deepEqual(g.offers.map(o=>o.id).sort(),["migros:9","sok:9"]);
 });
+test("bedava ürünlü kampanyalar ayrı türde",()=>{
+  const p=t=>C.promoOf({promo:t,price:100});
+  assert.equal(p("1 ALANA 1 BEDAVA").sub,"free");assert.equal(p("1 ALANA 1 BEDAVA").eff,50);
+  assert.equal(p("2 Al 1 Öde").sub,"free");assert.equal(p("3 Al 2 Öde").eff.toFixed(2),"66.67");
+  assert.equal(p("2.si %50").sub,"nth");assert.equal(p("2.si %50").label,"2. ürün %50 indirimli");
+});
