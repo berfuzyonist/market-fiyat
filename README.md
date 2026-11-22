@@ -124,3 +124,12 @@ Hiçbir API anahtarı veya parola kullanılmaz; iş akışları yalnızca GitHub
 - Şok ürün sayfası yaklaşık 0,5 MB'tır; tek ürün kontrolü yine de tek istektir.
 - Tek ürün kontrolü GitHub hesabıyla talep açmayı gerektirir (uygulamada anahtar saklanmaz).
 - Migros tam taraması ~1,5-2 saat sürer ve zaman zaman 403 (erişim sınırı) ile durur; bu durumda eski veri korunur.
+
+## Kullanım kolaylıkları
+
+- **Arama alakası** (`MFC.searchScore`): Türkçe karaktersiz eşleşir ("sut" → "süt"); kelimenin adda tek başına
+  ya da sonda (asıl ürün) geçmesi öne, türevleri ("Yumurtalı", "Püresi", "Süzgeci") geriye alınır; en alakalı
+  sonuçların çoğunun bulunduğu bölüm (yumurta → kahvaltılık) öne çıkar.
+- **Liste**: serbest notlar ("ekmek"), WhatsApp/SMS ile metin olarak paylaşma, aynı tür ve benzer boyda birim
+  fiyatı en az %5 ucuz muadil önerisi (tek dokunuşla değiştirme). Ürün sayfasında da en çok 3 muadil gösterilir.
+- **Çevrimdışı** (`sw.js`): her istek önce internetten yapılır; bağlantı yoksa son kaydedilen sürüm açılır.

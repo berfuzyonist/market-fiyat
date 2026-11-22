@@ -138,3 +138,13 @@ test("bedava ürünlü kampanyalar ayrı türde",()=>{
   assert.equal(p("2 Al 1 Öde").sub,"free");assert.equal(p("3 Al 2 Öde").eff.toFixed(2),"66.67");
   assert.equal(p("2.si %50").sub,"nth");assert.equal(p("2.si %50").label,"2. ürün %50 indirimli");
 });
+
+test("arama: Türkçe karaktersiz eşleşir, asıl ürün türevlerinden önce gelir",()=>{
+  const rank=(q,names)=>names.map(([n,c])=>({n,s:C.searchScore(n,c||"",C.searchWords(q))})).filter(x=>x.s>=0).sort((a,b)=>b.s-a.s).map(x=>x.n);
+  assert.deepEqual(rank("domates",[["Tat Domates Püresi 200 g"],["Domates Salkım Kg","Meyve, Sebze"],["Kelebek Makarna"]]),["Domates Salkım Kg","Tat Domates Püresi 200 g"]);
+  assert.equal(rank("yumurta",[["Filiz Yumurtalı Uzun Erişte 350 g"],["Keskinoğlu 10'lu Yumurta L"]])[0],"Keskinoğlu 10'lu Yumurta L");
+  assert.equal(rank("pirinc",[["Ülker Piko Pirinç Patlağı 18 g"],["Anadolu Mutfağı Yerli Pilavlık Pirinç 2.5 kg"]])[0],"Anadolu Mutfağı Yerli Pilavlık Pirinç 2.5 kg");
+  assert.equal(rank("süt",[["Biscolata Stix Sütlü 40 G"],["Pınar Süt %1 Yağlı 1 L","Süt, Kahvaltılık"]])[0],"Pınar Süt %1 Yağlı 1 L");
+  assert.equal(rank("aycicek yagi",[["Evin Ayçiçek Yağı Pet 5 L"]]).length,1);
+  assert.equal(C.searchScore("Çay",""," ".split(" ").filter(Boolean)),-1);
+});
