@@ -129,6 +129,11 @@ def migros_promo(p):
             if value and value not in found:
                 found.append(value)
 
+    # Ürün sayfasında "2 Al 1 Öde" gibi gösterilen kampanyalar crmDiscountTags alanındadır;
+    # bunların çoğu Migros'un "çoklu indirim" listesinde yer almaz, yalnızca tam taramada görülür.
+    for tag in p.get("crmDiscountTags") or []:
+        if isinstance(tag, dict):
+            add(str(tag.get("tag") or ""))
     for badge in p.get("badges") or []:
         if not isinstance(badge, dict):
             continue
@@ -284,9 +289,11 @@ def migros(products, notes):
         except NotFound:
             # Site haritasında kalmış ama kaldırılmış kategori (ör. powerbank-c-12090).
             # Ürünleri başka kategoride zaten taranıyor; tüm gece taramasını düşürmez.
+            # Taramanın güvenilirliğini okunan ürün oranı belirler (main: full_min_product_ratio);
+            # yalnızca keşif denemelerinin yarısından fazlası 404 ise site düzeni değişmiş demektir.
             gone.append(slug)
-            if len(gone) > int(c.get("max_missing_categories", 25)):
-                raise Stop(f"çok sayıda site haritası kategorisi 404 döndü ({len(gone)}); tarama güvenilir değil")
+            if len(gone) > 50 and len(gone) > 0.5 * extra:
+                raise Stop(f"site haritası kategorilerinin çoğu 404 döndü ({len(gone)}/{extra}); site düzeni değişmiş olabilir")
     if gone:
         notes.append(f"site haritasındaki {len(gone)} kategori artık yok (404), atlandı: {', '.join(gone[:10])}")
     notes.append(f"{len(crawled)} üst kategori tarandı; {len(page_cache)} kategori sayfası tekrar istek yapılmadan önbellekten kullanıldı")
@@ -416,11 +423,34 @@ def migros_deals(products, notes):
 
 # ---------- BİM aktüel ----------
 
+_BIM_NUM = r'<div class="text quantify">\s*([\d.]+)\s*,?\s*(\d{0,2})\s*</div>(?:\s*<div class="kusurArea">\s*<span class="number">\s*(\d{1,2})\s*</span>)?'
+
+
+def _bim_num(m):
+    cents = m.group(2) or m.group(3) or "00"
+    return float(m.group(1).replace(".", "") + "." + cents.ljust(2, "0"))
+
+
+def bim_price(blk):
+    """BİM fiyat alanı: indirimli üründe üstü çizili eski fiyat (CountButton strikethrough)
+    ve satış fiyatı (gButton) ayrı yazılır. Döner: (satış fiyatı, normal fiyat) veya None."""
+    area = blk[blk.find('class="priceArea"'):] if 'class="priceArea"' in blk else blk
+    sale = re.search(r'class="gButton triangle"[^>]*>\s*' + _BIM_NUM, area)
+    if not sale:
+        return None
+    price = _bim_num(sale)
+    old = re.search(r'strikethrough"[^>]*>\s*' + _BIM_NUM, area)
+    regular = _bim_num(old) if old else price
+    return price, max(regular, price)
+
+
 def bim_cards(body, label):
-    out, parts = {}, re.split(r'(?=<a[^>]+href="/aktuel-urunler/[^"]+/aktuel\.aspx")', body)
+    # Her ürün kutusu '<div class="product ...">' ile başlar; kutuda aynı adrese giden iki bağlantı
+    # (görsel ve fiyat düğmesi) vardır, bu yüzden bağlantıdan değil kutudan bölünür.
+    out, parts = {}, re.split(r'(?=<div class="product[ "])', body)
     for blk in parts[1:]:
-        m = re.match(r'<a[^>]+href="(/aktuel-urunler/([^"/]+)/aktuel\.aspx)"', blk)
-        blk = blk[:5000]
+        m = re.search(r'<a[^>]+href="(/aktuel-urunler/([^"/]+)/aktuel\.aspx)"', blk[:3000])
+        blk = blk[:6000]
         heads = [html.unescape(re.sub(r"<[^>]+>", " ", h)).strip() for h in re.findall(r"<h2[^>]*>(.*?)</h2>", blk, re.S)]
         heads = [" ".join(h.split()) for h in heads if h.strip()]
         text = " ".join(html.unescape(re.sub(r"<[^>]+>", " ", blk)).split())
@@ -437,8 +467,12 @@ def bim_cards(body, label):
             size = ""
         name = " ".join(heads[:2] + ([size] if size else []))
         value = float(price.group(1).replace(".", "") + "." + (price.group(2) or "00"))
+        regular = value
+        structured = bim_price(blk)
+        if structured:
+            value, regular = structured
         out["bim:" + m.group(2)] = {
-            "id": "bim:" + m.group(2), "market": "bim", "name": name, "price": value, "regular": value,
+            "id": "bim:" + m.group(2), "market": "bim", "name": name, "price": value, "regular": regular,
             "in_stock": True, "image": src if src.startswith("https://") else "",
             "url": "https://www.bim.com.tr" + m.group(1),
             "cat": ("İndirim · " if re.match(r"\d+\s*-\s*\d+", label) else "Aktüel · ") + label,
@@ -564,15 +598,14 @@ def bim_one(product):
         raise NotFound(product["id"])
     blk = body[i:i + 8000]
     title = re.search(r'<h2 class="title">\s*(.*?)\s*</h2>', blk, re.S)
-    whole = re.search(r'class="text quantify">\s*([\d.]+)\s*,?\s*</div>', blk)
-    cents = re.search(r'class="number">\s*(\d{1,2})\s*</span>', blk)
-    if not title or not whole:
+    prices = bim_price(blk)
+    if not title or not prices:
         raise Stop("BİM ürün sayfasında ad veya fiyat bulunamadı")
-    price = float(whole.group(1).replace(".", "") + "." + (cents.group(1).ljust(2, "0") if cents else "00"))
+    price, regular = prices
     return {
         "name": " ".join(html.unescape(re.sub(r"<[^>]+>", " ", title.group(1))).split()),
         "price": price,
-        "regular": price,
+        "regular": regular,
         "in_stock": True,  # BİM stok bilgisi yayımlamaz
         "source": url,
     }
@@ -880,16 +913,35 @@ def main():
         else:
             merged = fresh if (state == "tamam" and fresh) else dict(old)
 
+    # Yarıda kalan tam tarama (403, ağ hatası…): kaynaktan okunan ürünler gerçek ve doğrulanmış
+    # fiyatlardır; atılmaz. Eski katalogdaki kayıtlar korunur, okunanlar güncellenir (kısmi yayım).
+    partial = False
     if state != "tamam":
         merged = dict(old)
         complete = False
+        if mode == "full" and fresh and old:
+            for k, p in fresh.items():
+                merged[k] = {**p, "cat": p.get("cat") or (old.get(k) or {}).get("cat") or ""}
+                if not p.get("promo") and (old.get(k) or {}).get("promo") and market == "sok":
+                    merged[k]["promo"] = old[k]["promo"]
+            partial = True
+            notes.append(f"kısmi yayım: {len(fresh)} ürünün fiyatı güncellendi, kalan {len(old) - len(set(old) & set(fresh))} ürün önceki doğrulamasıyla korundu")
+
+    # Uzun süredir hiçbir taramada görülmeyen ürün katalogdan kaldırılmış sayılır.
+    stale_days = int(quality_cfg.get("drop_unseen_days", 10))
+    if mode == "full" and (state == "tamam" or partial):
+        limit = now_ts - stale_days * 86400
+        dropped = [k for k, p in merged.items() if isinstance(p.get("seen"), int) and p["seen"] < limit]
+        for k in dropped:
+            del merged[k]
+        if dropped:
+            notes.append(f"{len(dropped)} ürün {stale_days} gündür görülmediği için katalogdan çıkarıldı")
 
     promos_before = {k: p.get("promo") or "" for k, p in merged.items()}
     if state == "tamam":
-        if market == "migros" and mode == "deals":
-            for k, p in merged.items():
-                if k not in fresh and p.get("promo"):
-                    merged[k] = {**p, "promo": ""}
+        # Migros indirim modu yalnızca iki listeyi okur; listede olmayan ürünün kampanyası
+        # (crmDiscountTags) burada silinmez, gece tam taramasında yenilenir. Doğrulaması
+        # 48 saati geçen ürünün kampanyası arayüzde gösterilmez.
         if market == "sok" and SOK_PROMOS is not None:
             for k, p in merged.items():
                 want = SOK_PROMOS.get(k, "")
@@ -900,7 +952,7 @@ def main():
     categories_changed = complete_categories(merged)
     attempted = datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")
     data_file_exists = (ROOT / "data" / f"{market}.json").exists()
-    has_new_prices = state == "tamam" and complete and bool(fresh)
+    has_new_prices = (state == "tamam" and complete and bool(fresh)) or partial
     should_write = bool(merged) and (has_new_prices or categories_changed or promos_changed or not data_file_exists)
     last_data_update = previous_data_update
     if should_write:
@@ -955,6 +1007,8 @@ def main():
         "mode": mode,
         "status": state,
         "complete": complete and state == "tamam",
+        # Tarama yarıda kaldı ama okunan ürünlerin fiyatları yayımlandı.
+        "partial": partial,
         "found": len(fresh),
         "total": len(merged),
         "seconds": round(time.time() - t0),

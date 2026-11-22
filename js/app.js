@@ -254,10 +254,10 @@ function drawH(){
   $("cats").innerHTML=GROUPS.map(([k,l,ic,bg,fg])=>`<button data-grp="${k}" class="cat"><span class="ic" style="background:${bg};color:${fg}"><i data-lucide="${ic}" class="w-7 h-7"></i></span>${l}</button>`).join("");
   $("deals").innerHTML=st.filter(o=>disc(o)>0).sort((a,b)=>disc(b)-disc(a)).slice(0,20).map((o,i)=>pcard(o,{strip:1,i})).join("")||`<p class="text-sm text-stone-500">Şu an indirim görünmüyor.</p>`;
   $("units").innerHTML=UNIT_Q.map(([q,l,ic])=>`<button data-uq="${esc(q)}" class="uchip"><i data-lucide="${ic}" class="w-4 h-4 text-emerald-600"></i>${l}</button>`).join("");
-  $("stores").innerHTML=DATA_M.filter(m=>O.some(o=>o.market===m)).map(m=>{const n=st.filter(o=>o.market===m),d=n.filter(o=>disc(o)>0).length,s=CHECK[m],failed=s&&(s.status!=="tamam"||s.complete===false);
+  $("stores").innerHTML=DATA_M.filter(m=>O.some(o=>o.market===m)).map(m=>{const n=st.filter(o=>o.market===m),d=n.filter(o=>disc(o)>0).length,s=CHECK[m],failed=s&&s.status!=="tamam"&&!s.partial,part=s&&s.partial;
     return`<button data-bm="${m}" data-open="1" class="store st-${m}"><span class="font-display font-extrabold text-lg lg:text-2xl">${M[m].n}</span>
       <span class="block text-xs lg:text-sm font-bold mt-1 tabular opacity-95">${num(n.length)} ürün</span><span class="block text-xs lg:text-sm font-extrabold tabular">${num(d)} indirim</span>
-      <span class="block text-[10px] mt-1 opacity-80">${failed?"⚠ son tarama başarısız":UPD[m]?"Güncellendi "+MFC.ago(MFC.toTs(UPD[m])):""}</span></button>`}).join("");
+      <span class="block text-[10px] mt-1 opacity-90">${UPD[m]?"Veri: "+MFC.ago(MFC.toTs(UPD[m])):""}${failed?" · ⚠ son deneme başarısız":part?" · kısmen güncellendi":""}</span></button>`}).join("");
   $("hCmp").innerHTML=CMP.same.filter(it=>it.diff>=1).sort((a,b)=>b.pct-a.pct).slice(0,14).map((it,i)=>`<article data-show="${esc(it.key)}" class="pc w-60 shrink-0" style="--i:${i}">
     <div class="flex gap-2 items-center"><div class="ph w-16 shrink-0">${it.image?`<img src="${esc(it.image)}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">`:""}</div><p class="text-[13px] font-bold leading-snug max-h-[3.4rem] overflow-hidden">${esc(it.title)}</p></div>
     <div class="mt-2 space-y-1">${it.rows.map(r=>`<div class="flex items-center justify-between">${badge(r.o.market,1)}<span class="tabular text-sm font-extrabold ${r.o===it.win?good:"text-stone-400 line-through"}">${tl(r.o.price)}</span></div>`).join("")}</div>
@@ -321,6 +321,44 @@ function spark(o){
   const d=pts.map((p,i)=>(i?"L":"M")+X(p[0]).toFixed(1)+" "+Y(p[1]).toFixed(1)).join(" ");
   return`<div class="mt-2"><p class="text-[11px] font-bold text-stone-500">Fiyat geçmişi · en düşük ${tl(y0)} · en yüksek ${tl(y1)}</p>
   <svg viewBox="0 0 240 40" class="w-full h-10 mt-1"><path d="${d}" fill="none" stroke="#059669" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" class="draw"/>${pts.map(p=>`<circle cx="${X(p[0]).toFixed(1)}" cy="${Y(p[1]).toFixed(1)}" r="2.5" fill="#059669"/>`).join("")}</svg></div>`}
+// ---------- Ürün bilgisi: uygulamadaki veriden otomatik metin (istek atmaz, kaydetmez) ----------
+const TIPS={
+  meyve:"Taze ürünlerde fiyat kilo ya da adet üzerinden olabilir; kasada tartıya göre değişebilir.",
+  et:"Soğuk zincir ürünüdür; buzdolabında saklayın ve etiketteki son tüketim tarihine uyun.",
+  sut:"Soğuk zincir ürünü olabilir; açıldıktan sonra buzdolabında saklayıp kısa sürede tüketin.",
+  donuk:"Eve gelince hemen dondurucuya koyun; çözülen ürünü yeniden dondurmayın.",
+  temizlik:"Çocukların ulaşamayacağı yerde saklayın; kullanım ve güvenlik uyarıları için etiketi okuyun.",
+  bakim:"Kullanmadan önce etiketteki kullanım talimatını ve uyarıları okuyun.",
+  bebek:"Yaş/evre ve kullanım bilgisini ambalajdan kontrol edin.",
+  evcil:"Hayvanınızın yaşına ve boyutuna uygunluğunu ambalajdan kontrol edin.",
+};
+let FAM=null;
+function famOf(o){if(!FAM){FAM={};MF.families(O).forEach(f=>f.offers.forEach(x=>FAM[x.id]=f))}return FAM[o.id]}
+function productInfo(g){
+  const b=best(g)||g.offers[0],p=b._p||{},av=avail(g),u=MF.unitPrice(b),grp=grpOf(b),G1=GROUPS.find(x=>x[0]===grp),out=[];
+  // Marka: adın ilk kelimesi; "Dr. Oetker", "M Life" gibi kısa/noktalı öneklerde ilk iki kelime
+  const ws=String(b.name).split(/\s+/),brand=ws[0]&&(ws[0].length<=2||/\.$/.test(ws[0]))&&ws[1]?ws[0]+" "+ws[1]:ws[0]||"";
+  out.push(`<b>${esc(g.name)}</b>${G1?`, ${esc(G1[1])} kategorisinde`:""} bir üründür${brand?` (marka: ${esc(brand)})`:""}.${p.qty?` Paket miktarı ${p.qty.u==="ad"?p.qty.n+" adet":p.qty.u==="g"?(p.qty.n>=1000?(p.qty.n/1000).toLocaleString("tr-TR")+" kg":p.qty.n+" g"):(p.qty.n>=1000?(p.qty.n/1000).toLocaleString("tr-TR")+" L":p.qty.n+" ml")}.`:""}`);
+  const ms=[...new Set(g.offers.map(o=>M[o.market].n))];
+  out.push(ms.length>1?`${ms.join(", ")} marketlerinde satılıyor; şu an en ucuz ${M[b.market].at} <b>${tl(b.price)}</b>.${av.length>1&&worst(g)-b.price>0.005?` En pahalı seçenekle arasında ${tl(worst(g)-b.price)} (%${Math.round((worst(g)-b.price)/worst(g)*100)}) fark var.`:""}`
+    :`Yalnızca ${M[b.market].at} bulunuyor; fiyatı <b>${tl(b.price)}</b>.`);
+  if(u){let t=`Birim fiyatı ${tl(u.v)}/${u.u}.`;
+    const f=famOf(b);if(f){const sizes={};f.offers.filter(usable).forEach(x=>{const v=MF.unitPrice(x);if(v&&(!sizes[x._p.qty.n]||v.v<sizes[x._p.qty.n].v.v))sizes[x._p.qty.n]={x,v}});
+      const lo=Object.values(sizes).sort((a,b)=>a.v.v-b.v.v)[0];
+      if(lo&&lo.x._p.qty.n!==p.qty.n&&lo.v.v<u.v*0.95)t+=` Aynı ürünün ${esc(lo.x.name.match(/\d[\d.,]*\s*(kg|gr|g|lt|l|ml|cl)\b/i)?.[0]||"başka")} boyu ${M[lo.x.market].at} ${tl(lo.v.v)}/${lo.v.u} ile birim fiyatta daha avantajlı.`}
+    out.push(t)}
+  const pr=b._promo;
+  if(pr&&usable(b)){if(pr.kind==="multi")out.push(`Kampanya: “${esc(pr.label)}”. ${pr.need} adet alındığında tanesi ${tl(pr.eff)}'ye gelir.`);
+    else if(pr.kind==="basket")out.push(`Sepet kampanyası: ${esc(pr.label)}.`);}
+  if(b.money&&disc(b))out.push(`Migros'taki indirimli fiyat Money üyelerine geçerlidir; üyeliksiz fiyat ${tl(b.regular)}.`);
+  if(b.market==="bim"&&b.when){const d=x=>x.toLocaleDateString("tr-TR",{day:"numeric",month:"long"});
+    out.push(b.na==="soon"?`BİM'de ${d(b.when.start)} tarihinde satışa çıkacak aktüel üründür.`:b.when.end?`BİM indirim dönemi: ${d(b.when.start)} – ${d(b.when.end)}.`:`BİM aktüel ürünüdür (${d(b.when.start)}); stoklarla sınırlıdır.`)}
+  const h=HIST[b.market],pts=h&&h!=="…"&&h[b.id];
+  if(pts&&pts.length>=2){const ys=pts.map(x=>x[1]);out.push(`Kayıtlı fiyat geçmişinde ${pts.length-1} değişim var; en düşük ${tl(Math.min(...ys))}, en yüksek ${tl(Math.max(...ys))}.`)}
+  out.push((TIPS[grp]?TIPS[grp]+" ":"")+"İçindekiler, alerjen ve son tüketim bilgisi için ambalaj etiketine bakın.");
+  return`<div class="${card} p-4 mt-4 enter"><h2 class="font-extrabold flex items-center gap-2"><i data-lucide="info" class="w-5 h-5 text-emerald-600"></i>Ürün bilgisi</h2>
+    <div class="mt-2 space-y-2 text-[14px] leading-relaxed text-stone-700">${out.map(x=>`<p>${x}</p>`).join("")}</div>
+    <p class="mt-3 text-[11px] text-stone-400">Bu metin uygulamadaki fiyat verisinden otomatik hazırlanır; marketin resmi ürün açıklaması değildir.</p></div>`}
 // Market sitesi ürün sayfası
 function productPage(g){
   g.offers.forEach(o=>loadHist(o.market));
@@ -353,6 +391,7 @@ function productPage(g){
           ${FRESH.has(o.id)?freshPanel(o)+`<p class="mt-1 text-[11px] text-stone-500">${checkLine(o)} · Depo sahibiyseniz: ${updBtn(o,"font-semibold underline")}</p>`:""}
           ${spark(o)}
         </div>`}).join("")}</div>
+      ${productInfo(g)}
       ${pending?`<button data-map="${esc(g.key)}" class="mt-3 w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold bg-amber-500 text-white"><i data-lucide="link" class="w-5 h-5"></i>Bu barkodla eşleştir</button>`:""}
     </div>
   </div>
@@ -541,7 +580,9 @@ function build(rows){
   G=MF.group(O);
   G.forEach(g=>{g.offers.sort((a,b)=>ORD.indexOf(a.market)-ORD.indexOf(b.market));g.key=g.offers[0].id;g.name=g.offers[0].name;g.image=(g.offers.find(o=>o.image)||{}).image;
     g.s=norm(g.offers.map(o=>o.name).join(" "));g.offers.forEach(o=>GI[o.id]=g)});
-  PROMO=O.filter(o=>o._promo&&usable(o));
+  // 48 saatten uzun süredir doğrulanmayan ürünün kampanyası güncel sayılmaz
+  O.forEach(o=>{if(o.stale&&o._promo&&o._promo.kind!=="bim")o._promo=null});
+  PROMO=O.filter(o=>o._promo&&usable(o));FAM=null;
   buildCompare();
 }
 route(); // açılışta adresteki sayfaya git (yenilemede aynı ürün açık kalır)

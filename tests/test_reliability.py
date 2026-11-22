@@ -243,25 +243,52 @@ class MainMergeTests(unittest.TestCase):
         self.assertEqual(status["collected_products"], 1)
         self.assertEqual(status["total_products"], 3)
 
-    def test_failed_crawl_keeps_old_data(self):
+    def test_failed_crawl_without_products_keeps_old_data(self):
         before = (self.root / "data" / "sok.json").read_text(encoding="utf-8")
 
         def job(products, notes):
-            products["sok:1"] = prod("sok:1", price=1)
             raise collect.Stop("www.sokmarket.com.tr: durum 403")
         code, data, status = self.run_main("full", job)
         self.assertEqual(code, 1)
         self.assertEqual((self.root / "data" / "sok.json").read_text(encoding="utf-8"), before)
         self.assertFalse(status["complete"])
+        self.assertFalse(status["partial"])
         self.assertEqual(status["data_updated"], "2026-11-20T00:00:00+00:00")
 
-    def test_partial_full_crawl_does_not_overwrite_catalog(self):
+    def test_interrupted_full_crawl_publishes_what_it_read(self):
+        """403 ile yarıda kalan tam tarama: okunan fiyatlar yayımlanır, kalanlar silinmez."""
+        def job(products, notes):
+            products["sok:1"] = prod("sok:1", price=9)
+            raise collect.Stop("www.sokmarket.com.tr: durum 403")
+        code, data, status = self.run_main("full", job)
+        self.assertEqual(code, 1)
+        self.assertEqual(len(data), 3)
+        self.assertEqual(data["sok:1"]["price"], 9)
+        self.assertEqual(data["sok:2"]["price"], 20)
+        self.assertTrue(status["partial"])
+        self.assertFalse(status["complete"])
+        self.assertNotEqual(status["data_updated"], "2026-11-20T00:00:00+00:00")
+
+    def test_suspiciously_small_full_crawl_does_not_delete_catalog(self):
         def job(products, notes):
             products["sok:1"] = prod("sok:1", price=11)  # 3 üründen 1'i: eşik altında
         code, data, status = self.run_main("full", job)
         self.assertEqual(code, 1)
-        self.assertEqual(len(data), 3)
-        self.assertEqual(data["sok:1"]["price"], 10)
+        self.assertEqual(len(data), 3)  # hiçbir ürün silinmedi
+        self.assertEqual(data["sok:1"]["price"], 11)  # okunan fiyat yine de güncel
+        self.assertTrue(status["partial"])
+
+    def test_long_unseen_products_are_dropped(self):
+        cat = collect.read_old("sok")
+        cat["sok:3"]["seen"] = 1000  # yıllardır görülmemiş
+        collect.write("sok", cat, "2026-11-20T00:00:00+00:00", self.root / "data" / "sok.json")
+
+        def job(products, notes):
+            products["sok:1"] = prod("sok:1", price=9)
+            raise collect.Stop("durum 403")
+        code, data, status = self.run_main("full", job)
+        self.assertNotIn("sok:3", data)
+        self.assertIn("sok:2", data)
 
     def test_invalid_fresh_row_is_not_published(self):
         def job(products, notes):
@@ -284,3 +311,87 @@ class MainMergeTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class BimDiscountTests(unittest.TestCase):
+    """BİM indirimli üründe üstü çizili eski fiyat ile satış fiyatı karışmamalı (gerçek sayfa kesiti)."""
+
+    def test_list_card_uses_sale_price(self):
+        body = (FIX / "bim_list_discount.html").read_text(encoding="utf-8")
+        cards = collect.bim_cards(body, "21-27 Kasım")
+        x = cards["bim:hazir-kahve-3u1-arada--2si1-arada-17-5-g--10-g-21-11"]
+        self.assertEqual((x["price"], x["regular"]), (12.0, 15.0))
+        self.assertTrue(x["image"].startswith("https://"))
+
+    def test_product_page_uses_sale_price(self):
+        body = (FIX / "bim_product_discount.html").read_text(encoding="utf-8")
+        p = prod("bim:hazir-kahve-3u1-arada--2si1-arada-17-5-g--10-g-21-11",
+                 url="https://www.bim.com.tr/aktuel-urunler/hazir-kahve-3u1-arada--2si1-arada-17-5-g--10-g-21-11/aktuel.aspx")
+        with patch.object(collect, "get", lambda u, a="": (200, body)):
+            out = collect.bim_one(p)
+        self.assertEqual((out["price"], out["regular"]), (12.0, 15.0))
+
+    def test_price_parts(self):
+        blk = ('<div class="priceArea"><div class="CountButton strikethrough"><div class="text quantify">1.325,</div>'
+               '<div class="kusurArea"><span class="number">50</span></div></div><a class="gButton triangle" href="#">'
+               '<div class="text quantify">1.099,</div><div class="kusurArea"><span class="number">9</span></div></a></div>')
+        self.assertEqual(collect.bim_price(blk), (1099.9, 1325.5))
+
+
+class DataMergeTests(unittest.TestCase):
+    """Yayımlama sırasında ürün bazında birleştirme (scripts/datamerge.py)."""
+
+    def setUp(self):
+        import sys
+        sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "scripts"))
+        import datamerge
+        self.m = datamerge
+
+    def rows(self, **kw):
+        return {k: prod(k.replace("_", ":"), price=v[0], seen=v[1]) for k, v in kw.items()}
+
+    def test_newer_verification_wins(self):
+        cur = {"sok:1": prod("sok:1", price=10, seen=500), "sok:2": prod("sok:2", price=20, seen=100)}
+        inc = {"sok:1": prod("sok:1", price=12, seen=300), "sok:2": prod("sok:2", price=22, seen=300)}
+        out, st = self.m.merge_rows(cur, inc, True, 200)
+        self.assertEqual(out["sok:1"]["price"], 10)   # saatlik tarama daha yeni doğruladı
+        self.assertEqual(out["sok:2"]["price"], 22)
+        self.assertEqual(st["kept_newer"], 1)
+
+    def test_complete_catalog_drops_delisted_but_keeps_recent(self):
+        cur = {"sok:1": prod("sok:1", seen=100), "sok:2": prod("sok:2", seen=100), "sok:3": prod("sok:3", seen=900)}
+        inc = {"sok:1": prod("sok:1", seen=800)}
+        out, st = self.m.merge_rows(cur, inc, True, 500)
+        self.assertEqual(sorted(out), ["sok:1", "sok:3"])  # sok:2 kaldırıldı, sok:3 tarama sırasında doğrulandı
+        self.assertEqual(st["dropped"], 1)
+
+    def test_deals_or_partial_keep_everything(self):
+        cur = {"sok:1": prod("sok:1", seen=100), "sok:2": prod("sok:2", seen=100)}
+        inc = {"sok:1": prod("sok:1", price=5, seen=800)}
+        out, _ = self.m.merge_rows(cur, inc, False, 500)
+        self.assertEqual(sorted(out), ["sok:1", "sok:2"])
+        self.assertEqual(out["sok:1"]["price"], 5)
+
+
+class HealthTests(unittest.TestCase):
+    def test_reports_stale_and_unverified_data(self):
+        import datetime
+        import importlib.util
+        root = pathlib.Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, root)
+        (root / "data").mkdir()
+        spec = importlib.util.spec_from_file_location("health", pathlib.Path(__file__).resolve().parent.parent / "scripts" / "health.py")
+        h = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(h)
+        now = datetime.datetime(2026, 11, 22, 12, tzinfo=datetime.timezone.utc)
+        fresh_ts, old_ts = int(now.timestamp()) - 3600, int(now.timestamp()) - 5 * 86400
+        for m, updated, seen in (("migros", "2026-11-21T00:00:00+00:00", old_ts), ("sok", "2026-11-22T11:00:00+00:00", fresh_ts),
+                                 ("bim", "2026-11-22T08:00:00+00:00", fresh_ts)):
+            collect.write(m, {f"{m}:1": prod(f"{m}:1" if m != "bim" else "bim:x", seen=seen)} if m != "bim" else
+                          {"bim:x": prod("bim:x", seen=seen)}, updated, root / "data" / f"{m}.json")
+            (root / "data" / f"status-{m}.json").write_text(json.dumps({"status": "tamam"}), encoding="utf-8")
+        with patch.object(h, "ROOT", root):
+            r = h.check(now)
+        self.assertFalse(r["ok"])
+        self.assertEqual(len([p for p in r["problems"] if p.startswith("Migros")]), 2)  # 36 saatlik veri + %0 doğrulama
+        self.assertFalse(any(p.startswith(("Şok", "BİM")) for p in r["problems"]))

@@ -55,7 +55,9 @@ incoming = load(incoming_status_path)
 current_data = load(data_path)
 current = load(status_path)
 
-incoming_success = incoming.get("status") == "tamam" and incoming.get("complete") is True
+# Kısmi tam tarama: tarama yarıda kaldı ama okunan ürünlerin doğrulanmış fiyatları dosyaya yazıldı.
+incoming_success = ((incoming.get("status") == "tamam" and incoming.get("complete") is True)
+                    or incoming.get("partial") is True)
 if incoming_success:
     if not incoming_data.get("products"):
         raise SystemExit("Refusing to publish: successful market file has no products")
@@ -99,17 +101,28 @@ incoming_data_time = stamp(incoming_data.get("updated"))
 publish_data = bool(incoming_success and incoming_data_time and
                     (not current_data_time or incoming_data_time > current_data_time))
 if publish_data:
-    # Fiyat geçmişi, ana daldaki son yayımlanmış sürümle karşılaştırılarak çıkarılır.
+    # Ürün bazında birleştir: yayımlanmış katalogda daha yeni doğrulanmış satır (saatlik indirim,
+    # "Fiyatı Güncelle") uzun süren taramanın eski okumasıyla ezilmez.
+    sys.path.insert(0, "scripts")
+    import datetime, datamerge
+    def ts(value):
+        try:
+            return int(datetime.datetime.fromisoformat(str(value).replace("Z", "+00:00")).timestamp())
+        except (TypeError, ValueError):
+            return None
+    replace_catalog = incoming.get("complete") is True and mode in ("full", "aktuel")
+    stats = datamerge.merge_files(market, data_path, incoming_data_path, data_path,
+                                  replace_catalog, ts(incoming.get("started_at")))
+    print("Merged catalog:", stats)
+    # Fiyat geçmişi, önceki yayımlanmış sürüm ile gerçekten yayımlanan birleşik sürüm arasından çıkarılır.
     # Geçmiş yazılamazsa fiyat verisinin yayımlanması engellenmez.
     try:
-        sys.path.insert(0, "scripts")
         import pricehist
         changed = pricehist.record_publish(f"data/history-{market}.json", market,
-                                           current_data, incoming_data, mode)
+                                           current_data, load(data_path), mode)
         print("Price history changes:", changed)
     except Exception as exc:  # noqa: BLE001
         print("WARNING: price history not updated:", repr(exc))
-    shutil.copyfile(incoming_data_path, data_path)
     current_data_time = incoming_data_time
 
 status_data_times = [

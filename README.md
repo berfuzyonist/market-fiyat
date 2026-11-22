@@ -34,19 +34,21 @@ Bilinen alan durumu: ad, fiyat, normal fiyat, stok, görsel, adres ve kampanya m
 
 1. `collect.py <market> <mod>` kaynaktan okur.
 2. `validate_products` her kaydı denetler: kimlik/ad boş olamaz, kimlik market biçimine uymalı, fiyat sonlu ve > 0 olmalı; normal fiyat güncel fiyattan düşükse veya indirim %90'ı aşıyorsa indirim üretilmez; market dışı adres silinir. Geçersiz kayıt yayımlanmaz, eski hali kalır; sayılar `data_quality` alanında raporlanır.
-3. Tam tarama eksikse (%70 eşiği) veya hata/403/429 ile durduysa eski katalog korunur. Site haritasında kalmış ama kaldırılmış (404) Migros kategorileri atlanır ve notlara yazılır.
+3. Tam tarama yarıda kalırsa (403/429, ağ hatası) ya da şüpheli derecede az ürün dönerse katalog silinmez; **okunan ürünlerin fiyatları yine yayımlanır** (`partial: true`), okunamayanlar önceki doğrulamasıyla kalır ve arayüzde "eski veri" olarak işaretlenir. 10 gündür hiçbir taramada görülmeyen ürün katalogdan çıkarılır. Site haritasında kalmış ama kaldırılmış (404) Migros kategorileri atlanır; yalnızca keşif denemelerinin yarısından fazlası 404 ise tarama durur.
 4. Dosyalar geçici dosyaya yazılır, JSON olarak doğrulanır, `os.replace` ile atomik olarak değiştirilir. Boş katalog asla yazılmaz.
-5. `publish-market-data.sh` her denemede en güncel `main` üzerine yeniden kurar (rebase yok), yalnızca daha yeni ve başarılı veriyi yayımlar; başarısız denemeler yalnızca durum kaydını günceller. Aynı anda çalışan market işleri birbirini ezmez.
+5. `publish-market-data.sh` her denemede en güncel `main` üzerine yeniden kurar (rebase yok), yalnızca daha yeni ve başarılı (ya da kısmi) veriyi yayımlar; başarısız denemeler yalnızca durum kaydını günceller.
+6. Yayımlarken katalog `scripts/datamerge.py` ile **ürün bazında** birleştirilir: aynı ürün için son doğrulama zamanı (`seen`) daha yeni olan satır kalır. Böylece 2 saat süren Migros taraması, bu sürede saatlik indirim taramasının veya "Fiyatı Güncelle"nin yazdığı daha yeni fiyatı ezmez. Eksiksiz tam taramada katalogda olmayan ürün, tarama başladıktan sonra doğrulanmamışsa düşer.
 
 ## İş akışları
 
 | Dosya | Tetikleyici | Not |
 |---|---|---|
-| `migros.yml` | gece tam (TR 03:17), saatlik indirim | tam ve indirim concurrency grupları ayrı |
+| `migros.yml` | günde 2 tam (TR 03:17 ve 14:17), saatlik indirim | tam ve indirim concurrency grupları ayrı |
 | `sok.yml` | günde 2 tam, 30 dk'da bir indirim | |
 | `bim.yml` | günde 2 aktüel | |
 | `update-one-product.yml` | `[FİYAT GÜNCELLE]` başlıklı talep (issue) | yalnızca OWNER/MEMBER/COLLABORATOR; sıralı; 10 dk zaman aşımı |
 | `tests.yml` | PR ve main dışı itmeler | Python + JavaScript testleri, JSON doğrulama |
+| `health.yml` | 3 saatte bir | `scripts/health.py`: veri yaşı (Migros/Şok 6 sa, BİM 30 sa) ve son 48 saatte doğrulanan ürün oranı; sorun varsa `[SAĞLIK]` talebi açar/günceller, düzelince kapatır. Depoya yazmaz. |
 
 GitHub Actions zamanlaması en iyi çaba esaslıdır; dakikası garanti değildir.
 

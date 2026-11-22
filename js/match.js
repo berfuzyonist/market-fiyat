@@ -17,7 +17,7 @@ const stem=t=>/\d/.test(t)||t.length<5?t:t.replace(/(lari|leri|si|su|i|u)$/,"");
 function parse(name){
   const sizes=[],meas=[];let count=0;
   // "1.650 Ml" binlik ayraçtır (1650 ml); "1.5 L" ondalıktır
-  let s=fold(name).replace(/(\d)\.(\d{3})\s*(ml|gr|g)\b/g,"$1$2 $3").replace(/(\d)[,](\d)/g,"$1.$2").replace(/[’'`]/g,"");
+  let s=fold(name).replace(/\s*&\s*/g,"").replace(/(\d)\.(\d{3})\s*(ml|gr|g)\b/g,"$1$2 $3").replace(/(\d)[,](\d)/g,"$1.$2").replace(/[’'`]/g,"");
   s=s.replace(new RegExp("(\\d+)\\s*[x×*]\\s*(\\d+(?:\\.\\d+)?)\\s*"+U+"\\b","g"),(m,k,n,u)=>{const a=amount(n,u);sizes.push(k+"x"+a+UNIT[u][0]);meas.push([k*a,UNIT[u][0]]);return" "});
   s=s.replace(new RegExp("(\\d+(?:\\.\\d+)?)\\s*"+U+"\\b","g"),(m,n,u)=>{const a=amount(n,u);sizes.push(a+UNIT[u][0]);meas.push([a,UNIT[u][0]]);return" "});
   s=s.replace(/(\d+)\s*(li|lu|adet|ad|tablet|yikama|yaprak|rulo)\b/g,(m,n)=>{sizes.push(n+"ad");count=+n;return" "});
@@ -56,7 +56,54 @@ function group(rows){
     if(clash)continue; // aynı markette iki aday: hangisi olduğu belli değil, eşleştirme
     const a=list[0];for(const b of list.slice(1)){a.offers.push(...b.offers);b.dead=true}
   }
+  // 3) Esnek eşleştirme: marka + boy aynı; kısa adın ayırt edici kelimelerinin hepsi uzun adda karşılık
+  //    bulmalı ("cilek" ~ "cilekli", "geciktirici" ~ "geciktiricili"). İki adda da ötekinde olmayan kelime
+  //    varsa farklı çeşittir ("seftali" / "erik"). Yalnızca iki tarafın da birbirini en iyi aday
+  //    seçtiği, açık farkla önde olan ve fiyatı makul (en fazla 1,7 kat) çiftler birleşir.
+  fuzzy(groups.filter(g=>!g.dead));
   return groups.filter(g=>!g.dead);
+}
+const lev1=(a,b)=>{if(Math.abs(a.length-b.length)>1)return false;let i=0;while(i<a.length&&a[i]===b[i])i++;
+  return a.slice(i+1)===b.slice(i+1)||a.slice(i)===b.slice(i+1)||a.slice(i+1)===b.slice(i)};
+const tmatch=(a,b)=>a===b||(a.length>=4&&b.length>=4&&(a.startsWith(b)||b.startsWith(a)))||(a.length>=5&&b.length>=5&&lev1(a,b));
+function distinct(p){return p.toks.slice(1).filter(t=>!GENERIC.has(t)&&!/^\d+$/.test(t))}
+// Yalnız bir adda geçse bile ürünün başka çeşit olduğunu gösteren kelimeler
+const VARIANT=new Set(("vanilya vanilla vanilyali cilek cilekli muz muzlu kakao kakaolu cikolatali findikli limon limonlu portakal portakalli "+
+ "elma elmali seftali karpuz nane naneli mentol mentollu visne kiraz ananas mango hindistan karamel karamelli tarcin bal balli "+
+ "zero light diet sekersiz laktozsuz glutensiz yagsiz yarim tam tatli aci aciili bitter sutlu beyaz beyazlar renkli renkliler siyah siyahlar "+
+ "kadin erkek bebek cocuk mini maxi ekstra extra organik protein kepekli").split(" "));
+const isVariant=t=>[...VARIANT].some(v=>tmatch(t,v));
+function pairScore(A,B){
+  const used=new Set();let m=0;
+  for(const a of A){const j=B.findIndex((b,i)=>!used.has(i)&&tmatch(a,b));if(j>=0){used.add(j);m++}}
+  const ua=A.length-m,ub=B.length-used.size;
+  if(ua&&ub)return null;                       // iki tarafta da fazladan kelime: farklı çeşit
+  const extra=ua?A.filter(a=>!B.some(b=>tmatch(a,b))):B.filter(b=>!A.some(a=>tmatch(a,b)));
+  if(extra.some(isVariant))return null;        // fazladan kelime bir çeşit adı (aroma, renk, şekersiz…)
+  if(!m&&(A.length||B.length))return null;     // hiçbir ayırt edici kelime ortak değil
+  return m-0.3*(ua+ub);
+}
+function fuzzy(groups){
+  const mk=g=>new Set(g.offers.map(o=>o.market));
+  const keyOf=g=>g.p&&g.p.size?g.p.brand+"|"+g.p.size:null;
+  const byKey=new Map();
+  for(const g of groups){const k=keyOf(g);if(k)(byKey.get(k)||byKey.set(k,[]).get(k)).push(g)}
+  const price=g=>Math.min(...g.offers.map(o=>o.price));
+  for(const list of byKey.values()){
+    if(list.length<2)continue;
+    const D=new Map(list.map(g=>[g,distinct(g.p)]));
+    const bestFor=(g,pool)=>{let b=null,bs=-1e9,second=-1e9;
+      for(const h of pool){if(h===g||h.dead)continue;const M1=mk(g),M2=mk(h);if([...M1].some(x=>M2.has(x)))continue;
+        const r=Math.max(price(g),price(h))/Math.min(price(g),price(h));if(!(r<=1.7))continue;
+        const sc=pairScore(D.get(g),D.get(h));if(sc==null)continue;
+        if(sc>bs){second=bs;bs=sc;b=h}else if(sc>second)second=sc}
+      return b&&bs-second>=0.3?b:null};
+    let changed=true;
+    while(changed){changed=false;
+      for(const g of list){if(g.dead)continue;const h=bestFor(g,list);if(!h)continue;
+        if(bestFor(h,list)!==g)continue;      // karşılıklı en iyi aday değilse birleştirme
+        g.offers.push(...h.offers);h.dead=true;D.set(g,D.get(g).length>=D.get(h).length?D.get(g):D.get(h));changed=true}}
+  }
 }
 // Birim fiyat: ₺/kg, ₺/L ya da ₺/adet
 function unitPrice(o){const q=o._p&&o._p.qty;if(!q||!q.n)return null;
