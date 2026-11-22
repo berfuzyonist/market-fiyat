@@ -127,6 +127,34 @@ function freshness(o,status,now){
   return{level:"old",title:"Eski olabilir",text:`Fiyat en son ${when} doğrulandı. Güncel olmayabilir; marketin sayfasından kontrol edin.`+failTxt};
 }
 
-const api={fold,toTs,rowsOf,promoOf,bimWhen,enrich,usable,disc,ago,priceUpdateLink,freshness,MONEY,STALE_HOURS};
+// ---------- Arama alakası ----------
+// Arama Türkçe karaktersiz eşleşir ("sut" → "süt"). Sıralama: kelimenin ürün adında tek başına geçmesi
+// ("Domates"), çekim eki ("Yağı") > türetme ("Yumurtalı", "Sütlü") > kelime içinde geçme; adda başa yakınlık,
+// kategoride geçme ve kısa ad öne çıkar; sorguda olmayan işlenmiş ürün kelimeleri ("Püresi", "Patlağı") geriye düşer.
+const INFL=new Set(["i","u","si","su","in","un","ler","lar","leri","lari","e","a","de","da"]);
+const DERIV=/^(li|lu|lik|luk|siz|suz|ci|cu|cik|cuk|cigi|lugu|ligi)$/;
+const PROCESSED=new Set(["puresi","salcasi","sosu","soslu","suyu","cipsi","aromali","kurusu","konservesi","receli","ezmesi",
+  "patlagi","patlakli","krakeri","gofret","gofreti","keki","bar","bari","unu","nisastasi","tozu","kremasi","kremali","dolgulu","kaplamali","tatli","tatlisi",
+  // ürünün kendisi değil, ilgili eşya ya da başka ürün: "Pirinç Süzgeci", "Su Kovası", "Peynir Mayası"
+  "suzgec","suzgeci","kova","kovasi","paspas","maske","maskesi","mayasi","cesnisi","cesnili","harci","ozlu","surpriz","surprise","joy","oyuncakli","kafalar","boregi","emici"]);
+const searchWords=q=>fold(q).replace(/[^a-z0-9%]+/g," ").split(" ").filter(Boolean);
+function searchScore(name,cat,words){
+  const f=fold(name).replace(/[^a-z0-9%]+/g," "),toks=f.split(" ").filter(Boolean);
+  if(!words.length||!words.every(w=>f.includes(w)))return-1;
+  let score=0;const fc=fold(cat||"");
+  for(const w of words){let best=0,at=99;
+    toks.forEach((t,i)=>{let v=0;
+      if(t===w)v=10;else if(t.startsWith(w)){const rest=t.slice(w.length);v=INFL.has(rest)?8:DERIV.test(rest)?2:1}else if(t.includes(w))v=0.5;
+      if(v>best||(v===best&&v&&i<at)){best=v;at=i}});
+    score+=best+(best>=8?Math.max(0,3-at):0)+(fc.includes(w)?4:0)}
+  const words2=toks.filter(t=>!/^\d|^%/.test(t)&&!/^(g|gr|kg|ml|l|lt|cl|adet)$/.test(t));
+  for(const t of words2)if(PROCESSED.has(t)&&!words.includes(t))score-=4;
+  // Türkçe ad öbeğinde asıl ürün sondaki addır: "Kahverengi Yumurta" ✓, "Pirinç Süzgeci" ✗
+  const head=words2[words2.length-1]||"";
+  if(words.some(w=>head===w||(head.startsWith(w)&&INFL.has(head.slice(w.length)))))score+=3;
+  return score-words2.length*0.4;
+}
+
+const api={searchWords,searchScore,fold,toTs,rowsOf,promoOf,bimWhen,enrich,usable,disc,ago,priceUpdateLink,freshness,MONEY,STALE_HOURS};
 if(typeof module!=="undefined"&&module.exports)module.exports=api;else root.MFC=api;
 })(typeof window!=="undefined"?window:globalThis);
