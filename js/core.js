@@ -155,6 +155,33 @@ function searchScore(name,cat,words){
   return score-words2.length*0.4;
 }
 
-const api={searchWords,searchScore,fold,toTs,rowsOf,promoOf,bimWhen,enrich,usable,disc,ago,priceUpdateLink,freshness,MONEY,STALE_HOURS};
+// ---------- Fiyat geçmişi analizi ----------
+// points: [[ts, fiyat, etiket fiyatı, kaynak, kampanya], ...] (history-<market>.json). Ürünün şu anki durumu
+// son noktadan farklıysa sona eklenir. Dönen: seri, en düşük/en yüksek, olaylar (indirim başladı/bitti,
+// kampanya geldi/bitti, etiket fiyatı arttı/düştü) ve her türün son tarihi.
+const cleanPromo=t=>String(t||"").split(" · ").filter(x=>x&&x!==MONEY).join(" · ");
+function histInfo(points,o,now){
+  const P=(Array.isArray(points)?points:[]).filter(p=>Array.isArray(p)&&p.length>=3&&p[1]>0).map(p=>({ts:p[0],price:+p[1],regular:Math.max(+p[2],+p[1]),promo:cleanPromo(p[4])}))
+    .sort((a,b)=>a.ts-b.ts);
+  if(o&&o.price>0){const cur={ts:o.seen||Math.floor((now||Date.now())/1000),price:o.price,regular:Math.max(o.regular||o.price,o.price),promo:cleanPromo(o.promo)};
+    const last=P[P.length-1];
+    if(!last||Math.abs(last.price-cur.price)>=0.005||Math.abs(last.regular-cur.regular)>=0.005||last.promo!==cur.promo){if(!last||cur.ts>last.ts)P.push(cur)}}
+  if(!P.length)return null;
+  const isD=p=>p.regular>p.price+0.005,ev=[];
+  for(let i=0;i<P.length;i++){const c=P[i],p=P[i-1];
+    if(!p){if(isD(c))ev.push({ts:c.ts,type:"disc",pct:Math.round((1-c.price/c.regular)*100),from:c.regular,to:c.price,first:true});
+      if(c.promo)ev.push({ts:c.ts,type:"promo",text:c.promo,first:true});continue}
+    if(isD(c)&&(!isD(p)||Math.abs(c.price-p.price)>=0.005))ev.push({ts:c.ts,type:"disc",pct:Math.round((1-c.price/c.regular)*100),from:c.regular,to:c.price});
+    else if(!isD(c)&&isD(p))ev.push({ts:c.ts,type:"discEnd",to:c.price});
+    if(Math.abs(c.regular-p.regular)>=0.005)ev.push({ts:c.ts,type:c.regular>p.regular?"hike":"cut",from:p.regular,to:c.regular,pct:Math.round((c.regular/p.regular-1)*100)});
+    if(c.promo&&c.promo!==p.promo)ev.push({ts:c.ts,type:"promo",text:c.promo});
+    else if(!c.promo&&p.promo)ev.push({ts:c.ts,type:"promoEnd",text:p.promo})}
+  const prices=P.map(p=>p.price),lo=Math.min(...prices),hi=Math.max(...prices),cur=P[P.length-1];
+  const lastOf=t=>{for(let i=ev.length-1;i>=0;i--)if(ev[i].type===t)return ev[i];return null};
+  return{points:P,low:lo,high:hi,lowTs:P.find(p=>p.price===lo).ts,highTs:P.find(p=>p.price===hi).ts,changes:P.length-1,
+    atLow:P.length>1&&cur.price<=lo+0.005&&hi>lo+0.005,events:ev,lastDisc:lastOf("disc"),lastPromo:lastOf("promo"),lastHike:lastOf("hike")};
+}
+
+const api={histInfo,searchWords,searchScore,fold,toTs,rowsOf,promoOf,bimWhen,enrich,usable,disc,ago,priceUpdateLink,freshness,MONEY,STALE_HOURS};
 if(typeof module!=="undefined"&&module.exports)module.exports=api;else root.MFC=api;
 })(typeof window!=="undefined"?window:globalThis);

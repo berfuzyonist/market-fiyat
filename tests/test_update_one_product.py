@@ -210,6 +210,21 @@ class HistoryTests(unittest.TestCase):
         self.assertTrue(pricehist.add_change(h, "sok:1", (12, 12, 300), (9, 12, 400), 400, "deals"))
         self.assertEqual([p[1] for p in h["items"]["sok:1"]], [10, 12, 9])
 
+    def test_campaign_change_is_recorded(self):
+        h = {"v": 2, "market": "migros", "items": {}}
+        self.assertTrue(pricehist.add_change(h, "m:1", (10, 10, 100, ""), (10, 10, 200, "2 Al 1 Öde"), 200, "full"))
+        self.assertFalse(pricehist.add_change(h, "m:1", None, (10, 10, 300, "2 Al 1 Öde"), 300, "full"))
+        self.assertTrue(pricehist.add_change(h, "m:1", None, (10, 10, 400, ""), 400, "full"))
+        self.assertEqual([p[4] for p in h["items"]["m:1"]], ["", "2 Al 1 Öde", ""])
+
+    def test_v1_file_is_upgraded(self):
+        d = pathlib.Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, d)
+        (d / "h.json").write_text(json.dumps({"v": 1, "market": "sok", "items": {"sok:1": [[100, 5, 5, "önceki"], [200, 4, 5, "full"]]}}))
+        h = pricehist.load(d / "h.json", "sok")
+        self.assertEqual((h["v"], h["since"]), (2, 100))
+        self.assertFalse(pricehist.add_change(h, "sok:1", None, (4, 5, 300, ""), 300, "full"))  # 4 alanlı nokta kampanyasız sayılır
+
     def test_unchanged_first_observation_is_not_stored(self):
         h = {"v": 1, "market": "sok", "items": {}}
         self.assertFalse(pricehist.add_change(h, "sok:1", (10, 10, 1), (10, 10, 2), 2, "full"))
@@ -218,7 +233,7 @@ class HistoryTests(unittest.TestCase):
     def test_prune_limits_size_and_age(self):
         now = int(time.time())
         h = {"v": 1, "market": "sok", "items": {
-            "a": [[now - i * 3600, 10 + i, 10 + i, ""] for i in range(30)],
+            "a": [[now - i * 3600, 10 + i, 10 + i, ""] for i in range(60)],
             "old": [[now - 400 * 86400, 1, 1, ""], [now - 300 * 86400, 2, 2, ""]],
             "bad": [["x", 1, 1], [now, -1, 1, ""]],
         }}
@@ -242,6 +257,7 @@ class HistoryTests(unittest.TestCase):
         items = json.loads((d / "h.json").read_text())["items"]
         self.assertEqual(list(items), ["sok:1"])
         self.assertEqual([p[1:3] for p in items["sok:1"]], [[10, 10], [8, 10]])
+        self.assertTrue(json.loads((d / "h.json").read_text())["since"])
 
 
 if __name__ == "__main__":

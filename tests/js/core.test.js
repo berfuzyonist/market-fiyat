@@ -148,3 +148,13 @@ test("arama: Türkçe karaktersiz eşleşir, asıl ürün türevlerinden önce g
   assert.equal(rank("aycicek yagi",[["Evin Ayçiçek Yağı Pet 5 L"]]).length,1);
   assert.equal(C.searchScore("Çay",""," ".split(" ").filter(Boolean)),-1);
 });
+
+test("fiyat geçmişi: indirim, kampanya ve zam olayları, en düşük fiyat",()=>{
+  const pts=[[100,20,20,"önceki",""],[200,15,20,"deals",""],[300,20,20,"full","2 Al 1 Öde"],[400,22,22,"full",""]];
+  const h=C.histInfo(pts,{price:18,regular:22,promo:"Money kartlı fiyat",seen:500});
+  assert.deepEqual(h.events.map(e=>e.type),["disc","discEnd","promo","hike","promoEnd","disc"]);
+  assert.equal(h.lastDisc.ts,500);assert.equal(h.lastDisc.pct,18);assert.equal(h.lastPromo.text,"2 Al 1 Öde");assert.equal(h.lastHike.pct,10);
+  assert.equal(h.low,15);assert.equal(h.high,22);assert.equal(h.points.length,5);assert.equal(h.atLow,false);
+  assert.equal(C.histInfo([],{price:9,regular:9,seen:1}).changes,0);
+  assert.equal(C.histInfo([[1,10,10,"",""],[2,8,8,"",""]],{price:8,regular:8,seen:3}).atLow,true);
+});

@@ -133,3 +133,9 @@ Hiçbir API anahtarı veya parola kullanılmaz; iş akışları yalnızca GitHub
 - **Liste**: serbest notlar ("ekmek"), WhatsApp/SMS ile metin olarak paylaşma, aynı tür ve benzer boyda birim
   fiyatı en az %5 ucuz muadil önerisi (tek dokunuşla değiştirme). Ürün sayfasında da en çok 3 muadil gösterilir.
 - **Çevrimdışı** (`sw.js`): her istek önce internetten yapılır; bağlantı yoksa son kaydedilen sürüm açılır.
+- **Fiyat tarihçesi** (`scripts/pricehist.py`, v2): her yayımda fiyat, etiket fiyatı ve kampanya metni önceki
+  sürümle karşılaştırılır; değişiklik varsa `data/history-<market>.json`'a nokta eklenir (ürün başına 40 nokta,
+  180 gün; `since` takibin başladığı an). Ürün sayfasında marketler ayrı renkte basamaklı grafik, en düşük/en
+  yüksek, "kayıtlı en düşük fiyat" rozeti, son indirim/kampanya/zam tarihi ve değişim listesi (`MFC.histInfo`).
+- **PDF aktarma**: Listem → "PDF aktar" görselli, market market tablo hazırlar; tarayıcının yazdırma ekranında
+  "PDF olarak kaydet" ile dosya olur (sunucu ya da dış servis kullanılmaz).
