@@ -1,7 +1,7 @@
 "use strict";
 /* Market Fiyat arayüzü. Eşleştirme mantığı js/match.js içinde (MF). */
 const M={sok:{n:"Şok",at:"Şok'ta",c:"bg-yellow-400 text-yellow-950",bar:"#eab308"},migros:{n:"Migros",at:"Migros'ta",c:"bg-orange-500 text-white",bar:"#f97316"},a101:{n:"A101",at:"A101'de",c:"bg-cyan-600 text-white",bar:"#0891b2"},bim:{n:"BİM",at:"BİM'de",c:"bg-red-600 text-white",bar:"#dc2626"}},ORD=Object.keys(M);
-const VIEWS=["home","compare","promos","browse","search","list","posters","camp","track","analysis"];
+const VIEWS=["home","compare","promos","browse","search","list","posters","camp","track","analysis","status"];
 const $=id=>document.getElementById(id);
 const tl=x=>x.toLocaleString("tr-TR",{minimumFractionDigits:2,maximumFractionDigits:2})+" ₺";
 const num=x=>x.toLocaleString("tr-TR");
@@ -59,7 +59,7 @@ let NOTES=load("notes",[]); // listedeki serbest notlar: [{t:"ekmek",d:0}]
 let PLAN=load("plan",{mode:"multi",k:2,market:""}),FIX=load("fix",{}),SAVED=load("baskets",[]);
 // Takip: favoriler [{key, price, at}], fiyat alarmları {key:[alarm]}, uygulama içi bildirimler [{ts,key,text,read}]
 let FAV=load("fav",[]),ALARMS=load("alarms",{}),INBOX=load("inbox",[]);
-let cart=load("cart",[]),bmap=load("bmap",{}),reqs=load("req",{}),pending=null,only=null,updated="",UPD={},CHECK={},CHECKS={},view="home";
+let cart=load("cart",[]),bmap=load("bmap",{}),reqs=load("req",{}),pending=null,only=null,updated="",UPD={},PUPD={},CHECK={},CHECKS={},view="home";
 const C={seg:"same",three:false,sort:"pct",page:0},K={kind:"free",m:"",sort:"gain",page:0},B={m:"",grp:"",cat:"",disc:false,sort:"disc",page:0};
 // Ana kategori yuvarlakları: marketlerin farklı kategori adlarını tek grupta toplar
 const GROUPS=[
@@ -434,6 +434,52 @@ function drawH(){
     return`<div data-show="${esc(g.key)}" class="flex items-center gap-3 py-3">${img(g.image,"w-11 h-11 shrink-0")}<span class="flex-1 text-sm font-bold">${esc(g.name)}</span>${b?badge(b.market,1)+`<span class="price text-base tabular">${tl(b.price)}</span>`:chip("Tükendi","bg-stone-200 text-stone-600")}</div>`}).join("")+`</div>`
     :empty("shopping-cart","Listen boş","Ürünlerdeki yeşil + düğmesiyle ekle; en ucuz markete göre gruplanır.");
   $("upd").textContent=updated?"Güncel: "+new Date(updated).toLocaleString("tr-TR",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}):"-"}
+
+// ---------- Veri durumu (#veri): her market için tarama, indirim kontrolü ve son başarılı veri ayrı ayrı ----------
+// Başarısız ya da kısmi tarama başarılı gibi gösterilmez; eski veri gizlenmez, yaşıyla birlikte yazılır.
+const MODE_L={full:"Tam katalog taraması",deals:"İndirim kontrolü",aktuel:"Aktüel ve indirim taraması"};
+function health(m){
+  const s=CHECK[m];if(!s)return{k:"none",l:"Durum dosyası okunamadı",c:"bg-stone-200 text-stone-700"};
+  const age=(Date.now()/1000-MFC.toTs(s.last_successful_data_at||s.data_updated||UPD[m]))/3600,
+    modes=Object.values(s.last_attempt_by_mode||{}),bad=modes.filter(a=>a.status!=="tamam");
+  if(!(age<MFC.STALE_HOURS))return{k:"old",l:"Veri eski",c:"bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-200"};
+  if(bad.length)return{k:"warn",l:"Son taramalardan biri tamamlanamadı",c:"bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-200"};
+  if((s.quality_warnings||[]).length)return{k:"warn",l:"Kalite uyarısı var",c:"bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-200"};
+  return{k:"ok",l:"Sağlıklı",c:"bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200"}}
+const when=t=>t?new Date(t).toLocaleString("tr-TR",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})+" · "+MFC.ago(MFC.toTs(t)):"bilinmiyor";
+function attemptRow(mode,a){
+  const ok=a.status==="tamam",part=!ok&&a.partial!==false&&a.found>0;
+  const tag=ok?chip("Tamamlandı","bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200"):chip(part?"Kısmi":"Başarısız","bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-200");
+  const cnt=mode==="full"||mode==="aktuel"?`${num(a.found)} / ${num(a.total)} ürün okundu`:`${num(a.found)} indirimli ürün okundu`;
+  return`<div class="py-3"><div class="flex items-center gap-2 flex-wrap"><span class="font-bold text-sm">${MODE_L[mode]||esc(mode)}</span>${tag}</div>
+    <p class="text-xs text-stone-600 dark:text-stone-300 mt-1 tabular">${when(a.checked_at)} · ${cnt}${a.seconds?` · ${Math.round(a.seconds/60)||1} dk`:""}</p>
+    ${ok?"":`<p class="text-xs text-amber-800 dark:text-amber-300 mt-1">${esc(a.status)}. Önceki sağlam veri korunuyor; bu denemenin eksik sonucu tam veri gibi yayımlanmadı.</p>`}</div>`}
+function drawV(){
+  const el=$("status");
+  if(!Object.keys(CHECK).length){el.innerHTML=`<h1 class="page-title">Veri durumu</h1><div class="skel h-40 rounded-2xl mt-4"></div>`;return}
+  const cards=DATA_M.map(m=>{const s=CHECK[m]||{},h=health(m),rows=O.filter(o=>o.market===m),st=rows.filter(o=>o.in_stock&&!o.na),
+      stale=rows.filter(o=>o.stale).length,dq=s.data_quality||{},bad=Object.values(dq).reduce((a,b)=>a+(+b||0),0),
+      modes=Object.entries(s.last_attempt_by_mode||{}).sort(([a],[b])=>(a==="full")-(b==="full")),warn=[...(s.quality_warnings||[]),...(s.errors||[])],
+      tr=Object.values(s.traffic||{})[0];
+    return`<section class="pc !p-4 lg:!p-5"><div class="flex items-center gap-2 flex-wrap">${badge(m,1)}<span class="font-display font-extrabold text-lg">${M[m].n}</span><span class="ml-auto">${chip(h.l,h.c)}</span></div>
+      <dl class="grid grid-cols-2 gap-x-4 gap-y-2 mt-3 text-sm">
+        <div><dt class="text-xs text-stone-600 dark:text-stone-300">Son başarılı veri</dt><dd class="font-bold tabular">${when(s.last_successful_data_at||UPD[m])}</dd></div>
+        <div><dt class="text-xs text-stone-600 dark:text-stone-300">Sitede gösterilen</dt><dd class="font-bold tabular">${num(rows.length)} ürün · ${num(st.length)} stokta</dd></div>
+        <div><dt class="text-xs text-stone-600 dark:text-stone-300">${MFC.STALE_HOURS} saatten eski fiyat</dt><dd class="font-bold tabular">${rows.length?"%"+Math.round(stale/rows.length*100):"-"} <span class="font-normal text-xs">(${num(stale)})</span></dd></div>
+        <div><dt class="text-xs text-stone-600 dark:text-stone-300">Hatalı kayıt (ayıklandı)</dt><dd class="font-bold tabular">${num(bad)}</dd></div>
+        <div><dt class="text-xs text-stone-600 dark:text-stone-300">Afişler son değişti</dt><dd class="font-bold tabular">${PUPD[m]?when(PUPD[m]):"-"}</dd></div>
+        <div><dt class="text-xs text-stone-600 dark:text-stone-300">Son çalışmadaki istek</dt><dd class="font-bold tabular">${tr?`${num(tr.requests)} istek · ${tr.megabytes} MB`:"-"}</dd></div>
+      </dl>
+      <div class="${div} mt-2 border-t border-stone-200 dark:border-stone-700">${modes.map(([k,a])=>attemptRow(k,a)).join("")}</div>
+      ${warn.length?`<ul class="mt-1 text-xs text-amber-800 dark:text-amber-300 list-disc pl-5">${warn.slice(0,6).map(w=>`<li>${esc(typeof w==="string"?w:JSON.stringify(w))}</li>`).join("")}</ul>`:""}
+      ${(s.notes||[]).length?`<details class="mt-2 text-xs text-stone-600 dark:text-stone-300"><summary class="cursor-pointer font-bold">Son çalışmanın notları (${s.notes.length})</summary><ul class="list-disc pl-5 mt-1 space-y-0.5">${s.notes.map(n=>`<li>${esc(n)}</li>`).join("")}</ul></details>`:""}
+    </section>`}).join("");
+  el.innerHTML=`<h1 class="page-title">Veri durumu</h1>
+    <p class="text-sm text-stone-600 dark:text-stone-300 mt-1 mb-4">Fiyatlar marketlerin herkese açık sitelerinden GitHub üzerinde düzenli okunur. Başarısız ya da yarım kalan bir tarama mevcut veriyi silmez; burada olduğu gibi gösterilir.</p>
+    <div class="grid gap-3 lg:grid-cols-3 items-start">${cards}</div>
+    <section class="pc !p-4 mt-3 text-sm"><div class="flex items-center gap-2">${badge("a101",1)}<span class="font-display font-extrabold text-lg">A101</span><span class="ml-auto">${chip("Veri yok","bg-stone-200 text-stone-700 dark:bg-stone-800 dark:text-stone-200")}</span></div>
+      <p class="mt-2 text-stone-600 dark:text-stone-300">A101'in izin verilmiş bir veri kaynağı yok; sitesi otomatik erişime kapalı. Fiyat üretilmez, yalnızca resmi siteye bağlantı verilir.</p>
+      <a class="inline-flex items-center gap-1 mt-2 font-bold text-emerald-700 dark:text-emerald-400" href="https://www.a101.com.tr/" target="_blank" rel="noopener">A101 sitesine git<i data-lucide="external-link" class="w-4 h-4"></i></a></section>`}
 
 // ---------- Birim fiyat karşılaştırması ----------
 function unitPanel(q){
@@ -951,14 +997,14 @@ async function shareList(){
   catch(e){open("https://wa.me/?text="+encodeURIComponent(text),"_blank")}}
 
 // ---------- Gezinme ----------
-const DRAW={home:drawH,compare:drawC,promos:drawK,browse:drawB,search:drawS,list:drawL,posters:drawP,camp:drawCamp,track:drawT,analysis:drawA};
+const DRAW={home:drawH,compare:drawC,promos:drawK,browse:drawB,search:drawS,list:drawL,posters:drawP,camp:drawCamp,track:drawT,analysis:drawA,status:drawV};
 function icons(){lucide.createIcons()}
 function redraw(){DRAW[view]();if(view!=="list")drawL();icons()}
 const NB="flex flex-col items-center gap-0.5 py-2 rounded-2xl text-[11px] font-bold relative transition active:scale-90 ";
 const NT="flex items-center gap-2 px-3.5 py-1.5 rounded-full text-sm font-bold transition ";
 // ---------- Adres (yenileme ve geri tuşu için) ----------
 // #urun/<id>, #ara/<sorgu>, #kesfet, #kampanya, #karsilastir, #listem; ana sayfa: adres eki yok
-const HV={home:"",compare:"karsilastir",promos:"kampanya",browse:"kesfet",search:"ara",list:"listem",posters:"afisler",track:"takip",analysis:"analiz"};
+const HV={home:"",compare:"karsilastir",promos:"kampanya",browse:"kesfet",search:"ara",list:"listem",posters:"afisler",track:"takip",analysis:"analiz",status:"veri"};
 let routing=false;
 function hashOf(){
   if(view==="search"){if(only)return"#urun/"+encodeURIComponent(only);const q=$("q").value.trim();return(q?"#ara/"+encodeURIComponent(q):"#ara")+filterQS()}
@@ -1103,6 +1149,7 @@ document.addEventListener("click",e=>{const t=s=>e.target.closest(s);let el;
   else if(el=t("[data-km]")){K.m=el.dataset.km;K.page=0;redraw()}
   else if(el=t("[data-go]")){Object.assign(B,{m:"",grp:"",cat:"",disc:true,sort:"disc",page:0});go("browse")}
   else if(el=t("[data-bm]")){B.m=el.dataset.bm;B.page=0;if(el.dataset.open){Object.assign(B,{grp:"",cat:"",disc:false,sort:"disc"});go("browse")}else redraw()}
+  else if(t("#reload"))location.reload();
   else if(el=t("[data-view]")){if(el.dataset.view==="search"){only=null}go(el.dataset.view);if(el.dataset.focus)(innerWidth>=768?$("qd"):$("q")).focus()}});
 let qT;QS.forEach(inp=>{
   inp.oninput=()=>{setQ(inp.value);only=null;pending=null;clearTimeout(qT);
@@ -1140,11 +1187,27 @@ function build(rows,groups){
 }
 // Çevrimdışı: sw.js son açılan sürümü saklar; mağazada internet yoksa liste yine açılır
 if("serviceWorker" in navigator&&location.protocol==="https:")navigator.serviceWorker.register("sw.js").catch(()=>{});
-const offNote=()=>note("İnternet bağlantısı yok: son kaydedilen fiyatlar gösteriliyor. Listen bu telefonda kayıtlı.");
+const offNote=()=>note("İnternet bağlantısı yok: son kaydedilen fiyatlar gösteriliyor"+(updated?" (veri: "+when(updated)+")":"")+". Listen bu telefonda kayıtlı.");
+// Yeni sürüm / yeni veri: uygulama arka planda açık kaldıysa, geri dönüldüğünde (en çok 30 dakikada bir) küçük
+// dosyalar kontrol edilir; değişiklik varsa yenileme önerilir. Kendiliğinden yenilenmez (liste düzenlenirken kaybolmasın).
+const APPV=(document.querySelector('script[src*="js/app.js"]')?.getAttribute("src")||"").split("v=")[1]||"";
+let lastChk=Date.now(),offered=false;
+async function checkFresh(){
+  if(offered||document.hidden||navigator.onLine===false||Date.now()-lastChk<30*6e4)return;lastChk=Date.now();
+  try{
+    const html=await fetch("index.html",{cache:"no-store"}).then(r=>r.ok?r.text():"");
+    const v=(html.match(/js\/app\.js\?v=([0-9a-f]+)/)||[])[1];
+    let why=v&&APPV&&v!==APPV?"Uygulamanın yeni sürümü hazır.":"";
+    if(!why){const sts=await Promise.all(DATA_M.map(m=>fetch(`data/status-${m}.json`,{cache:"no-store"}).then(r=>r.ok?r.json():null).catch(()=>null)));
+      if(sts.some((x,i)=>x&&CHECK[DATA_M[i]]&&MFC.toTs(x.data_updated)>MFC.toTs(CHECK[DATA_M[i]].data_updated)))why="Yeni fiyatlar geldi."}
+    if(why){offered=true;$("note").innerHTML=`${why} <button id="reload" class="underline font-extrabold ml-1">Yenile</button>`;$("note").classList.remove("hidden");clearTimeout(noteT)}
+  }catch(e){}}
+document.addEventListener("visibilitychange",checkFresh);setInterval(checkFresh,5*6e4);
 addEventListener("offline",offNote);if(navigator.onLine===false)setTimeout(offNote,1500);
 route(); // açılışta adresteki sayfaya git (yenilemede aynı ürün açık kalır)
 // Afiş dosyaları küçük: fiyat verisini beklemeden gelir gelmez rafa çizilir (ilk ekranın en büyük görseli).
 const postersP=Promise.all(["bim","migros","sok"].map(m=>get(`data/posters-${m}.json`)));
+postersP.then(ps=>ps.forEach((p,i)=>{if(p&&p.updated)PUPD[["bim","migros","sok"][i]]=p.updated})).catch(()=>{});
 postersP.then(posters=>{if(O.length)return;POST=groupBim(groupSok(posters.flatMap(p=>(p&&Array.isArray(p.items)?p.items:[]).filter(it=>it&&/^https:\/\//.test(it.image||"")))));
   if(view==="home"){drawPostShelf();icons()}else if(view==="posters")redraw()}).catch(()=>{});
 // Fiyat verisi: önce data/client (katalog önbellekte kalır, her açılışta yalnızca fiyat dosyaları iner;

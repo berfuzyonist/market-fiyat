@@ -11,8 +11,8 @@
 <link rel="preload" href="fonts/rubik-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="css/fonts.css?v=3f182d7cc5">
 <link rel="stylesheet" href="css/app.css?v=a487e33b6c">
-<link rel="stylesheet" href="css/tw.css?v=cef20b42f4">
-<script src="js/icons.js?v=df0a258366"></script>
+<link rel="stylesheet" href="css/tw.css?v=21fa3f77a1">
+<script src="js/icons.js?v=a70d1941c5"></script>
 </head>
 <body class="bg-[#f3f6f4] text-stone-900 font-sans antialiased">
 
@@ -28,7 +28,7 @@
         <i data-lucide="search" class="w-5 h-5 text-emerald-700 shrink-0"></i>
         <input id="qd" class="flex-1 min-w-0 bg-transparent outline-none" placeholder="Ürün, marka ya da barkod ara" enterkeyhint="search" aria-label="Ara">
       </label>
-      <span class="ml-auto md:ml-0 hidden sm:flex items-center gap-1.5 text-xs text-emerald-50/90"><span class="live-dot"></span><span id="upd">-</span></span>
+      <button data-view="status" data-plain="1" class="ml-auto md:ml-0 hidden sm:flex items-center gap-1.5 text-xs text-emerald-50/90 hover:underline" aria-label="Veri durumu"><span class="live-dot"></span><span id="upd">-</span></button>
       <button data-view="track" data-plain="1" id="bellBtn" class="icon-btn relative" aria-label="Takip ve bildirimler"><i data-lucide="bell" class="w-5 h-5"></i><span id="nb" class="cart-count" style="display:none"></span></button>
       <button id="scan" class="icon-btn" aria-label="Barkod okut"><i data-lucide="scan-barcode" class="w-5 h-5"></i></button>
       <button data-view="list" data-plain="1" id="cartBtn" class="cart-btn" aria-label="Alışveriş listem">
@@ -91,6 +91,7 @@
     </section>
 
     <section data-reveal id="stores" class="grid grid-cols-3 gap-2.5 lg:gap-4"></section>
+    <button data-view="status" data-plain="1" class="-mt-3 self-start inline-flex items-center gap-1 text-xs font-bold text-stone-600 dark:text-stone-300 hover:underline"><i data-lucide="activity" class="w-4 h-4"></i>Veri durumu ve son taramalar</button>
 
     <section data-reveal>
       <div class="shelf-head"><h2><i data-lucide="scale" class="w-5 h-5 text-emerald-600"></i>Aynı ürün, farklı fiyat</h2><button data-view="compare" data-plain="1" class="see-all">Tümü<i data-lucide="chevron-right" class="w-4 h-4"></i></button></div>
@@ -186,6 +187,9 @@
   <!-- Fiyat analizi -->
   <div id="analysis" class="hidden"></div>
 
+  <!-- Veri durumu -->
+  <div id="status" class="hidden"></div>
+
   <!-- Takip: bildirimler, favoriler, fiyat alarmları -->
   <div id="track" class="hidden"></div>
 
@@ -228,5 +232,5 @@
 <script src="js/alerts.js?v=62fda50535"></script>
 <script src="js/insights.js?v=839b613725"></script>
 <script src="js/basket.js?v=460949c3d5"></script>
-<script src="js/app.js?v=e4d5ab6b84"></script>
+<script src="js/app.js?v=b52d1fda02"></script>
 </body></html>
