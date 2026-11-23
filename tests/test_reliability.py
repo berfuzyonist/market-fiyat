@@ -5,6 +5,7 @@ sayfalardan kırpılmıştır (tests/fixtures).
 """
 import json
 import pathlib
+ROOT_DIR = pathlib.Path(__file__).resolve().parent.parent
 import shutil
 import tempfile
 import unittest
@@ -167,6 +168,16 @@ class MigrosTests(unittest.TestCase):
             collect.migros(products, notes)
         self.assertIn("migros:1", products)
         self.assertTrue(any("powerbank-c-12090" in n for n in notes))
+
+    def test_health_size_limits(self):
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("health", ROOT_DIR / "scripts" / "health.py")
+        health = importlib.util.module_from_spec(spec); spec.loader.exec_module(health)
+        self.assertEqual(health.size_problems({"data/a.json": 1.0}, 10), [])
+        probs = health.size_problems({"data/a.json": 30.0, "data/b.json": 60.0}, 900)
+        self.assertEqual(len(probs), 4)  # a.json, b.json, toplam, git
+        files, _ = health.sizes()
+        self.assertIn("data/migros.json", files)
 
     def test_migros_brand_and_weighed_unit_are_kept_and_round_trip(self):
         item = collect.migros_item({"sku": "1", "name": "Muz Yerli Kg", "shownPrice": 6990, "regularPrice": 6990,
