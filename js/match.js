@@ -107,7 +107,9 @@ function fuzzy(groups){
   }
 }
 // Birim fiyat: ₺/kg, ₺/L ya da ₺/adet
-function unitPrice(o){const q=o._p&&o._p.qty;if(!q||!q.n)return null;
+function unitPrice(o){
+  if(o.sold==="kg"&&o.price>0)return{v:o.price,u:"kg",kind:"g"}; // tartılı ürün: fiyat zaten kilogram başına
+  const q=o._p&&o._p.qty;if(!q||!q.n)return null;
   return q.u==="ad"?{v:o.price/q.n,u:"adet"}:{v:o.price/q.n*1000,u:q.u==="g"?"kg":"L",kind:q.u}}
 /* Aynı ürünün farklı boyları: marka + ayırt edici kelimeler aynı, boyut farklı olabilir.
    Dönen: {key, offers:[...]} — en az iki marketten birim fiyatı hesaplanabilen teklif içerenler */

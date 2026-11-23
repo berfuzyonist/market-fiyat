@@ -185,6 +185,8 @@ def migros_item(p):
         "url": "https://www.migros.com.tr/" + (p.get("prettyName") or ""),
         "cat": top,
         "promo": promo,  # çoklu alım kampanyası: "2 Al 1 Öde", "2.si %70" gibi
+        "brand": " ".join(str(((p.get("brand") or {}).get("name") if isinstance(p.get("brand"), dict) else "") or "").split())[:60] or None,
+        "sold": "kg" if p.get("unit") == "KILOGRAM" else None,
     }
 
 
@@ -827,6 +829,13 @@ ONE = {"migros": migros_one, "sok": sok_one, "bim": bim_one}
 # "seen": ürün fiyatının kaynaktan en son doğrulandığı an (Unix saniye, UTC).
 # Eski dosyalarda bu sütun yoktur; okuyucular eksik sütunu None kabul eder.
 FIELDS = ["id", "name", "price", "regular", "in_stock", "image", "url", "cat", "promo", "seen"]
+# Markete özgü ek alanlar (sonda; eski dosyalarda yoksa boş sayılır, istemci alan adlarıyla okur).
+# brand: yapılandırılmış marka adı · sold: "kg" ise fiyat kilogram başınadır (tartılı ürün)
+EXTRA_FIELDS = {"migros": ["brand", "sold"]}
+
+
+def fields_of(market):
+    return FIELDS + EXTRA_FIELDS.get(market, [])
 HOSTS = {"migros": "https://www.migros.com.tr/", "sok": "https://www.sokmarket.com.tr/", "bim": "https://www.bim.com.tr/"}
 ID_RE = {"migros": r"migros:\d{4,12}", "sok": r"sok:\d{1,12}", "bim": r"bim:[A-Za-z0-9_.-]{1,160}"}
 JOBS = {
@@ -918,7 +927,7 @@ def parse_file(path, market=None):
         p["market"], p["in_stock"] = m, bool(p.get("in_stock"))
         p["promo"] = p.get("promo") or ""
         p["seen"] = p.get("seen") if isinstance(p.get("seen"), int) else None
-        out[p["id"]] = {k: p.get(k) for k in FIELDS + ["market"]}
+        out[p["id"]] = {k: p.get(k) for k in fields_of(m) + ["market"]}
     return out
 
 
@@ -997,10 +1006,11 @@ def encode(market, products, updated):
          p["image"][len(prefix["image"]):] if p["image"] else "",
          p["url"][len(prefix["url"]):] if p["url"] else "",
          cats.index(p.get("cat") or ""), p.get("promo") or "",
-         p.get("seen") if isinstance(p.get("seen"), int) else None],
+         p.get("seen") if isinstance(p.get("seen"), int) else None]
+        + [p.get(f) or None for f in EXTRA_FIELDS.get(market, [])],
         ensure_ascii=False, separators=(",", ":")) for p in rows]
     head = json.dumps({"updated": updated, "market": market, "prefix": {market: prefix},
-                       "cats": {market: cats}, "fields": FIELDS}, ensure_ascii=False)
+                       "cats": {market: cats}, "fields": fields_of(market)}, ensure_ascii=False)
     return head[:-1] + ',"products":[\n' + ",\n".join(lines) + "\n]}\n"
 
 

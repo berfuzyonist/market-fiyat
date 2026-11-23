@@ -168,6 +168,33 @@ class MigrosTests(unittest.TestCase):
         self.assertIn("migros:1", products)
         self.assertTrue(any("powerbank-c-12090" in n for n in notes))
 
+    def test_migros_brand_and_weighed_unit_are_kept_and_round_trip(self):
+        item = collect.migros_item({"sku": "1", "name": "Muz Yerli Kg", "shownPrice": 6990, "regularPrice": 6990,
+                                    "status": "IN_SALE", "brand": {"id": 5, "name": "  Migros  "}, "unit": "KILOGRAM"})
+        self.assertEqual((item["brand"], item["sold"]), ("Migros", "kg"))
+        plain = collect.migros_item({"sku": "2", "name": "Su 1 L", "shownPrice": 500, "regularPrice": 500, "unit": "PIECE"})
+        self.assertEqual((plain["brand"], plain["sold"]), (None, None))
+        products = {p["id"]: p for p in (item, plain)}
+        with tempfile.TemporaryDirectory() as d:
+            path = pathlib.Path(d) / "migros.json"
+            path.write_text(collect.encode("migros", products, "2026-01-01T00:00:00+00:00"), encoding="utf-8")
+            data = json.loads(path.read_text(encoding="utf-8"))
+            self.assertEqual(data["fields"][-2:], ["brand", "sold"])
+            back = collect.parse_file(path)
+        self.assertEqual(back["migros:1"]["brand"], "Migros")
+        self.assertEqual(back["migros:1"]["sold"], "kg")
+        self.assertIsNone(back["migros:2"]["sold"])
+
+    def test_old_file_without_extra_fields_still_reads(self):
+        """Eski biçimdeki (ek alansız) Migros dosyası okunur; ek alanlar boş gelir."""
+        with tempfile.TemporaryDirectory() as d:
+            path = pathlib.Path(d) / "migros.json"
+            path.write_text(json.dumps({"market": "migros", "fields": collect.FIELDS, "prefix": {}, "cats": {"migros": ["Su"]},
+                                        "products": [["migros:9", "Su 1 L", 5, 5, 1, "", "", 0, "", 1]]}), encoding="utf-8")
+            back = collect.parse_file(path)
+        self.assertEqual(back["migros:9"]["name"], "Su 1 L")
+        self.assertIsNone(back["migros:9"]["brand"])
+
     def test_discovery_stops_when_saturated_and_aggregation_categories_count_as_covered(self):
         """Site haritası keşfi, art arda yeni üst kategori çıkmayınca biter (Stop yok); 'Kategoriler'
         süzgecindeki alt kategoriler hiç ziyaret edilmez."""

@@ -36,7 +36,9 @@ function rowsOf(d){
     const promo=raw.split(" · ").filter(s=>s&&s!==MONEY).join(" · ");
     out.push(row({id,market:m,name:String(x[at.name]),price,regular,in_stock:!!x[at.in_stock],
       image:x[at.image]?(p.image||"")+x[at.image]:"",url:x[at.url]?(p.url||"")+x[at.url]:"",
-      cat:typeof x[at.cat]==="number"?cs[x[at.cat]]||"":"",promo,money,seen}));
+      cat:typeof x[at.cat]==="number"?cs[x[at.cat]]||"":"",promo,money,seen,
+      // isteğe bağlı alanlar (yalnız bazı marketlerde): yapılandırılmış marka, tartılı satış ("kg")
+      brand:at.brand!=null&&x[at.brand]?String(x[at.brand]):"",sold:at.sold!=null&&x[at.sold]==="kg"?"kg":""}));
   }
   return out;
 }
@@ -50,9 +52,10 @@ function rowsFromSplit(cat,pr){
   const P=pr.products,base=pr.base||0,out=[];
   const rows=cat.products.map((c,i)=>{const q=P[i];
     // fiyat dosyası: [fiyat, etiket fiyatı (0 = fiyatla aynı), stok, kampanya, doğrulama - base (sn)]
-    return[c[0],c[1],q[0],q[1]||q[0],q[2],c[2],c[3],c[4],q[3],q[4]==null?null:base+q[4]]});
+    // katalogda ek alanlar (marka, satış birimi) varsa sona eklenir
+    return[c[0],c[1],q[0],q[1]||q[0],q[2],c[2],c[3],c[4],q[3],q[4]==null?null:base+q[4],...c.slice(5)]});
   return rowsOf({updated:pr.updated,prefix:cat.prefix,cats:cat.cats,
-    fields:["id","name","price","regular","in_stock","image","url","cat","promo","seen"],products:rows});
+    fields:["id","name","price","regular","in_stock","image","url","cat","promo","seen",...(cat.fields||[]).slice(5)],products:rows});
 }
 
 // promo metninden kampanya türü ve "tanesi kaça gelir" hesabı

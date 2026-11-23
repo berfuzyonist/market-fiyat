@@ -23,8 +23,10 @@ for (const m of MARKETS) {
   if (!d || !Array.isArray(d.products) || !d.products.length) continue;
   const f = d.fields, at = Object.fromEntries(f.map((k, i) => [k, i]));
   const P = [...d.products].sort((a, b) => (a[at.id] < b[at.id] ? -1 : a[at.id] > b[at.id] ? 1 : 0));
-  const catBody = { market: m, prefix: d.prefix || {}, cats: d.cats || {}, fields: ["id", "name", "image", "url", "cat"],
-    products: P.map((r) => [r[at.id], r[at.name], r[at.image], r[at.url], r[at.cat]]) };
+  // Markete özgü ek alanlar (ör. Migros: brand, sold) katalogun sonuna eklenir; değerler seyrek değişir.
+  const extra = f.filter((k) => !["id", "name", "price", "regular", "in_stock", "image", "url", "cat", "promo", "seen"].includes(k));
+  const catBody = { market: m, prefix: d.prefix || {}, cats: d.cats || {}, fields: ["id", "name", "image", "url", "cat", ...extra],
+    products: P.map((r) => [r[at.id], r[at.name], r[at.image], r[at.url], r[at.cat], ...extra.map((k) => r[at[k]] ?? null)]) };
   const v = createHash("sha256").update(dump(catBody)).digest("hex").slice(0, 12);
   const seens = P.map((r) => r[at.seen]).filter(Number.isInteger), base = seens.length ? Math.min(...seens) : 0;
   const prices = { market: m, updated: d.updated, catalog: v, base, fields: ["price", "regular0", "in_stock", "promo", "seenOffset"],

@@ -183,3 +183,17 @@ test("eşleştirme güveni: birebir, çekirdek, esnek ve fiyat farkı", () => {
   const f=C([mk(1,"sok","Pınar Süt 1 L",30),mk(2,"migros","Pınar Tam Yağlı Süt 1 L",32)]);
   assert.ok(["iyi","orta"].includes(f.level)); assert.ok(f.why.length>0);
 });
+
+test("ek alanlar (marka, tartılı satış) bölünmüş veriden okunur; tartılı üründe birim fiyat kg başına", () => {
+  const MF=require("../../js/match.js");
+  const cat={v:"x",prefix:{},cats:{migros:["Meyve"]},fields:["id","name","image","url","cat","brand","sold"],
+    products:[["migros:1","Muz Yerli Kg","","",0,"Migros","kg"],["migros:2","Su 1 L","","",0,null,null]]};
+  const pr={catalog:"x",updated:"2026-01-01T00:00:00Z",base:0,products:[[69.9,0,1,"",5],[5,0,1,"",5]]};
+  const [a,b]=C.rowsFromSplit(cat,pr);
+  assert.equal(a.brand,"Migros"); assert.equal(a.sold,"kg"); assert.equal(b.brand,""); assert.equal(b.sold,"");
+  assert.deepEqual(MF.unitPrice(a),{v:69.9,u:"kg",kind:"g"});
+  assert.equal(MF.unitPrice(b).u,"L");
+  // eski biçim (ek alansız) dosya da okunur
+  const [c]=C.rowsOf({fields:["id","name","price","regular","in_stock","image","url","cat","promo","seen"],products:[["sok:1","Pınar Süt 1 L",10,10,1,"","",null,"",1]]});
+  assert.equal(c.brand,""); assert.equal(c.sold,"");
+});
