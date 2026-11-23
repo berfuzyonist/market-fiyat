@@ -58,7 +58,7 @@ let NOTES=load("notes",[]); // listedeki serbest notlar: [{t:"ekmek",d:0}]
 // kullanıcının ürün bazında seçtiği market (FIX) ve kayıtlı sepetler
 let PLAN=load("plan",{mode:"multi",k:2,market:""}),FIX=load("fix",{}),SAVED=load("baskets",[]);
 // Takip: favoriler [{key, price, at}], fiyat alarmları {key:[alarm]}, uygulama içi bildirimler [{ts,key,text,read}]
-let FAV=load("fav",[]),ALARMS=load("alarms",{}),INBOX=load("inbox",[]);
+let FAV=load("fav",[]),ALARMS=load("alarms",{}),INBOX=load("inbox",[]),BUD=load("budget",{limit:0,spends:[]});
 let cart=load("cart",[]),bmap=load("bmap",{}),reqs=load("req",{}),pending=null,only=null,updated="",UPD={},PUPD={},CHECK={},CHECKS={},view="home";
 const C={seg:"same",three:false,sort:"pct",page:0},K={kind:"free",m:"",sort:"gain",page:0},B={m:"",grp:"",cat:"",disc:false,sort:"disc",page:0};
 // Ana kategori yuvarlakları: marketlerin farklı kategori adlarını tek grupta toplar
@@ -623,6 +623,11 @@ function productInfo(g){
   return`<div class="${card} p-4 mt-4 enter"><h2 class="font-extrabold flex items-center gap-2"><i data-lucide="info" class="w-5 h-5 text-emerald-600"></i>Ürün bilgisi</h2>
     <div class="mt-2 space-y-2 text-[14px] leading-relaxed text-stone-700">${out.map(x=>`<p>${x}</p>`).join("")}</div>
     <p class="mt-3 text-[11px] text-stone-400">Bu metin uygulamadaki fiyat verisinden otomatik hazırlanır; marketin resmi ürün açıklaması değildir.</p></div>`}
+// A101 ve Market Fiyatı (TÜBİTAK) için veri alınmaz; yalnızca bağlantı verilir. Ürün adı panoya kopyalanır,
+// açılan sitenin arama kutusuna yapıştırılabilir.
+function extLinks(g){
+  const a=(href,l,sub)=>`<a href="${href}" target="_blank" rel="noopener" data-copyname="${esc(g.name)}" class="flex items-center gap-3 py-2.5"><span class="flex-1"><span class="block text-sm font-bold">${l}</span><span class="block text-[11px] text-stone-600">${sub}</span></span><i data-lucide="external-link" class="w-4 h-4 text-stone-500"></i></a>`;
+  return`<section class="${card} px-4 py-1 mt-3 ${div}">${a("https://marketfiyati.org.tr/","Market Fiyatı'nda karşılaştır","TÜBİTAK sitesi; A101 ve diğer zincirler. Ürün adı panoya kopyalanır.")}${a("https://www.a101.com.tr/","A101'de bak","Bu uygulamada A101 fiyatı yok. Ürün adı panoya kopyalanır.")}</section>`}
 // Market sitesi ürün sayfası
 function productPage(g){
   g.offers.forEach(o=>loadHist(o.market));
@@ -660,6 +665,7 @@ function productPage(g){
       ${histCard(g)}
       ${sameSizeCard(g)}
       ${productInfo(g)}
+      ${extLinks(g)}
       ${pending?`<button data-map="${esc(g.key)}" class="mt-3 w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold bg-amber-500 text-white"><i data-lucide="link" class="w-5 h-5"></i>Bu barkodla eşleştir</button>`:""}
     </div>
   </div>
@@ -914,8 +920,34 @@ function drawT(){
   <section class="${card} p-4 mt-3"><h2 class="font-extrabold flex items-center gap-2"><i data-lucide="heart" class="w-5 h-5 text-rose-600"></i>Favoriler <span class="text-stone-500 font-bold">${favs.length}</span></h2>
     ${favs.length?`<div class="${div}">${favs.map(({f,g})=>{const b=best(g),d=b&&f.price?b.price-f.price:0;return row(g,`<p class="text-[11px] mt-0.5 ${d<-0.005?good+" font-bold":d>0.005?"text-red-700 font-bold":"text-stone-500"}">${b?(Math.abs(d)<0.005?"Eklediğinden beri değişmedi":`Eklediğinden beri ${d<0?"":"+"}${tl(d)}`):"Şu an satışta değil"} · ${b?M[b.market].n:""}</p>`)}).join("")}</div>`:`<p class="text-sm text-stone-500 mt-1">Ürün sayfasındaki kalp düğmesiyle ekle.</p>`}</section>
   <section class="${card} p-4 mt-3"><h2 class="font-extrabold flex items-center gap-2"><i data-lucide="bell-plus" class="w-5 h-5 text-emerald-700"></i>Fiyat alarmları <span class="text-stone-500 font-bold">${alarms.reduce((a,k)=>a+ALARMS[k].length,0)}</span></h2>
-    ${alarms.length?`<div class="${div}">${alarms.map(k=>row(GI[k],ALARMS[k].map(a=>`<p class="text-[11px] text-stone-600 mt-0.5">• ${esc(MFA.describe(a))}</p>`).join(""))).join("")}</div>`:`<p class="text-sm text-stone-500 mt-1">Ürün sayfasındaki “Fiyat alarmı” düğmesiyle kur.</p>`}</section>`;
+    ${alarms.length?`<div class="${div}">${alarms.map(k=>row(GI[k],ALARMS[k].map(a=>`<p class="text-[11px] text-stone-600 mt-0.5">• ${esc(MFA.describe(a))}</p>`).join(""))).join("")}</div>`:`<p class="text-sm text-stone-500 mt-1">Ürün sayfasındaki “Fiyat alarmı” düğmesiyle kur.</p>`}</section>`+budgetCard();
 }
+// Bütçe: yalnız kullanıcının girdiği harcamalar sayılır; listenin tutarı tahmin olarak ayrı yazılır.
+function budgetCard(){
+  const s=MFG.summary(BUD,Date.now()),mon=new Date().toLocaleDateString("tr-TR",{month:"long",year:"numeric"}),
+    est=uniq(cart).reduce((a,g)=>{const b=best(g);return a+(b?lineTotal(b,qtyOf(g)):0)},0),over=s.remaining!=null&&s.remaining<0,
+    pct=s.ratio==null?0:Math.min(100,Math.round(s.ratio*100)),mk=Object.keys(M).filter(m=>m!=="a101");
+  return`<section class="${card} p-4 mt-3"><h2 class="font-extrabold flex items-center gap-2"><i data-lucide="wallet" class="w-5 h-5 text-emerald-700"></i>Bütçe <span class="text-stone-500 font-bold text-sm">${esc(mon)}</span></h2>
+    <form data-budlimit class="flex items-center gap-2 mt-2"><label class="text-sm text-stone-600 shrink-0" for="budL">Aylık bütçe</label>
+      <input id="budL" name="v" inputmode="decimal" placeholder="ör. 8.000" value="${s.limit?(s.limit/100).toLocaleString("tr-TR"):""}" class="min-w-0 flex-1 rounded-xl ring-1 ring-stone-300 px-3 py-2 tabular bg-white dark:bg-stone-900">
+      <button class="rounded-xl bg-emerald-700 text-white font-bold px-3 py-2">Kaydet</button></form>
+    <div class="mt-3"><div class="flex items-baseline justify-between"><span class="text-sm">Harcanan</span><span class="price tabular text-xl ${over?"text-red-700":""}">${tl(s.spent/100)}</span></div>
+      ${s.limit?`<div class="h-2.5 rounded-full bg-stone-200 dark:bg-stone-800 mt-1.5 overflow-hidden" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100" aria-label="Bütçenin harcanan kısmı"><div class="h-full ${over?"bg-red-600":pct>=80?"bg-amber-500":"bg-emerald-600"}" style="width:${pct}%"></div></div>
+      <p class="text-xs mt-1.5 ${over?"text-red-700 font-bold":"text-stone-600"}">${over?`Bütçe ${tl(-s.remaining/100)} aşıldı`:`Kalan ${tl(s.remaining/100)} · ay sonuna ${s.daysLeft} gün, günde ${tl(s.perDay/100)}`}</p>`:`<p class="text-xs text-stone-600 mt-1">Bütçe girersen kalan tutarı ve günlük payını gösteririm.</p>`}
+      ${est>0?`<p class="text-xs text-stone-600 mt-1">Listendeki ürünlerin tahmini tutarı ${tl(est)}. Bu bir tahmindir, harcamaya eklenmez.</p>`:""}</div>
+    <form data-budspend class="grid grid-cols-[1fr_auto] gap-2 mt-3"><input name="v" inputmode="decimal" required placeholder="Harcama tutarı (₺)" aria-label="Harcama tutarı" class="min-w-0 rounded-xl ring-1 ring-stone-300 px-3 py-2 tabular bg-white dark:bg-stone-900">
+      <select name="m" aria-label="Market" class="rounded-xl ring-1 ring-stone-300 px-2 py-2 bg-white dark:bg-stone-900">${mk.map(m=>`<option value="${m}">${M[m].n}</option>`).join("")}<option value="a101">A101</option><option value="diger">Diğer</option></select>
+      <input name="n" maxlength="60" placeholder="Not (isteğe bağlı)" aria-label="Not" class="min-w-0 rounded-xl ring-1 ring-stone-300 px-3 py-2 bg-white dark:bg-stone-900">
+      <button class="rounded-xl bg-emerald-700 text-white font-bold px-3 py-2">Ekle</button></form>
+    ${s.list.length?`<div class="${div} mt-2">${s.list.slice(0,20).map(x=>`<div class="flex items-center gap-2 py-2 text-sm"><span class="text-xs text-stone-600 tabular w-14 shrink-0">${new Date(x.t).toLocaleDateString("tr-TR",{day:"numeric",month:"short"})}</span>${M[x.market]?badge(x.market):`<span class="chipx bg-stone-200 text-stone-700">Diğer</span>`}<span class="flex-1 min-w-0 truncate text-stone-600">${esc(x.note||"")}</span><span class="tabular font-bold">${tl(x.cents/100)}</span><button data-buddel="${x.t}" class="icon-btn !w-8 !h-8 text-stone-500" aria-label="Harcamayı sil"><i data-lucide="x" class="w-4 h-4"></i></button></div>`).join("")}</div>`:""}
+  </section>`}
+document.addEventListener("submit",e=>{const f=e.target;
+  if(f.matches("[data-budlimit]")){e.preventDefault();const c=MFG.toCents(f.v.value);BUD.limit=f.v.value.trim()?c:0;save("budget",BUD);redraw();return}
+  if(f.matches("[data-budspend]")){e.preventDefault();const c=MFG.toCents(f.v.value);if(!c){note("Geçerli bir tutar yaz (ör. 245,90).");return}
+    let t=Date.now();while(BUD.spends.some(x=>x.t===t))t++;
+    BUD.spends.push({t,cents:c,market:f.m.value,note:f.n.value.trim().slice(0,60)});
+    const cut=Date.now()-400*864e5;BUD.spends=BUD.spends.filter(x=>x.t>cut); // en çok ~13 ay saklanır
+    save("budget",BUD);redraw()}});
 
 // ---------- Akıllı sepet ----------
 function basketItems(list){return list.map(g=>{const q=qtyOf(g),av=avail(g);
@@ -1150,6 +1182,8 @@ document.addEventListener("click",e=>{const t=s=>e.target.closest(s);let el;
   else if(el=t("[data-go]")){Object.assign(B,{m:"",grp:"",cat:"",disc:true,sort:"disc",page:0});go("browse")}
   else if(el=t("[data-bm]")){B.m=el.dataset.bm;B.page=0;if(el.dataset.open){Object.assign(B,{grp:"",cat:"",disc:false,sort:"disc"});go("browse")}else redraw()}
   else if(t("#reload"))location.reload();
+  else if(el=t("[data-copyname]")){try{navigator.clipboard.writeText(el.dataset.copyname)}catch(e){}}
+  else if(el=t("[data-buddel]")){BUD.spends=BUD.spends.filter(x=>x.t!==+el.dataset.buddel);save("budget",BUD);redraw()}
   else if(el=t("[data-view]")){if(el.dataset.view==="search"){only=null}go(el.dataset.view);if(el.dataset.focus)(innerWidth>=768?$("qd"):$("q")).focus()}});
 let qT;QS.forEach(inp=>{
   inp.oninput=()=>{setQ(inp.value);only=null;pending=null;clearTimeout(qT);
