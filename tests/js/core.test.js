@@ -173,3 +173,13 @@ test("aynı boyda diğer markalar: tür ve boy aynı, aromalı/kakaolu çeşit v
   assert.deepEqual(MF.sameSize(rows[0],rows).map(h=>h.o.id),["migros:3","migros:2"]);
   assert.equal(MF.sizeLabel(rows[0]._p.qty,rows[0]._p.size),"1 L");
 });
+
+test("eşleştirme güveni: birebir, çekirdek, esnek ve fiyat farkı", () => {
+  const MF=require("../../js/match.js");const mk=(id,market,name,price)=>({id,market,name,price});
+  const C=offers=>MF.confidence({offers});
+  assert.strictEqual(C([mk(1,"sok","Ülker Çikolatalı Gofret 36 G",10)]),null);
+  assert.strictEqual(C([mk(1,"sok","Ülker Çikolatalı Gofret 36 G",10),mk(2,"migros","Ülker Çikolatalı Gofret 36 g",11)]).level,"yuksek");
+  assert.strictEqual(C([mk(1,"sok","Ülker Çikolatalı Gofret 36 G",10),mk(2,"migros","Ülker Çikolatalı Gofret 36 g",19)]).level,"iyi");
+  const f=C([mk(1,"sok","Pınar Süt 1 L",30),mk(2,"migros","Pınar Tam Yağlı Süt 1 L",32)]);
+  assert.ok(["iyi","orta"].includes(f.level)); assert.ok(f.why.length>0);
+});

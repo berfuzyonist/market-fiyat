@@ -71,7 +71,8 @@ function distinct(p){return p.toks.slice(1).filter(t=>!GENERIC.has(t)&&!/^\d+$/.
 const VARIANT=new Set(("vanilya vanilla vanilyali cilek cilekli muz muzlu kakao kakaolu cikolatali findikli limon limonlu portakal portakalli "+
  "elma elmali seftali karpuz nane naneli mentol mentollu visne kiraz ananas mango hindistan karamel karamelli tarcin bal balli "+
  "zero light diet sekersiz laktozsuz glutensiz yagsiz yarim tam tatli aci aciili bitter sutlu beyaz beyazlar renkli renkliler siyah siyahlar "+
- "kadin erkek bebek cocuk mini maxi ekstra extra organik protein kepekli").split(" "));
+ "kadin erkek bebek cocuk mini maxi ekstra extra organik protein kepekli "+
+ "aronya karadut karadutlu dut dutlu yabanmersini ahududu frambuaz bogurtlen nar narli zencefil zencefilli").split(" "));
 const isVariant=t=>[...VARIANT].some(v=>tmatch(t,v));
 function pairScore(A,B){
   const used=new Set();let m=0;
@@ -210,6 +211,18 @@ function sameSize(o,rows){
   const tail=own.filter(t=>!/^[\d%]/.test(t)).slice(-2);
   if(!out.length&&tail.length===2)out=run(tail,3);
   return out}
+/* Eşleştirme güveni: grubun teklifleri gerçekten aynı ürün mü? Adlardan çıkarılır (barkod verisi yok).
+   yuksek: boy ve tüm kelimeler aynı · iyi: boy ve ayırt edici kelimeler aynı · orta: marka+boy aynı, adlar
+   benzer (esnek eşleştirme). Fiyat farkı büyükse bir kademe düşer. Tek teklifli grupta null. */
+function confidence(g){
+  const offers=(g&&g.offers)||[];if(offers.length<2)return null;
+  const ps=offers.map(o=>o._p||parse(o.name));if(ps.some(p=>!p))return{level:"orta",score:0.6,why:"Ürün adı çözümlenemedi"};
+  const same=f=>ps.every(p=>p[f]===ps[0][f]);
+  let level=same("size")&&same("key")?"yuksek":same("size")&&same("core")?"iyi":"orta";
+  const why=[level==="yuksek"?"Ad ve boy birebir aynı":level==="iyi"?"Marka, boy ve ayırt edici kelimeler aynı":"Marka ve boy aynı, adlar benzer"];
+  const pr=offers.map(o=>o.price).filter(v=>v>0),r=pr.length>1?Math.max(...pr)/Math.min(...pr):1;
+  if(r>1.5){level=level==="yuksek"?"iyi":"orta";why.push("fiyatlar arasında "+r.toFixed(1)+" kat fark var")}
+  return{level,score:{yuksek:0.95,iyi:0.8,orta:0.6}[level],why:why.join("; ")}}
 // Önceden hesaplanmış eşleştirmeden (data/client/groups.json: birden çok teklifli grupların id listeleri)
 // grupları kurar; listede olmayan her ürün kendi grubudur. group() ile aynı biçimde döner.
 function groupFrom(rows,lists){
@@ -218,6 +231,6 @@ function groupFrom(rows,lists){
     if(offers.length)out.push({offers,get p(){return offers[0]._p}})}
   for(const o of rows)if(!used.has(o))out.push({offers:[o],get p(){return o._p}});
   return out}
-const api={fold,parse,group,groupFrom,families,unitPrice,staples,unitCompare,sameSize,sizeLabel};
+const api={fold,parse,group,groupFrom,confidence,families,unitPrice,staples,unitCompare,sameSize,sizeLabel};
 if(typeof module!=="undefined"&&module.exports)module.exports=api;else root.MF=api;
 })(typeof window!=="undefined"?window:globalThis);
