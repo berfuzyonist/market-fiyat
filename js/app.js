@@ -684,7 +684,7 @@ function drawS(){
   if(only&&GI[only]){$("res").innerHTML=productPage(GI[only]);return}
   const ban=pending?`<div class="col-span-full rounded-2xl bg-amber-100 text-amber-900 p-4 text-sm"><p class="font-bold">Barkod ${esc(pending)} henüz tanınmıyor</p><p>Ürünü adıyla arayın, ürün sayfasında "Bu barkodla eşleştir"e dokunun. Ürün başına bir kez yeterli.</p><button data-cancel class="mt-2 font-bold underline">Vazgeç</button></div>`:"";
   if(!w.length){$("res").innerHTML=ban+(G.length?`<div class="col-span-full">${empty("search","Ne arıyorsun?","Ürün adı, marka ya da barkod yaz. Örneğin “su”, “süt”, “yüzey temizleyici”.")}<div class="flex flex-wrap gap-2 mt-3">${UNIT_Q.map(([q,l,ic])=>`<button data-uq="${esc(q)}" class="uchip"><i data-lucide="${ic}" class="w-4 h-4 text-emerald-600"></i>${l}</button>`).join("")}</div></div>`:"");return}
-  const gs=g=>g.s||(g.s=MFC.fold(g.offers.map(o=>o.name).join(" ")).replace(/[^a-z0-9%]+/g," "));
+  const gs=g=>g.s||(g.s=MFC.fold(g.offers.map(o=>o.brand?o.brand+" "+o.name:o.name).join(" ")).replace(/[^a-z0-9%]+/g," "));
   // Seçili marketlerdeki en ucuz teklif; süzgeçler (bölüm, indirim, kampanya, fiyat aralığı) bu teklife uygulanır
   const lo=S.min!==""?+S.min:null,hi=S.max!==""?+S.max:null;
   const bestIn=g=>avail(g).filter(o=>!S.m.length||S.m.includes(o.market)).reduce((a,o)=>!a||o.price<a.price?o:a,null);
