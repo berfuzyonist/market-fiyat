@@ -148,3 +148,12 @@ Tarayıcıda çalışan Tailwind ve tüm Lucide kütüphanesi yerine derlenmiş 
 derlemenin güncel olduğunu denetler. Yazı tipleri (Rubik, Nunito Sans; SIL Open Font License)
 `fonts/` altında, yalnızca latin ve latin-ext alt kümeleriyle sitede barındırılır. `sw.js` sürüm
 etiketli dosyaları ve yazı tiplerini önbellekten, sayfa ve veriyi önce internetten verir.
+
+## Akıllı sepet
+
+`js/basket.js` (`MFB.optimize`): listedeki her ürün için marketlerdeki tutar (adet şartı sağlanan
+kampanya dahil, sepet tutarı şartlı kampanyalar hariç) kuruş cinsinden tam sayıyla hesaplanır.
+Planlar: her ürün en ucuz markette (çoklu), tek market (eksik ürün sayısıyla), en fazla 2 market.
+Kullanıcının ürün bazında seçtiği market korunur; eski (48 saat+) ve Money kartlı fiyatlar uyarılır.
+Seçili plan liste gruplamasına, paylaşım metnine ve PDF'e uygulanır. Kayıtlı sepetler cihazda
+(`localStorage`, en çok 20) tutulur.

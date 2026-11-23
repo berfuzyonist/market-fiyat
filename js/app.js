@@ -47,6 +47,9 @@ const FRESH=new Set(); // "Fiyat güncel mi?" paneli açık ürünler (kaydedilm
 let done=load("done",{}),HIST={},S={sort:"rel"},UOPEN=false,USIZE="";
 let QTY=load("qty",{});
 let NOTES=load("notes",[]); // listedeki serbest notlar: [{t:"ekmek",d:0}]
+// Akıllı sepet: seçili plan (multi: her ürün en ucuz markete, single: tek market, limit: en fazla k market),
+// kullanıcının ürün bazında seçtiği market (FIX) ve kayıtlı sepetler
+let PLAN=load("plan",{mode:"multi",k:2,market:""}),FIX=load("fix",{}),SAVED=load("baskets",[]);
 let cart=load("cart",[]),bmap=load("bmap",{}),reqs=load("req",{}),pending=null,only=null,updated="",UPD={},CHECK={},CHECKS={},view="home";
 const C={seg:"same",three:false,sort:"pct",page:0},K={kind:"free",m:"",sort:"gain",page:0},B={m:"",grp:"",cat:"",disc:false,sort:"disc",page:0};
 // Ana kategori yuvarlakları: marketlerin farklı kategori adlarını tek grupta toplar
@@ -699,10 +702,11 @@ function drawL(){
   const notesHtml=NOTES.length?`<section class="${card} overflow-hidden enter"><div class="px-4 py-3 flex items-center justify-between bg-stone-700 text-white"><span class="font-display font-extrabold text-lg flex items-center gap-2"><i data-lucide="notebook-pen" class="w-5 h-5"></i>Notlar</span><span class="text-sm font-bold">${NOTES.filter(n=>n.d).length}/${NOTES.length} alındı</span></div>
     <div class="px-4 ${div}">${NOTES.map((n,i)=>`<div class="flex items-center gap-3 py-3 ${n.d?"opacity-50":""}"><button data-ndone="${i}" aria-label="Alındı" class="w-7 h-7 shrink-0 rounded-full grid place-items-center border-2 ${n.d?"bg-emerald-600 border-emerald-600 text-white":"border-stone-300"}">${n.d?'<i data-lucide="check" class="w-4 h-4"></i>':""}</button>
       <span class="flex-1 text-[15px] font-bold ${n.d?"line-through":""}">${esc(n.t)}</span><button data-nfind="${i}" class="text-xs font-bold text-emerald-700 flex items-center gap-1"><i data-lucide="search" class="w-3.5 h-3.5"></i>Fiyat bul</button><button data-ndel="${i}" aria-label="Sil" class="text-stone-400 p-1"><i data-lucide="x" class="w-4 h-4"></i></button></div>`).join("")}</div></section>`:"";
-  if(!items.length){$("list").innerHTML=noteBox+notesHtml+`<div class="col-span-full">${empty("shopping-cart",NOTES.length?"Henüz ürün yok":"Listen boş","Ürünlerdeki yeşil + düğmesiyle ekle ya da yukarıya not yaz. Liste en ucuz markete göre gruplanır; mağazada aldıklarını işaretlersin.")}</div>`;return}
-  let sum=0,max=0,h="",stops=0,got=0;
-  ORD.forEach(m=>{const it=items.filter(g=>(best(g)||{}).market===m);if(!it.length)return;stops++;let t=0,dn=0;
-    const rows=it.map(g=>{const b=best(g),ok=!!done[g.key],q=qtyOf(g),lt=lineTotal(b,q),promoOn=lt<q*b.price-0.005;t+=lt;max+=worst(g)*q;if(ok){dn++;got++}
+  if(!items.length){$("list").innerHTML=noteBox+notesHtml+`<div class="col-span-full">${empty("shopping-cart",NOTES.length?"Henüz ürün yok":"Listen boş","Ürünlerdeki yeşil + düğmesiyle ekle ya da yukarıya not yaz. Liste en ucuz markete göre gruplanır; mağazada aldıklarını işaretlersin.")}</div>`+savedPanel();return}
+  let sum=0,max=0,h="",stops=0,got=0;const P=currentPlan(items),pick=P.pickOf;
+  ORD.forEach(m=>{const it=items.filter(g=>(pick(g)||{}).market===m);if(!it.length)return;stops++;let t=0,dn=0;
+    const rows=it.map(g=>{const b=pick(g),ok=!!done[g.key],q=qtyOf(g),lt=lineTotal(b,q),promoOn=lt<q*b.price-0.005;t+=lt;max+=worst(g)*q;if(ok){dn++;got++}
+      const others=avail(g).filter(o=>o!==b);
       return`<div class="flex items-center gap-3 py-3 ${ok?"opacity-50":""} transition">
         <button data-done="${esc(g.key)}" aria-label="Alındı" class="w-7 h-7 shrink-0 rounded-full grid place-items-center border-2 ${ok?"bg-emerald-600 border-emerald-600 text-white":"border-stone-300"} transition active:scale-90">${ok?'<i data-lucide="check" class="w-4 h-4"></i>':""}</button>
         ${img(g.image,"w-12 h-12 shrink-0")}
@@ -710,12 +714,13 @@ function drawL(){
           ${b._promo&&b._promo.kind!=="bim"?`<p class="text-[11px] text-violet-700 dark:text-violet-300 mt-0.5">${promoLine(b)}</p>`:""}
           ${promoOn?`<p class="text-[11px] font-extrabold text-violet-700">✓ Kampanya uygulandı: ${tl(q*b.price-lt)} indirim</p>`:b._promo&&b._promo.kind==="multi"&&q<b._promo.need?`<p class="text-[11px] font-bold text-violet-700">${b._promo.need-q} tane daha eklersen kampanya geçerli</p>`:""}
           ${(worst(g)-b.price)*q>0.005?`<p class="text-[11px] ${good} font-bold">${tl((worst(g)-b.price)*q)} tasarruf</p>`:""}
+          ${!ok&&others.length?`<div class="mt-1 flex flex-wrap gap-1">${others.map(o=>`<button data-fix="${esc(g.key)}" data-m="${o.market}" class="text-[11px] font-bold rounded-full px-2 py-0.5 ring-1 ring-stone-300 text-stone-700 bg-white">${M[o.market].n} ${tl(lineTotal(o,q))}</button>`).join("")}${FIX[g.key]?`<button data-fix="${esc(g.key)}" data-m="" class="text-[11px] font-bold rounded-full px-2 py-0.5 text-emerald-800 underline">Otomatik seç</button>`:""}</div>`:""}
           ${ok?"":(a=>a?`<div class="mt-1.5 rounded-xl bg-sky-50 ring-1 ring-sky-200 px-2.5 py-1.5 text-[11px] leading-snug"><span class="font-bold text-sky-800">Muadili %${Math.round(a.save*100)} ucuz:</span> <span data-show="${esc(a.g.key)}" class="underline">${esc(a.o.name)}</span> · ${M[a.o.market].n} ${tl(a.o.price)} <button data-swap="${esc(g.key)}" data-to="${esc(a.g.key)}" class="ml-1 font-extrabold text-sky-700">Değiştir ›</button></div>`:"")(alternatives(g,1)[0])}</div>
         <div class="flex flex-col items-end gap-1.5 shrink-0"><span class="price tabular text-base">${tl(lt)}</span>${q>1?`<span class="text-[11px] text-stone-500 tabular -mt-1">${q} × ${tl(b.price)}</span>`:""}${stepper(g,"sm")}</div></div>`}).join("");
     h+=`<section class="${card} overflow-hidden enter"><div class="px-4 py-3 flex items-center justify-between st-${m} text-white"><span class="font-display font-extrabold text-lg flex items-center gap-2"><span class="bg-black/20 rounded-full w-7 h-7 grid place-items-center text-sm">${stops}</span>${M[m].n}</span><span class="text-sm font-bold">${dn}/${it.length} alındı</span></div>
       <div class="px-4 ${div}">${rows}</div><div class="px-4 py-3 bg-stone-50 dark:bg-stone-800/50 flex justify-between font-bold"><span>Ara toplam</span><span class="price tabular">${tl(t)}</span></div></section>`;sum+=t});
-  const out=items.filter(g=>!best(g));
-  if(out.length)h+=`<section class="${card} overflow-hidden"><div class="bg-stone-300 dark:bg-stone-700 px-4 py-3 font-extrabold">Şu an alınamayanlar</div><div class="px-4 ${div}">${out.map(g=>`<div class="flex items-center gap-3 py-3">${img(g.image,"w-10 h-10 shrink-0")}<span data-show="${esc(g.key)}" class="flex-1 text-sm">${esc(g.name)}</span><button data-add="${esc(g.key)}" class="text-stone-400 p-1"><i data-lucide="x" class="w-4 h-4"></i></button></div>`).join("")}</div></section>`;
+  const out=items.filter(g=>!pick(g));
+  if(out.length)h+=`<section class="${card} overflow-hidden"><div class="bg-stone-300 dark:bg-stone-700 px-4 py-3 font-extrabold">${out.some(g=>best(g))?"Bu planda alınamayanlar":"Şu an alınamayanlar"}</div><div class="px-4 ${div}">${out.map(g=>`<div class="flex items-center gap-3 py-3">${img(g.image,"w-10 h-10 shrink-0")}<span data-show="${esc(g.key)}" class="flex-1 text-sm">${esc(g.name)}</span><button data-add="${esc(g.key)}" class="text-stone-400 p-1"><i data-lucide="x" class="w-4 h-4"></i></button></div>`).join("")}</div></section>`;
   const pctDone=Math.round(got/items.length*100);
   $("list").innerHTML=`<div class="col-span-full rounded-[24px] p-5 text-white relative overflow-hidden" style="background:linear-gradient(135deg,#047857,#0d9488)">
     <p class="text-emerald-100 text-sm font-bold">Alışveriş listem · ${items.length} çeşit · ${units} adet · ${stops} market</p>
@@ -725,13 +730,56 @@ function drawL(){
     <div class="mt-2 flex items-center justify-between text-xs font-bold"><span>${got}/${items.length} ürün alındı</span>${got?`<button data-undone class="underline">İşaretleri sıfırla</button>`:""}</div>
     <div class="relative z-10 mt-4 grid grid-cols-2 gap-2"><button data-share class="flex items-center justify-center gap-2 py-3 rounded-2xl bg-white text-emerald-800 font-extrabold active:scale-95 transition"><i data-lucide="share-2" class="w-5 h-5"></i>Paylaş</button>
       <button data-pdf class="flex items-center justify-center gap-2 py-3 rounded-2xl bg-white/15 ring-1 ring-white/40 text-white font-extrabold active:scale-95 transition"><i data-lucide="file-down" class="w-5 h-5"></i>PDF aktar</button></div>
-    <span class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-white/10"></span></div>`+noteBox+h+notesHtml}
+    <span class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-white/10"></span></div>`+planPanel(P,items.length)+noteBox+h+notesHtml+savedPanel()}
+
+// ---------- Akıllı sepet ----------
+function basketItems(list){return list.map(g=>{const q=qtyOf(g),av=avail(g);
+  return{key:g.key,qty:q,fixed:FIX[g.key]&&av.some(o=>o.market===FIX[g.key])?FIX[g.key]:null,
+    offers:av.map(o=>({market:o.market,cents:MFB.toCents(lineTotal(o,q)),stale:!!o.stale,money:!!o.money,o}))}})}
+// Seçili plana göre her ürünün alınacağı teklif: {opt, chosen, pickOf(g)}
+function currentPlan(list){
+  const opt=MFB.optimize(basketItems(list),ORD);
+  let chosen=opt.multi;
+  if(PLAN.mode==="single")chosen=opt.single.find(x=>x.market===PLAN.market)||opt.single[0]||opt.multi;
+  else if(PLAN.mode==="limit")chosen=(opt.multi.markets.length>PLAN.k&&opt.limited[PLAN.k])||opt.multi;
+  return{opt,chosen,pickOf:g=>(chosen.pick[g.key]||{}).o||null}}
+const tlc=c=>tl(c/100);
+function planPanel(P,n){
+  const {opt,chosen}=P,mode=PLAN.mode;
+  // Plan kartı: tutar ve altında ayrı satırda market/eksik bilgisi. Eksik ürünlü planın tutarı eksik ürünleri
+  // içermez; bu yüzden eksik sayısı uyarı renginde yazılır (tam sepetle karıştırılmasın).
+  const btn=(attr,label,on,p,meta,w="flex-1 min-w-[7.5rem]")=>`<button ${attr} class="${w} rounded-2xl px-3 py-2.5 text-left ring-1 transition ${on?"bg-emerald-700 text-white ring-emerald-700":"bg-white ring-stone-200 text-stone-800"}"><span class="block text-[11px] font-bold leading-tight ${on?"text-emerald-100":"text-stone-600"}">${label}</span><span class="block font-display font-extrabold tabular text-[17px] mt-0.5">${tlc(p.total)}</span><span class="block text-[11px] font-bold leading-tight mt-0.5 ${on?"text-emerald-50":"text-stone-600"}">${meta}</span>${p.missing.length?`<span class="block text-[11px] font-extrabold mt-0.5 ${on?"text-amber-200":"text-amber-700"}">${p.missing.length} ürün yok · tutara dahil değil</span>`:""}</button>`;
+  const lim=k=>opt.limited[k];
+  const warn=[];
+  if(chosen.stale)warn.push(`${chosen.stale} ürünün fiyatı 48 saatten uzun süredir doğrulanmadı.`);
+  if(chosen.money)warn.push(`${chosen.money} üründe Migros Money kartlı fiyat kullanıldı.`);
+  const basketPromo=uniq(cart).some(g=>{const o=P.pickOf(g);return o&&o._promo&&o._promo.kind==="basket"});
+  if(basketPromo)warn.push("“X TL üzeri sepette” kampanyaları sepet şartına bağlı olduğu için toplama katılmadı.");
+  return`<section class="col-span-full ${card} p-4 enter">
+    <div class="flex items-center justify-between gap-2"><h2 class="font-display font-extrabold text-lg flex items-center gap-2"><i data-lucide="route" class="w-5 h-5 text-emerald-700"></i>Akıllı sepet</h2>
+      ${opt.saving>0?`<span class="chipx bg-emerald-100 text-emerald-900">Tek markete göre ${tlc(opt.saving)} tasarruf</span>`:""}</div>
+    <p class="text-xs text-stone-600 mt-0.5">Listendeki ${n} ürünü nereden alırsan toplam ne tutar? Bir plan seç; liste ona göre gruplanır.</p>
+    <div class="mt-3 flex gap-2 overflow-x-auto noscroll -mx-1 px-1 pb-1">
+      ${btn('data-plan="multi"',"Her ürün en ucuz markette",mode==="multi",opt.multi,`${opt.multi.markets.length} market: ${opt.multi.markets.map(m=>M[m].n).join(", ")}`)}
+      ${opt.multi.markets.length>2&&lim(2)?btn('data-plan="limit:2"',"En fazla 2 markete git",mode==="limit"&&PLAN.k===2,lim(2),lim(2).markets.map(m=>M[m].n).join(" + ")):""}
+    </div>
+    <p class="mt-3 text-xs font-extrabold text-stone-700">Hepsini tek marketten alsan</p>
+    <div class="mt-1.5 grid ${opt.single.length>=3?"grid-cols-3":opt.single.length===2?"grid-cols-2":"grid-cols-1"} gap-2">${opt.single.map(x=>btn(`data-plan="single:${x.market}"`,M[x.market].n,mode==="single"&&chosen.market===x.market,x,x.missing.length?"":"tamamı var","min-w-0 !px-2.5")).join("")}</div>
+    ${warn.length?`<ul class="mt-3 space-y-1 text-[12px] text-amber-900 bg-amber-50 ring-1 ring-amber-200 rounded-xl px-3 py-2">${warn.map(w=>`<li class="flex gap-1.5"><i data-lucide="triangle-alert" class="w-3.5 h-3.5 shrink-0 mt-0.5"></i>${w}</li>`).join("")}</ul>`:""}
+    <p class="mt-2 text-[11px] text-stone-500">Toplamlar marketlerin online fiyatlarıdır; “2 Al 1 Öde” gibi kampanyalar yalnızca adet şartı sağlanınca uygulanır. Ulaşım maliyeti dahil değildir.</p>
+  </section>`}
+function savedPanel(){
+  return`<section class="col-span-full ${card} p-4"><div class="flex items-center justify-between"><h2 class="font-extrabold flex items-center gap-2"><i data-lucide="archive" class="w-5 h-5 text-stone-600"></i>Kayıtlı sepetler</h2>
+    <button data-bsave class="chipx bg-emerald-700 text-white !py-2"><i data-lucide="save" class="w-3.5 h-3.5"></i>Bu sepeti kaydet</button></div>
+    ${SAVED.length?`<div class="mt-2 ${div}">${SAVED.map((b,i)=>`<div class="flex items-center gap-2 py-2.5"><div class="flex-1 min-w-0"><p class="font-bold truncate">${esc(b.name)}</p><p class="text-[11px] text-stone-500">${b.cart.length} ürün · ${new Date(b.at).toLocaleDateString("tr-TR",{day:"numeric",month:"short"})}</p></div>
+      <button data-bload="${i}" class="chipx bg-stone-200 text-stone-800 !py-2">Yükle</button><button data-bdel="${i}" aria-label="Sil" class="p-2 text-stone-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>`).join("")}</div>`
+    :`<p class="text-xs text-stone-500 mt-1">Haftalık alışveriş gibi tekrar eden listeleri kaydedip tek dokunuşla geri yükleyebilirsin.</p>`}</section>`}
 
 // Listeyi düz metin olarak paylaş: market market, adet ve fiyatla; notlar en sonda
 function listText(){
-  const items=uniq(cart),L=["Alışveriş listem"];let sum=0;
-  ORD.forEach(m=>{const it=items.filter(g=>(best(g)||{}).market===m);if(!it.length)return;let t=0;L.push("",M[m].n.toLocaleUpperCase("tr"));
-    it.forEach(g=>{const b=best(g),q=qtyOf(g),lt=lineTotal(b,q);t+=lt;L.push(`${done[g.key]?"✓":"•"} ${b.name}${q>1?` ×${q}`:""} — ${tl(lt)}`)});
+  const items=uniq(cart),L=["Alışveriş listem"];let sum=0;const pick=currentPlan(items).pickOf;
+  ORD.forEach(m=>{const it=items.filter(g=>(pick(g)||{}).market===m);if(!it.length)return;let t=0;L.push("",M[m].n.toLocaleUpperCase("tr"));
+    it.forEach(g=>{const b=pick(g),q=qtyOf(g),lt=lineTotal(b,q);t+=lt;L.push(`${done[g.key]?"✓":"•"} ${b.name}${q>1?` ×${q}`:""} — ${tl(lt)}`)});
     L.push(`Ara toplam: ${tl(t)}`);sum+=t});
   if(NOTES.length){L.push("","NOTLAR");NOTES.forEach(n=>L.push(`${n.d?"✓":"•"} ${n.t}`))}
   if(sum)L.push("",`Toplam: ${tl(sum)}`);
@@ -742,8 +790,9 @@ function listText(){
 async function exportPdf(){
   const items=uniq(cart);if(!items.length&&!NOTES.length){note("Listen boş.");return}
   const d=new Date().toLocaleDateString("tr-TR",{day:"numeric",month:"long",year:"numeric",weekday:"long"});let sum=0,n=0;
-  const secs=ORD.map(m=>{const it=items.filter(g=>(best(g)||{}).market===m);if(!it.length)return"";let t=0;
-    const rows=it.map(g=>{const b=best(g),q=qtyOf(g),lt=lineTotal(b,q);t+=lt;n++;const pr=b._promo&&b._promo.kind!=="bim"?b._promo.label:"";
+  const pick=currentPlan(items).pickOf;
+  const secs=ORD.map(m=>{const it=items.filter(g=>(pick(g)||{}).market===m);if(!it.length)return"";let t=0;
+    const rows=it.map(g=>{const b=pick(g),q=qtyOf(g),lt=lineTotal(b,q);t+=lt;n++;const pr=b._promo&&b._promo.kind!=="bim"?b._promo.label:"";
       return`<tr><td class="pc-box">${done[g.key]?"✓":""}</td><td class="pc-img">${b.image&&b.image.startsWith("https://")?`<img src="${esc(b.image)}" alt="">`:""}</td>
         <td><b>${esc(b.name)}</b>${pr?`<br><span class="pc-promo">${esc(pr)}</span>`:""}</td><td class="pc-num">${q}</td><td class="pc-num">${tl(b.price)}</td><td class="pc-num"><b>${tl(lt)}</b></td></tr>`}).join("");
     sum+=t;return`<h2 style="border-color:${M[m].bar}"><span style="background:${M[m].bar}">${M[m].n}</span> ${it.length} ürün · ${tl(t)}</h2>
@@ -852,6 +901,13 @@ document.addEventListener("click",e=>{const t=s=>e.target.closest(s);let el;
   else if(el=t("[data-dec]")){const g=GI[el.dataset.dec];if(g){const q=qtyOf(g);if(q>1)QTY[g.key]=q-1;else{delete QTY[g.key];cart=cart.filter(x=>GI[x]!==g);save("cart",cart)}save("qty",QTY);redraw()}}
   else if(el=t("[data-camp]")){openCamp(el.dataset.camp)}
   else if(t("[data-share]")){shareList()}
+  else if(el=t("[data-plan]")){const [mode,arg]=el.dataset.plan.split(":");PLAN={mode,k:mode==="limit"?+arg:PLAN.k,market:mode==="single"?arg:""};save("plan",PLAN);redraw()}
+  else if(el=t("[data-fix]")){const k=el.dataset.fix,m=el.dataset.m;if(m)FIX[k]=m;else delete FIX[k];save("fix",FIX);redraw()}
+  else if(t("[data-bsave]")){const name=(prompt("Sepete bir ad ver:",`Sepet ${new Date().toLocaleDateString("tr-TR",{day:"numeric",month:"short"})}`)||"").trim().slice(0,40);
+    if(name){SAVED.unshift({name,at:Date.now(),cart:[...cart],qty:{...QTY},notes:NOTES.map(n=>({t:n.t,d:0}))});SAVED=SAVED.slice(0,20);save("baskets",SAVED);note("Sepet kaydedildi: "+name);redraw()}}
+  else if(el=t("[data-bload]")){const b=SAVED[+el.dataset.bload];if(b&&(!cart.length||confirm("Şu anki liste kayıtlı sepetle değiştirilsin mi?"))){cart=[...b.cart];QTY={...b.qty};NOTES=(b.notes||[]).map(n=>({...n}));done={};save("cart",cart);save("qty",QTY);save("notes",NOTES);save("done",done);
+    const lost=cart.filter(k=>!GI[k]).length;note(`“${b.name}” yüklendi${lost?`; ${lost} ürün artık katalogda yok`:""}.`);redraw()}}
+  else if(el=t("[data-bdel]")){const b=SAVED[+el.dataset.bdel];if(b&&confirm(`“${b.name}” silinsin mi?`)){SAVED.splice(+el.dataset.bdel,1);save("baskets",SAVED);redraw()}}
   else if(t("[data-pdf]")){exportPdf()}
   else if(el=t("[data-swap]")){const from=GI[el.dataset.swap],to=GI[el.dataset.to];if(from&&to){const q=qtyOf(from);cart=cart.map(k=>GI[k]===from?to.key:k);delete QTY[from.key];if(q>1)QTY[to.key]=q;delete done[from.key];save("cart",cart);save("qty",QTY);save("done",done);note("Değiştirildi: "+best(to).name);redraw()}}
   else if(el=t("[data-ndone]")){const n=NOTES[+el.dataset.ndone];if(n){n.d=n.d?0:1;save("notes",NOTES);if(navigator.vibrate)navigator.vibrate(15);redraw()}}
