@@ -9,6 +9,12 @@ on:
       - "tests/**"
       - "config.json"
       - ".github/workflows/**"
+      - "index.html"
+      - "css/**"
+      - "package.json"
+      - "package-lock.json"
+      - "tailwind.config.cjs"
+      - "sw.js"
   pull_request:
     branches: [main]
     paths:
@@ -18,6 +24,12 @@ on:
       - "tests/**"
       - "config.json"
       - ".github/workflows/**"
+      - "index.html"
+      - "css/**"
+      - "package.json"
+      - "package-lock.json"
+      - "tailwind.config.cjs"
+      - "sw.js"
 permissions:
   contents: read
 jobs:
@@ -39,6 +51,15 @@ jobs:
         run: |
           node --check js/app.js && node --check js/core.js && node --check js/match.js
           node --test tests/js/*.test.js
+      - name: Derlenmiş site dosyaları güncel mi (css/tw.css, js/icons.js, sürüm etiketleri)
+        run: |
+          npm ci --no-audit --no-fund
+          npm run -s build
+          node --check js/icons.js && node --check sw.js
+          if ! git diff --exit-code -- css/tw.css js/icons.js index.html; then
+            echo "::error::Derlenmiş dosyalar güncel değil: 'npm run build' çalıştırıp sonucu ekleyin."
+            exit 1
+          fi
       - name: Yayımlanan JSON dosyalarını doğrula
         run: |
           python - <<'PY'

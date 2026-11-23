@@ -139,3 +139,12 @@ Hiçbir API anahtarı veya parola kullanılmaz; iş akışları yalnızca GitHub
   yüksek, "kayıtlı en düşük fiyat" rozeti, son indirim/kampanya/zam tarihi ve değişim listesi (`MFC.histInfo`).
 - **PDF aktarma**: Listem → "PDF aktar" görselli, market market tablo hazırlar; tarayıcının yazdırma ekranında
   "PDF olarak kaydet" ile dosya olur (sunucu ya da dış servis kullanılmaz).
+
+## Site derleme
+
+Tarayıcıda çalışan Tailwind ve tüm Lucide kütüphanesi yerine derlenmiş dosyalar kullanılır:
+`npm ci && npm run build` → `css/tw.css` (Tailwind 3, yalnızca kullanılan sınıflar), `js/icons.js`
+(kodda adı geçen ikonlar) ve `index.html`'deki `?v=<içerik özeti>` sürüm etiketleri. `tests.yml`
+derlemenin güncel olduğunu denetler. Yazı tipleri (Rubik, Nunito Sans; SIL Open Font License)
+`fonts/` altında, yalnızca latin ve latin-ext alt kümeleriyle sitede barındırılır. `sw.js` sürüm
+etiketli dosyaları ve yazı tiplerini önbellekten, sayfa ve veriyi önce internetten verir.
