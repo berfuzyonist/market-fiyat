@@ -44,7 +44,14 @@ function categoryOf(o){
 // O: tek tek market ürünleri, G: aynı ürünün marketlerdeki teklifleri, CMP: karşılaştırma listeleri
 let O=[],OI={},G=[],GI={},CMP={same:[],size:[],staple:[]},CMP_READY=false,PROMO=[],WATER;
 const FRESH=new Set(); // "Fiyat güncel mi?" paneli açık ürünler (kaydedilmez)
-let done=load("done",{}),HIST={},S={sort:"rel"},UOPEN=false,USIZE="";
+let done=load("done",{}),HIST={},S={sort:"rel",m:[],k:"",i:false,c:false,min:"",max:"",open:false},UOPEN=false,USIZE="";
+// Arama süzgeçleri adres çubuğunda: #ara/süt?m=sok,bim&k=sut&i=1&c=1&min=10&max=50&s=pa (paylaşılabilir)
+const SKEYS=["m","k","i","c","min","max","s"];
+function filterQS(){const q=new URLSearchParams();if(S.m.length)q.set("m",S.m.join(","));if(S.k)q.set("k",S.k);if(S.i)q.set("i","1");if(S.c)q.set("c","1");
+  if(S.min!=="")q.set("min",S.min);if(S.max!=="")q.set("max",S.max);if(S.sort!=="rel")q.set("s",S.sort);const x=q.toString();return x?"?"+x:""}
+function readQS(qs){const q=new URLSearchParams(qs||"");S.m=(q.get("m")||"").split(",").filter(m=>M[m]);S.k=q.get("k")||"";S.i=q.get("i")==="1";S.c=q.get("c")==="1";
+  const n=v=>{const x=parseFloat(String(v||"").replace(",","."));return isFinite(x)&&x>=0?String(x):""};S.min=n(q.get("min"));S.max=n(q.get("max"));S.sort=["rel","pa","unit","disc"].includes(q.get("s"))?q.get("s"):"rel"}
+const nFilters=()=>S.m.length+(S.k?1:0)+(S.i?1:0)+(S.c?1:0)+(S.min!==""?1:0)+(S.max!==""?1:0);
 let QTY=load("qty",{});
 let NOTES=load("notes",[]); // listedeki serbest notlar: [{t:"ekmek",d:0}]
 // Akıllı sepet: seçili plan (multi: her ürün en ucuz markete, single: tek market, limit: en fazla k market),
@@ -430,7 +437,7 @@ function drawH(){
 
 // ---------- Birim fiyat karşılaştırması ----------
 function unitPanel(q){
-  const r=MF.unitCompare(O.filter(usable),q);if(!r)return"";
+  const r=MF.unitCompare(O.filter(o=>usable(o)&&(!S.m.length||S.m.includes(o.market))),q);if(!r)return"";
   const u=r.unit,b=r.best,max=Math.max(...r.sizes.map(s=>s.best.u.v));
   return`<section class="pc p-4 lg:p-5 col-span-full enter">
     <div class="flex items-center gap-2"><span class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 grid place-items-center"><i data-lucide="ruler" class="w-5 h-5"></i></span>
@@ -622,8 +629,14 @@ function drawS(){
   const ban=pending?`<div class="col-span-full rounded-2xl bg-amber-100 text-amber-900 p-4 text-sm"><p class="font-bold">Barkod ${esc(pending)} henüz tanınmıyor</p><p>Ürünü adıyla arayın, ürün sayfasında "Bu barkodla eşleştir"e dokunun. Ürün başına bir kez yeterli.</p><button data-cancel class="mt-2 font-bold underline">Vazgeç</button></div>`:"";
   if(!w.length){$("res").innerHTML=ban+(G.length?`<div class="col-span-full">${empty("search","Ne arıyorsun?","Ürün adı, marka ya da barkod yaz. Örneğin “su”, “süt”, “yüzey temizleyici”.")}<div class="flex flex-wrap gap-2 mt-3">${UNIT_Q.map(([q,l,ic])=>`<button data-uq="${esc(q)}" class="uchip"><i data-lucide="${ic}" class="w-4 h-4 text-emerald-600"></i>${l}</button>`).join("")}</div></div>`:"");return}
   const gs=g=>g.s||(g.s=MFC.fold(g.offers.map(o=>o.name).join(" ")).replace(/[^a-z0-9%]+/g," "));
-  let r=G.filter(g=>w.every(x=>gs(g).includes(x)));
-  const bp=g=>(best(g)||{price:1e9}).price,up=g=>{const b=best(g),u=b&&MF.unitPrice(b);return u?u.v:1e12};
+  // Seçili marketlerdeki en ucuz teklif; süzgeçler (bölüm, indirim, kampanya, fiyat aralığı) bu teklife uygulanır
+  const lo=S.min!==""?+S.min:null,hi=S.max!==""?+S.max:null;
+  const bestIn=g=>avail(g).filter(o=>!S.m.length||S.m.includes(o.market)).reduce((a,o)=>!a||o.price<a.price?o:a,null);
+  const pass=g=>{if(!nFilters())return true;const o=bestIn(g);if(!o)return false;
+    return(!S.k||grpOf(o)===S.k)&&(!S.i||disc(o)>0)&&(!S.c||(o._promo&&o._promo.kind!=="bim"))&&(lo==null||o.price>=lo)&&(hi==null||o.price<=hi)};
+  let r=G.filter(g=>w.every(x=>gs(g).includes(x))&&pass(g));
+  const pick=g=>nFilters()?bestIn(g):best(g);
+  const bp=g=>(pick(g)||{price:1e9}).price,up=g=>{const b=pick(g),u=b&&MF.unitPrice(b);return u?u.v:1e12};
   // Alaka: adda kelimenin nasıl geçtiği (MFC.searchScore) + bulunduğu market sayısı + satışta olması
   const rel=new Map(r.map(g=>[g,Math.max(...g.offers.map(o=>MFC.searchScore(o.name,o.cat,w)))+avail(g).length*0.6+(best(g)?1:0)]));
   // Baskın bölüm: en alakalı 40 sonucun çoğu hangi bölümdeyse (yumurta → kahvaltılık, pirinç → temel gıda)
@@ -632,13 +645,26 @@ function drawS(){
   top.forEach(g=>{const k=grpOf(best(g)||g.offers[0]);if(k)cnt[k]=(cnt[k]||0)+1});
   const dom=Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a])[0];
   if(dom&&cnt[dom]>=top.length*0.3)r.forEach(g=>{if(grpOf(best(g)||g.offers[0])===dom)rel.set(g,rel.get(g)+6)});
-  r.sort({rel:(a,b)=>rel.get(b)-rel.get(a),pa:(a,b)=>bp(a)-bp(b),unit:(a,b)=>up(a)-up(b),disc:(a,b)=>disc(best(b)||{})-disc(best(a)||{})}[S.sort]);
+  r.sort({rel:(a,b)=>rel.get(b)-rel.get(a),pa:(a,b)=>bp(a)-bp(b),unit:(a,b)=>up(a)-up(b),disc:(a,b)=>disc(pick(b)||{})-disc(pick(a)||{})}[S.sort]);
   const total=r.length;r=r.slice(0,60);
   const sorts=[["rel","Önerilen"],["pa","En ucuz"],["unit","Birim fiyat"],["disc","İndirim"]];
   $("res").innerHTML=ban+unitPanel(raw)+
-    `<div class="col-span-full flex items-center gap-2 overflow-x-auto noscroll"><p class="text-sm font-bold shrink-0 mr-1">${num(total)} ürün</p>${sorts.map(([k,l])=>pill("data-ss",k,l,S.sort===k,"bg-emerald-600 text-white")).join("")}</div>`+
-    (r.length?`<div class="col-span-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2.5 lg:gap-3 stagger">${r.map((g,i)=>pcard(best(g)||g.offers[0],{i})).join("")}</div>`:empty("search-x","Sonuç bulunamadı","Başka bir kelime dene."))
+    `<div class="col-span-full flex items-center gap-2 overflow-x-auto noscroll"><p class="text-sm font-bold shrink-0 mr-1">${num(total)} ürün</p>
+      <button data-sfopen class="shrink-0 chipx !py-2 !px-3 ${nFilters()?"bg-emerald-700 text-white":"bg-white ring-1 ring-stone-300 text-stone-800"}"><i data-lucide="sliders-horizontal" class="w-4 h-4"></i>Süzgeç${nFilters()?` (${nFilters()})`:""}</button>
+      ${sorts.map(([k,l])=>pill("data-ss",k,l,S.sort===k,"bg-emerald-600 text-white")).join("")}</div>`+filterPanel()+
+    (r.length?`<div class="col-span-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2.5 lg:gap-3 stagger">${r.map((g,i)=>pcard(pick(g)||g.offers[0],{i})).join("")}</div>`:empty("search-x","Sonuç bulunamadı",nFilters()?"Süzgeçleri gevşetmeyi dene.":"Başka bir kelime dene."))
     +(total>60?`<p class="col-span-full text-center text-sm text-stone-500">${num(total)} sonuçtan ilk 60'ı gösteriliyor. Aramayı daraltabilirsin.</p>`:"")}
+
+function filterPanel(){
+  if(!S.open)return"";
+  const chip=(attr,on,label,cls)=>`<button ${attr} class="chipx !py-2 !px-3 ${on?(cls||"bg-emerald-700 text-white"):"bg-white ring-1 ring-stone-300 text-stone-800"}">${label}</button>`;
+  return`<div class="col-span-full ${card} p-4 enter space-y-3">
+    <div><p class="text-xs font-extrabold text-stone-700 mb-1.5">Market</p><div class="flex flex-wrap gap-2">${DATA_M.map(m=>chip(`data-sfm="${m}"`,S.m.includes(m),M[m].n,M[m].c)).join("")}</div></div>
+    <label class="block text-xs font-extrabold text-stone-700">Bölüm<select data-sfk class="mt-1.5 w-full rounded-xl ring-1 ring-stone-300 px-3 py-2.5 bg-white text-[15px] font-normal"><option value="">Tümü</option>${GROUPS.map(([k,l])=>`<option value="${k}" ${S.k===k?"selected":""}>${esc(l)}</option>`).join("")}</select></label>
+    <div class="flex flex-wrap gap-2">${chip('data-sfi',S.i,"İndirimli")}${chip('data-sfc',S.c,"Kampanyalı")}</div>
+    <div><p class="text-xs font-extrabold text-stone-700 mb-1.5">Fiyat aralığı (₺)</p><div class="flex items-center gap-2"><input data-sfmin inputmode="decimal" value="${esc(S.min)}" placeholder="en az" class="flex-1 min-w-0 rounded-xl ring-1 ring-stone-300 px-3 py-2.5 text-[15px]"><span>–</span><input data-sfmax inputmode="decimal" value="${esc(S.max)}" placeholder="en çok" class="flex-1 min-w-0 rounded-xl ring-1 ring-stone-300 px-3 py-2.5 text-[15px]"></div></div>
+    <div class="flex gap-2">${nFilters()?`<button data-sfclear class="flex-1 rounded-xl ring-1 ring-stone-300 py-2.5 font-bold">Temizle</button>`:""}<button data-sfopen class="flex-1 rounded-xl bg-emerald-700 text-white py-2.5 font-extrabold">Sonuçları göster</button></div>
+    <p class="text-[11px] text-stone-500">Süzgeçler adres çubuğuna yazılır; bağlantıyı paylaşınca aynı sonuçlar açılır.</p></div>`}
 
 // ---------- Keşfet ----------
 function drawB(){
@@ -935,7 +961,7 @@ const NT="flex items-center gap-2 px-3.5 py-1.5 rounded-full text-sm font-bold t
 const HV={home:"",compare:"karsilastir",promos:"kampanya",browse:"kesfet",search:"ara",list:"listem",posters:"afisler",track:"takip",analysis:"analiz"};
 let routing=false;
 function hashOf(){
-  if(view==="search"){if(only)return"#urun/"+encodeURIComponent(only);const q=$("q").value.trim();return q?"#ara/"+encodeURIComponent(q):"#ara"}
+  if(view==="search"){if(only)return"#urun/"+encodeURIComponent(only);const q=$("q").value.trim();return(q?"#ara/"+encodeURIComponent(q):"#ara")+filterQS()}
   if(view==="camp")return"#afis/"+encodeURIComponent(CAMP);
   return HV[view]?"#"+HV[view]:"";
 }
@@ -949,7 +975,7 @@ function route(){
   routing=true;
   try{
     if(k==="urun"&&arg){only=arg;pending=null;setQ("");go("search")}
-    else if(k==="ara"){only=null;setQ(arg);go("search")}
+    else if(k==="ara"){only=null;const [qq,qs]=arg.split("?");readQS(qs);setQ(qq);go("search")}
     else if(k==="afis"&&arg){if(CAMP!==arg){CAMP=arg;CV={sort:"",n:40}}go("camp")}
     else{const v=Object.keys(HV).find(x=>HV[x]===k&&x!=="search")||"home";go(v)}
   }finally{routing=false}
@@ -1004,6 +1030,9 @@ addEventListener("keydown",e=>{if(VIEW_I<0)return;if(e.key==="Escape")closeViewe
 addEventListener("popstate",()=>{if(VIEW_I>=0)closeViewer()});
 
 // ---------- Olaylar ----------
+document.addEventListener("change",e=>{const t=e.target;
+  if(t.matches("[data-sfk]")){S.k=t.value;redraw();sync(true)}
+  else if(t.matches("[data-sfmin],[data-sfmax]")){const v=parseFloat(String(t.value).replace(",","."));const x=isFinite(v)&&v>=0?String(v):"";if(t.matches("[data-sfmin]"))S.min=x;else S.max=x;redraw();sync(true)}});
 document.addEventListener("submit",e=>{const f=e.target;if(!f.matches("[data-alarmform]"))return;e.preventDefault();
   const g=GI[f.dataset.alarmform];if(!g)return;const type=f.type.value,raw=String(f.val.value).trim(),v=raw.includes(",")?parseFloat(raw.replace(/\./g,"").replace(",",".")):parseFloat(raw);const b=best(g);
   const a={type,created:Date.now()};
@@ -1050,7 +1079,12 @@ document.addEventListener("click",e=>{const t=s=>e.target.closest(s);let el;
   else if(t("[data-vnext]")){stepViewer(1)}
   else if(el=t("[data-done]")){const k=el.dataset.done;done[k]?delete done[k]:done[k]=1;save("done",done);if(navigator.vibrate)navigator.vibrate(15);redraw()}
   else if(t("[data-undone]")){done={};NOTES.forEach(n=>n.d=0);save("done",done);save("notes",NOTES);redraw()}
-  else if(el=t("[data-ss]")){S.sort=el.dataset.ss;redraw()}
+  else if(el=t("[data-ss]")){S.sort=el.dataset.ss;redraw();sync(true)}
+  else if(t("[data-sfopen]")){S.open=!S.open;redraw()}
+  else if(el=t("[data-sfm]")){const m=el.dataset.sfm;S.m=S.m.includes(m)?S.m.filter(x=>x!==m):[...S.m,m];redraw();sync(true)}
+  else if(t("[data-sfi]")){S.i=!S.i;redraw();sync(true)}
+  else if(t("[data-sfc]")){S.c=!S.c;redraw();sync(true)}
+  else if(t("[data-sfclear]")){Object.assign(S,{m:[],k:"",i:false,c:false,min:"",max:""});redraw();sync(true)}
   else if(t("[data-uopen]")){UOPEN=!UOPEN;redraw()}
   else if(el=t("[data-usize]")){USIZE=USIZE===el.dataset.usize?"":el.dataset.usize;redraw()}
   else if(el=t("[data-grp]")){const k=el.dataset.grp;B.grp=el.dataset.stay&&B.grp===k?"":k;B.cat="";B.page=0;if(!el.dataset.stay){Object.assign(B,{m:"",disc:false,sort:"disc"});go("browse")}else redraw()}
