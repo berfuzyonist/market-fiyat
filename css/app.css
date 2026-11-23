@@ -1,6 +1,6 @@
 /* Market Fiyat — market sitesi görünümü. Renkler: yeşil (güven/ana), turuncu (fırsat), mor (kampanya). */
 :root{--g:#059669;--g2:#047857;--o:#f97316;--ease:cubic-bezier(.2,.8,.2,1);--spring:cubic-bezier(.34,1.56,.64,1)}
-.font-display,h1,h2,.page-title{font-family:Rubik,system-ui,sans-serif}
+.font-display,h1,h2,.page-title{font-family:"Inter","Inter Variable",-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,system-ui,sans-serif}
 .tabular{font-variant-numeric:tabular-nums}
 .noscroll{scrollbar-width:none}.noscroll::-webkit-scrollbar{display:none}
 #res>:not(article),#list>:not(section){grid-column:1/-1}
@@ -29,7 +29,7 @@ button,a,[data-show],[data-add]{cursor:pointer;-webkit-tap-highlight-color:trans
 .banner{display:flex;gap:.75rem;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;border-radius:22px}
 .slide{position:relative;flex:0 0 100%;scroll-snap-align:center;min-height:178px;border-radius:22px;overflow:hidden;color:#fff;padding:1.25rem 1.25rem 1.1rem;display:flex;flex-direction:column;justify-content:space-between}
 @media(min-width:1024px){.slide{min-height:240px;padding:2rem 2.25rem}}
-.slide .slide-h{font-family:Rubik,sans-serif;font-weight:800;font-size:1.6rem;line-height:1.05;letter-spacing:-.02em;max-width:62%}
+.slide .slide-h{font-family:"Inter","Inter Variable",-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,system-ui,sans-serif;font-weight:800;font-size:1.6rem;line-height:1.05;letter-spacing:-.02em;max-width:62%}
 @media(min-width:1024px){.slide .slide-h{font-size:2.6rem}}
 .slide p{max-width:60%;font-size:.85rem;opacity:.92;margin-top:.35rem}
 .slide .cta{align-self:flex-start;margin-top:.8rem;display:inline-flex;align-items:center;gap:.35rem;background:#fff;color:#111;font-weight:800;font-size:.85rem;padding:.55rem .95rem;border-radius:999px;box-shadow:0 6px 16px -6px rgb(0 0 0/.45);transition:transform .2s var(--spring)}
@@ -78,7 +78,7 @@ button,a,[data-show],[data-add]{cursor:pointer;-webkit-tap-highlight-color:trans
 .add.in{background:#fff;color:var(--g);box-shadow:inset 0 0 0 2px var(--g)}
 .add.pop{animation:pop .45s var(--spring)}
 @keyframes pop{40%{transform:scale(1.3) rotate(-10deg)}}
-.price{font-family:Rubik,sans-serif;font-weight:800;font-size:1.05rem;letter-spacing:-.01em}
+.price{font-family:"Inter","Inter Variable",-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,system-ui,sans-serif;font-weight:800;font-size:1.05rem;letter-spacing:-.01em}
 .chipx{display:inline-flex;align-items:center;gap:.25rem;font-size:11px;font-weight:700;padding:2px 7px;border-radius:8px}
 
 /* Market kutuları */
@@ -144,7 +144,7 @@ button,a,[data-show],[data-add]{cursor:pointer;-webkit-tap-highlight-color:trans
 .stepper{position:absolute;right:.55rem;bottom:.55rem;display:flex;align-items:center;height:38px;border-radius:12px;background:var(--g);color:#fff;box-shadow:0 6px 14px -6px rgb(5 150 105/.9);overflow:hidden;animation:widen .3s var(--spring)}
 .stepper button{width:34px;height:38px;display:grid;place-items:center;transition:background .15s}
 .stepper button:active{background:rgb(0 0 0/.15)}
-.stepper span{min-width:22px;text-align:center;font-family:Rubik,sans-serif;font-weight:800;font-size:15px}
+.stepper span{min-width:22px;text-align:center;font-family:"Inter","Inter Variable",-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,system-ui,sans-serif;font-weight:800;font-size:15px}
 .stepper.big{position:static;height:52px;border-radius:16px}.stepper.big button{width:48px;height:52px}.stepper.big span{min-width:30px;font-size:18px}
 .stepper.sm{position:static;height:32px;border-radius:10px;box-shadow:none}.stepper.sm button{width:30px;height:32px}.stepper.sm span{min-width:18px;font-size:14px}
 @keyframes widen{from{transform:scaleX(.4);opacity:.4}}
@@ -157,12 +157,12 @@ button,a,[data-show],[data-add]{cursor:pointer;-webkit-tap-highlight-color:trans
   body.printing{background:#fff!important;color:#1c1917!important}
   html.dark body.printing #printArea,html.dark body.printing #printArea *{color:#1c1917!important;border-color:#d6d3d1!important}
   html.dark body.printing #printArea .pc-total{color:#047857!important}
-  body.printing #printArea{display:block;font:11pt/1.35 "Nunito Sans",Arial,sans-serif;color:#1c1917}
+  body.printing #printArea{display:block;font:11pt/1.35 Inter,Arial,sans-serif;color:#1c1917}
   #printArea header{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #047857;padding-bottom:6px;margin-bottom:10px}
-  #printArea h1{font:800 20pt Rubik,Arial,sans-serif;margin:0;color:#047857}
+  #printArea h1{font:800 20pt Inter,Arial,sans-serif;margin:0;color:#047857}
   #printArea header p{margin:2px 0 0;color:#57534e;font-size:10pt}
-  #printArea .pc-total{font:800 18pt Rubik,Arial,sans-serif}
-  #printArea h2{font:700 12pt Rubik,Arial,sans-serif;margin:14px 0 6px;border-bottom:2px solid;padding-bottom:3px;break-after:avoid}
+  #printArea .pc-total{font:800 18pt Inter,Arial,sans-serif}
+  #printArea h2{font:700 12pt Inter,Arial,sans-serif;margin:14px 0 6px;border-bottom:2px solid;padding-bottom:3px;break-after:avoid}
   #printArea h2 span{color:#fff;border-radius:6px;padding:1px 8px;margin-right:6px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   #printArea table{width:100%;border-collapse:collapse}
   #printArea th{font-size:9pt;color:#78716c;text-align:left;font-weight:700;padding:2px 4px}

@@ -6,8 +6,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['"Nunito Sans"', "system-ui", "sans-serif"],
-        display: ["Rubik", "system-ui", "sans-serif"],
+        sans: ["Inter", "-apple-system", "BlinkMacSystemFont", '"SF Pro Text"', "Roboto", "system-ui", "sans-serif"],
+        display: ["Inter", "-apple-system", "BlinkMacSystemFont", '"SF Pro Display"', "Roboto", "system-ui", "sans-serif"],
       },
     },
   },
