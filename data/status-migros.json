@@ -1,22 +1,22 @@
 {
- "updated": "2026-11-23T06:48:48+00:00",
- "started_at": "2026-11-23T06:44:00+00:00",
- "finished_at": "2026-11-23T06:48:48+00:00",
- "checked_at": "2026-11-23T06:48:48+00:00",
- "data_updated": "2026-11-23T06:48:48+00:00",
- "last_successful_data_at": "2026-11-23T06:48:48+00:00",
+ "updated": "2026-11-23T09:02:40+00:00",
+ "started_at": "2026-11-23T08:57:53+00:00",
+ "finished_at": "2026-11-23T09:02:40+00:00",
+ "checked_at": "2026-11-23T09:02:40+00:00",
+ "data_updated": "2026-11-23T09:02:40+00:00",
+ "last_successful_data_at": "2026-11-23T09:02:40+00:00",
  "market": "migros",
  "mode": "deals",
  "status": "tamam",
  "complete": true,
  "partial": false,
- "found": 2572,
- "total": 18459,
+ "found": 2584,
+ "total": 18469,
  "seconds": 288,
  "notes": [
-  "money-indirimli-market-urunleri-dt-5: 81/81 sayfa",
+  "money-indirimli-market-urunleri-dt-5: 82/82 sayfa",
   "coklu-indirim-kampanyalari-ve-hediyeli-urunler-dt-1: 6/6 sayfa",
-  "2572 indirimli ürün güncellendi"
+  "2584 indirimli ürün güncellendi"
  ],
  "quality": {
   "category_count": 36,
@@ -50,13 +50,13 @@
    "Evcil Hayvan": 224,
    "Meyve, Sebze": 186,
    "Çiçek": 46,
-   "Deterjan, Temizlik": 985,
+   "Deterjan, Temizlik": 987,
    "Temizlik": 26,
    "Kağıt Ürünleri": 2,
    "Kağıt, Islak Mendil": 140,
    "Giyim & Aksesuar": 36,
-   "Ev, Yaşam": 2995,
-   "Elektronik": 485,
+   "Ev, Yaşam": 2996,
+   "Elektronik": 492,
    "Kitap, Kırtasiye, Oyuncak": 2132,
    "Kişisel Bakım & Kozmetik": 128,
    "Oyuncak & Hobi": 13,
@@ -66,17 +66,17 @@
  "quality_warnings": [],
  "traffic": {
   "www.migros.com.tr": {
-   "requests": 87,
+   "requests": 88,
    "retries": 0,
    "megabytes": 1.5,
    "errors": 0
   }
  },
  "errors": [],
- "run_id": "45126088526",
- "collected_products": 2572,
- "total_products": 18459,
- "discounted_products": 3125,
+ "run_id": "45142845886",
+ "collected_products": 2584,
+ "total_products": 18469,
+ "discounted_products": 3135,
  "invalid_products": 0,
  "data_quality": {
   "missing_id": 0,
@@ -90,18 +90,18 @@
  "duration_seconds": 288,
  "last_attempt_by_mode": {
   "deals": {
-   "checked_at": "2026-11-23T06:48:48+00:00",
+   "checked_at": "2026-11-23T09:02:40+00:00",
    "status": "tamam",
    "complete": true,
-   "found": 2572,
-   "total": 18459,
+   "found": 2584,
+   "total": 18469,
    "seconds": 288,
-   "data_updated": "2026-11-23T06:48:48+00:00",
+   "data_updated": "2026-11-23T09:02:40+00:00",
    "errors": [],
    "notes": [
-    "money-indirimli-market-urunleri-dt-5: 81/81 sayfa",
+    "money-indirimli-market-urunleri-dt-5: 82/82 sayfa",
     "coklu-indirim-kampanyalari-ve-hediyeli-urunler-dt-1: 6/6 sayfa",
-    "2572 indirimli ürün güncellendi"
+    "2584 indirimli ürün güncellendi"
    ],
    "quality_warnings": [],
    "quality": {
@@ -136,13 +136,13 @@
      "Evcil Hayvan": 224,
      "Meyve, Sebze": 186,
      "Çiçek": 46,
-     "Deterjan, Temizlik": 985,
+     "Deterjan, Temizlik": 987,
      "Temizlik": 26,
      "Kağıt Ürünleri": 2,
      "Kağıt, Islak Mendil": 140,
      "Giyim & Aksesuar": 36,
-     "Ev, Yaşam": 2995,
-     "Elektronik": 485,
+     "Ev, Yaşam": 2996,
+     "Elektronik": 492,
      "Kitap, Kırtasiye, Oyuncak": 2132,
      "Kişisel Bakım & Kozmetik": 128,
      "Oyuncak & Hobi": 13,
@@ -151,7 +151,7 @@
    },
    "traffic": {
     "www.migros.com.tr": {
-     "requests": 87,
+     "requests": 88,
      "retries": 0,
      "megabytes": 1.5,
      "errors": 0
