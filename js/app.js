@@ -932,19 +932,26 @@ postersP.then(posters=>{if(O.length)return;POST=groupBim(groupSok(posters.flatMa
   if(view==="home"){drawPostShelf();icons()}else if(view==="posters")redraw()}).catch(()=>{});
 // Fiyat verisi: önce data/client (katalog önbellekte kalır, her açılışta yalnızca fiyat dosyaları iner;
 // eşleştirme hazır gelir), olmazsa tam market dosyaları. Katalog ve fiyat sürümü uyuşmazsa tam dosyaya düşülür.
-async function loadRows(){
-  const idx=await get("data/client/index.json");
+async function loadRows(statusP){
+  const [idx,sts]=await Promise.all([get("data/client/index.json"),statusP]);
+  const stOf=m=>sts&&sts[DATA_M.indexOf(m)];
   if(idx&&idx.markets){try{
     const ms=DATA_M.filter(m=>idx.markets[m]);
     const [cats,prs,grp]=await Promise.all([Promise.all(ms.map(m=>get(`data/client/${m}-catalog.json?h=${idx.markets[m].catalog}`))),
       Promise.all(ms.map(m=>get(`data/client/${m}-prices.json`))),get("data/client/groups.json")]);
-    const per={};ms.forEach((m,i)=>{const r=MFC.rowsFromSplit(cats[i],prs[i]);if(!r)throw new Error("katalog sürümü");per[m]={rows:r,updated:prs[i].updated}});
+    const per={};ms.forEach((m,i)=>{const r=MFC.rowsFromSplit(cats[i],prs[i]);if(!r)throw new Error("katalog sürümü");
+      // fiyat dosyası market durumundaki son veri zamanından eskiyse (yayım sırası) o market tam dosyadan okunur
+      const du=MFC.toTs((stOf(m)||{}).data_updated),pu=MFC.toTs(prs[i].updated);if(du&&pu&&pu<du)return;
+      per[m]={rows:r,updated:prs[i].updated}});
+    const lack=DATA_M.filter(m=>!per[m]);
+    if(lack.length){const fs=await Promise.all(lack.map(m=>get(`data/${m}.json`)));lack.forEach((m,i)=>{per[m]={rows:MFC.rowsOf(fs[i]),updated:fs[i]&&fs[i].updated}})}
     const ok=grp&&Array.isArray(grp.groups)&&ms.every(m=>grp.catalogs&&grp.catalogs[m]===cats[ms.indexOf(m)].v);
-    return{per,groups:ok?grp.groups:null}}catch(e){}}
+    return{per,groups:ok&&!lack.length?grp.groups:null}}catch(e){}}
   const files=await Promise.all(DATA_M.map(m=>get(`data/${m}.json`))),per={};
   files.forEach((d,i)=>{per[DATA_M[i]]={rows:MFC.rowsOf(d),updated:d&&d.updated}});
   return{per,groups:null}}
-Promise.all([loadRows(),Promise.all(DATA_M.map(m=>get(`data/status-${m}.json`))),get("data/price-checks.json"),postersP]).then(([loaded,statuses,checks,posters])=>{
+const statusP=Promise.all(DATA_M.map(m=>get(`data/status-${m}.json`)));
+Promise.all([loadRows(statusP),statusP,get("data/price-checks.json"),postersP]).then(([loaded,statuses,checks,posters])=>{
   POST=groupBim(groupSok(posters.flatMap(p=>(p&&Array.isArray(p.items)?p.items:[]).filter(it=>it&&/^https:\/\//.test(it.image||"")))));
   // Migros kampanya listelerindeki ürünler: katalogda yoksa eklenir, liste daha yeni okunduysa fiyatı günceller
   const campRows=MFC.rowsOf(posters[1]);
