@@ -5,13 +5,24 @@
 <title>Market Fiyat · Şok, Migros, BİM fiyatları tek yerde</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png">
 <meta name="color-scheme" content="light">
 <meta name="description" content="Şok, Migros ve BİM fiyatlarını, kampanyalarını ve afişlerini tek yerde karşılaştıran kişisel alışveriş listesi.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' https: data: blob:; font-src 'self'; connect-src 'self'; media-src 'self' blob:; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<link rel="canonical" href="https://berfuzyonist.github.io/market-fiyat/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="tr_TR">
+<meta property="og:site_name" content="Market Fiyat">
+<meta property="og:title" content="Market Fiyat · Şok, Migros, BİM fiyatları tek yerde">
+<meta property="og:description" content="Fiyatları, kampanyaları ve afişleri karşılaştır; alışveriş listeni en ucuz markete göre böl.">
+<meta property="og:url" content="https://berfuzyonist.github.io/market-fiyat/">
+<meta property="og:image" content="https://berfuzyonist.github.io/market-fiyat/icon-512.png">
 <link rel="preload" href="fonts/nunitosans-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/rubik-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="css/fonts.css?v=3f182d7cc5">
-<link rel="stylesheet" href="css/app.css?v=a487e33b6c">
-<link rel="stylesheet" href="css/tw.css?v=21fa3f77a1">
+<link rel="stylesheet" href="css/app.css?v=99b67d96ab">
+<link rel="stylesheet" href="css/tw.css?v=2ad2ed2a2b">
 <script src="js/icons.js?v=a70d1941c5"></script>
 </head>
 <body class="bg-[#f3f6f4] text-stone-900 font-sans antialiased">
@@ -59,6 +70,7 @@
 
   <!-- Ana sayfa -->
   <div id="home" class="space-y-7">
+    <div class="-mb-3"><h1 class="font-display font-extrabold text-lg lg:text-2xl tracking-tight">Akıllı alışverişin yeni yolu.</h1><p class="hidden sm:block text-sm text-stone-600">Şok, Migros ve BİM fiyatları, kampanyaları ve afişleri tek yerde.</p></div>
     <section aria-label="Öne çıkanlar" class="relative">
       <div id="banner" class="banner noscroll"><div class="slide skel"></div></div>
       <div id="dots" class="flex justify-center gap-1.5 mt-2.5"></div>
@@ -70,12 +82,12 @@
 
     <section data-reveal>
       <div class="shelf-head"><h2><i data-lucide="newspaper" class="w-5 h-5 text-sky-600"></i>Haftanın afişleri</h2><button data-view="posters" data-plain="1" class="see-all">Tümü<i data-lucide="chevron-right" class="w-4 h-4"></i></button></div>
-      <div id="hPost" class="shelf noscroll stagger"></div>
+      <div id="hPost" tabindex="0" role="region" aria-label="Haftanın afişleri" class="shelf noscroll stagger"></div>
     </section>
 
     <section data-reveal>
       <div class="shelf-head"><h2><i data-lucide="flame" class="w-5 h-5 text-orange-500"></i>Günün fırsatları</h2><button data-go="deals" class="see-all">Tümü<i data-lucide="chevron-right" class="w-4 h-4"></i></button></div>
-      <div id="deals" class="shelf noscroll stagger"></div>
+      <div id="deals" tabindex="0" role="region" aria-label="Günün fırsatları" class="shelf noscroll stagger"></div>
     </section>
 
     <section data-reveal>
@@ -87,7 +99,7 @@
     <section data-reveal id="hDrops" class="hidden">
       <div class="shelf-head"><h2><i data-lucide="trending-down" class="w-5 h-5 text-emerald-600"></i>Fiyatı düşenler</h2><button data-view="analysis" data-plain="1" class="see-all">Analiz<i data-lucide="chevron-right" class="w-4 h-4"></i></button></div>
       <p id="hDropsSub" class="text-sm text-stone-600 -mt-1 mb-3"></p>
-      <div id="hDropsList" class="shelf noscroll stagger"></div>
+      <div id="hDropsList" tabindex="0" role="region" aria-label="Fiyatı düşenler" class="shelf noscroll stagger"></div>
     </section>
 
     <section data-reveal id="stores" class="grid grid-cols-3 gap-2.5 lg:gap-4"></section>
@@ -95,12 +107,12 @@
 
     <section data-reveal>
       <div class="shelf-head"><h2><i data-lucide="scale" class="w-5 h-5 text-emerald-600"></i>Aynı ürün, farklı fiyat</h2><button data-view="compare" data-plain="1" class="see-all">Tümü<i data-lucide="chevron-right" class="w-4 h-4"></i></button></div>
-      <div id="hCmp" class="shelf noscroll stagger"></div>
+      <div id="hCmp" tabindex="0" role="region" aria-label="Aynı ürün, farklı fiyat" class="shelf noscroll stagger"></div>
     </section>
 
     <section data-reveal>
       <div class="shelf-head"><h2><i data-lucide="gift" class="w-5 h-5 text-violet-600"></i>Bedava ürünlü kampanyalar</h2><button data-view="promos" data-plain="1" class="see-all">Tümü<i data-lucide="chevron-right" class="w-4 h-4"></i></button></div>
-      <div id="hPromo" class="shelf noscroll stagger"></div>
+      <div id="hPromo" tabindex="0" role="region" aria-label="Bedava ürünlü kampanyalar" class="shelf noscroll stagger"></div>
     </section>
 
     <section data-reveal id="hStaple"></section>
@@ -232,5 +244,5 @@
 <script src="js/alerts.js?v=62fda50535"></script>
 <script src="js/insights.js?v=839b613725"></script>
 <script src="js/basket.js?v=460949c3d5"></script>
-<script src="js/app.js?v=b52d1fda02"></script>
+<script src="js/app.js?v=9c85747d8d"></script>
 </body></html>
