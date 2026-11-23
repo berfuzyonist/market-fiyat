@@ -29,8 +29,8 @@ button,a,[data-show],[data-add]{cursor:pointer;-webkit-tap-highlight-color:trans
 .banner{display:flex;gap:.75rem;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;border-radius:22px}
 .slide{position:relative;flex:0 0 100%;scroll-snap-align:center;min-height:178px;border-radius:22px;overflow:hidden;color:#fff;padding:1.25rem 1.25rem 1.1rem;display:flex;flex-direction:column;justify-content:space-between}
 @media(min-width:1024px){.slide{min-height:240px;padding:2rem 2.25rem}}
-.slide h3{font-family:Rubik,sans-serif;font-weight:800;font-size:1.6rem;line-height:1.05;letter-spacing:-.02em;max-width:62%}
-@media(min-width:1024px){.slide h3{font-size:2.6rem}}
+.slide .slide-h{font-family:Rubik,sans-serif;font-weight:800;font-size:1.6rem;line-height:1.05;letter-spacing:-.02em;max-width:62%}
+@media(min-width:1024px){.slide .slide-h{font-size:2.6rem}}
 .slide p{max-width:60%;font-size:.85rem;opacity:.92;margin-top:.35rem}
 .slide .cta{align-self:flex-start;margin-top:.8rem;display:inline-flex;align-items:center;gap:.35rem;background:#fff;color:#111;font-weight:800;font-size:.85rem;padding:.55rem .95rem;border-radius:999px;box-shadow:0 6px 16px -6px rgb(0 0 0/.45);transition:transform .2s var(--spring)}
 .slide .cta:hover{transform:translateX(3px)}.slide .cta:active{transform:scale(.95)}
@@ -154,7 +154,9 @@ button,a,[data-show],[data-add]{cursor:pointer;-webkit-tap-highlight-color:trans
 @media print{
   @page{size:A4;margin:12mm}
   body.printing>*:not(#printArea){display:none!important}
-  body.printing{background:#fff!important}
+  body.printing{background:#fff!important;color:#1c1917!important}
+  html.dark body.printing #printArea,html.dark body.printing #printArea *{color:#1c1917!important;border-color:#d6d3d1!important}
+  html.dark body.printing #printArea .pc-total{color:#047857!important}
   body.printing #printArea{display:block;font:11pt/1.35 "Nunito Sans",Arial,sans-serif;color:#1c1917}
   #printArea header{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #047857;padding-bottom:6px;margin-bottom:10px}
   #printArea h1{font:800 20pt Rubik,Arial,sans-serif;margin:0;color:#047857}
