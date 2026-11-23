@@ -1,0 +1,12 @@
+name: probe-market
+on:
+  push:
+    branches: [probe-market]
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          UA="market-fiyat/1.0 (+https://github.com/berfuzyonist/market-fiyat)"
+          for u in https://www.carrefoursa.com/robots.txt https://www.carrefoursa.com/ ; do
+            echo "== $u"; curl -s -m 25 -A "$UA" -o /tmp/o -w "HTTP %{http_code} %{size_download}\n" "$u"; head -c 1500 /tmp/o | tr -s '\n' | head -40; echo; done
