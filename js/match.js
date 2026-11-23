@@ -144,7 +144,8 @@ function staples(rows){
     for(const o of rows){const p=o._p;if(!p||!p.qty||!o.in_stock||o.na||p.qty.u!==r.u||p.qty.n<r.min||p.qty.n>r.max)continue;
       const f=o._f||(o._f=fold(o.name));if(!r.re.test(f)||r.not.test(f))continue;
       const u=unitPrice(o);if(!best[o.market]||u.v<best[o.market].u.v)best[o.market]={o,u}}
-    return{name:r.n,best}}).filter(x=>Object.keys(x.best).length>1);
+    // qty: endeks için standart miktar (temel ürünün en küçük boyu; kg/L ya da adet)
+    return{name:r.n,best,qty:r.u==="ad"?r.min:r.min/1000}}).filter(x=>Object.keys(x.best).length>1);
 }
 /* Birim fiyat karşılaştırması: "su", "yüzey temizleyici" gibi bir ürün grubunda marka fark etmeksizin
    boy boy (0,5 L, 1 L, 1,5 L…) en ucuz teklifler ve genel en ucuz ₺/L (₺/kg, ₺/adet).

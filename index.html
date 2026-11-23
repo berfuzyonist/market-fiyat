@@ -11,8 +11,8 @@
 <link rel="preload" href="fonts/rubik-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="css/fonts.css?v=3f182d7cc5">
 <link rel="stylesheet" href="css/app.css?v=a487e33b6c">
-<link rel="stylesheet" href="css/tw.css?v=5aee86e6ab">
-<script src="js/icons.js?v=4becd3af9d"></script>
+<link rel="stylesheet" href="css/tw.css?v=a5156df330">
+<script src="js/icons.js?v=8885f178a9"></script>
 </head>
 <body class="bg-[#f3f6f4] text-stone-900 font-sans antialiased">
 
@@ -48,6 +48,7 @@
       <button data-view="promos" data-top="1"><i data-lucide="gift" class="w-4 h-4"></i>Kampanyalar</button>
       <button data-view="posters" data-top="1"><i data-lucide="newspaper" class="w-4 h-4"></i>Afişler</button>
       <button data-view="compare" data-top="1"><i data-lucide="scale" class="w-4 h-4"></i>Karşılaştır</button>
+      <button data-view="analysis" data-top="1"><i data-lucide="chart-line" class="w-4 h-4"></i>Analiz</button>
       <button data-view="list" data-top="1"><i data-lucide="list-checks" class="w-4 h-4"></i>Listem</button>
     </div>
   </nav>
@@ -81,6 +82,12 @@
       <div class="shelf-head"><h2><i data-lucide="ruler" class="w-5 h-5 text-emerald-600"></i>Birim fiyatta en ucuzu bul</h2></div>
       <p class="text-sm text-stone-500 -mt-1 mb-3">Marka fark etmeksizin litre, kilo ya da adet fiyatına göre karşılaştır.</p>
       <div id="units" class="grid grid-rows-2 grid-flow-col auto-cols-max gap-2 overflow-x-auto noscroll -mx-3 px-3 pb-1"></div>
+    </section>
+
+    <section data-reveal id="hDrops" class="hidden">
+      <div class="shelf-head"><h2><i data-lucide="trending-down" class="w-5 h-5 text-emerald-600"></i>Fiyatı düşenler</h2><button data-view="analysis" data-plain="1" class="see-all">Analiz<i data-lucide="chevron-right" class="w-4 h-4"></i></button></div>
+      <p id="hDropsSub" class="text-sm text-stone-600 -mt-1 mb-3"></p>
+      <div id="hDropsList" class="shelf noscroll stagger"></div>
     </section>
 
     <section data-reveal id="stores" class="grid grid-cols-3 gap-2.5 lg:gap-4"></section>
@@ -176,6 +183,9 @@
     <div id="campMore" class="flex justify-center mt-4"></div>
   </div>
 
+  <!-- Fiyat analizi -->
+  <div id="analysis" class="hidden"></div>
+
   <!-- Takip: bildirimler, favoriler, fiyat alarmları -->
   <div id="track" class="hidden"></div>
 
@@ -213,9 +223,10 @@
     <button data-view="list" id="navList"><i data-lucide="shopping-cart" class="w-5 h-5"></i>Listem<span id="n" class="nav-count" style="display:none"></span></button>
   </div>
 </nav>
-<script src="js/match.js?v=7d0051dd1d"></script>
+<script src="js/match.js?v=da3b5e1d18"></script>
 <script src="js/core.js?v=84f5dd6cb0"></script>
 <script src="js/alerts.js?v=62fda50535"></script>
+<script src="js/insights.js?v=839b613725"></script>
 <script src="js/basket.js?v=460949c3d5"></script>
-<script src="js/app.js?v=c229725d69"></script>
+<script src="js/app.js?v=350fadbfa2"></script>
 </body></html>

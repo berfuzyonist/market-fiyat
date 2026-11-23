@@ -157,3 +157,11 @@ Planlar: her ürün en ucuz markette (çoklu), tek market (eksik ürün sayısı
 Kullanıcının ürün bazında seçtiği market korunur; eski (48 saat+) ve Money kartlı fiyatlar uyarılır.
 Seçili plan liste gruplamasına, paylaşım metnine ve PDF'e uygulanır. Kayıtlı sepetler cihazda
 (`localStorage`, en çok 20) tutulur.
+
+## Fiyat analizi
+
+`js/insights.js` (`MFI`): kayıtlı fiyat geçmişinden 7/30 günlük değişim (o tarihteki fiyat kayıtlı değilse
+hesaplanmaz), son değişim, 30 günün en düşüğü, gerçek indirim (marketin ilan ettiği indirim ile indirimden
+hemen önceki kayıtlı fiyata göre gözlenen düşüş) ve temel sepet endeksi (her markette bulunan temel ürünler,
+en düşük birim fiyat × standart miktar; resmi enflasyon verisi değildir). Analiz sayfası `#analiz`; takip 7
+günü doldurana kadar değişimler takip başlangıcına göre gösterilir.
