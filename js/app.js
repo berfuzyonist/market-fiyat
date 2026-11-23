@@ -1,7 +1,7 @@
 "use strict";
 /* Market Fiyat arayüzü. Eşleştirme mantığı js/match.js içinde (MF). */
 const M={sok:{n:"Şok",at:"Şok'ta",c:"bg-yellow-400 text-yellow-950",bar:"#eab308"},migros:{n:"Migros",at:"Migros'ta",c:"bg-orange-500 text-white",bar:"#f97316"},a101:{n:"A101",at:"A101'de",c:"bg-cyan-600 text-white",bar:"#0891b2"},bim:{n:"BİM",at:"BİM'de",c:"bg-red-600 text-white",bar:"#dc2626"}},ORD=Object.keys(M);
-const VIEWS=["home","compare","promos","browse","search","list","posters","camp","track"];
+const VIEWS=["home","compare","promos","browse","search","list","posters","camp","track","analysis"];
 const $=id=>document.getElementById(id);
 const tl=x=>x.toLocaleString("tr-TR",{minimumFractionDigits:2,maximumFractionDigits:2})+" ₺";
 const num=x=>x.toLocaleString("tr-TR");
@@ -415,7 +415,7 @@ function drawH(){
   drawHCmp(st);
   $("cats").innerHTML=GROUPS.map(([k,l,ic,bg,fg])=>`<button data-grp="${k}" class="cat"><span class="ic" style="background:${bg};color:${fg}"><i data-lucide="${ic}" class="w-7 h-7"></i></span>${l}</button>`).join("");
   $("deals").innerHTML=st.filter(o=>disc(o)>0).sort((a,b)=>disc(b)-disc(a)).slice(0,20).map((o,i)=>pcard(o,{strip:1,i})).join("")||`<p class="text-sm text-stone-500">Şu an indirim görünmüyor.</p>`;
-  drawPostShelf();
+  drawPostShelf();drawHDrops();
   $("units").innerHTML=UNIT_Q.map(([q,l,ic])=>`<button data-uq="${esc(q)}" class="uchip"><i data-lucide="${ic}" class="w-4 h-4 text-emerald-600"></i>${l}</button>`).join("");
   $("stores").innerHTML=DATA_M.filter(m=>O.some(o=>o.market===m)).map(m=>{const n=st.filter(o=>o.market===m),d=n.filter(o=>disc(o)>0).length,s=CHECK[m],failed=s&&s.status!=="tamam"&&!s.partial,part=s&&s.partial;
     return`<button data-bm="${m}" data-open="1" class="store st-${m}"><span class="font-display font-extrabold text-lg lg:text-2xl">${M[m].n}</span>
@@ -597,6 +597,7 @@ function productPage(g){
         return`<div class="${card} p-3 border-l-[6px] ${w?"ring-2 ring-emerald-500":""} enter" style="border-left-color:${M[o.market].bar};animation-delay:${i*60}ms">
           <div class="flex items-center gap-2">${badge(o.market)}${w?`<span class="chipx bg-emerald-600 text-white"><i data-lucide="trophy" class="w-3 h-3"></i>En ucuz</span>`:""}${stateChip(o)}${moneyChip(o)}
             <span class="flex-1"></span>${d?`<span class="text-xs text-stone-400 line-through tabular">${tl(o.regular)}</span>`:""}<span class="price text-xl tabular ${ok?(d?"text-red-600":""):"text-stone-400 line-through"}">${tl(o.price)}</span></div>
+          ${d&&ok&&HIST[o.market]&&HIST[o.market]!=="…"?(r=>r?`<p class="text-[11px] mt-1.5 ${r.observed==null?"text-stone-500":r.claimed-r.observed>=0.15?"text-amber-800":"text-stone-700"}">Market %${Math.round(r.claimed*100)} indirim diyor${r.observed==null?"; kayıtlı geçmiş bunu doğrulamaya yetmiyor.":` · kayıtlı geçmişte indirimden önce ${tl(r.prevPrice)} idi: gözlenen düşüş <b>%${Math.round(r.observed*100)}</b>`}</p>`:"")(MFI.realDiscount(HIST[o.market][o.id],o)):""}
           ${o._promo&&o._promo.kind!=="bim"&&ok?`<p class="text-xs mt-1.5 text-violet-700 dark:text-violet-300 font-semibold">${o._promo.kind==="multi"?promoChip(o)+" ":""}${promoLine(o)}</p>`:""}
           <p class="text-[13px] text-stone-600 dark:text-stone-300 mt-1 leading-snug">${esc(o.name)}${unitTxt(o)?` · <span class="tabular">${unitTxt(o)}</span>`:""}</p>
           <div class="flex items-center gap-2 mt-2 flex-wrap">${freshPill(o)}${o.url&&o.url.startsWith("https://")?`<a href="${esc(o.url)}" target="_blank" rel="noopener" class="chipx bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-200">${M[o.market].n} sitesinde aç<i data-lucide="external-link" class="w-3 h-3"></i></a>`:""}</div>
@@ -735,6 +736,63 @@ function drawL(){
       <button data-pdf class="flex items-center justify-center gap-2 py-3 rounded-2xl bg-white/15 ring-1 ring-white/40 text-white font-extrabold active:scale-95 transition"><i data-lucide="file-down" class="w-5 h-5"></i>PDF aktar</button></div>
     <span class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-white/10"></span></div>`+planPanel(P,items.length)+noteBox+h+notesHtml+savedPanel()}
 
+// ---------- Fiyat analizi ----------
+// Tüm marketlerin fiyat geçmişi yüklenince her ürün için 7/30 günlük değişim, son değişim, 30 günün en
+// düşüğü hesaplanır (MFI). Geçmişi olmayan ürün için değer üretilmez.
+let INS=null,INS_P=null;
+function loadAllHist(){DATA_M.forEach(m=>loadHist(m));return new Promise(r=>{const w=()=>DATA_M.every(m=>HIST[m]&&HIST[m]!=="…")?r():setTimeout(w,300);w()})}
+function insights(){
+  if(INS)return Promise.resolve(INS);
+  return INS_P||(INS_P=loadAllHist().then(()=>{const now=Math.floor(Date.now()/1000),rows=[];
+    for(const o of O){if(!usable(o))continue;const h=HIST[o.market][o.id];if(!h)continue;const st=MFI.stats(h,o,now);if(st&&st.points>=2)rows.push({o,st})}
+    const since=Math.min(...DATA_M.map(m=>HSINCE[m]||now));
+    INS={rows,since,now};return INS}))}
+// Dönem: takip 7 günü doldurduysa son 7 gün, dolmadıysa takip başlangıcından bugüne
+const PK=()=>INS&&(INS.now-INS.since)>=7*86400?"d7":"dAll";
+const PLABEL=()=>PK()==="d7"?"7 gün":`takip başından beri (${Math.max(1,Math.round((INS.now-INS.since)/86400))} gün)`;
+function dropRow(x,period){const c=period==="last"?x.st.last:x.st[period],g=GI[x.o.id];
+  return`<div data-show="${esc(g?g.key:x.o.id)}" class="flex items-center gap-3 py-2.5 cursor-pointer">${img(x.o.image,"w-11 h-11 shrink-0")}
+    <div class="flex-1 min-w-0"><p class="text-[13px] font-bold leading-snug line-clamp-2">${esc(x.o.name)}</p><p class="text-[11px] text-stone-600 mt-0.5">${badge(x.o.market,1)} <span class="tabular">${tl(c.from)} → ${tl(c.to)}</span>${c.ts?` · ${dshort(c.ts)}`:""}</p></div>
+    <span class="tabular font-extrabold text-sm shrink-0 ${c.pct<0?good:"text-red-700"}">${c.pct<0?"−":"+"}%${Math.abs(Math.round(c.pct*100))}</span></div>`}
+function drawHDrops(){
+  if(!INS){insights().then(()=>{if(view==="home")drawHDrops()});return}
+  const k=PK(),d=INS.rows.filter(x=>x.st[k]&&x.st[k].pct<=-0.05).sort((a,b)=>a.st[k].pct-b.st[k].pct);
+  $("hDrops").classList.toggle("hidden",!d.length);if(!d.length)return;
+  $("hDropsSub").textContent=`${k==="d7"?"Son 7 günde":"Fiyat takibi başladığından beri"} ${num(d.length)} üründe fiyat en az %5 düştü (kayıtlı geçmişe göre).`;
+  $("hDropsList").innerHTML=d.slice(0,14).map((x,i)=>{const g=GI[x.o.id];return`<article data-show="${esc(g?g.key:x.o.id)}" class="pc w-44 shrink-0" style="--i:${i}">
+    <div class="ph">${x.o.image?`<img src="${esc(x.o.image)}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">`:""}</div>
+    <p class="text-[13px] font-bold leading-snug line-clamp-2 mt-1">${esc(x.o.name)}</p>
+    <p class="mt-1 flex items-center gap-1.5">${badge(x.o.market,1)}<span class="text-xs text-stone-500 line-through tabular">${tl(x.st[k].from)}</span></p>
+    <p class="flex items-baseline justify-between"><span class="price tabular text-lg">${tl(x.o.price)}</span><span class="text-xs font-extrabold ${good}">−%${Math.abs(Math.round(x.st[k].pct*100))}</span></p></article>`}).join("");icons()}
+function drawA(){
+  const el=$("analysis");
+  if(!INS){el.innerHTML=`<h1 class="page-title">Fiyat analizi</h1><div class="skel h-40 rounded-2xl mt-4"></div>`;insights().then(()=>{if(view==="analysis")redraw()});return}
+  const R=INS.rows,days=Math.max(1,Math.round((INS.now-INS.since)/86400));
+  const k=PK(),drop7=R.filter(x=>x.st[k]&&x.st[k].pct<=-0.005).sort((a,b)=>a.st[k].pct-b.st[k].pct);
+  const up7=R.filter(x=>x.st[k]&&x.st[k].pct>=0.005).sort((a,b)=>b.st[k].pct-a.st[k].pct);
+  const has30=R.some(x=>x.st.d30);
+  const lows=R.filter(x=>x.st.atLow30).sort((a,b)=>(a.st.price/a.st.high30)-(b.st.price/b.st.high30));
+  const rd=O.filter(o=>usable(o)&&o.regular>o.price+0.005&&HIST[o.market][o.id]).map(o=>({o,r:MFI.realDiscount(HIST[o.market][o.id],o,INS.now)}));
+  // Gerçek fırsat: kayıtlı geçmişte gözlenen düşüş en az %10
+  const real=rd.filter(x=>x.r&&x.r.observed>=0.1).sort((a,b)=>b.r.observed-a.r.observed);
+  const fake=rd.filter(x=>x.r&&x.r.observed!=null&&x.r.claimed-x.r.observed>=0.15).length;
+  const ms=DATA_M.filter(m=>O.some(o=>o.market===m)),bi=MFI.basketIndex(MF.staples(O.filter(usable)),ms);
+  const lo=Math.min(...ms.map(m=>bi.total[m]));
+  const sec=(icon,title,sub,body)=>`<section class="${card} p-4 mt-3"><h2 class="font-extrabold flex items-center gap-2"><i data-lucide="${icon}" class="w-5 h-5 text-emerald-700"></i>${title}</h2>${sub?`<p class="text-xs text-stone-600 mt-0.5">${sub}</p>`:""}${body}</section>`;
+  const list=(arr,period,n=12)=>arr.length?`<div class="mt-1 ${div}">${arr.slice(0,n).map(x=>dropRow(x,period)).join("")}</div>`:`<p class="text-sm text-stone-500 mt-2">Bu dönemde kayıtlı değişim yok.</p>`;
+  el.innerHTML=`<h1 class="page-title">Fiyat analizi</h1>
+  <p class="text-sm text-stone-600 mt-1">Market Fiyat'ın kendi kaydettiği fiyat değişimlerinden hesaplanır. Fiyat takibi ${dshort(INS.since)} tarihinde başladı (${days} gün); daha eski fiyatlar bilinmez ve tahmin edilmez.</p>
+  <div class="grid grid-cols-3 gap-2 mt-3">${[[k==="d7"?"Düşen (7 gün)":"Düşen (takipte)",drop7.length,good],[k==="d7"?"Artan (7 gün)":"Artan (takipte)",up7.length,"text-red-700"],["Dip fiyatta",lows.length,"text-emerald-800"]].map(([l,v,c])=>`<div class="${card} p-3"><p class="text-[11px] font-bold text-stone-600 leading-tight">${l}</p><p class="font-display font-extrabold text-2xl tabular ${c}">${num(v)}</p></div>`).join("")}</div>
+  ${sec("shopping-basket","Temel sepet endeksi",`Her markette bulunan ${bi.items.length} temel ürünün (marka fark etmeksizin en düşük birim fiyatla, standart miktarda) toplamı. Resmi enflasyon ya da TÜİK verisi değildir; yalnızca bu uygulamanın gördüğü online fiyatlardan hesaplanır.`,
+    `<div class="mt-3 space-y-2">${ms.slice().sort((a,b)=>bi.total[a]-bi.total[b]).map(m=>`<div class="flex items-center gap-2"><span class="w-16 shrink-0">${badge(m)}</span><div class="flex-1 h-3 rounded-full bg-stone-100 overflow-hidden"><div class="h-full rounded-full" style="width:${Math.round(lo/bi.total[m]*100)}%;background:${M[m].bar}"></div></div><span class="tabular font-extrabold w-24 text-right">${tl(bi.total[m])}</span></div>`).join("")}</div>
+     <details class="mt-2 text-xs text-stone-600"><summary class="font-bold cursor-pointer text-emerald-800">Sepetteki ürünler</summary><p class="mt-1">${bi.items.map(esc).join(", ")}${bi.missing.length?`<br>Her markette bulunmadığı için dışarıda: ${bi.missing.map(esc).join(", ")}`:""}</p></details>`)}
+  ${sec("trending-down","En çok düşenler · "+PLABEL(),k==="d7"?"Bugünkü fiyat ile 7 gün önceki kayıtlı fiyat.":"Takip 7 günü doldurunca 7 günlük karşılaştırmaya geçilir.",list(drop7,k))}
+  ${sec("badge-percent","Gerçek fırsatlar",`Kayıtlı geçmişte, indirimden hemen önceki fiyata göre en az %10 düşenler.${fake?` ${num(fake)} üründe marketin ilan ettiği indirim, gözlenen düşüşten en az 15 puan fazla.`:""}`,
+    real.length?`<div class="mt-1 ${div}">${real.slice(0,12).map(x=>{const g=GI[x.o.id];return`<div data-show="${esc(g?g.key:x.o.id)}" class="flex items-center gap-3 py-2.5 cursor-pointer">${img(x.o.image,"w-11 h-11 shrink-0")}<div class="flex-1 min-w-0"><p class="text-[13px] font-bold leading-snug line-clamp-2">${esc(x.o.name)}</p><p class="text-[11px] text-stone-600 mt-0.5">${badge(x.o.market,1)} önce ${tl(x.r.prevPrice)} · market %${Math.round(x.r.claimed*100)} diyor</p></div><span class="tabular font-extrabold text-sm ${good} shrink-0">−%${Math.round(x.r.observed*100)}</span></div>`}).join("")}</div>`:`<p class="text-sm text-stone-500 mt-2">Kayıtlı geçmişte doğrulanan %10+ düşüş yok.</p>`)}
+  ${sec("trending-up","En çok artanlar · "+PLABEL(),"",list(up7,k))}
+  ${sec("arrow-down-to-line","Son 30 günün en düşük fiyatında",has30?"":`Takip ${days} günlük; liste takip süresi içindeki en düşük fiyata göre.`,list(lows,"last"))}`;
+}
+
 // ---------- Takip: favoriler ve fiyat alarmları ----------
 const isFav=g=>FAV.some(f=>f.key===g.key);
 const alarmsOf=g=>ALARMS[g.key]||[];
@@ -867,14 +925,14 @@ async function shareList(){
   catch(e){open("https://wa.me/?text="+encodeURIComponent(text),"_blank")}}
 
 // ---------- Gezinme ----------
-const DRAW={home:drawH,compare:drawC,promos:drawK,browse:drawB,search:drawS,list:drawL,posters:drawP,camp:drawCamp,track:drawT};
+const DRAW={home:drawH,compare:drawC,promos:drawK,browse:drawB,search:drawS,list:drawL,posters:drawP,camp:drawCamp,track:drawT,analysis:drawA};
 function icons(){lucide.createIcons()}
 function redraw(){DRAW[view]();if(view!=="list")drawL();icons()}
 const NB="flex flex-col items-center gap-0.5 py-2 rounded-2xl text-[11px] font-bold relative transition active:scale-90 ";
 const NT="flex items-center gap-2 px-3.5 py-1.5 rounded-full text-sm font-bold transition ";
 // ---------- Adres (yenileme ve geri tuşu için) ----------
 // #urun/<id>, #ara/<sorgu>, #kesfet, #kampanya, #karsilastir, #listem; ana sayfa: adres eki yok
-const HV={home:"",compare:"karsilastir",promos:"kampanya",browse:"kesfet",search:"ara",list:"listem",posters:"afisler",track:"takip"};
+const HV={home:"",compare:"karsilastir",promos:"kampanya",browse:"kesfet",search:"ara",list:"listem",posters:"afisler",track:"takip",analysis:"analiz"};
 let routing=false;
 function hashOf(){
   if(view==="search"){if(only)return"#urun/"+encodeURIComponent(only);const q=$("q").value.trim();return q?"#ara/"+encodeURIComponent(q):"#ara"}
