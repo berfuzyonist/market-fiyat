@@ -1,6 +1,6 @@
 "use strict";
 /* Market Fiyat arayüzü. Eşleştirme mantığı js/match.js içinde (MF). */
-const M={sok:{n:"Şok",at:"Şok'ta",c:"bg-yellow-400 text-yellow-950",bar:"#eab308"},migros:{n:"Migros",at:"Migros'ta",c:"bg-orange-500 text-white",bar:"#f97316"},a101:{n:"A101",at:"A101'de",c:"bg-cyan-600 text-white",bar:"#0891b2"},bim:{n:"BİM",at:"BİM'de",c:"bg-red-600 text-white",bar:"#dc2626"}},ORD=Object.keys(M);
+const M={sok:{n:"Şok",at:"Şok'ta",c:"bg-yellow-400 text-yellow-950",bar:"#eab308"},migros:{n:"Migros",at:"Migros'ta",c:"bg-orange-700 text-white",bar:"#f97316"},a101:{n:"A101",at:"A101'de",c:"bg-cyan-700 text-white",bar:"#0891b2"},bim:{n:"BİM",at:"BİM'de",c:"bg-red-600 text-white",bar:"#dc2626"}},ORD=Object.keys(M);
 const VIEWS=["home","compare","promos","browse","search","list","posters","camp","track","analysis","status"];
 const $=id=>document.getElementById(id);
 const tl=x=>x.toLocaleString("tr-TR",{minimumFractionDigits:2,maximumFractionDigits:2})+" ₺";
@@ -176,11 +176,14 @@ function pcard(o,opt={}){
   ${inC?stepper(g):`<button data-add="${esc(key)}" ${ok?"":"disabled"} aria-label="Listeye ekle" class="add ${ok?"":"opacity-30"}"><i data-lucide="plus" class="w-5 h-5"></i></button>`}
 </article>`}
 // ---------- Karşılaştırma verisi ----------
-function buildCompare(){
+function buildCompare(){CMP_PARTS.forEach(f=>f())}
+// Üç parça ayrı ayrı (boşta, sırayla) çalıştırılabilsin diye bölündü: tek seferde telefonda ~1 sn kilitliyordu
+const CMP_PARTS=[()=>{
   // 1) Aynı ürün, aynı boy
   CMP.same=G.map(g=>{const a=avail(g);if(a.length<2)return null;const b=best(g),w=worst(g),p=w>0?(w-b.price)/w:0;
     if(p>0.7)return null; // bu kadar fark büyük olasılıkla yanlış eşleşme
     return{title:g.name,image:g.image,key:g.key,rows:a.map(o=>({o,val:o.price})),win:b,diff:w-b.price,pct:p,n:a.length,unit:false}}).filter(Boolean);
+},()=>{
   // 2) Aynı ürün, farklı boy: birim fiyatla
   CMP.size=MF.families(O).map(f=>{const by={};
     for(const o of f.offers){const u=MF.unitPrice(o);if(u&&(!by[o.market]||u.v<by[o.market].val))by[o.market]={o,val:u.v,u:u.u}}
@@ -190,11 +193,13 @@ function buildCompare(){
     const lo=rows.reduce((a,r)=>r.val<a.val?r:a),hi=rows.reduce((a,r)=>r.val>a.val?r:a);
     if(hi.val/lo.val>3)return null;
     return{title:lo.o.name.replace(/\s+\d[\d.,]*\s*(kg|gr|g|lt|l|ml)\b.*$/i,"")||lo.o.name,image:lo.o.image,key:GI[lo.o.id].key,rows,win:lo.o,diff:hi.val-lo.val,pct:(hi.val-lo.val)/hi.val,n:rows.length,unit:true}}).filter(Boolean);
+},()=>{
   // 3) Temel ihtiyaçlar: marka fark etmeksizin en ucuz
   CMP.staple=MF.staples(O).map(s=>{const rows=ORD.filter(m=>s.best[m]).map(m=>({o:s.best[m].o,val:s.best[m].u.v,u:s.best[m].u.u}));
     const lo=rows.reduce((a,r)=>r.val<a.val?r:a),hi=rows.reduce((a,r)=>r.val>a.val?r:a);
     return{title:s.name,image:lo.o.image,key:GI[lo.o.id].key,rows,win:lo.o,diff:hi.val-lo.val,pct:(hi.val-lo.val)/hi.val,n:rows.length,unit:true,staple:true}});
-}
+}];
+function buildCompareIdle(done){let i=0;const step=()=>{if(CMP_READY)return done();CMP_PARTS[i++]();if(i<CMP_PARTS.length)idle(step);else{CMP_READY=true;done()}};idle(step)}
 // Eşleştirme güveni rozeti (MF.confidence): "orta" eşleşmede kullanıcı adları kontrol etmeye çağrılır
 const CONF_L={yuksek:["Eşleşme kesin","bg-emerald-100 text-emerald-800"],iyi:["Eşleşme güçlü","bg-sky-100 text-sky-800"],orta:["Benzer ürün: adları kontrol et","bg-amber-100 text-amber-900"]};
 function confChip(g){const c=MF.confidence(g);if(!c)return"";const[l,cls]=CONF_L[c.level];
@@ -368,19 +373,19 @@ function slides(st){
   const pics=list=>list.filter(o=>o.image).slice(0,3).map(o=>`<img src="${esc(o.image)}" alt="" loading="lazy" onerror="this.remove()">`).join("");
   const out=[];
   if(deals.length){const mx=Math.round(disc(deals[0])*100);
-    out.push(`<div class="slide s-red"><div class="relative z-10"><p class="text-xs font-extrabold uppercase tracking-wider opacity-90">Günün fırsatları</p><h3>%${mx}'e varan indirim</h3><p>${num(deals.length)} üründe indirim. Hepsi tek yerde.</p></div><button data-go="deals" class="cta relative z-10">İndirimleri gör<i data-lucide="arrow-right" class="w-4 h-4"></i></button><div class="imgs">${pics(deals.slice(0,12).filter((o,i)=>i%3===0))}</div></div>`)}
+    out.push(`<div class="slide s-red"><div class="relative z-10"><p class="text-xs font-extrabold uppercase tracking-wider opacity-90">Günün fırsatları</p><h2 class="slide-h">%${mx}'e varan indirim</h2><p>${num(deals.length)} üründe indirim. Hepsi tek yerde.</p></div><button data-go="deals" class="cta relative z-10">İndirimleri gör<i data-lucide="arrow-right" class="w-4 h-4"></i></button><div class="imgs">${pics(deals.slice(0,12).filter((o,i)=>i%3===0))}</div></div>`)}
   // Bedava ürünlü kampanyalar önce (1 Alana 1 Bedava, 2 Al 1 Öde), sonra kazanca göre
   const multi=PROMO.filter(o=>o._promo.kind==="multi").sort((a,b)=>(b._promo.sub==="free")-(a._promo.sub==="free")||gain(b)-gain(a));
   const freeN=multi.filter(o=>o._promo.sub==="free").length,alana=multi.filter(o=>/bedava/i.test(o._promo.label)).length;
-  if(multi.length)out.push(`<div class="slide s-violet"><div class="relative z-10"><p class="text-xs font-extrabold uppercase tracking-wider opacity-90">Bedava ürünlü kampanyalar</p><h3>${alana?"1 Alana 1 Bedava":"2 Al 1 Öde"} ve dahası</h3><p>${num(freeN)} üründe bedava ürün kazanırsın${alana?` · ${alana} tanesi “1 Alana 1 Bedava”`:""}. Tane fiyatını hesapladık.</p></div><button data-view="promos" data-plain="1" class="cta relative z-10">Bedavaları gör<i data-lucide="arrow-right" class="w-4 h-4"></i></button><div class="imgs">${pics(multi)}</div></div>`);
+  if(multi.length)out.push(`<div class="slide s-violet"><div class="relative z-10"><p class="text-xs font-extrabold uppercase tracking-wider opacity-90">Bedava ürünlü kampanyalar</p><h2 class="slide-h">${alana?"1 Alana 1 Bedava":"2 Al 1 Öde"} ve dahası</h2><p>${num(freeN)} üründe bedava ürün kazanırsın${alana?` · ${alana} tanesi “1 Alana 1 Bedava”`:""}. Tane fiyatını hesapladık.</p></div><button data-view="promos" data-plain="1" class="cta relative z-10">Bedavaları gör<i data-lucide="arrow-right" class="w-4 h-4"></i></button><div class="imgs">${pics(multi)}</div></div>`);
   const water=!WARM?null:WATER!==undefined?WATER:(WATER=MF.unitCompare(st,"su"));
-  if(water){const b=water.best;out.push(`<div class="slide s-blue"><div class="relative z-10"><p class="text-xs font-extrabold uppercase tracking-wider opacity-90">Birim fiyat</p><h3>Suyun litresi en ucuz nerede?</h3><p>${esc(b.o.name)} · ${M[b.o.market].at} <b>${tl(b.u.v)}/L</b></p></div><button data-uq="su" class="cta relative z-10">Boy boy karşılaştır<i data-lucide="arrow-right" class="w-4 h-4"></i></button><div class="imgs">${pics(water.top.map(h=>h.o))}</div></div>`)}
+  if(water){const b=water.best;out.push(`<div class="slide s-blue"><div class="relative z-10"><p class="text-xs font-extrabold uppercase tracking-wider opacity-90">Birim fiyat</p><h2 class="slide-h">Suyun litresi en ucuz nerede?</h2><p>${esc(b.o.name)} · ${M[b.o.market].at} <b>${tl(b.u.v)}/L</b></p></div><button data-uq="su" class="cta relative z-10">Boy boy karşılaştır<i data-lucide="arrow-right" class="w-4 h-4"></i></button><div class="imgs">${pics(water.top.map(h=>h.o))}</div></div>`)}
   const wins={};CMP.staple.forEach(it=>{if(it.diff>=0.005)wins[it.win.market]=(wins[it.win.market]||0)+1});
   const top=Object.keys(wins).sort((a,b)=>wins[b]-wins[a])[0];
-  if(top)out.push(`<div class="slide s-green"><div class="relative z-10"><p class="text-xs font-extrabold uppercase tracking-wider opacity-90">Temel ihtiyaçlar</p><h3>${M[top].n} ${wins[top]} üründe en ucuz</h3><p>Süt, yağ, şeker, un… ${CMP.staple.length} temel üründe birim fiyat karşılaştırması.</p></div><button data-seg="staple" data-open="1" class="cta relative z-10">Kim ucuz?<i data-lucide="arrow-right" class="w-4 h-4"></i></button><div class="imgs">${pics(CMP.staple.map(it=>it.win))}</div></div>`);
+  if(top)out.push(`<div class="slide s-green"><div class="relative z-10"><p class="text-xs font-extrabold uppercase tracking-wider opacity-90">Temel ihtiyaçlar</p><h2 class="slide-h">${M[top].n} ${wins[top]} üründe en ucuz</h2><p>Süt, yağ, şeker, un… ${CMP.staple.length} temel üründe birim fiyat karşılaştırması.</p></div><button data-seg="staple" data-open="1" class="cta relative z-10">Kim ucuz?<i data-lucide="arrow-right" class="w-4 h-4"></i></button><div class="imgs">${pics(CMP.staple.map(it=>it.win))}</div></div>`);
   const soon=O.filter(o=>o.na==="soon");
   if(soon.length){const d=soon.map(o=>o.when.start).sort((a,b)=>a-b)[0];
-    out.push(`<div class="slide s-amber"><div class="relative z-10"><p class="text-xs font-extrabold uppercase tracking-wider opacity-90">BİM aktüel</p><h3>Yakında: ${d.toLocaleDateString("tr-TR",{day:"numeric",month:"long"})}</h3><p>${num(soon.length)} ürün satışa çıkmadan fiyatlarını gör.</p></div><button data-bm="bim" data-open="1" class="cta relative z-10">BİM ürünleri<i data-lucide="arrow-right" class="w-4 h-4"></i></button><div class="imgs">${pics(soon)}</div></div>`)}
+    out.push(`<div class="slide s-amber"><div class="relative z-10"><p class="text-xs font-extrabold uppercase tracking-wider opacity-90">BİM aktüel</p><h2 class="slide-h">Yakında: ${d.toLocaleDateString("tr-TR",{day:"numeric",month:"long"})}</h2><p>${num(soon.length)} ürün satışa çıkmadan fiyatlarını gör.</p></div><button data-bm="bim" data-open="1" class="cta relative z-10">BİM ürünleri<i data-lucide="arrow-right" class="w-4 h-4"></i></button><div class="imgs">${pics(soon)}</div></div>`)}
   return out;
 }
 function startSlides(){
@@ -408,7 +413,7 @@ function drawPostShelf(){
 // Ana sayfanın karşılaştırmaya bağlı bölümleri (tanıtım alanı, fiyat farkı rafı, temel ihtiyaçlar):
 // ad çözümlemesi bitince yalnızca bunlar yenilenir.
 function drawHCmp(st){
-  const sl=slides(st);$("banner").innerHTML=sl.join("")||`<div class="slide s-green"><h3>Market Fiyat</h3></div>`;slideI=0;$("banner").scrollLeft=0;startSlides();
+  const sl=slides(st);$("banner").innerHTML=sl.join("")||`<div class="slide s-green"><h2 class="slide-h">Market Fiyat</h2></div>`;slideI=0;$("banner").scrollLeft=0;startSlides();
   $("hCmp").innerHTML=CMP.same.filter(it=>it.diff>=1).sort((a,b)=>b.pct-a.pct).slice(0,14).map((it,i)=>`<article data-show="${esc(it.key)}" class="pc w-60 shrink-0" style="--i:${i}">
     <div class="flex gap-2 items-center"><div class="ph w-16 shrink-0">${it.image?`<img src="${esc(it.image)}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">`:""}</div><p class="text-[13px] font-bold leading-snug max-h-[3.4rem] overflow-hidden">${esc(it.title)}</p></div>
     <div class="mt-2 space-y-1">${it.rows.map(r=>`<div class="flex items-center justify-between">${badge(r.o.market,1)}<span class="tabular text-sm font-extrabold ${r.o===it.win?good:"text-stone-400 line-through"}">${tl(r.o.price)}</span></div>`).join("")}</div>
@@ -825,10 +830,12 @@ let INS=null,INS_P=null;
 function loadAllHist(){DATA_M.forEach(m=>loadHist(m));return new Promise(r=>{const w=()=>DATA_M.every(m=>HIST[m]&&HIST[m]!=="…")?r():setTimeout(w,300);w()})}
 function insights(){
   if(INS)return Promise.resolve(INS);
-  return INS_P||(INS_P=loadAllHist().then(()=>{const now=Math.floor(Date.now()/1000),rows=[];
-    for(const o of O){if(!usable(o))continue;const h=HIST[o.market][o.id];if(!h)continue;const st=MFI.stats(h,o,now);if(st&&st.points>=2)rows.push({o,st})}
-    const since=Math.min(...DATA_M.map(m=>HSINCE[m]||now));
-    INS={rows,since,now};return INS}))}
+  // Tüm ürünlerin geçmiş istatistiği boşta, küçük parçalar halinde hesaplanır (ana iş parçacığını kilitlemez)
+  return INS_P||(INS_P=loadAllHist().then(()=>new Promise(res=>{const now=Math.floor(Date.now()/1000),rows=[];let i=0;
+    const step=dl=>{const end=performance.now()+((dl&&dl.timeRemaining&&dl.timeRemaining())||12);
+      while(i<O.length&&performance.now()<end){const o=O[i++];if(!usable(o))continue;const h=HIST[o.market][o.id];if(!h)continue;const st=MFI.stats(h,o,now);if(st&&st.points>=2)rows.push({o,st})}
+      if(i<O.length)idle(step);else{INS={rows,since:Math.min(...DATA_M.map(m=>HSINCE[m]||now)),now};res(INS)}};
+    idle(step)})))}
 // Dönem: takip 7 günü doldurduysa son 7 gün, dolmadıysa takip başlangıcından bugüne
 const PK=()=>INS&&(INS.now-INS.since)>=7*86400?"d7":"dAll";
 const PLABEL=()=>PK()==="d7"?"7 gün":`takip başından beri (${Math.max(1,Math.round((INS.now-INS.since)/86400))} gün)`;
@@ -837,7 +844,7 @@ function dropRow(x,period){const c=period==="last"?x.st.last:x.st[period],g=GI[x
     <div class="flex-1 min-w-0"><p class="text-[13px] font-bold leading-snug line-clamp-2">${esc(x.o.name)}</p><p class="text-[11px] text-stone-600 mt-0.5">${badge(x.o.market,1)} <span class="tabular">${tl(c.from)} → ${tl(c.to)}</span>${c.ts?` · ${dshort(c.ts)}`:""}</p></div>
     <span class="tabular font-extrabold text-sm shrink-0 ${c.pct<0?good:"text-red-700"}">${c.pct<0?"−":"+"}%${Math.abs(Math.round(c.pct*100))}</span></div>`}
 function drawHDrops(){
-  if(!INS){insights().then(()=>{if(view==="home")drawHDrops()});return}
+  if(!INS){if(WARM)insights().then(()=>{if(view==="home"){drawHDrops();icons()}});return} // açılışta: ısınma bitince
   const k=PK(),d=INS.rows.filter(x=>x.st[k]&&x.st[k].pct<=-0.05).sort((a,b)=>a.st[k].pct-b.st[k].pct);
   $("hDrops").classList.toggle("hidden",!d.length);if(!d.length)return;
   $("hDropsSub").textContent=`${k==="d7"?"Son 7 günde":"Fiyat takibi başladığından beri"} ${num(d.length)} üründe fiyat en az %5 düştü (kayıtlı geçmişe göre).`;
@@ -1289,5 +1296,5 @@ Promise.all([loadRows(statusP),statusP,get("data/price-checks.json"),postersP]).
   POST.forEach(it=>{if(it.market==="bim")it.ids=byLabel[`${it.group} · ${it.label}`]||[]});
   redraw();
   badgeBell();setTimeout(checkAlarms,800);
-  WARM=false;warmUp(O,()=>{ensureCMP();if(view==="home"){drawHCmp(O.filter(usable));icons()}});
+  WARM=false;warmUp(O,()=>buildCompareIdle(()=>{if(view==="home"){drawHCmp(O.filter(usable));icons();drawHDrops()}}));
 }).catch(e=>{note("Fiyat verisi yüklenemedi: "+e.message)});
