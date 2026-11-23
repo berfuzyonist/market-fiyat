@@ -9,6 +9,13 @@ const MONEY="Money kartlı fiyat";
 const STALE_HOURS=48;   // bu süreden eski doğrulanmış indirim "güncel indirim" sayılmaz
 const BIM_ACTIVE_DAYS=21;
 
+// Ürün satırı: ad çözümlemesi (_p: marka, boy, kelimeler) ilk kullanıldığında yapılır. Açılışta 22 bin
+// ürünün hepsini çözümlemek telefonda saniyeler alıyordu; çoğu ekran yalnızca bir kısmına bakar.
+const parseName=n=>(root.MF||require("./match.js")).parse(n);
+const ROW={get _p(){const v=parseName(this.name);Object.defineProperty(this,"_p",{value:v,writable:true,configurable:true});return v},
+  set _p(v){Object.defineProperty(this,"_p",{value:v,writable:true,configurable:true})}};
+const row=o=>Object.assign(Object.create(ROW),o);
+
 const toTs=v=>{if(typeof v==="number")return v;const t=Date.parse(v||"");return isNaN(t)?null:Math.floor(t/1000)};
 
 // Market veri dosyasındaki dizi satırlarını nesneye çevirir; geçersiz fiyatlı satırı atar,
@@ -27,11 +34,25 @@ function rowsOf(d){
     const seen=at.seen!=null&&Number.isInteger(x[at.seen])?x[at.seen]:upd;
     const raw=String(x[at.promo]||""),money=raw.includes(MONEY);
     const promo=raw.split(" · ").filter(s=>s&&s!==MONEY).join(" · ");
-    out.push({id,market:m,name:String(x[at.name]),price,regular,in_stock:!!x[at.in_stock],
+    out.push(row({id,market:m,name:String(x[at.name]),price,regular,in_stock:!!x[at.in_stock],
       image:x[at.image]?(p.image||"")+x[at.image]:"",url:x[at.url]?(p.url||"")+x[at.url]:"",
-      cat:typeof x[at.cat]==="number"?cs[x[at.cat]]||"":"",promo,money,seen});
+      cat:typeof x[at.cat]==="number"?cs[x[at.cat]]||"":"",promo,money,seen}));
   }
   return out;
+}
+
+// Bölünmüş veri (data/client): katalog (id, ad, görsel, adres, kategori; seyrek değişir, önbellekte
+// tutulur) + fiyat dosyası (aynı sırada fiyat, etiket fiyatı, stok, kampanya, doğrulama zamanı; her
+// yayımda değişir). İki dosya aynı katalog sürümüne ait değilse null döner (çağıran tam dosyaya düşer).
+function rowsFromSplit(cat,pr){
+  if(!cat||!pr||!Array.isArray(cat.products)||!Array.isArray(pr.products))return null;
+  if(!cat.v||cat.v!==pr.catalog||cat.products.length!==pr.products.length)return null;
+  const P=pr.products,base=pr.base||0,out=[];
+  const rows=cat.products.map((c,i)=>{const q=P[i];
+    // fiyat dosyası: [fiyat, etiket fiyatı (0 = fiyatla aynı), stok, kampanya, doğrulama - base (sn)]
+    return[c[0],c[1],q[0],q[1]||q[0],q[2],c[2],c[3],c[4],q[3],q[4]==null?null:base+q[4]]});
+  return rowsOf({updated:pr.updated,prefix:cat.prefix,cats:cat.cats,
+    fields:["id","name","price","regular","in_stock","image","url","cat","promo","seen"],products:rows});
 }
 
 // promo metninden kampanya türü ve "tanesi kaça gelir" hesabı
@@ -182,6 +203,6 @@ function histInfo(points,o,now){
     atLow:P.length>1&&cur.price<=lo+0.005&&hi>lo+0.005,events:ev,lastDisc:lastOf("disc"),lastPromo:lastOf("promo"),lastHike:lastOf("hike")};
 }
 
-const api={histInfo,searchWords,searchScore,fold,toTs,rowsOf,promoOf,bimWhen,enrich,usable,disc,ago,priceUpdateLink,freshness,MONEY,STALE_HOURS};
+const api={rowsFromSplit,histInfo,searchWords,searchScore,fold,toTs,rowsOf,promoOf,bimWhen,enrich,usable,disc,ago,priceUpdateLink,freshness,MONEY,STALE_HOURS};
 if(typeof module!=="undefined"&&module.exports)module.exports=api;else root.MFC=api;
 })(typeof window!=="undefined"?window:globalThis);

@@ -144,6 +144,9 @@ print("Published status for", incoming.get("market"), "mode", incoming.get("mode
       "| market data replaced:", "yes" if publish_data else "no")
 PY
 
+  # İstemci veri dosyaları (bölünmüş katalog/fiyat ve hazır eşleştirme) birleşik veriden yeniden üretilir.
+  # Üretilemezse yayım durmaz: uygulama tam market dosyalarına düşer.
+  if node scripts/build_client.mjs; then git add data/client; else echo "WARNING: client data not rebuilt"; fi
   git add "$status_rel" "$data_rel"
   if [ -f "data/history-${market}.json" ]; then git add "data/history-${market}.json"; fi
   if git diff --cached --quiet; then

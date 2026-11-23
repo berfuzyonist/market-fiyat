@@ -50,6 +50,7 @@ jobs:
             git fetch --no-tags origin main
             git reset --hard origin/main
             python3 scripts/update_one_product.py apply "$RUNNER_TEMP/result.json" "$RUNNER_TEMP/comment.md"
+            node scripts/build_client.mjs && git add data/client || echo "İstemci verisi üretilemedi"
             git add data/price-checks.json data/migros.json data/sok.json data/bim.json
             for f in data/history-migros.json data/history-sok.json data/history-bim.json; do
               if [ -f "$f" ]; then git add "$f"; fi
