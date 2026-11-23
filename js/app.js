@@ -1,7 +1,7 @@
 "use strict";
 /* Market Fiyat arayüzü. Eşleştirme mantığı js/match.js içinde (MF). */
 const M={sok:{n:"Şok",at:"Şok'ta",c:"bg-yellow-400 text-yellow-950",bar:"#eab308"},migros:{n:"Migros",at:"Migros'ta",c:"bg-orange-500 text-white",bar:"#f97316"},a101:{n:"A101",at:"A101'de",c:"bg-cyan-600 text-white",bar:"#0891b2"},bim:{n:"BİM",at:"BİM'de",c:"bg-red-600 text-white",bar:"#dc2626"}},ORD=Object.keys(M);
-const VIEWS=["home","compare","promos","browse","search","list","posters","camp"];
+const VIEWS=["home","compare","promos","browse","search","list","posters","camp","track"];
 const $=id=>document.getElementById(id);
 const tl=x=>x.toLocaleString("tr-TR",{minimumFractionDigits:2,maximumFractionDigits:2})+" ₺";
 const num=x=>x.toLocaleString("tr-TR");
@@ -50,6 +50,8 @@ let NOTES=load("notes",[]); // listedeki serbest notlar: [{t:"ekmek",d:0}]
 // Akıllı sepet: seçili plan (multi: her ürün en ucuz markete, single: tek market, limit: en fazla k market),
 // kullanıcının ürün bazında seçtiği market (FIX) ve kayıtlı sepetler
 let PLAN=load("plan",{mode:"multi",k:2,market:""}),FIX=load("fix",{}),SAVED=load("baskets",[]);
+// Takip: favoriler [{key, price, at}], fiyat alarmları {key:[alarm]}, uygulama içi bildirimler [{ts,key,text,read}]
+let FAV=load("fav",[]),ALARMS=load("alarms",{}),INBOX=load("inbox",[]);
 let cart=load("cart",[]),bmap=load("bmap",{}),reqs=load("req",{}),pending=null,only=null,updated="",UPD={},CHECK={},CHECKS={},view="home";
 const C={seg:"same",three:false,sort:"pct",page:0},K={kind:"free",m:"",sort:"gain",page:0},B={m:"",grp:"",cat:"",disc:false,sort:"disc",page:0};
 // Ana kategori yuvarlakları: marketlerin farklı kategori adlarını tek grupta toplar
@@ -582,6 +584,7 @@ function productPage(g){
     </div>
     <div>
       <h1 class="font-display font-extrabold text-2xl lg:text-3xl leading-tight tracking-tight">${esc(g.name)}</h1>
+      ${favBtns(g)}
       <div class="flex flex-wrap gap-1.5 mt-2">${av.length>1?`<span class="chipx bg-emerald-100 text-emerald-800">${av.length} markette var</span>`:""}${u?`<span class="chipx bg-stone-200 text-stone-700 tabular">${tl(u.v)}/${u.u}</span>`:""}</div>
       ${b?`<div class="mt-4 rounded-[20px] p-4 text-white relative overflow-hidden" style="background:linear-gradient(135deg,#047857,#059669)">
         <p class="text-xs font-extrabold uppercase tracking-wider text-emerald-100 flex items-center gap-1"><i data-lucide="trophy" class="w-4 h-4"></i>En ucuz ${M[b.market].at}</p>
@@ -732,6 +735,58 @@ function drawL(){
       <button data-pdf class="flex items-center justify-center gap-2 py-3 rounded-2xl bg-white/15 ring-1 ring-white/40 text-white font-extrabold active:scale-95 transition"><i data-lucide="file-down" class="w-5 h-5"></i>PDF aktar</button></div>
     <span class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-white/10"></span></div>`+planPanel(P,items.length)+noteBox+h+notesHtml+savedPanel()}
 
+// ---------- Takip: favoriler ve fiyat alarmları ----------
+const isFav=g=>FAV.some(f=>f.key===g.key);
+const alarmsOf=g=>ALARMS[g.key]||[];
+function badgeBell(){const n=INBOX.filter(x=>!x.read).length;$("nb").textContent=n;$("nb").style.display=n?"grid":"none"}
+// Bir ürünün son 30 gündeki kayıtlı en düşük fiyatı (tüm marketlerdeki geçmiş + şu anki fiyatlar)
+function low30Of(g){const pts=[];g.offers.forEach(o=>{const h=HIST[o.market];if(h&&h!=="…"&&h[o.id])pts.push(...h[o.id])});
+  avail(g).forEach(o=>pts.push([Math.floor(Date.now()/1000),o.price]));return MFA.low30(pts)}
+// Veri ve geçmiş yüklenince alarmlar denetlenir; yeni durumlar bildirim kutusuna (ve izin verildiyse telefona) düşer.
+function checkAlarms(){
+  const keys=Object.keys(ALARMS).filter(k=>ALARMS[k]&&ALARMS[k].length&&GI[k]);if(!keys.length)return;
+  const ms=new Set();keys.forEach(k=>GI[k].offers.forEach(o=>ms.add(o.market)));
+  const need=[...ms].filter(m=>!HIST[m]||HIST[m]==="…");
+  if(need.length){need.forEach(m=>loadHist(m));setTimeout(checkAlarms,1500);return}
+  let fired=0;
+  for(const k of keys){const g=GI[k],b=best(g);if(!b)continue;const l=low30Of(g);
+    const ctx={price:b.price,market:b.market,promos:avail(g).filter(o=>o._promo&&o._promo.kind!=="bim").map(o=>`${M[o.market].n}: ${o.promo}`),low30:l.low,points30:l.n};
+    for(const a of ALARMS[k]){const r=MFA.evaluate(a,ctx);if(!r.fire)continue;a.last=r.sig;fired++;
+      const text=`${g.name} · ${MFA.describe(a)}. Şu an en ucuz ${M[b.market].at} ${tl(b.price)}.`+(a.type==="promo"?` ${ctx.promos.join(" · ")}`:"");
+      INBOX.unshift({ts:Date.now(),key:k,text,read:false});
+      try{if("Notification" in window&&Notification.permission==="granted"&&navigator.serviceWorker)navigator.serviceWorker.ready.then(r=>r.showNotification("Market Fiyat",{body:text,tag:k+a.type,icon:"icon.svg"}))}catch(e){}}}
+  if(fired){INBOX=INBOX.slice(0,60);save("inbox",INBOX);save("alarms",ALARMS);note(`${fired} fiyat alarmı tetiklendi · zile dokun`)}
+  badgeBell();if(view==="track")redraw()}
+function favBtns(g){const f=isFav(g),n=alarmsOf(g).length;
+  return`<div class="flex gap-2 mt-3"><button data-fav="${esc(g.key)}" class="chipx !py-2 !px-3 ${f?"bg-rose-600 text-white":"bg-white ring-1 ring-stone-300 text-stone-800"}"><i data-lucide="heart" class="w-4 h-4"></i>${f?"Favorilerde":"Favorilere ekle"}</button>
+    <button data-alarmopen class="chipx !py-2 !px-3 bg-white ring-1 ring-stone-300 text-stone-800"><i data-lucide="bell-plus" class="w-4 h-4"></i>Fiyat alarmı${n?` (${n})`:""}</button></div>
+  <form data-alarmform="${esc(g.key)}" class="hidden mt-2 ${card} p-3 space-y-2">
+    <label class="block text-xs font-bold text-stone-700">Ne zaman haber verelim?
+      <select name="type" class="mt-1 w-full rounded-xl ring-1 ring-stone-300 px-3 py-2.5 bg-white text-[15px]">
+        <option value="below">Fiyat şu tutarın altına inince</option><option value="drop">Fiyat belli bir oranda düşünce</option>
+        <option value="low30">Son 30 günün en düşük fiyatına inince</option><option value="promo">Yeni kampanya gelince</option></select></label>
+    <label class="block text-xs font-bold text-stone-700">Hedef (₺ ya da %)<input name="val" inputmode="decimal" placeholder="ör. 49,90 ya da 10" class="mt-1 w-full rounded-xl ring-1 ring-stone-300 px-3 py-2.5 text-[15px]"></label>
+    <button class="w-full rounded-xl bg-emerald-700 text-white font-extrabold py-2.5">Alarmı kur</button>
+    <p class="text-[11px] text-stone-500">Alarmlar bu telefonda saklanır ve uygulama her açıldığında yeni fiyatlarla denetlenir.</p></form>
+  ${n?`<div class="mt-2 space-y-1">${alarmsOf(g).map((a,i)=>`<div class="flex items-center gap-2 text-[13px] bg-stone-100 rounded-xl px-3 py-2"><i data-lucide="bell" class="w-4 h-4 text-emerald-700"></i><span class="flex-1">${esc(MFA.describe(a))}</span><button data-alarmdel="${esc(g.key)}" data-i="${i}" class="text-stone-500 p-1" aria-label="Alarmı sil"><i data-lucide="x" class="w-4 h-4"></i></button></div>`).join("")}</div>`:""}`}
+function drawT(){
+  badgeBell();
+  const row=(g,extra)=>{const b=best(g);return`<div class="flex items-center gap-3 py-3">${img(g.image,"w-11 h-11 shrink-0")}
+    <div data-show="${esc(g.key)}" class="flex-1 min-w-0 cursor-pointer"><p class="text-sm font-bold leading-snug line-clamp-2">${esc(g.name)}</p>${extra||""}</div>
+    <span class="price tabular text-base shrink-0">${b?tl(b.price):"—"}</span></div>`};
+  const favs=FAV.map(f=>({f,g:GI[f.key]})).filter(x=>x.g);
+  const alarms=Object.keys(ALARMS).filter(k=>GI[k]&&ALARMS[k].length);
+  const perm="Notification" in window?Notification.permission:"unsupported";
+  $("track").innerHTML=`<h1 class="page-title">Takip</h1><p class="text-sm text-stone-600 mt-1">Favorilerin, fiyat alarmların ve bildirimlerin. Hepsi yalnızca bu telefonda saklanır.</p>
+  <section class="${card} p-4 mt-4"><div class="flex items-center justify-between"><h2 class="font-extrabold flex items-center gap-2"><i data-lucide="bell" class="w-5 h-5 text-emerald-700"></i>Bildirimler</h2>${INBOX.some(x=>!x.read)?`<button data-readall class="text-xs font-bold text-emerald-800 underline">Tümünü okundu say</button>`:""}</div>
+    ${INBOX.length?`<div class="mt-1 ${div}">${INBOX.slice(0,30).map(x=>`<div data-show="${esc(x.key)}" class="py-2.5 cursor-pointer ${x.read?"opacity-70":""}"><p class="text-[13px] ${x.read?"":"font-bold"}">${esc(x.text)}</p><p class="text-[11px] text-stone-500">${new Date(x.ts).toLocaleString("tr-TR",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})}</p></div>`).join("")}</div>`:`<p class="text-sm text-stone-500 mt-1">Henüz bildirim yok. Bir ürünün sayfasından fiyat alarmı kurabilirsin.</p>`}
+    ${perm==="default"?`<button data-notifperm class="mt-3 w-full rounded-xl ring-1 ring-emerald-700 text-emerald-800 font-bold py-2.5">Telefon bildirimlerine izin ver</button><p class="text-[11px] text-stone-500 mt-1">Bildirim, uygulama açıldığında yeni bir alarm tetiklenirse gelir. Uygulama kapalıyken fiyat denetlemek sunucu gerektirir; bu uygulama sunucusuz çalışır.</p>`:perm==="denied"?`<p class="text-[11px] text-stone-500 mt-2">Telefon bildirimleri tarayıcı ayarlarından kapalı; bildirimler yalnızca bu sayfada görünür.</p>`:""}</section>
+  <section class="${card} p-4 mt-3"><h2 class="font-extrabold flex items-center gap-2"><i data-lucide="heart" class="w-5 h-5 text-rose-600"></i>Favoriler <span class="text-stone-500 font-bold">${favs.length}</span></h2>
+    ${favs.length?`<div class="${div}">${favs.map(({f,g})=>{const b=best(g),d=b&&f.price?b.price-f.price:0;return row(g,`<p class="text-[11px] mt-0.5 ${d<-0.005?good+" font-bold":d>0.005?"text-red-700 font-bold":"text-stone-500"}">${b?(Math.abs(d)<0.005?"Eklediğinden beri değişmedi":`Eklediğinden beri ${d<0?"":"+"}${tl(d)}`):"Şu an satışta değil"} · ${b?M[b.market].n:""}</p>`)}).join("")}</div>`:`<p class="text-sm text-stone-500 mt-1">Ürün sayfasındaki kalp düğmesiyle ekle.</p>`}</section>
+  <section class="${card} p-4 mt-3"><h2 class="font-extrabold flex items-center gap-2"><i data-lucide="bell-plus" class="w-5 h-5 text-emerald-700"></i>Fiyat alarmları <span class="text-stone-500 font-bold">${alarms.reduce((a,k)=>a+ALARMS[k].length,0)}</span></h2>
+    ${alarms.length?`<div class="${div}">${alarms.map(k=>row(GI[k],ALARMS[k].map(a=>`<p class="text-[11px] text-stone-600 mt-0.5">• ${esc(MFA.describe(a))}</p>`).join(""))).join("")}</div>`:`<p class="text-sm text-stone-500 mt-1">Ürün sayfasındaki “Fiyat alarmı” düğmesiyle kur.</p>`}</section>`;
+}
+
 // ---------- Akıllı sepet ----------
 function basketItems(list){return list.map(g=>{const q=qtyOf(g),av=avail(g);
   return{key:g.key,qty:q,fixed:FIX[g.key]&&av.some(o=>o.market===FIX[g.key])?FIX[g.key]:null,
@@ -812,14 +867,14 @@ async function shareList(){
   catch(e){open("https://wa.me/?text="+encodeURIComponent(text),"_blank")}}
 
 // ---------- Gezinme ----------
-const DRAW={home:drawH,compare:drawC,promos:drawK,browse:drawB,search:drawS,list:drawL,posters:drawP,camp:drawCamp};
+const DRAW={home:drawH,compare:drawC,promos:drawK,browse:drawB,search:drawS,list:drawL,posters:drawP,camp:drawCamp,track:drawT};
 function icons(){lucide.createIcons()}
 function redraw(){DRAW[view]();if(view!=="list")drawL();icons()}
 const NB="flex flex-col items-center gap-0.5 py-2 rounded-2xl text-[11px] font-bold relative transition active:scale-90 ";
 const NT="flex items-center gap-2 px-3.5 py-1.5 rounded-full text-sm font-bold transition ";
 // ---------- Adres (yenileme ve geri tuşu için) ----------
 // #urun/<id>, #ara/<sorgu>, #kesfet, #kampanya, #karsilastir, #listem; ana sayfa: adres eki yok
-const HV={home:"",compare:"karsilastir",promos:"kampanya",browse:"kesfet",search:"ara",list:"listem",posters:"afisler"};
+const HV={home:"",compare:"karsilastir",promos:"kampanya",browse:"kesfet",search:"ara",list:"listem",posters:"afisler",track:"takip"};
 let routing=false;
 function hashOf(){
   if(view==="search"){if(only)return"#urun/"+encodeURIComponent(only);const q=$("q").value.trim();return q?"#ara/"+encodeURIComponent(q):"#ara"}
@@ -891,6 +946,15 @@ addEventListener("keydown",e=>{if(VIEW_I<0)return;if(e.key==="Escape")closeViewe
 addEventListener("popstate",()=>{if(VIEW_I>=0)closeViewer()});
 
 // ---------- Olaylar ----------
+document.addEventListener("submit",e=>{const f=e.target;if(!f.matches("[data-alarmform]"))return;e.preventDefault();
+  const g=GI[f.dataset.alarmform];if(!g)return;const type=f.type.value,raw=String(f.val.value).trim(),v=raw.includes(",")?parseFloat(raw.replace(/\./g,"").replace(",",".")):parseFloat(raw);const b=best(g);
+  const a={type,created:Date.now()};
+  if(type==="below"){if(!(v>0)){note("Hedef fiyatı yaz (ör. 49,90).");return}a.target=Math.round(v*100)/100}
+  if(type==="drop"){if(!(v>0&&v<100)){note("Düşüş oranını yaz (ör. 10).");return}if(!b){note("Ürün şu an satışta değil.");return}a.pct=Math.round(v);a.base=b.price}
+  // kurulduğu andaki durum bildirilmez (ör. zaten kampanyadaysa): yalnızca sonraki değişimler
+  if(b){const l=low30Of(g),r=MFA.evaluate(a,{price:b.price,promos:avail(g).filter(o=>o._promo&&o._promo.kind!=="bim").map(o=>`${M[o.market].n}: ${o.promo}`),low30:l.low,points30:l.n});if(r.sig)a.last=r.sig}
+  (ALARMS[g.key]=ALARMS[g.key]||[]).push(a);save("alarms",ALARMS);
+  note("Alarm kuruldu: "+MFA.describe(a)+(a.last&&a.type!=="promo"?" · Şu an zaten bu koşulda; sonraki düşüşte haber verilir.":a.last?" · Şu an kampanya var; yeni kampanyada haber verilir.":""));redraw()});
 document.addEventListener("submit",e=>{if(!e.target.matches("[data-noteform]"))return;e.preventDefault();
   const v=($("noteIn").value||"").trim().slice(0,60);if(!v)return;NOTES.push({t:v,d:0});save("notes",NOTES);redraw();setTimeout(()=>{const i=$("noteIn");if(i)i.focus()},50)});
 document.addEventListener("click",e=>{const t=s=>e.target.closest(s);let el;
@@ -901,6 +965,11 @@ document.addEventListener("click",e=>{const t=s=>e.target.closest(s);let el;
   else if(el=t("[data-dec]")){const g=GI[el.dataset.dec];if(g){const q=qtyOf(g);if(q>1)QTY[g.key]=q-1;else{delete QTY[g.key];cart=cart.filter(x=>GI[x]!==g);save("cart",cart)}save("qty",QTY);redraw()}}
   else if(el=t("[data-camp]")){openCamp(el.dataset.camp)}
   else if(t("[data-share]")){shareList()}
+  else if(el=t("[data-fav]")){const g=GI[el.dataset.fav];if(g){if(isFav(g))FAV=FAV.filter(f=>f.key!==g.key);else{const b=best(g);FAV.unshift({key:g.key,price:b?b.price:0,at:Date.now()})}save("fav",FAV);redraw()}}
+  else if(t("[data-alarmopen]")){const f=document.querySelector("[data-alarmform]");if(f)f.classList.toggle("hidden")}
+  else if(el=t("[data-alarmdel]")){const k=el.dataset.alarmdel;(ALARMS[k]||[]).splice(+el.dataset.i,1);if(ALARMS[k]&&!ALARMS[k].length)delete ALARMS[k];save("alarms",ALARMS);redraw()}
+  else if(t("[data-readall]")){INBOX.forEach(x=>x.read=true);save("inbox",INBOX);redraw()}
+  else if(t("[data-notifperm]")){try{Notification.requestPermission().then(()=>redraw())}catch(e){}}
   else if(el=t("[data-plan]")){const [mode,arg]=el.dataset.plan.split(":");PLAN={mode,k:mode==="limit"?+arg:PLAN.k,market:mode==="single"?arg:""};save("plan",PLAN);redraw()}
   else if(el=t("[data-fix]")){const k=el.dataset.fix,m=el.dataset.m;if(m)FIX[k]=m;else delete FIX[k];save("fix",FIX);redraw()}
   else if(t("[data-bsave]")){const name=(prompt("Sepete bir ad ver:",`Sepet ${new Date().toLocaleDateString("tr-TR",{day:"numeric",month:"short"})}`)||"").trim().slice(0,40);
@@ -1024,5 +1093,6 @@ Promise.all([loadRows(statusP),statusP,get("data/price-checks.json"),postersP]).
   const byLabel={};O.forEach(o=>{if(o.market==="bim"&&o.promo)(byLabel[o.promo]=byLabel[o.promo]||[]).push(o.id)});
   POST.forEach(it=>{if(it.market==="bim")it.ids=byLabel[`${it.group} · ${it.label}`]||[]});
   redraw();
+  badgeBell();setTimeout(checkAlarms,800);
   WARM=false;warmUp(O,()=>{ensureCMP();if(view==="home"){drawHCmp(O.filter(usable));icons()}});
 }).catch(e=>{note("Fiyat verisi yüklenemedi: "+e.message)});
