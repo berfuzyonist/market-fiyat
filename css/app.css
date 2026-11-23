@@ -176,3 +176,8 @@ button,a,[data-show],[data-add]{cursor:pointer;-webkit-tap-highlight-color:trans
   #printArea .pc-notes .pc-box{display:inline-block;width:4mm;height:4mm;border:1.5px solid #57534e;border-radius:1mm;font-size:8pt;line-height:4mm;text-align:center}
   #printArea footer{margin-top:14px;font-size:8.5pt;color:#78716c;border-top:1px solid #e7e5e4;padding-top:6px}
 }
+
+/* Erişilebilirlik (WCAG AA 4.5:1): açık zeminde ikincil metin tonları koyulaştırıldı. Koyu tema sınıfları (dark:) etkilenmez. */
+html .text-stone-500{color:#6b645e}
+html .text-stone-400{color:#78716c}
+.shelf:focus-visible,.banner:focus-visible{outline:3px solid #059669;outline-offset:2px;border-radius:1rem}
