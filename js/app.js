@@ -271,9 +271,10 @@ function groupSok(list){
 // Birden çok görselli kampanyada kapak: ilk dört görselden kolaj
 const coverImg=(it,cls)=>it.collage
   ?`<div class="grid grid-cols-2 gap-px bg-stone-200 w-full h-full">${it.images.slice(0,4).map(u=>`<img src="${esc(u)}" alt="" loading="lazy" class="w-full h-full object-cover" onerror="this.style.visibility='hidden'">`).join("")}</div>`
-  :`<img src="${esc(it.thumb||it.image)}" alt="${esc(it.title)}" loading="lazy" class="${cls}" onerror="this.closest('button').remove()">`;
+  :`<img src="${esc(it.thumb||it.image)}" alt="" ${EAGER>0&&EAGER--?'fetchpriority="high"':'loading="lazy"'} class="${cls}" onerror="this.closest('button').remove()">`;
 const isCamp=it=>it&&Array.isArray(it.ids)&&it.ids.some(id=>OI[id]);
 const campKey=it=>it.slug||it.id;
+let EAGER=0; // ana sayfa rafındaki ilk görseller tembel yüklenmez (ilk ekranın en büyük görseli)
 function posterCard(it,i,cls=""){
   const w=posterState(it),soon=w&&w.state==="soon",old=w&&(w.state==="old"||w.state==="expired"),wide=it.market==="migros";
   // Migros görselleri yatay (yaklaşık 4:1): ızgarada iki sütun, rafta geniş kart
@@ -374,13 +375,9 @@ function startSlides(){
   el.onmouseleave=()=>{if(!slideT)startSlides()};
   if(n>1&&!matchMedia("(prefers-reduced-motion: reduce)").matches)slideT=setInterval(()=>{if(view!=="home")return;el.scrollTo({left:((slideI+1)%n)*el.clientWidth,behavior:"smooth"})},5000);
 }
-function drawH(){
-  if(!O.length)return; // veri gelene kadar iskelet kartlar kalır
-  const st=O.filter(usable);
-  const sl=slides(st);$("banner").innerHTML=sl.join("")||`<div class="slide s-green"><h3>Market Fiyat</h3></div>`;slideI=0;$("banner").scrollLeft=0;startSlides();
-  $("cats").innerHTML=GROUPS.map(([k,l,ic,bg,fg])=>`<button data-grp="${k}" class="cat"><span class="ic" style="background:${bg};color:${fg}"><i data-lucide="${ic}" class="w-7 h-7"></i></span>${l}</button>`).join("");
-  $("deals").innerHTML=st.filter(o=>disc(o)>0).sort((a,b)=>disc(b)-disc(a)).slice(0,20).map((o,i)=>pcard(o,{strip:1,i})).join("")||`<p class="text-sm text-stone-500">Şu an indirim görünmüyor.</p>`;
-  // Rafta marketler sırayla karışık: BİM afişi, Migros kampanyası, Şok kampanyası…
+// Ana sayfa afiş rafı: fiyat verisini beklemeden afiş dosyaları gelince çizilir (ilk görünen büyük görsel)
+function drawPostShelf(){
+  EAGER=3;  // Rafta marketler sırayla karışık: BİM afişi, Migros kampanyası, Şok kampanyası…
   const live=sortedPosters(),by={};
   live.forEach(it=>(by[it.market]=by[it.market]||[]).push(it));
   // Her turda: bir BİM afişi, alt alta iki Migros kampanyası (dikey afişle aynı boyda), bir Şok kampanyası
@@ -390,6 +387,15 @@ function drawH(){
   $("hPost").innerHTML=cols.map((c,j)=>per[c[0].market]
     ?`<div class="${c[0].market==="migros"?"w-64":"w-44"} shrink-0 flex flex-col gap-2.5" style="--i:${j}">${c.map(it=>campMini(it)).join("")}</div>`
     :posterCard(c[0],POST.indexOf(c[0]),"w-40 shrink-0")).join("")+POSTER_LINKS.map(l=>linkCard(l,"w-44 shrink-0")).join("");
+  EAGER=0;
+}
+function drawH(){
+  if(!O.length)return; // veri gelene kadar iskelet kartlar kalır
+  const st=O.filter(usable);
+  const sl=slides(st);$("banner").innerHTML=sl.join("")||`<div class="slide s-green"><h3>Market Fiyat</h3></div>`;slideI=0;$("banner").scrollLeft=0;startSlides();
+  $("cats").innerHTML=GROUPS.map(([k,l,ic,bg,fg])=>`<button data-grp="${k}" class="cat"><span class="ic" style="background:${bg};color:${fg}"><i data-lucide="${ic}" class="w-7 h-7"></i></span>${l}</button>`).join("");
+  $("deals").innerHTML=st.filter(o=>disc(o)>0).sort((a,b)=>disc(b)-disc(a)).slice(0,20).map((o,i)=>pcard(o,{strip:1,i})).join("")||`<p class="text-sm text-stone-500">Şu an indirim görünmüyor.</p>`;
+  drawPostShelf();
   $("units").innerHTML=UNIT_Q.map(([q,l,ic])=>`<button data-uq="${esc(q)}" class="uchip"><i data-lucide="${ic}" class="w-4 h-4 text-emerald-600"></i>${l}</button>`).join("");
   $("stores").innerHTML=DATA_M.filter(m=>O.some(o=>o.market===m)).map(m=>{const n=st.filter(o=>o.market===m),d=n.filter(o=>disc(o)>0).length,s=CHECK[m],failed=s&&s.status!=="tamam"&&!s.partial,part=s&&s.partial;
     return`<button data-bm="${m}" data-open="1" class="store st-${m}"><span class="font-display font-extrabold text-lg lg:text-2xl">${M[m].n}</span>
@@ -904,7 +910,11 @@ if("serviceWorker" in navigator&&location.protocol==="https:")navigator.serviceW
 const offNote=()=>note("İnternet bağlantısı yok: son kaydedilen fiyatlar gösteriliyor. Listen bu telefonda kayıtlı.");
 addEventListener("offline",offNote);if(navigator.onLine===false)setTimeout(offNote,1500);
 route(); // açılışta adresteki sayfaya git (yenilemede aynı ürün açık kalır)
-Promise.all([Promise.all(DATA_M.map(m=>get(`data/${m}.json`))),Promise.all(DATA_M.map(m=>get(`data/status-${m}.json`))),get("data/price-checks.json"),Promise.all(["bim","migros","sok"].map(m=>get(`data/posters-${m}.json`)))]).then(([files,statuses,checks,posters])=>{
+// Afiş dosyaları küçük: fiyat verisini beklemeden gelir gelmez rafa çizilir (ilk ekranın en büyük görseli).
+const postersP=Promise.all(["bim","migros","sok"].map(m=>get(`data/posters-${m}.json`)));
+postersP.then(posters=>{if(O.length)return;POST=groupBim(groupSok(posters.flatMap(p=>(p&&Array.isArray(p.items)?p.items:[]).filter(it=>it&&/^https:\/\//.test(it.image||"")))));
+  if(view==="home"){drawPostShelf();icons()}else if(view==="posters")redraw()}).catch(()=>{});
+Promise.all([Promise.all(DATA_M.map(m=>get(`data/${m}.json`))),Promise.all(DATA_M.map(m=>get(`data/status-${m}.json`))),get("data/price-checks.json"),postersP]).then(([files,statuses,checks,posters])=>{
   POST=groupBim(groupSok(posters.flatMap(p=>(p&&Array.isArray(p.items)?p.items:[]).filter(it=>it&&/^https:\/\//.test(it.image||"")))));
   // Migros kampanya listelerindeki ürünler: katalogda yoksa eklenir, liste daha yeni okunduysa fiyatı günceller
   const campRows=MFC.rowsOf(posters[1]);
