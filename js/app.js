@@ -914,6 +914,7 @@ function drawT(){
   const alarms=Object.keys(ALARMS).filter(k=>GI[k]&&ALARMS[k].length);
   const perm="Notification" in window?Notification.permission:"unsupported";
   $("track").innerHTML=`<h1 class="page-title">Takip</h1><p class="text-sm text-stone-600 mt-1">Favorilerin, fiyat alarmların ve bildirimlerin. Hepsi yalnızca bu telefonda saklanır.</p>
+  <div class="flex items-center gap-2 mt-3 overflow-x-auto noscroll" role="radiogroup" aria-label="Görünüm"><span class="text-sm font-bold shrink-0">Görünüm</span>${[["sistem","Telefona göre"],["acik","Açık"],["koyu","Koyu"]].map(([k,l])=>`<button data-theme="${k}" role="radio" aria-checked="${MFTheme.pref()===k}" class="chipx !py-2 !px-3 shrink-0 ${MFTheme.pref()===k?"bg-emerald-700 text-white":"bg-white ring-1 ring-stone-300 text-stone-800"}">${l}</button>`).join("")}</div>
   <section class="${card} p-4 mt-4"><div class="flex items-center justify-between"><h2 class="font-extrabold flex items-center gap-2"><i data-lucide="bell" class="w-5 h-5 text-emerald-700"></i>Bildirimler</h2>${INBOX.some(x=>!x.read)?`<button data-readall class="text-xs font-bold text-emerald-800 underline">Tümünü okundu say</button>`:""}</div>
     ${INBOX.length?`<div class="mt-1 ${div}">${INBOX.slice(0,30).map(x=>`<div data-show="${esc(x.key)}" class="py-2.5 cursor-pointer ${x.read?"opacity-70":""}"><p class="text-[13px] ${x.read?"":"font-bold"}">${esc(x.text)}</p><p class="text-[11px] text-stone-500">${new Date(x.ts).toLocaleString("tr-TR",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})}</p></div>`).join("")}</div>`:`<p class="text-sm text-stone-500 mt-1">Henüz bildirim yok. Bir ürünün sayfasından fiyat alarmı kurabilirsin.</p>`}
     ${perm==="default"?`<button data-notifperm class="mt-3 w-full rounded-xl ring-1 ring-emerald-700 text-emerald-800 font-bold py-2.5">Telefon bildirimlerine izin ver</button><p class="text-[11px] text-stone-500 mt-1">Bildirim, uygulama açıldığında yeni bir alarm tetiklenirse gelir. Uygulama kapalıyken fiyat denetlemek sunucu gerektirir; bu uygulama sunucusuz çalışır.</p>`:perm==="denied"?`<p class="text-[11px] text-stone-500 mt-2">Telefon bildirimleri tarayıcı ayarlarından kapalı; bildirimler yalnızca bu sayfada görünür.</p>`:""}</section>
@@ -1182,6 +1183,7 @@ document.addEventListener("click",e=>{const t=s=>e.target.closest(s);let el;
   else if(el=t("[data-go]")){Object.assign(B,{m:"",grp:"",cat:"",disc:true,sort:"disc",page:0});go("browse")}
   else if(el=t("[data-bm]")){B.m=el.dataset.bm;B.page=0;if(el.dataset.open){Object.assign(B,{grp:"",cat:"",disc:false,sort:"disc"});go("browse")}else redraw()}
   else if(t("#reload"))location.reload();
+  else if(el=t("[data-theme]")){MFTheme.set(el.dataset.theme);redraw()}
   else if(el=t("[data-copyname]")){try{navigator.clipboard.writeText(el.dataset.copyname)}catch(e){}}
   else if(el=t("[data-buddel]")){BUD.spends=BUD.spends.filter(x=>x.t!==+el.dataset.buddel);save("budget",BUD);redraw()}
   else if(el=t("[data-view]")){if(el.dataset.view==="search"){only=null}go(el.dataset.view);if(el.dataset.focus)(innerWidth>=768?$("qd"):$("q")).focus()}});

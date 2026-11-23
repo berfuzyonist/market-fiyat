@@ -1,5 +1,5 @@
 /* Market Fiyat — market sitesi görünümü. Renkler: yeşil (güven/ana), turuncu (fırsat), mor (kampanya). */
-:root{color-scheme:light;--g:#059669;--g2:#047857;--o:#f97316;--ease:cubic-bezier(.2,.8,.2,1);--spring:cubic-bezier(.34,1.56,.64,1)}
+:root{--g:#059669;--g2:#047857;--o:#f97316;--ease:cubic-bezier(.2,.8,.2,1);--spring:cubic-bezier(.34,1.56,.64,1)}
 .font-display,h1,h2,.page-title{font-family:Rubik,system-ui,sans-serif}
 .tabular{font-variant-numeric:tabular-nums}
 .noscroll{scrollbar-width:none}.noscroll::-webkit-scrollbar{display:none}
@@ -181,3 +181,30 @@ button,a,[data-show],[data-add]{cursor:pointer;-webkit-tap-highlight-color:trans
 html .text-stone-500{color:#6b645e}
 html .text-stone-400{color:#78716c}
 .shelf:focus-visible,.banner:focus-visible{outline:3px solid #059669;outline-offset:2px;border-radius:1rem}
+
+/* ---------- Koyu tema: açık renk yardımcı sınıfların koyu karşılıkları (dark: yazılmamış yerler için) ---------- */
+html.dark{--g:#10b981;--g2:#34d399}
+.dark .topbar{background:linear-gradient(120deg,#064e3b,#065f46 55%,#134e4a)}
+.dark .search,.dark .cart-btn,.dark .logo-mark{background:#1c1917;color:#e7e5e4}
+.dark .see-all{background:#064e3b;color:#6ee7b7}.dark .see-all:hover{background:#065f46}
+.dark .pc .ph,.dark .slide .imgs img,.dark .fly{background:#fafaf9}
+.dark .add.in{background:#1c1917}
+.dark .buybar{background:rgb(28 25 23/.94);border-color:#292524}
+.dark .dot{background:#57534e}
+.dark .bg-white{background-color:#1c1917}
+.dark .bg-stone-50,.dark .bg-stone-100{background-color:#292524}
+.dark .bg-stone-200{background-color:#3a3532}
+.dark .bg-\[\#f3f6f4\]{background-color:#0c0a09}
+.dark .text-stone-900,.dark .text-stone-800{color:#f5f5f4}
+.dark .text-stone-700{color:#e7e5e4}
+html.dark .text-stone-600,html.dark .text-stone-500{color:#c8c2bd}
+html.dark .text-stone-400{color:#a8a29e}
+.dark .border-stone-200,.dark .border-stone-100,.dark .divide-stone-100>*+*,.dark .divide-stone-200>*+*{border-color:#292524}
+.dark .ring-stone-200,.dark .ring-stone-300{--tw-ring-color:#44403c}
+.dark .bg-emerald-50,.dark .bg-emerald-100{background-color:#064e3b}.dark .text-emerald-800,.dark .text-emerald-700{color:#6ee7b7}
+.dark .bg-amber-100,.dark .bg-amber-50{background-color:#451a03}.dark .text-amber-900,.dark .text-amber-800{color:#fcd34d}
+.dark .bg-red-100,.dark .bg-red-50{background-color:#450a0a}.dark .text-red-800,.dark .text-red-700{color:#fca5a5}
+.dark .bg-violet-100,.dark .bg-violet-50{background-color:#2e1065}.dark .text-violet-800,.dark .text-violet-700{color:#c4b5fd}
+.dark .bg-sky-100,.dark .bg-sky-50{background-color:#082f49}.dark .text-sky-800{color:#7dd3fc}
+.dark input,.dark select,.dark textarea{color:#f5f5f4}
+.dark input::placeholder{color:#8a837d}
