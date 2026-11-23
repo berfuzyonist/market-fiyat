@@ -195,6 +195,10 @@ function buildCompare(){
     const lo=rows.reduce((a,r)=>r.val<a.val?r:a),hi=rows.reduce((a,r)=>r.val>a.val?r:a);
     return{title:s.name,image:lo.o.image,key:GI[lo.o.id].key,rows,win:lo.o,diff:hi.val-lo.val,pct:(hi.val-lo.val)/hi.val,n:rows.length,unit:true,staple:true}});
 }
+// Eşleştirme güveni rozeti (MF.confidence): "orta" eşleşmede kullanıcı adları kontrol etmeye çağrılır
+const CONF_L={yuksek:["Eşleşme kesin","bg-emerald-100 text-emerald-800"],iyi:["Eşleşme güçlü","bg-sky-100 text-sky-800"],orta:["Benzer ürün: adları kontrol et","bg-amber-100 text-amber-900"]};
+function confChip(g){const c=MF.confidence(g);if(!c)return"";const[l,cls]=CONF_L[c.level];
+  return`<span class="chipx ${cls}" title="${esc(c.why)}">${c.level==="orta"?'<i data-lucide="triangle-alert" class="w-3 h-3"></i>':""}${l}</span>`}
 function cmpCard(it){
   const max=Math.max(...it.rows.map(r=>r.val)),g=GI[it.win.id],inC=g&&inCart(g);
   const head=it.diff<0.005?`<span class="text-stone-500">Fiyatlar aynı</span>`
@@ -202,7 +206,7 @@ function cmpCard(it){
     :`<span class="${good} font-bold">${M[it.win.market].at}</span> <b>${tl(it.diff)}</b> daha ucuz (${pct(it.pct)})`;
   return`<article class="${card} p-4 min-w-0">
   <div class="flex gap-3 items-center">${img(it.image,"w-16 h-16 shrink-0")}
-    <div class="min-w-0"><h3 class="font-bold leading-snug">${esc(it.title)}</h3><p class="text-sm mt-0.5">${head}</p></div></div>
+    <div class="min-w-0"><h3 class="font-bold leading-snug">${esc(it.title)}</h3><p class="text-sm mt-0.5">${head}</p>${!it.unit&&GI[it.win.id]&&(MF.confidence(GI[it.win.id])||{}).level==="orta"?`<p class="mt-1">${confChip(GI[it.win.id])}</p>`:""}</div></div>
   <div class="mt-3 space-y-1.5">${it.rows.map(r=>{const w=r.o===it.win&&it.diff>=0.005;
     return`<div data-show="${esc(GI[r.o.id].key)}" class="relative rounded-xl px-2.5 py-2 cursor-pointer ${w?"ring-1 ring-emerald-500/60":""}">
       <span class="bar" style="width:${Math.max(6,r.val/max*100)}%;background:${w?"#10b981":"#a8a29e"}"></span>
@@ -643,7 +647,7 @@ function productPage(g){
     <div>
       <h1 class="font-display font-extrabold text-2xl lg:text-3xl leading-tight tracking-tight">${esc(g.name)}</h1>
       ${favBtns(g)}
-      <div class="flex flex-wrap gap-1.5 mt-2">${av.length>1?`<span class="chipx bg-emerald-100 text-emerald-800">${av.length} markette var</span>`:""}${u?`<span class="chipx bg-stone-200 text-stone-700 tabular">${tl(u.v)}/${u.u}</span>`:""}</div>
+      <div class="flex flex-wrap gap-1.5 mt-2">${av.length>1?`<span class="chipx bg-emerald-100 text-emerald-800">${av.length} markette var</span>`:""}${confChip(g)}${u?`<span class="chipx bg-stone-200 text-stone-700 tabular">${tl(u.v)}/${u.u}</span>`:""}</div>
       ${b?`<div class="mt-4 rounded-[20px] p-4 text-white relative overflow-hidden" style="background:linear-gradient(135deg,#047857,#059669)">
         <p class="text-xs font-extrabold uppercase tracking-wider text-emerald-100 flex items-center gap-1"><i data-lucide="trophy" class="w-4 h-4"></i>En ucuz ${M[b.market].at}</p>
         <p class="font-display font-extrabold text-4xl tabular mt-1">${tl(b.price)}</p>
