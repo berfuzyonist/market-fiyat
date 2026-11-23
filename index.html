@@ -11,8 +11,8 @@
 <link rel="preload" href="fonts/rubik-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="css/fonts.css?v=3f182d7cc5">
 <link rel="stylesheet" href="css/app.css?v=a487e33b6c">
-<link rel="stylesheet" href="css/tw.css?v=0c359bc9fd">
-<script src="js/icons.js?v=0893c6641d"></script>
+<link rel="stylesheet" href="css/tw.css?v=5aee86e6ab">
+<script src="js/icons.js?v=4becd3af9d"></script>
 </head>
 <body class="bg-[#f3f6f4] text-stone-900 font-sans antialiased">
 
@@ -29,6 +29,7 @@
         <input id="qd" class="flex-1 min-w-0 bg-transparent outline-none" placeholder="Ürün, marka ya da barkod ara" enterkeyhint="search" aria-label="Ara">
       </label>
       <span class="ml-auto md:ml-0 hidden sm:flex items-center gap-1.5 text-xs text-emerald-50/90"><span class="live-dot"></span><span id="upd">-</span></span>
+      <button data-view="track" data-plain="1" id="bellBtn" class="icon-btn relative" aria-label="Takip ve bildirimler"><i data-lucide="bell" class="w-5 h-5"></i><span id="nb" class="cart-count" style="display:none"></span></button>
       <button id="scan" class="icon-btn" aria-label="Barkod okut"><i data-lucide="scan-barcode" class="w-5 h-5"></i></button>
       <button data-view="list" data-plain="1" id="cartBtn" class="cart-btn" aria-label="Alışveriş listem">
         <i data-lucide="shopping-cart" class="w-5 h-5"></i><span class="hidden lg:inline font-bold">Listem</span>
@@ -175,6 +176,9 @@
     <div id="campMore" class="flex justify-center mt-4"></div>
   </div>
 
+  <!-- Takip: bildirimler, favoriler, fiyat alarmları -->
+  <div id="track" class="hidden"></div>
+
   <!-- Listem -->
   <div id="list" class="hidden grid grid-cols-1 gap-3 lg:grid-cols-2 items-start"></div>
 
@@ -211,6 +215,7 @@
 </nav>
 <script src="js/match.js?v=7d0051dd1d"></script>
 <script src="js/core.js?v=84f5dd6cb0"></script>
+<script src="js/alerts.js?v=62fda50535"></script>
 <script src="js/basket.js?v=460949c3d5"></script>
-<script src="js/app.js?v=e8715f0964"></script>
+<script src="js/app.js?v=c229725d69"></script>
 </body></html>
