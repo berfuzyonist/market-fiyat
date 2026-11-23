@@ -6,7 +6,7 @@
   function apply() {
     var p = pref(), dark = p === "koyu" || (p === "sistem" && mq && mq.matches), r = document.documentElement;
     r.classList.toggle("dark", !!dark); r.style.colorScheme = dark ? "dark" : "light";
-    var m = document.querySelector('meta[name="theme-color"]'); if (m) m.setAttribute("content", dark ? "#0c0a09" : "#047857");
+    var m = document.querySelector('meta[name="theme-color"]'); if (m) m.setAttribute("content", dark ? "#000000" : "#f5f5f7");
   }
   apply(); if (mq && mq.addEventListener) mq.addEventListener("change", apply);
   window.MFTheme = { pref: pref, set: function (v) { try { localStorage.setItem("mf_theme", JSON.stringify(v)); } catch (e) {} apply(); } };

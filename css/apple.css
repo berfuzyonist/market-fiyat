@@ -1,0 +1,112 @@
+/* Apple tarzı görünüm katmanı (body.apple). En son yüklenir; yapı ve davranış aynı kalır, yalnızca görünüm değişir.
+   İlkeler: sade yüzeyler, bol boşluk, büyük ve sıkı başlıklar, buzlu cam çubuklar, yumuşak gölgeli yuvarlak
+   kartlar, tek vurgu rengi (yeşil); market renkleri yalnızca küçük rozetlerde. Metin renkleri WCAG AA. */
+.apple{--bg:#f5f5f7;--surface:#fff;--ink:#1d1d1f;--ink2:#515154;--ink3:#6e6e73;--line:rgb(0 0 0/.08);--fill:#e8e8ed;
+  --accent:#1a7f37;--accent2:#15692d;--fill-accent:#1a7f37;--accentSoft:#e3f4e8;--danger:#c4111b;--glass:rgb(255 255 255/.72);
+  --shadow:0 1px 2px rgb(0 0 0/.04),0 6px 20px -8px rgb(0 0 0/.12);--r:22px;
+  --g:var(--accent);--g2:var(--accent2);--o:#ff9500;
+  background:var(--bg)!important;color:var(--ink);font-feature-settings:"cv11","ss01";letter-spacing:-.011em;
+  -webkit-font-smoothing:antialiased}
+html.dark .apple{--bg:#000;--surface:#1c1c1e;--ink:#f5f5f7;--ink2:#d1d1d6;--ink3:#a1a1a6;--line:rgb(255 255 255/.1);--fill:#2c2c2e;
+  --accent:#30d158;--accent2:#30d158;--fill-accent:#1f7a34;--accentSoft:#0f2e19;--danger:#ff6961;--glass:rgb(28 28 30/.72);--shadow:0 0 0 1px rgb(255 255 255/.06)}
+
+/* Yazı: büyük, sıkı başlıklar; ağırlıklar Apple'daki gibi yarı kalın */
+.apple h1,.apple .page-title{font-weight:700;letter-spacing:-.028em}
+.apple .page-title{font-size:2rem;line-height:1.1}
+.apple h2,.apple .shelf-head h2{font-weight:700;letter-spacing:-.022em}
+.apple .shelf-head h2{font-size:1.3rem}
+.apple .shelf-head h2 svg{display:none}
+.apple .font-extrabold{font-weight:700}
+.apple .font-display.font-extrabold{font-weight:700;letter-spacing:-.025em}
+.apple .price{font-weight:700;letter-spacing:-.02em}
+.apple .text-stone-900,.apple .text-stone-800{color:var(--ink)}
+.apple .text-stone-700,.apple .text-stone-600{color:var(--ink2)}
+.apple .text-stone-500,.apple .text-stone-400{color:var(--ink3)}
+.apple .text-emerald-700,.apple .text-emerald-800,.apple .text-emerald-600{color:var(--accent)}
+.apple .text-red-600,.apple .text-red-700{color:var(--danger)}
+
+/* Üst çubuk: buzlu cam, koyu metin */
+.apple .topbar{background:var(--glass);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
+  color:var(--ink);box-shadow:0 1px 0 var(--line)}
+.apple .logo-mark{background:var(--fill-accent);color:#fff;box-shadow:none;border-radius:10px;width:32px;height:32px}
+.apple .brand-accent{color:var(--accent)}
+.apple .icon-btn{background:transparent;color:var(--ink)}
+.apple .icon-btn:hover{background:var(--fill)}
+.apple .cart-btn{background:var(--ink);color:var(--surface);border-radius:999px;box-shadow:none}
+html.dark .apple .cart-btn{background:#f5f5f7;color:#000}
+.apple .search{background:var(--fill);color:var(--ink);box-shadow:none;border-radius:12px;padding:.55rem .8rem}
+.apple .search svg{color:var(--ink3)}
+.apple .search:focus-within{box-shadow:0 0 0 3px rgb(26 127 55/.25)}
+.apple .search input::placeholder{color:var(--ink3)}
+.apple .topbar [data-view="status"]{color:var(--ink3)}
+.apple .live-dot{background:#34c759;box-shadow:none}
+.apple .topbar nav{background:transparent!important;border-color:var(--line)!important}
+
+/* Kartlar: kenarlıksız, yumuşak gölge, büyük yarıçap */
+.apple .pc,.apple .rounded-\[20px\].border,.apple .filters,.apple .uchip{background:var(--surface);border:0;box-shadow:var(--shadow);border-radius:var(--r)}
+.apple .uchip{border-radius:999px}
+.apple .pc .ph{border-radius:16px;background:#fff}
+.apple .bg-white{background-color:var(--surface)}
+.apple .divide-stone-100>*+*,.apple .divide-stone-200>*+*,.apple .border-stone-200{border-color:var(--line)}
+@media(hover:hover){.apple .pc:hover{transform:translateY(-2px);box-shadow:0 2px 4px rgb(0 0 0/.04),0 16px 32px -12px rgb(0 0 0/.18);border-color:transparent}}
+.apple .disc-tag{background:#d70015;border-radius:8px;font-weight:700}
+.apple .promo-tag{background:#5e5ce6;font-weight:700}
+.apple .add{background:var(--fill-accent);border-radius:999px;box-shadow:none}
+.apple .add:hover{filter:brightness(.92)}
+.apple .add.in{background:var(--surface);color:var(--accent);box-shadow:inset 0 0 0 1.5px var(--accent)}
+.apple .see-all{background:transparent;color:var(--accent);padding:.3rem .2rem;font-weight:600}
+.apple .see-all:hover{background:transparent;text-decoration:underline}
+
+/* Öne çıkanlar: renkli degrade yerine sade, açık tonlu büyük kartlar */
+.apple .slide{color:var(--ink);box-shadow:var(--shadow);border-radius:26px}
+.apple .slide .slide-h{font-weight:700;letter-spacing:-.03em}
+.apple .slide .blob{display:none}
+.apple .s-red{background:linear-gradient(160deg,#fff 40%,#ffe9e6)}
+.apple .s-violet{background:linear-gradient(160deg,#fff 40%,#efeaff)}
+.apple .s-green{background:linear-gradient(160deg,#fff 40%,#e3f4e8)}
+.apple .s-blue{background:linear-gradient(160deg,#fff 40%,#e6f0ff)}
+.apple .s-amber{background:linear-gradient(160deg,#fff 40%,#fff3dc)}
+html.dark .apple .s-red,html.dark .apple .s-violet,html.dark .apple .s-green,html.dark .apple .s-blue,html.dark .apple .s-amber{background:var(--surface)}
+.apple .slide p{color:var(--ink2)}
+.apple .slide .opacity-90{opacity:1;color:var(--accent)}
+.apple .slide .cta{background:var(--ink);color:var(--surface);border-radius:999px;font-weight:600;box-shadow:none}
+html.dark .apple .slide .cta{background:#f5f5f7;color:#000}
+.apple .slide .imgs img{box-shadow:0 8px 20px -10px rgb(0 0 0/.25)}
+.apple .dot{background:#c7c7cc}.apple .dot.on{background:var(--ink)}
+
+/* Kategoriler: yuvarlak, nötr zemin */
+.apple .cat .ic{border-radius:999px;box-shadow:none}
+.apple .cat{font-weight:600;color:var(--ink2)}
+
+/* Market kartları: beyaz kart, renk yalnızca küçük işaret */
+.apple .store{background:var(--surface);color:var(--ink);box-shadow:var(--shadow);border-radius:var(--r)}
+.apple .store::after{display:none}
+.apple .store::before{content:"";position:absolute;top:.9rem;right:.9rem;width:10px;height:10px;border-radius:999px}
+.apple .st-sok::before{background:#eab308}.apple .st-migros::before{background:#f97316}.apple .st-bim::before{background:#dc2626}
+.apple .store .opacity-90,.apple .store .opacity-95{opacity:1;color:var(--ink3)}
+
+/* Birim fiyat kazananı ve vurgu kutuları: düz vurgu rengi */
+.apple .uwin{background:var(--fill-accent);border-radius:var(--r)}
+.apple .uwin::after{display:none}
+.apple [style*="linear-gradient(135deg,#047857,#059669)"]{background:var(--fill-accent)!important}
+
+/* Çipler ve rozetler: daha yumuşak */
+.apple .chipx{border-radius:999px;font-weight:600;padding:2px 8px}
+.apple .bg-emerald-600,.apple .bg-emerald-700{background-color:var(--fill-accent)}
+.apple .hover\:bg-emerald-700:hover{background-color:var(--fill-accent);filter:brightness(.92)}
+.apple .bg-emerald-50,.apple .bg-emerald-100{background-color:var(--accentSoft)}
+.apple .ring-emerald-500{--tw-ring-color:var(--accent)}
+
+/* Alt sekme çubuğu: iOS sekme çubuğu gibi; seçili sekmede yalnızca renk */
+.apple .bottom-nav{background:var(--glass);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
+  border:0;box-shadow:0 0 0 .5px var(--line),0 10px 30px -12px rgb(0 0 0/.25);border-radius:26px}
+.apple .bottom-nav button{background:transparent!important;color:var(--ink3);font-weight:600}
+.apple .bottom-nav button[class*="text-emerald-700"]{color:var(--accent)}
+.apple .buybar{background:var(--glass);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-color:var(--line)}
+.apple .sel{background:var(--fill)}
+
+/* Geçişler: iOS benzeri yumuşak yay */
+.apple .enter{animation-timing-function:cubic-bezier(.32,.72,0,1)}
+@media(prefers-reduced-motion:reduce){.apple *{animation:none!important;transition:none!important}}
+.apple [style*="linear-gradient(135deg,#047857,#0d9488)"]{background:var(--fill-accent)!important}
+.apple [style*="linear-gradient(135deg,#047857"] .bg-white\/10,.apple [style*="linear-gradient(135deg,#047857"]>span.rounded-full{display:none}
