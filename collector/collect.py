@@ -213,6 +213,14 @@ def migros(products, notes):
         return info
 
     def remember_categories(info):
+        # Sayfanın "Kategoriler" süzgecindeki alt kategoriler de kapsanmış sayılır (ürünü görülmese bile
+        # üst kategorinin taramasında okunurlar); site haritası keşfinde boşuna ziyaret edilmezler.
+        for group in (info or {}).get("aggregationGroups") or []:
+            if isinstance(group, dict) and group.get("type") == "CATEGORY":
+                for agg in group.get("aggregationInfos") or []:
+                    name = isinstance(agg, dict) and (agg.get("prettyName") or agg.get("label"))
+                    if name:
+                        covered_names.add(_category_key(name))
         for p in (info or {}).get("storeProductInfos") or []:
             categories = [p.get("category") or {}] + (p.get("categoryAscendants") or [])
             for category in categories:
@@ -271,12 +279,13 @@ def migros(products, notes):
             page += 1
 
     def visit(slug):
+        """Kategoriyi ziyaret eder; yeni bir üst kategori bulunup tarandıysa True döner."""
         if slug in visited_slugs:
-            return
+            return False
         base_slug = slug.rsplit("-c-", 1)[0] if "-c-" in slug else slug
         if "-c-" in slug and _category_key(base_slug) in covered_names:
             visited_slugs.add(slug)
-            return
+            return False
         visited_slugs.add(slug)
         info = page_of(slug, 1)
         if not info:
@@ -288,6 +297,8 @@ def migros(products, notes):
             if top_key not in crawled:
                 crawled.add(top_key)
                 crawl(top)
+                return True
+        return False
 
     for cid in c["seed_ids"]:  # bilinen üst kategori numaraları
         visit(f"x-c-{cid}")
@@ -298,22 +309,32 @@ def migros(products, notes):
         raise Stop(f"Migros kategori sitemap isteği başarısız: HTTP {status}")
     slugs = [urllib.parse.unquote(urllib.parse.urlsplit(html.unescape(u)).path.rstrip("/").rsplit("/", 1)[-1])
              for u in re.findall(r"<loc>(.*?)</loc>", body) if "-c-" in u]
-    extra, gone = 0, []
-    for slug in slugs:
+    # Keşif doygunluğu: art arda bu kadar site haritası kategorisi yeni bir üst kategori çıkarmazsa
+    # kalanlar da zaten taranmış üst kategorilerin alt kategorileridir; tek tek ziyaret edilmez
+    # (her biri bir istek; 1500 ziyaret ~75 dakika ve markete gereksiz yük). Tamlık ayrıca okunan
+    # ürün oranıyla denetlenir (full_min_product_ratio).
+    saturation = int(c.get("discovery_saturation", 300))
+    extra, gone, since_new = 0, [], 0
+    for i, slug in enumerate(slugs):
         base_slug = slug.rsplit("-c-", 1)[0]
         if _category_key(base_slug) in covered_names or slug in visited_slugs:
             continue
+        if since_new >= saturation:
+            rest = sum(1 for s2 in slugs[i:] if _category_key(s2.rsplit("-c-", 1)[0]) not in covered_names and s2 not in visited_slugs)
+            notes.append(f"kategori keşfi doygun: son {since_new} site haritası kategorisi yeni üst kategori çıkarmadı; kalan {rest} kategori ziyaret edilmedi")
+            break
         if extra >= c["max_discovery"]:
             raise Stop(f"kategori keşfi sınırı ({c['max_discovery']}) doldu; tam tarama doğrulanamadı")
         extra += 1
         try:
-            visit(slug)
+            since_new = 0 if visit(slug) else since_new + 1
         except NotFound:
             # Site haritasında kalmış ama kaldırılmış kategori (ör. powerbank-c-12090).
             # Ürünleri başka kategoride zaten taranıyor; tüm gece taramasını düşürmez.
             # Taramanın güvenilirliğini okunan ürün oranı belirler (main: full_min_product_ratio);
             # yalnızca keşif denemelerinin yarısından fazlası 404 ise site düzeni değişmiş demektir.
             gone.append(slug)
+            since_new += 1
             if len(gone) > 50 and len(gone) > 0.5 * extra:
                 raise Stop(f"site haritası kategorilerinin çoğu 404 döndü ({len(gone)}/{extra}); site düzeni değişmiş olabilir")
     if gone:

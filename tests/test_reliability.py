@@ -168,6 +168,32 @@ class MigrosTests(unittest.TestCase):
         self.assertIn("migros:1", products)
         self.assertTrue(any("powerbank-c-12090" in n for n in notes))
 
+    def test_discovery_stops_when_saturated_and_aggregation_categories_count_as_covered(self):
+        """Site haritası keşfi, art arda yeni üst kategori çıkmayınca biter (Stop yok); 'Kategoriler'
+        süzgecindeki alt kategoriler hiç ziyaret edilmez."""
+        cfg = dict(collect.CFG["migros"], seed_ids=[], max_discovery=100, discovery_saturation=2)
+        names = ["icecek-c-1", "maden-c-2", "kola-c-3", "gazoz-c-4", "soda-c-5", "ayran-c-6", "salgam-c-7"]
+        sitemap = "".join(f"<loc>https://www.migros.com.tr/{n}</loc>" for n in names)
+        visited = []
+
+        def fake_get(url, accept="application/json"):
+            if "sitemap" in url:
+                return 200, sitemap
+            slug = url.split("/screens/")[1].split("?")[0]
+            if "sayfa=1" in url:
+                visited.append(slug)
+            return 200, json.dumps({"data": {"searchInfo": {"pageCount": 1, "hitCount": 1,
+                "aggregationGroups": [{"type": "CATEGORY", "aggregationInfos": [{"prettyName": "salgam-c-7"}]}],
+                "storeProductInfos": [{"id": 1, "sku": slug, "name": "Su 1 L", "shownPrice": 500, "regularPrice": 500,
+                    "status": "IN_SALE", "category": {"prettyName": slug},
+                    "categoryAscendants": [{"prettyName": "icecek-c-1"}]}]}}})
+        products, notes = {}, []
+        with patch.dict(collect.CFG, {"migros": cfg}), patch.object(collect, "get", fake_get):
+            collect.migros(products, notes)
+        self.assertNotIn("salgam-c-7", visited)          # süzgeçte görüldü: kapsanmış
+        self.assertLessEqual(len([v for v in visited if v not in ("icecek-c-1",)]), 4)
+        self.assertTrue(any("kategori keşfi doygun" in n for n in notes))
+
     def test_transient_empty_page_is_refetched_and_skipped_page_does_not_stop_category(self):
         """Boş dönen sayfa önbellekten değil siteden yeniden istenir; yine boşsa yalnızca o sayfa atlanır."""
         cfg = dict(collect.CFG["migros"], seed_ids=[], max_discovery=10)

@@ -4,8 +4,8 @@
   "retry_attempts": 2,
   "retry_backoff_seconds": 5,
   "quality": {
-    "full_min_product_ratio": 0.70,
-    "aktuel_min_product_ratio": 0.50,
+    "full_min_product_ratio": 0.7,
+    "aktuel_min_product_ratio": 0.5,
     "product_drop_warn_ratio": 0.85,
     "other_warn_ratio": 0.35,
     "other_increase_warn_ratio": 0.05,
@@ -29,7 +29,8 @@
     "deals": [
       "money-indirimli-market-urunleri-dt-5",
       "coklu-indirim-kampanyalari-ve-hediyeli-urunler-dt-1"
-    ]
+    ],
+    "discovery_saturation": 300
   },
   "sok": {
     "max_pages": 400,
