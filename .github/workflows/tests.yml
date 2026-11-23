@@ -49,7 +49,7 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: JavaScript testleri
         run: |
-          node --check js/app.js && node --check js/core.js && node --check js/match.js
+          node --check js/app.js && node --check js/core.js && node --check js/match.js && node --check js/basket.js
           node --test tests/js/*.test.js
       - name: Derlenmiş site dosyaları güncel mi (css/tw.css, js/icons.js, sürüm etiketleri)
         run: |
