@@ -168,6 +168,35 @@ class MigrosTests(unittest.TestCase):
         self.assertIn("migros:1", products)
         self.assertTrue(any("powerbank-c-12090" in n for n in notes))
 
+    def test_transient_empty_page_is_refetched_and_skipped_page_does_not_stop_category(self):
+        """Boş dönen sayfa önbellekten değil siteden yeniden istenir; yine boşsa yalnızca o sayfa atlanır."""
+        cfg = dict(collect.CFG["migros"], seed_ids=[], max_discovery=10)
+        sitemap = "<loc>https://www.migros.com.tr/su-c-84</loc>"
+        prod_ = lambda i: {"id": i, "sku": str(i), "name": f"Su {i} L", "shownPrice": 500, "regularPrice": 500,
+                           "status": "IN_SALE", "category": {"name": "Su", "prettyName": "su-c-84"}}
+        page = lambda i: json.dumps({"data": {"searchInfo": {"pageCount": 4, "hitCount": 4, "storeProductInfos": [prod_(i)]}}})
+        empty = json.dumps({"data": {"searchInfo": {"pageCount": 0, "hitCount": 0, "storeProductInfos": []}}})
+        calls = {}
+
+        def fake_get(url, accept="application/json"):
+            if "sitemap" in url:
+                return 200, sitemap
+            n = int(url.rsplit("sayfa=", 1)[1])
+            calls[n] = calls.get(n, 0) + 1
+            if n == 2 and calls[n] == 1:
+                return 200, empty      # geçici boş: yeniden denemede gelir
+            if n == 3:
+                return 200, empty      # hep boş: atlanır, 4. sayfayla devam edilir
+            return 200, page(n)
+        products, notes = {}, []
+        with patch.dict(collect.CFG, {"migros": cfg}), patch.object(collect, "get", fake_get), \
+                patch.object(collect.time, "sleep", lambda s: None):
+            with self.assertRaises(collect.Stop):
+                collect.migros(products, notes)
+        self.assertEqual(sorted(products), ["migros:1", "migros:2", "migros:4"])
+        self.assertGreaterEqual(calls[2], 2)
+        self.assertTrue(any("sayfa 3 boş döndü, atlanıp devam edildi" in n for n in notes))
+
 
 class SokBimSingleTests(unittest.TestCase):
     def test_sok_product_page(self):

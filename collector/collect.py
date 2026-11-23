@@ -207,7 +207,9 @@ def migros(products, notes):
             info = json.loads(body)["data"]["searchInfo"]
         except Exception:
             info = None
-        page_cache[key] = info
+        # Boş sayfa önbelleğe yazılmaz: yoksa yeniden deneme siteye gitmeden aynı boş yanıtı okur.
+        if info and info.get("storeProductInfos"):
+            page_cache[key] = info
         return info
 
     def remember_categories(info):
@@ -234,21 +236,30 @@ def migros(products, notes):
     gaps = []
 
     def crawl(slug):
-        page, pages, prev = 1, 1, None
+        page, pages, prev, miss = 1, 1, None, 0
         while page <= min(pages, c["max_pages"]):
             info = page_of(slug, page)
             items = (info or {}).get("storeProductInfos") or []
-            if not info or not items or items[0].get("id") == prev:
-                # Ara sıra boş/yinelenen sayfa dönüyor: bir kez bekleyip yeniden dene; yine boşsa
-                # bu kategoriyi bırak ve taramaya devam et. Sonunda tarama "kısmi" sayılır, böylece
-                # okunamayan ürünler katalogdan silinmez.
-                time.sleep(20)
+            # Ara sıra tek bir sayfa boş/yinelenen dönüyor (aynı sayfa dakikalar sonra normal geliyor):
+            # artan aralıklarla iki kez yeniden dene; yine boşsa yalnızca o sayfayı atla ve sonraki
+            # sayfayla devam et. Üst üste 3 sayfa boşsa kategoriyi bırak. Tarama sonunda "kısmi"
+            # sayılır, böylece okunamayan ürünler katalogdan silinmez.
+            for wait in (20, 60):
+                if info and items and items[0].get("id") != prev:
+                    break
+                time.sleep(wait)
                 info = page_of(slug, page)
                 items = (info or {}).get("storeProductInfos") or []
-                if not info or not items or items[0].get("id") == prev:
-                    gaps.append(f"{slug} s.{page}")
+            if not info or not items or items[0].get("id") == prev:
+                gaps.append(f"{slug} s.{page}")
+                miss += 1
+                if miss >= 3 or page >= pages:
                     notes.append(f"{slug}: sayfa {page} boş döndü, kategorinin kalanı atlandı")
                     return
+                notes.append(f"{slug}: sayfa {page} boş döndü, atlanıp devam edildi")
+                page += 1
+                continue
+            miss = 0
             prev, pages = items[0].get("id"), info.get("pageCount", 1)
             if pages > c["max_pages"]:
                 raise Stop(f"Migros sayfa sınırı aşıldı: {slug}, {pages} sayfa")
