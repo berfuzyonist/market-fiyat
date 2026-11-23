@@ -42,7 +42,7 @@ function categoryOf(o){
 }
 
 // O: tek tek market ürünleri, G: aynı ürünün marketlerdeki teklifleri, CMP: karşılaştırma listeleri
-let O=[],OI={},G=[],GI={},CMP={same:[],size:[],staple:[]},PROMO=[];
+let O=[],OI={},G=[],GI={},CMP={same:[],size:[],staple:[]},CMP_READY=false,PROMO=[],WATER;
 const FRESH=new Set(); // "Fiyat güncel mi?" paneli açık ürünler (kaydedilmez)
 let done=load("done",{}),HIST={},S={sort:"rel"},UOPEN=false,USIZE="";
 let QTY=load("qty",{});
@@ -198,7 +198,7 @@ function cmpCard(it){
         <span class="flex-1 min-w-0 text-xs text-stone-600 dark:text-stone-300 truncate">${it.unit?esc(r.o.name):(r.o._promo?promoChip(r.o):"")}</span>
         <span class="text-right leading-tight shrink-0"><span class="tabular font-bold ${w?good:""}">${it.unit?`${tl(r.val)}<span class="text-[11px] font-semibold">/${r.u}</span>`:tl(r.o.price)}</span>${it.unit?`<br><span class="text-[11px] text-stone-500 tabular">${tl(r.o.price)}</span>`:""}</span></div></div>`}).join("")}</div>
   <button data-add="${esc(it.key)}" class="mt-3 w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold ${inC?"bg-stone-100 dark:bg-stone-800":"bg-emerald-600 hover:bg-emerald-700 text-white"}"><i data-lucide="${inC?"check":"plus"}" class="w-4 h-4"></i>${inC?"Listede · çıkar":"Listeye ekle → "+M[it.win.market].n}</button></article>`}
-function drawC(){
+function drawC(){ensureCMP();
   const segs=[["same","Aynı ürün"],["size","Farklı boy"],["staple","Temel ihtiyaçlar"]];
   $("cSeg").innerHTML=segs.map(([k,l])=>pill("data-seg",k,`${l} <span class="opacity-60 tabular">${CMP[k].length}</span>`,C.seg===k,"bg-emerald-600 text-white")).join("");
   $("cSort").value=C.sort;$("cThree").checked=C.three;
@@ -357,7 +357,7 @@ function slides(st){
   const multi=PROMO.filter(o=>o._promo.kind==="multi").sort((a,b)=>(b._promo.sub==="free")-(a._promo.sub==="free")||gain(b)-gain(a));
   const freeN=multi.filter(o=>o._promo.sub==="free").length,alana=multi.filter(o=>/bedava/i.test(o._promo.label)).length;
   if(multi.length)out.push(`<div class="slide s-violet"><div class="relative z-10"><p class="text-xs font-extrabold uppercase tracking-wider opacity-90">Bedava ürünlü kampanyalar</p><h3>${alana?"1 Alana 1 Bedava":"2 Al 1 Öde"} ve dahası</h3><p>${num(freeN)} üründe bedava ürün kazanırsın${alana?` · ${alana} tanesi “1 Alana 1 Bedava”`:""}. Tane fiyatını hesapladık.</p></div><button data-view="promos" data-plain="1" class="cta relative z-10">Bedavaları gör<i data-lucide="arrow-right" class="w-4 h-4"></i></button><div class="imgs">${pics(multi)}</div></div>`);
-  const water=MF.unitCompare(st,"su");
+  const water=!WARM?null:WATER!==undefined?WATER:(WATER=MF.unitCompare(st,"su"));
   if(water){const b=water.best;out.push(`<div class="slide s-blue"><div class="relative z-10"><p class="text-xs font-extrabold uppercase tracking-wider opacity-90">Birim fiyat</p><h3>Suyun litresi en ucuz nerede?</h3><p>${esc(b.o.name)} · ${M[b.o.market].at} <b>${tl(b.u.v)}/L</b></p></div><button data-uq="su" class="cta relative z-10">Boy boy karşılaştır<i data-lucide="arrow-right" class="w-4 h-4"></i></button><div class="imgs">${pics(water.top.map(h=>h.o))}</div></div>`)}
   const wins={};CMP.staple.forEach(it=>{if(it.diff>=0.005)wins[it.win.market]=(wins[it.win.market]||0)+1});
   const top=Object.keys(wins).sort((a,b)=>wins[b]-wins[a])[0];
@@ -389,10 +389,25 @@ function drawPostShelf(){
     :posterCard(c[0],POST.indexOf(c[0]),"w-40 shrink-0")).join("")+POSTER_LINKS.map(l=>linkCard(l,"w-44 shrink-0")).join("");
   EAGER=0;
 }
+// Ana sayfanın karşılaştırmaya bağlı bölümleri (tanıtım alanı, fiyat farkı rafı, temel ihtiyaçlar):
+// ad çözümlemesi bitince yalnızca bunlar yenilenir.
+function drawHCmp(st){
+  const sl=slides(st);$("banner").innerHTML=sl.join("")||`<div class="slide s-green"><h3>Market Fiyat</h3></div>`;slideI=0;$("banner").scrollLeft=0;startSlides();
+  $("hCmp").innerHTML=CMP.same.filter(it=>it.diff>=1).sort((a,b)=>b.pct-a.pct).slice(0,14).map((it,i)=>`<article data-show="${esc(it.key)}" class="pc w-60 shrink-0" style="--i:${i}">
+    <div class="flex gap-2 items-center"><div class="ph w-16 shrink-0">${it.image?`<img src="${esc(it.image)}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">`:""}</div><p class="text-[13px] font-bold leading-snug max-h-[3.4rem] overflow-hidden">${esc(it.title)}</p></div>
+    <div class="mt-2 space-y-1">${it.rows.map(r=>`<div class="flex items-center justify-between">${badge(r.o.market,1)}<span class="tabular text-sm font-extrabold ${r.o===it.win?good:"text-stone-400 line-through"}">${tl(r.o.price)}</span></div>`).join("")}</div>
+    <p class="mt-2 chipx bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"><i data-lucide="piggy-bank" class="w-3.5 h-3.5"></i>${tl(it.diff)} tasarruf</p></article>`).join("")||`<p class="text-sm text-stone-500">Ortak ürün bulunamadı.</p>`;
+  const wins={};CMP.staple.forEach(it=>{if(it.diff>=0.005)wins[it.win.market]=(wins[it.win.market]||0)+1});
+  $("hStaple").innerHTML=CMP.staple.length?`<button data-seg="staple" data-open="1" class="pc w-full p-4 lg:p-5 text-left flex-row items-center gap-4">
+    <span class="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 grid place-items-center shrink-0"><i data-lucide="shopping-basket" class="w-6 h-6"></i></span>
+    <span class="flex-1 min-w-0"><span class="block font-display font-extrabold text-lg">Temel ihtiyaçlarda kim ucuz?</span>
+    <span class="flex flex-wrap gap-x-3 gap-y-1 mt-1 text-sm">${ORD.filter(m=>wins[m]).sort((a,b)=>wins[b]-wins[a]).map(m=>`<span>${badge(m,1)} <b class="tabular">${wins[m]}</b> üründe</span>`).join("")}</span></span>
+    <i data-lucide="chevron-right" class="w-5 h-5 text-stone-400"></i></button>`:"";
+}
 function drawH(){
   if(!O.length)return; // veri gelene kadar iskelet kartlar kalır
   const st=O.filter(usable);
-  const sl=slides(st);$("banner").innerHTML=sl.join("")||`<div class="slide s-green"><h3>Market Fiyat</h3></div>`;slideI=0;$("banner").scrollLeft=0;startSlides();
+  drawHCmp(st);
   $("cats").innerHTML=GROUPS.map(([k,l,ic,bg,fg])=>`<button data-grp="${k}" class="cat"><span class="ic" style="background:${bg};color:${fg}"><i data-lucide="${ic}" class="w-7 h-7"></i></span>${l}</button>`).join("");
   $("deals").innerHTML=st.filter(o=>disc(o)>0).sort((a,b)=>disc(b)-disc(a)).slice(0,20).map((o,i)=>pcard(o,{strip:1,i})).join("")||`<p class="text-sm text-stone-500">Şu an indirim görünmüyor.</p>`;
   drawPostShelf();
@@ -401,17 +416,7 @@ function drawH(){
     return`<button data-bm="${m}" data-open="1" class="store st-${m}"><span class="font-display font-extrabold text-lg lg:text-2xl">${M[m].n}</span>
       <span class="block text-xs lg:text-sm font-bold mt-1 tabular opacity-95">${num(n.length)} ürün</span><span class="block text-xs lg:text-sm font-extrabold tabular">${num(d)} indirim</span>
       <span class="block text-[10px] mt-1 opacity-90">${UPD[m]?"Veri: "+MFC.ago(MFC.toTs(UPD[m])):""}${failed?" · ⚠ son deneme başarısız":part?" · kısmen güncellendi":""}</span></button>`}).join("");
-  $("hCmp").innerHTML=CMP.same.filter(it=>it.diff>=1).sort((a,b)=>b.pct-a.pct).slice(0,14).map((it,i)=>`<article data-show="${esc(it.key)}" class="pc w-60 shrink-0" style="--i:${i}">
-    <div class="flex gap-2 items-center"><div class="ph w-16 shrink-0">${it.image?`<img src="${esc(it.image)}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">`:""}</div><p class="text-[13px] font-bold leading-snug max-h-[3.4rem] overflow-hidden">${esc(it.title)}</p></div>
-    <div class="mt-2 space-y-1">${it.rows.map(r=>`<div class="flex items-center justify-between">${badge(r.o.market,1)}<span class="tabular text-sm font-extrabold ${r.o===it.win?good:"text-stone-400 line-through"}">${tl(r.o.price)}</span></div>`).join("")}</div>
-    <p class="mt-2 chipx bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"><i data-lucide="piggy-bank" class="w-3.5 h-3.5"></i>${tl(it.diff)} tasarruf</p></article>`).join("")||`<p class="text-sm text-stone-500">Ortak ürün bulunamadı.</p>`;
   $("hPromo").innerHTML=PROMO.filter(o=>o._promo.kind==="multi").sort((a,b)=>(b._promo.sub==="free")-(a._promo.sub==="free")||(/bedava/i.test(b._promo.label))-(/bedava/i.test(a._promo.label))||gain(b)-gain(a)).slice(0,16).map((o,i)=>pcard(o,{strip:1,i})).join("")||`<p class="text-sm text-stone-500">Kampanya verisi bir sonraki güncellemede gelir.</p>`;
-  const wins={};CMP.staple.forEach(it=>{if(it.diff>=0.005)wins[it.win.market]=(wins[it.win.market]||0)+1});
-  $("hStaple").innerHTML=CMP.staple.length?`<button data-seg="staple" data-open="1" class="pc w-full p-4 lg:p-5 text-left flex-row items-center gap-4">
-    <span class="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 grid place-items-center shrink-0"><i data-lucide="shopping-basket" class="w-6 h-6"></i></span>
-    <span class="flex-1 min-w-0"><span class="block font-display font-extrabold text-lg">Temel ihtiyaçlarda kim ucuz?</span>
-    <span class="flex flex-wrap gap-x-3 gap-y-1 mt-1 text-sm">${ORD.filter(m=>wins[m]).sort((a,b)=>wins[b]-wins[a]).map(m=>`<span>${badge(m,1)} <b class="tabular">${wins[m]}</b> üründe</span>`).join("")}</span></span>
-    <i data-lucide="chevron-right" class="w-5 h-5 text-stone-400"></i></button>`:"";
   const r=uniq(cart).slice(-4).reverse();
   $("recent").innerHTML=r.length?`<div class="pc px-4 py-1 ${div}">`+r.map(g=>{const b=best(g);
     return`<div data-show="${esc(g.key)}" class="flex items-center gap-3 py-3">${img(g.image,"w-11 h-11 shrink-0")}<span class="flex-1 text-sm font-bold">${esc(g.name)}</span>${b?badge(b.market,1)+`<span class="price text-base tabular">${tl(b.price)}</span>`:chip("Tükendi","bg-stone-200 text-stone-600")}</div>`}).join("")+`</div>`
@@ -609,7 +614,8 @@ function drawS(){
   if(only&&GI[only]){$("res").innerHTML=productPage(GI[only]);return}
   const ban=pending?`<div class="col-span-full rounded-2xl bg-amber-100 text-amber-900 p-4 text-sm"><p class="font-bold">Barkod ${esc(pending)} henüz tanınmıyor</p><p>Ürünü adıyla arayın, ürün sayfasında "Bu barkodla eşleştir"e dokunun. Ürün başına bir kez yeterli.</p><button data-cancel class="mt-2 font-bold underline">Vazgeç</button></div>`:"";
   if(!w.length){$("res").innerHTML=ban+(G.length?`<div class="col-span-full">${empty("search","Ne arıyorsun?","Ürün adı, marka ya da barkod yaz. Örneğin “su”, “süt”, “yüzey temizleyici”.")}<div class="flex flex-wrap gap-2 mt-3">${UNIT_Q.map(([q,l,ic])=>`<button data-uq="${esc(q)}" class="uchip"><i data-lucide="${ic}" class="w-4 h-4 text-emerald-600"></i>${l}</button>`).join("")}</div></div>`:"");return}
-  let r=G.filter(g=>w.every(x=>g.s.includes(x)));
+  const gs=g=>g.s||(g.s=MFC.fold(g.offers.map(o=>o.name).join(" ")).replace(/[^a-z0-9%]+/g," "));
+  let r=G.filter(g=>w.every(x=>gs(g).includes(x)));
   const bp=g=>(best(g)||{price:1e9}).price,up=g=>{const b=best(g),u=b&&MF.unitPrice(b);return u?u.v:1e12};
   // Alaka: adda kelimenin nasıl geçtiği (MFC.searchScore) + bulunduğu market sayısı + satışta olması
   const rel=new Map(r.map(g=>[g,Math.max(...g.offers.map(o=>MFC.searchScore(o.name,o.cat,w)))+avail(g).length*0.6+(best(g)?1:0)]));
@@ -895,15 +901,25 @@ bind("cSort",C,"sort");bind("cThree",C,"three","checked");bind("kSort",K,"sort")
 // ---------- Veri ----------
 // Her market kendi dosyasından; dosyası okunamayan market gösterilmez (eski ortak dosyaya düşülmez).
 const get=u=>fetch(u,{cache:"no-cache"}).then(r=>r.ok?r.json():null).catch(()=>null);
-function build(rows){
+// Karşılaştırma listeleri (tüm ürünlerin boy/birim çözümlemesini gerektirir) ilk ekran çizildikten sonra,
+// tarayıcı boştayken hesaplanır; Karşılaştır sayfası açılırsa hemen hesaplanır.
+function ensureCMP(){if(!CMP_READY){buildCompare();CMP_READY=true}}
+const idle=f=>("requestIdleCallback" in window?requestIdleCallback(f,{timeout:2500}):setTimeout(f,300));
+// Ad çözümlemesini (o._p, o._t) tarayıcı boşken küçük dilimlerle önceden yap: tek seferde yapınca telefonda
+// saniyelerce ekran donuyordu. Bitince karşılaştırma listeleri ve su slaytı hesaplanıp ana sayfa yenilenir.
+let WARM=false;
+function warmUp(rows,done){let i=0;const step=dl=>{const end=performance.now()+((dl&&dl.timeRemaining&&dl.timeRemaining())||12);
+  while(i<rows.length&&performance.now()<end){const o=rows[i++];o._p;o._t||(o._t=MFC.fold(o.name).replace(/[^a-z0-9]+/g," ").split(" "))}
+  if(i<rows.length)idle(step);else{WARM=true;done()}};idle(step)}
+function build(rows,groups){
   O=rows;OI={};ALT=new Map();O.forEach(o=>OI[o.id]=o);const now=Date.now();O.forEach(o=>{MFC.enrich(o,{checks:CHECKS,now});o.cat=categoryOf(o);o._promo=promoOf(o)});
-  G=MF.group(O);
+  G=groups?MF.groupFrom(O,groups):MF.group(O);
   G.forEach(g=>{g.offers.sort((a,b)=>ORD.indexOf(a.market)-ORD.indexOf(b.market));g.key=g.offers[0].id;g.name=g.offers[0].name;g.image=(g.offers.find(o=>o.image)||{}).image;
-    g.s=MFC.fold(g.offers.map(o=>o.name).join(" ")).replace(/[^a-z0-9%]+/g," ");g.offers.forEach(o=>GI[o.id]=g)});
+    g.offers.forEach(o=>GI[o.id]=g)}); // arama metni (g.s) ilk aramada hazırlanır
   // 48 saatten uzun süredir doğrulanmayan ürünün kampanyası güncel sayılmaz
   O.forEach(o=>{if(o.stale&&o._promo&&o._promo.kind!=="bim")o._promo=null});
   PROMO=O.filter(o=>o._promo&&usable(o));FAM=null;
-  buildCompare();
+  CMP={same:[],size:[],staple:[]};CMP_READY=false;WATER=undefined;
 }
 // Çevrimdışı: sw.js son açılan sürümü saklar; mağazada internet yoksa liste yine açılır
 if("serviceWorker" in navigator&&location.protocol==="https:")navigator.serviceWorker.register("sw.js").catch(()=>{});
@@ -914,21 +930,36 @@ route(); // açılışta adresteki sayfaya git (yenilemede aynı ürün açık k
 const postersP=Promise.all(["bim","migros","sok"].map(m=>get(`data/posters-${m}.json`)));
 postersP.then(posters=>{if(O.length)return;POST=groupBim(groupSok(posters.flatMap(p=>(p&&Array.isArray(p.items)?p.items:[]).filter(it=>it&&/^https:\/\//.test(it.image||"")))));
   if(view==="home"){drawPostShelf();icons()}else if(view==="posters")redraw()}).catch(()=>{});
-Promise.all([Promise.all(DATA_M.map(m=>get(`data/${m}.json`))),Promise.all(DATA_M.map(m=>get(`data/status-${m}.json`))),get("data/price-checks.json"),postersP]).then(([files,statuses,checks,posters])=>{
+// Fiyat verisi: önce data/client (katalog önbellekte kalır, her açılışta yalnızca fiyat dosyaları iner;
+// eşleştirme hazır gelir), olmazsa tam market dosyaları. Katalog ve fiyat sürümü uyuşmazsa tam dosyaya düşülür.
+async function loadRows(){
+  const idx=await get("data/client/index.json");
+  if(idx&&idx.markets){try{
+    const ms=DATA_M.filter(m=>idx.markets[m]);
+    const [cats,prs,grp]=await Promise.all([Promise.all(ms.map(m=>get(`data/client/${m}-catalog.json?h=${idx.markets[m].catalog}`))),
+      Promise.all(ms.map(m=>get(`data/client/${m}-prices.json`))),get("data/client/groups.json")]);
+    const per={};ms.forEach((m,i)=>{const r=MFC.rowsFromSplit(cats[i],prs[i]);if(!r)throw new Error("katalog sürümü");per[m]={rows:r,updated:prs[i].updated}});
+    const ok=grp&&Array.isArray(grp.groups)&&ms.every(m=>grp.catalogs&&grp.catalogs[m]===cats[ms.indexOf(m)].v);
+    return{per,groups:ok?grp.groups:null}}catch(e){}}
+  const files=await Promise.all(DATA_M.map(m=>get(`data/${m}.json`))),per={};
+  files.forEach((d,i)=>{per[DATA_M[i]]={rows:MFC.rowsOf(d),updated:d&&d.updated}});
+  return{per,groups:null}}
+Promise.all([loadRows(),Promise.all(DATA_M.map(m=>get(`data/status-${m}.json`))),get("data/price-checks.json"),postersP]).then(([loaded,statuses,checks,posters])=>{
   POST=groupBim(groupSok(posters.flatMap(p=>(p&&Array.isArray(p.items)?p.items:[]).filter(it=>it&&/^https:\/\//.test(it.image||"")))));
   // Migros kampanya listelerindeki ürünler: katalogda yoksa eklenir, liste daha yeni okunduysa fiyatı günceller
   const campRows=MFC.rowsOf(posters[1]);
   statuses.forEach((s,i)=>{if(s)CHECK[DATA_M[i]]=s});
   CHECKS=(checks&&checks.checks)||{};
   const rows=[],miss=[];
-  files.forEach((d,i)=>{const r=MFC.rowsOf(d);if(r.length){rows.push(...r);UPD[DATA_M[i]]=d.updated}else miss.push(M[DATA_M[i]].n)});
+  DATA_M.forEach(m=>{const x=loaded.per[m];if(x&&x.rows.length){rows.push(...x.rows);UPD[m]=x.updated}else miss.push(M[m].n)});
   if(!rows.length)throw new Error("veri yok");
   if(campRows.length){const at=new Map(rows.map((o,i)=>[o.id,i]));
     campRows.forEach(c=>{const i=at.get(c.id);if(i==null){at.set(c.id,rows.length);rows.push(c)}else if((c.seen||0)>(rows[i].seen||0)){const o=rows[i];Object.assign(o,{price:c.price,regular:c.regular,in_stock:c.in_stock,promo:c.promo,money:c.money,seen:c.seen});if(!o.cat)o.cat=c.cat}})}
   if(miss.length)note("Şu marketlerin verisi okunamadı: "+miss.join(", "));
   updated=Object.values(UPD).sort().pop();
-  build(rows);
+  build(rows,loaded.groups);
   const byLabel={};O.forEach(o=>{if(o.market==="bim"&&o.promo)(byLabel[o.promo]=byLabel[o.promo]||[]).push(o.id)});
   POST.forEach(it=>{if(it.market==="bim")it.ids=byLabel[`${it.group} · ${it.label}`]||[]});
   redraw();
+  WARM=false;warmUp(O,()=>{ensureCMP();if(view==="home"){drawHCmp(O.filter(usable));icons()}});
 }).catch(e=>{note("Fiyat verisi yüklenemedi: "+e.message)});

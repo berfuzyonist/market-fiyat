@@ -64,7 +64,7 @@ jobs:
         run: |
           python - <<'PY'
           import glob, json
-          for path in sorted(glob.glob("data/*.json")):
+          for path in sorted(glob.glob("data/*.json") + glob.glob("data/client/*.json")):
               with open(path, encoding="utf-8") as f:
                   json.load(f)
               print("ok", path)

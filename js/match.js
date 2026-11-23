@@ -164,11 +164,13 @@ function unitCompare(rows,query){
   // "süt" boylarında kakaolu/aromalı süt, "su"da maden suyu çıkmaz.
   const fq=words.join(" "),staple=STAPLES.find(r=>r.re.test(fq)&&fq.length<=12);
   const hits=[];
-  for(const o of rows){const p=o._p;if(!p||!p.qty)continue;
-    if(staple&&staple.not.test(o._f||(o._f=fold(o.name))))continue;
+  // Önce ucuz kelime denetimi, sonra ad çözümlemesi (_p): yalnızca sorguyla eşleşen ürünler çözümlenir.
+  for(const o of rows){
     const toks=(o._t||(o._t=fold(o.name).replace(/[^a-z0-9]+/g," ").split(" ")));
     if(!words.every(w=>toks.some(t=>w.length<4?t===w:t.startsWith(w))))continue;
     if(toks.some(t=>ACCESSORY.has(t)&&!words.includes(t)))continue;
+    if(staple&&staple.not.test(o._f||(o._f=fold(o.name))))continue;
+    const p=o._p;if(!p||!p.qty)continue;
     const u=unitPrice(o);if(u&&u.v>0&&isFinite(u.v))hits.push({o,u,q:p.qty,size:p.size})}
   if(hits.length<2)return null;
   const by={};hits.forEach(h=>{(by[h.q.u]=by[h.q.u]||[]).push(h)});
@@ -207,6 +209,14 @@ function sameSize(o,rows){
   const tail=own.filter(t=>!/^[\d%]/.test(t)).slice(-2);
   if(!out.length&&tail.length===2)out=run(tail,3);
   return out}
-const api={fold,parse,group,families,unitPrice,staples,unitCompare,sameSize,sizeLabel};
+// Önceden hesaplanmış eşleştirmeden (data/client/groups.json: birden çok teklifli grupların id listeleri)
+// grupları kurar; listede olmayan her ürün kendi grubudur. group() ile aynı biçimde döner.
+function groupFrom(rows,lists){
+  const by=new Map(rows.map(o=>[o.id,o])),used=new Set(),out=[];
+  for(const ids of lists||[]){const offers=[];for(const id of ids){const o=by.get(id);if(o&&!used.has(o)){used.add(o);offers.push(o)}}
+    if(offers.length)out.push({offers,get p(){return offers[0]._p}})}
+  for(const o of rows)if(!used.has(o))out.push({offers:[o],get p(){return o._p}});
+  return out}
+const api={fold,parse,group,groupFrom,families,unitPrice,staples,unitCompare,sameSize,sizeLabel};
 if(typeof module!=="undefined"&&module.exports)module.exports=api;else root.MF=api;
 })(typeof window!=="undefined"?window:globalThis);
