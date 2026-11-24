@@ -59,7 +59,7 @@ let NOTES=load("notes",[]); // listedeki serbest notlar: [{t:"ekmek",d:0}]
 let PLAN=load("plan",{mode:"multi",k:2,market:""}),FIX=load("fix",{}),SAVED=load("baskets",[]);
 // Takip: favoriler [{key, price, at}], fiyat alarmları {key:[alarm]}, uygulama içi bildirimler [{ts,key,text,read}]
 let FAV=load("fav",[]),ALARMS=load("alarms",{}),INBOX=load("inbox",[]),BUD=load("budget",{limit:0,spends:[]});
-let cart=load("cart",[]),bmap=load("bmap",{}),reqs=load("req",{}),pending=null,only=null,updated="",UPD={},PUPD={},CHECK={},CHECKS={},view="home";
+let cart=load("cart",[]),bmap=load("bmap",{}),reqs=load("req",{}),pending=null,only=null,updated="",UPD={},PUPD={},HAY="",VOCAB=null,CHECK={},CHECKS={},view="home";
 const C={seg:"same",three:false,sort:"pct",page:0},K={kind:"free",m:"",sort:"gain",page:0},B={m:"",grp:"",cat:"",disc:false,sort:"disc",page:0};
 // Ana kategori yuvarlakları: marketlerin farklı kategori adlarını tek grupta toplar
 const GROUPS=[
@@ -695,11 +695,15 @@ function drawS(){
   const bestIn=g=>avail(g).filter(o=>!S.m.length||S.m.includes(o.market)).reduce((a,o)=>!a||o.price<a.price?o:a,null);
   const pass=g=>{if(!nFilters())return true;const o=bestIn(g);if(!o)return false;
     return(!S.k||grpOf(o)===S.k)&&(!S.i||disc(o)>0)&&(!S.c||(o._promo&&o._promo.kind!=="bim"))&&(lo==null||o.price>=lo)&&(hi==null||o.price<=hi)};
-  let r=G.filter(g=>w.every(x=>gs(g).includes(x))&&pass(g));
+  // Esnek eşleşme: eş anlamlı (tavuk/piliç), ses değişimi (göğüs/göğsü), birleşik yazım, yazım hatası
+  if(!HAY){HAY=" "+G.map(gs).join(" ")+" ";VOCAB=new Map();for(const t of HAY.split(" "))if(t)VOCAB.set(t,(VOCAB.get(t)||0)+1)}
+  const{plan,fixed}=MFC.queryPlan(w,VOCAB,HAY);
+  let r=G.filter(g=>MFC.matchPlan(gs(g),plan)&&pass(g));
   const pick=g=>nFilters()?bestIn(g):best(g);
   const bp=g=>(pick(g)||{price:1e9}).price,up=g=>{const b=pick(g),u=b&&MF.unitPrice(b);return u?u.v:1e12};
   // Alaka: adda kelimenin nasıl geçtiği (MFC.searchScore) + bulunduğu market sayısı + satışta olması
-  const rel=new Map(r.map(g=>[g,Math.max(...g.offers.map(o=>MFC.searchScore(o.name,o.cat,w)))+avail(g).length*0.6+(best(g)?1:0)]));
+  const rel=new Map(r.map(g=>[g,Math.max(...g.offers.map(o=>{const rw=MFC.resolvePlan(o.name,plan);
+    return MFC.searchScore(o.name,o.cat,rw)-rw.filter((x,i)=>x!==w[i]).length*2}))+avail(g).length*0.6+(best(g)?1:0)]));
   // Baskın bölüm: en alakalı 40 sonucun çoğu hangi bölümdeyse (yumurta → kahvaltılık, pirinç → temel gıda)
   // o bölümdeki ürünler öne alınır; "Sürpriz Yumurta", "Pirinç Süzgeci" gibi başka bölümden adaşlar geriler.
   const top=[...r].sort((a,b)=>rel.get(b)-rel.get(a)).slice(0,40),cnt={};
@@ -709,7 +713,8 @@ function drawS(){
   r.sort({rel:(a,b)=>rel.get(b)-rel.get(a),pa:(a,b)=>bp(a)-bp(b),unit:(a,b)=>up(a)-up(b),disc:(a,b)=>disc(pick(b)||{})-disc(pick(a)||{})}[S.sort]);
   const total=r.length;r=r.slice(0,60);
   const sorts=[["rel","Önerilen"],["pa","En ucuz"],["unit","Birim fiyat"],["disc","İndirim"]];
-  $("res").innerHTML=ban+unitPanel(raw)+
+  const fixNote=fixed.length&&r.length?`<p class="col-span-full text-sm text-stone-600 -mb-1">“${esc(fixed.map(x=>x[0]).join(" "))}” bulunamadı; <b>${esc(fixed.map(x=>x[1]).join(", "))}</b> için sonuçlar gösteriliyor.</p>`:"";
+  $("res").innerHTML=ban+fixNote+unitPanel(raw)+
     `<div class="col-span-full flex items-center gap-2 overflow-x-auto noscroll"><p class="text-sm font-bold shrink-0 mr-1">${num(total)} ürün</p>
       <button data-sfopen class="shrink-0 chipx !py-2 !px-3 ${nFilters()?"bg-emerald-700 text-white":"bg-white ring-1 ring-stone-300 text-stone-800"}"><i data-lucide="sliders-horizontal" class="w-4 h-4"></i>Süzgeç${nFilters()?` (${nFilters()})`:""}</button>
       ${sorts.map(([k,l])=>pill("data-ss",k,l,S.sort===k,"bg-emerald-600 text-white")).join("")}</div>`+filterPanel()+
@@ -1224,7 +1229,7 @@ function warmUp(rows,done){let i=0;const step=dl=>{const end=performance.now()+(
   if(i<rows.length)idle(step);else{WARM=true;done()}};idle(step)}
 function build(rows,groups){
   O=rows;OI={};ALT=new Map();O.forEach(o=>OI[o.id]=o);const now=Date.now();O.forEach(o=>{MFC.enrich(o,{checks:CHECKS,now});o.cat=categoryOf(o);o._promo=promoOf(o)});
-  G=groups?MF.groupFrom(O,groups):MF.group(O);
+  G=groups?MF.groupFrom(O,groups):MF.group(O);HAY="";VOCAB=null;
   G.forEach(g=>{g.offers.sort((a,b)=>ORD.indexOf(a.market)-ORD.indexOf(b.market));g.key=g.offers[0].id;g.name=g.offers[0].name;g.image=(g.offers.find(o=>o.image)||{}).image;
     g.offers.forEach(o=>GI[o.id]=g)}); // arama metni (g.s) ilk aramada hazırlanır
   // 48 saatten uzun süredir doğrulanmayan ürünün kampanyası güncel sayılmaz

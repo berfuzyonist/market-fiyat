@@ -197,3 +197,14 @@ test("ek alanlar (marka, tartılı satış) bölünmüş veriden okunur; tartıl
   const [c]=C.rowsOf({fields:["id","name","price","regular","in_stock","image","url","cat","promo","seen"],products:[["sok:1","Pınar Süt 1 L",10,10,1,"","",null,"",1]]});
   assert.equal(c.brand,""); assert.equal(c.sold,"");
 });
+
+test("esnek arama: eş anlamlı, ses değişimi, birleşik yazım, yazım hatası", () => {
+  const C=require("../../js/core.js");
+  const plan=w=>C.queryPlan(w,new Map([["yogurt",50],["yurt",1],["peynir",80],["tavugu",3]])," yogurt peynir tavugu yurt ");
+  assert.ok(C.matchPlan("gedik pilic gogus 400 g",plan(["tavuk","gogus"]).plan));
+  assert.ok(C.matchPlan("yayla tavuk gogsu fume kg",plan(["tavuk","gogus"]).plan));
+  assert.ok(C.matchPlan("komili naturel sizma zeytin yagi 1 l",plan(["zeytinyagi"]).plan));
+  const y=plan(["yourt"]);assert.deepEqual(y.fixed[0],["yourt","yogurt"]);assert.ok(C.matchPlan("pinar yogurt 1 kg",y.plan));
+  assert.ok(!C.matchPlan("pinar sut 1 l",plan(["peynir"]).plan));
+  assert.deepEqual(plan(["sut"]).fixed,[]); // kısa kelime düzeltilmez
+});
