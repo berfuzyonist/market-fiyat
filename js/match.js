@@ -9,7 +9,10 @@ const GENERIC=new Set(("kola gazoz icecek icecegi kek kraker biskuvi gofret ciko
  "sivi jel deterjan deterjani sampuan sabun sabunu deodorant deo sprey krem kremi cay cayi kahve kahvesi "+
  "makarna noodle cips sakiz seker sekeri sut sutu yogurt yogurdu peynir peyniri kokulu kokusu kagidi kagit havlu havlusu mendil mendili "+
  "temizleyici temizleyicisi yumusatici yumusaticisi suyu su soguk gazli gazsiz icin original orijinal klasik sade dogal "+
- "poset bardak demlik dokme tablet kapsul sos sosu cerez drink bar ek besin gida urun urunu macunu fircasi bezi pedi bicagi").split(" "));
+ "poset bardak demlik dokme tablet kapsul sos sosu cerez drink bar ek besin gida urun urunu macunu fircasi bezi pedi bicagi "+
+ "pet sise siseli kutu teneke cam paket paketi aromali aroma").split(" "));
+// Aynı kelimenin farklı yazımları (bir market "Extra", öteki "Ekstra" yazıyor)
+const NORM={extra:"ekstra",xl:"ekstra",ltr:"lt",gr:"g",adet:"adet",ice:"ice",tea:"tea",cocuklar:"cocuk",sut:"sut"};
 const U="(kg|gr|g|lt|l|ml|cl)";
 const amount=(n,u)=>Math.round(parseFloat(n)*UNIT[u][1]);
 const stem=t=>/\d/.test(t)||t.length<5?t:t.replace(/(lari|leri|si|su|i|u)$/,"");
@@ -21,7 +24,7 @@ function parse(name){
   s=s.replace(new RegExp("(\\d+)\\s*[x×*]\\s*(\\d+(?:\\.\\d+)?)\\s*"+U+"\\b","g"),(m,k,n,u)=>{const a=amount(n,u);sizes.push(k+"x"+a+UNIT[u][0]);meas.push([k*a,UNIT[u][0]]);return" "});
   s=s.replace(new RegExp("(\\d+(?:\\.\\d+)?)\\s*"+U+"\\b","g"),(m,n,u)=>{const a=amount(n,u);sizes.push(a+UNIT[u][0]);meas.push([a,UNIT[u][0]]);return" "});
   s=s.replace(/(\d+)\s*(li|lu|adet|ad|tablet|yikama|yaprak|rulo)\b/g,(m,n)=>{sizes.push(n+"ad");count=+n;return" "});
-  const words=s.replace(/[^a-z0-9%.]+/g," ").trim().split(" ").filter(w=>w&&!STOP.has(w));
+  const words=s.replace(/[^a-z0-9%.]+/g," ").trim().split(" ").map(w=>NORM[w]||w).filter(w=>w&&/[a-z0-9]/.test(w)&&!STOP.has(w));
   if(!words.length)return null;
   const toks=[...new Set(words.map(stem))],brand=toks[0];
   const core=toks.filter((t,i)=>i===0||!(GENERIC.has(t)||GENERIC.has(words[i])));
@@ -66,7 +69,8 @@ function group(rows){
 const lev1=(a,b)=>{if(Math.abs(a.length-b.length)>1)return false;let i=0;while(i<a.length&&a[i]===b[i])i++;
   return a.slice(i+1)===b.slice(i+1)||a.slice(i)===b.slice(i+1)||a.slice(i+1)===b.slice(i)};
 const tmatch=(a,b)=>a===b||(a.length>=4&&b.length>=4&&(a.startsWith(b)||b.startsWith(a)))||(a.length>=5&&b.length>=5&&lev1(a,b));
-function distinct(p){return p.toks.slice(1).filter(t=>!GENERIC.has(t)&&!/^\d+$/.test(t))}
+const GSTEM=new Set([...GENERIC].map(stem));
+function distinct(p){return p.toks.slice(1).filter(t=>!GENERIC.has(t)&&!GSTEM.has(t)&&!/^[\d.]+$/.test(t))}
 // Yalnız bir adda geçse bile ürünün başka çeşit olduğunu gösteren kelimeler
 const VARIANT=new Set(("vanilya vanilla vanilyali cilek cilekli muz muzlu kakao kakaolu cikolatali findikli limon limonlu portakal portakalli "+
  "elma elmali seftali karpuz nane naneli mentol mentollu visne kiraz ananas mango hindistan karamel karamelli tarcin bal balli "+
@@ -213,6 +217,47 @@ function sameSize(o,rows){
   const tail=own.filter(t=>!/^[\d%]/.test(t)).slice(-2);
   if(!out.length&&tail.length===2)out=run(tail,3);
   return out}
+/* ---------- Benzer ürünler (aynı ürün değil, aynı tür) ----------
+   Bir ürünün diğer marketlerdeki karşılığı bulunamadığında, aynı tür ve yakın boydaki ürünler gösterilir:
+   "İpek Şampuan 480 ml" → Migros'ta "Elidor Şampuan 500 ml". Tür kelimesi bilinen tür listesinden,
+   yoksa adın sonundaki kelimeden çıkarılır (Türkçe ad öbeğinde asıl ad sondadır). */
+const TYPES=new Set(("sut ayran kefir yogurt peynir kasar labne tereyag margarin krema yumurta ekmek lavas simit "+
+ "su soda kola gazoz meyve nektar limonata cay kahve salep "+
+ "makarna eriste bulgur pirinc mercimek nohut fasulye barbunya un irmik nisasta seker tuz salca ketcap mayonez hardal sos "+
+ "zeytin zeytinyag aycicek yag recel bal tahin pekmez helva findik fistik ceviz badem leblebi cekirdek kuruyemis "+
+ "sucuk salam sosis pastirma kavurma kiyma kofte tavuk pilic hindi bonfile but kanat baget dana kuzu balik ton sardalya "+
+ "biskuvi kraker gofret kek kurabiye cikolata bar cips patlamis sakiz seker sekerleme lokum dondurma puding "+
+ "deterjan yumusatici camasir bulasik tablet kirec cam yuzey temizleyici sabun sivi sampuan krem kremi losyon jel dus "+
+ "deodorant parfum kolonya macun macunu firca fircasi ped tampon bez bezi mendil pecete havlu tuvalet kagit "+
+ "mama kedi kopek poset folyo strec cop pil ampul").split(" "));
+const TSTEM=new Set([...TYPES].map(stem));
+function typeOf(p){if(!p)return[];const t=p.toks.slice(1).filter(x=>!/^[\d.%]/.test(x));
+  const known=t.filter(x=>TYPES.has(x)||TSTEM.has(x));return known.length?known:t.slice(-1)}
+const VSET=t=>t.filter(isVariant);
+/* o: ürün; rows: aday satırlar (bir tür indeksinden). Dönen: [{o,u,score}] benzerlik sırasıyla. */
+function similar(o,rows,opts){
+  const p=o&&o._p,u=p&&unitPrice(o);if(!p||!p.qty||!u)return[];
+  const ty=typeOf(p),own=new Set(distinct(p)),ov=VSET(p.toks),grp=opts&&opts.grp,max=(opts&&opts.ratio)||1.6;
+  if(!ty.length)return[];
+  const out=[];
+  for(const c of rows){if(c===o||c.market===o.market&&!(opts&&opts.sameMarket))continue;const q=c._p;
+    if(!q||!q.qty||q.qty.u!==p.qty.u)continue;
+    const r=q.qty.n/p.qty.n;if(r>max||r<1/max)continue;
+    const cty=typeOf(q);if(!ty.some(t=>cty.includes(t)))continue;
+    if(grp&&grp(c)!==grp(o))continue;
+    const cv=VSET(q.toks);if(ov.length&&cv.length&&!ov.some(v=>cv.some(w=>tmatch(v,w))))continue; // çilekli ≠ muzlu
+    const cd=distinct(q);let sh=0;for(const t of cd)if([...own].some(x=>tmatch(x,t)))sh++;
+    const jac=sh/Math.max(1,own.size+cd.length-sh);
+    const cu=unitPrice(c);if(!cu||!(cu.v>0))continue;
+    const extraV=cv.filter(v=>!ov.some(w=>tmatch(v,w))).length; // adayda fazladan çeşit (laktozsuz, light…)
+    out.push({o:c,u:cu,score:jac+(q.brand===p.brand?0.25:0)-Math.abs(Math.log(r))*0.5-extraV*0.3})}
+  return out.sort((a,b)=>b.score-a.score||a.u.v-b.u.v)}
+// Tür indeksi: tür kelimesi → satırlar (similar için aday havuzu)
+function typeIndex(rows){const ix=new Map();for(const o of rows){const p=o._p;if(!p||!p.qty)continue;
+  for(const t of typeOf(p))(ix.get(t)||ix.set(t,[]).get(t)).push(o)}return ix}
+function similarIn(ix,o,opts){const p=o&&o._p;if(!p)return[];const pool=new Set();
+  for(const t of typeOf(p))for(const c of ix.get(t)||[])pool.add(c);return similar(o,[...pool],opts)}
+
 /* Eşleştirme güveni: grubun teklifleri gerçekten aynı ürün mü? Adlardan çıkarılır (barkod verisi yok).
    yuksek: boy ve tüm kelimeler aynı · iyi: boy ve ayırt edici kelimeler aynı · orta: marka+boy aynı, adlar
    benzer (esnek eşleştirme). Fiyat farkı büyükse bir kademe düşer. Tek teklifli grupta null. */
@@ -233,6 +278,6 @@ function groupFrom(rows,lists){
     if(offers.length)out.push({offers,get p(){return offers[0]._p}})}
   for(const o of rows)if(!used.has(o))out.push({offers:[o],get p(){return o._p}});
   return out}
-const api={fold,parse,group,groupFrom,confidence,families,unitPrice,staples,unitCompare,sameSize,sizeLabel};
+const api={fold,parse,group,groupFrom,confidence,similar,similarIn,typeIndex,typeOf,families,unitPrice,staples,unitCompare,sameSize,sizeLabel};
 if(typeof module!=="undefined"&&module.exports)module.exports=api;else root.MF=api;
 })(typeof window!=="undefined"?window:globalThis);

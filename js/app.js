@@ -672,6 +672,7 @@ function productPage(g){
           ${(h=>h&&(h.lastDisc||h.lastPromo)?`<p class="mt-1.5 text-[11px] text-stone-500">${[h.lastDisc?`Son indirim ${dshort(h.lastDisc.ts)}`:"",h.lastPromo?`son kampanya ${dshort(h.lastPromo.ts)}`:""].filter(Boolean).join(" · ")}</p>`:"")(HIST[o.market]&&HIST[o.market]!=="…"?MFC.histInfo(HIST[o.market][o.id],o):null)}
         </div>`}).join("")}</div>
       ${histCard(g)}
+      ${similarCard(g)}
       ${sameSizeCard(g)}
       ${productInfo(g)}
       ${extLinks(g)}
@@ -768,6 +769,19 @@ function alternatives(g,limit=3){
 
 // Ürün sayfası: aynı boyda diğer markalar (pahalı ve ucuz hepsi, birim fiyata göre); bu ürün işaretli.
 // Hiç yoksa benzer boylu (±%25) daha ucuz muadiller gösterilir.
+// Diğer marketlerde benzerleri: grubun bulunmadığı her market için aynı tür, yakın boy, aynı bölümden
+// en benzer iki ürün. Aynı ürün olmadıkları açıkça yazılır; birim fiyatla karşılaştırılır.
+let SIX=null;
+function similarCard(g){
+  const b=best(g)||g.offers[0],u=b&&MF.unitPrice(b);if(!u)return"";
+  if(!SIX)SIX=MF.typeIndex(O.filter(o=>usable(o)&&o.in_stock&&!o.na));
+  const have=new Set(avail(g).map(o=>o.market)),res=MF.similarIn(SIX,b,{grp:grpOf}).filter(x=>!have.has(x.o.market)&&x.score>=0.15);
+  const per={};for(const x of res){const og=GI[x.o.id];if(!og||og===g)continue;(per[x.o.market]=per[x.o.market]||[]);if(per[x.o.market].length<2)per[x.o.market].push({...x,g:og})}
+  const ms=DATA_M.filter(m=>per[m]);if(!ms.length)return"";
+  const tag=x=>x.u.v<u.v*0.995?`%${Math.round((1-x.u.v/u.v)*100)} ucuz`:x.u.v>u.v*1.005?`%${Math.round((x.u.v/u.v-1)*100)} pahalı`:"aynı";
+  return`<div class="${card} p-4 mt-4 enter"><h2 class="font-extrabold flex items-center gap-2"><i data-lucide="shuffle" class="w-5 h-5 text-sky-600"></i>Diğer marketlerde benzerleri</h2>
+    <p class="text-xs text-stone-500 mt-0.5">${ms.map(m=>M[m].n).join(", ")}'de bu ürünün aynısı bulunamadı. Aynı tür ve yakın boydaki ürünler; birim fiyatla karşılaştırıldı (${tl(u.v)}/${u.u}).</p>
+    <div class="mt-2 ${div}">${ms.flatMap(m=>per[m]).map(x=>brandRow(x.o,x.g,x.u,tag(x))).join("")}</div></div>`}
 function sameSizeCard(g){
   const b=best(g)||g.offers[0],u=b&&MF.unitPrice(b);
   const seen=new Set(),rows=[];
@@ -1229,7 +1243,7 @@ function warmUp(rows,done){let i=0;const step=dl=>{const end=performance.now()+(
   if(i<rows.length)idle(step);else{WARM=true;done()}};idle(step)}
 function build(rows,groups){
   O=rows;OI={};ALT=new Map();O.forEach(o=>OI[o.id]=o);const now=Date.now();O.forEach(o=>{MFC.enrich(o,{checks:CHECKS,now});o.cat=categoryOf(o);o._promo=promoOf(o)});
-  G=groups?MF.groupFrom(O,groups):MF.group(O);HAY="";VOCAB=null;
+  G=groups?MF.groupFrom(O,groups):MF.group(O);HAY="";VOCAB=null;SIX=null;
   G.forEach(g=>{g.offers.sort((a,b)=>ORD.indexOf(a.market)-ORD.indexOf(b.market));g.key=g.offers[0].id;g.name=g.offers[0].name;g.image=(g.offers.find(o=>o.image)||{}).image;
     g.offers.forEach(o=>GI[o.id]=g)}); // arama metni (g.s) ilk aramada hazırlanır
   // 48 saatten uzun süredir doğrulanmayan ürünün kampanyası güncel sayılmaz

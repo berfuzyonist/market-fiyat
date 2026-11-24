@@ -208,3 +208,16 @@ test("esnek arama: eş anlamlı, ses değişimi, birleşik yazım, yazım hatas�
   assert.ok(!C.matchPlan("pinar sut 1 l",plan(["peynir"]).plan));
   assert.deepEqual(plan(["sut"]).fixed,[]); // kısa kelime düzeltilmez
 });
+
+test("benzer ürünler: aynı tür ve yakın boy, başka market; farklı çeşit ve tür elenir", () => {
+  const MF=require("../../js/match.js");
+  const rows=[["sok:1","sok","Anadolu Mutfağı Nohut 1 kg",60],["migros:1","migros","Migros Nohut 1000 G",63],
+    ["migros:2","migros","Migros Kırmızı Mercimek 1 Kg",70],["bim:1","bim","Saban Nohut 5 kg",250],
+    ["sok:2","sok","Pınar Süt 1 L",40],["migros:3","migros","Sek Laktozsuz Süt 1 L",45],["migros:4","migros","Sek Süt 1 L",44]]
+    .map(([id,market,name,price])=>({id,market,name,price,in_stock:1}));
+  MF.group(rows);const ix=MF.typeIndex(rows);
+  const n=MF.similarIn(ix,rows[0]).map(x=>x.o.id);
+  assert.deepEqual(n,["migros:1"]);                       // mercimek başka tür, 5 kg boy çok farklı
+  const s=MF.similarIn(ix,rows[4]).map(x=>x.o.id);
+  assert.deepEqual(s,["migros:4","migros:3"]);            // laktozsuz çeşit geride
+});
