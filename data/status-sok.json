@@ -1,18 +1,18 @@
 {
- "updated": "2026-11-24T10:36:37+00:00",
- "started_at": "2026-11-24T10:32:12+00:00",
- "finished_at": "2026-11-24T10:36:37+00:00",
- "checked_at": "2026-11-24T10:36:37+00:00",
+ "updated": "2026-11-24T11:33:44+00:00",
+ "started_at": "2026-11-24T11:29:39+00:00",
+ "finished_at": "2026-11-24T11:33:44+00:00",
+ "checked_at": "2026-11-24T11:33:44+00:00",
  "data_updated": "2026-11-24T08:00:28+00:00",
  "last_successful_data_at": "2026-11-24T08:00:28+00:00",
  "market": "sok",
  "mode": "deals",
- "status": "durduruldu: Şok kategorisi eksik/boş: indirimli-urunler-cms-pl1 (sayfa 1: durum 0, kart yok)",
+ "status": "durduruldu: Şok kategorisi eksik/boş: indirimli-urunler-cms-pl1 (sayfa 1: durum 404, kart yok)",
  "complete": false,
  "partial": false,
  "found": 0,
  "total": 2909,
- "seconds": 265,
+ "seconds": 245,
  "notes": [
   "kampanya sayfası okunamadı (durum 200); eski kampanya bilgisi korundu",
   "0 indirimli ürün güncellendi"
@@ -51,25 +51,18 @@
   }
  },
  "quality_warnings": [
-  "Tarama başarılı değil: durduruldu: Şok kategorisi eksik/boş: indirimli-urunler-cms-pl1 (sayfa 1: durum 0, kart yok)",
-  "Ağ veya sunucu hatası: https://www.sokmarket.com.tr/indirimli-urunler-cms-pl1"
+  "Tarama başarılı değil: durduruldu: Şok kategorisi eksik/boş: indirimli-urunler-cms-pl1 (sayfa 1: durum 404, kart yok)"
  ],
  "traffic": {
   "www.sokmarket.com.tr": {
    "requests": 4,
    "retries": 2,
    "megabytes": 0.5,
-   "errors": 3
+   "errors": 0
   }
  },
- "errors": [
-  {
-   "url": "https://www.sokmarket.com.tr/indirimli-urunler-cms-pl1",
-   "status": 0,
-   "detail": "TimeoutError('The read operation timed out')"
-  }
- ],
- "run_id": "45375679617",
+ "errors": [],
+ "run_id": "45384653698",
  "collected_products": 0,
  "total_products": 2909,
  "discounted_products": 457,
@@ -83,30 +76,23 @@
   "suspicious_discount": 0,
   "bad_url": 0
  },
- "duration_seconds": 265,
+ "duration_seconds": 245,
  "last_attempt_by_mode": {
   "deals": {
-   "checked_at": "2026-11-24T10:36:37+00:00",
-   "status": "durduruldu: Şok kategorisi eksik/boş: indirimli-urunler-cms-pl1 (sayfa 1: durum 0, kart yok)",
+   "checked_at": "2026-11-24T11:33:44+00:00",
+   "status": "durduruldu: Şok kategorisi eksik/boş: indirimli-urunler-cms-pl1 (sayfa 1: durum 404, kart yok)",
    "complete": false,
    "found": 0,
    "total": 2909,
-   "seconds": 265,
+   "seconds": 245,
    "data_updated": "2026-11-24T08:00:28+00:00",
-   "errors": [
-    {
-     "url": "https://www.sokmarket.com.tr/indirimli-urunler-cms-pl1",
-     "status": 0,
-     "detail": "TimeoutError('The read operation timed out')"
-    }
-   ],
+   "errors": [],
    "notes": [
     "kampanya sayfası okunamadı (durum 200); eski kampanya bilgisi korundu",
     "0 indirimli ürün güncellendi"
    ],
    "quality_warnings": [
-    "Tarama başarılı değil: durduruldu: Şok kategorisi eksik/boş: indirimli-urunler-cms-pl1 (sayfa 1: durum 0, kart yok)",
-    "Ağ veya sunucu hatası: https://www.sokmarket.com.tr/indirimli-urunler-cms-pl1"
+    "Tarama başarılı değil: durduruldu: Şok kategorisi eksik/boş: indirimli-urunler-cms-pl1 (sayfa 1: durum 404, kart yok)"
    ],
    "quality": {
     "category_count": 24,
@@ -146,7 +132,7 @@
      "requests": 4,
      "retries": 2,
      "megabytes": 0.5,
-     "errors": 3
+     "errors": 0
     }
    }
   },
