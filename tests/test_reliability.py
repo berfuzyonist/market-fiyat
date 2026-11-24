@@ -158,6 +158,8 @@ class MigrosTests(unittest.TestCase):
              "category": {"name": "Su", "prettyName": "su-c-84"}}]}}}
 
         def fake_get(url, accept="application/json"):
+            if url.endswith("/rest/categories"):
+                return 404, ""
             if "sitemap" in url:
                 return 200, sitemap
             if "powerbank" in url:
@@ -206,6 +208,30 @@ class MigrosTests(unittest.TestCase):
         self.assertEqual(back["migros:9"]["name"], "Su 1 L")
         self.assertIsNone(back["migros:9"]["brand"])
 
+    def test_category_tree_crawls_every_top_category_without_sitemap(self):
+        """Kategori ağacı alınabiliyorsa tüm üst kategoriler taranır; site haritası hiç istenmez."""
+        cfg = dict(collect.CFG["migros"], seed_ids=[])
+        tops = [f"kat{i}-c-{i}" for i in range(12)] + ["indirim-dt-0"]
+        asked = []
+
+        def fake_get(url, accept="application/json"):
+            asked.append(url)
+            if "sitemap" in url:
+                raise AssertionError("site haritası istenmemeli")
+            if url.endswith("/rest/categories"):
+                return 200, json.dumps({"data": [{"data": {"prettyName": t}} for t in tops]})
+            slug = url.split("/screens/")[1].split("?")[0]
+            return 200, json.dumps({"data": {"searchInfo": {"pageCount": 1, "hitCount": 1,
+                "storeProductInfos": [{"id": slug, "sku": slug, "name": "Elma Kg", "shownPrice": 5000, "regularPrice": 5000,
+                    "status": "IN_SALE", "unit": "GRAM", "unitAmount": 1000, "category": {"prettyName": slug},
+                    "categoryAscendants": [{"prettyName": slug}]}]}}})
+        products, notes = {}, []
+        with patch.dict(collect.CFG, {"migros": cfg}), patch.object(collect, "get", fake_get):
+            collect.migros(products, notes)
+        self.assertEqual(len(products), 12)
+        self.assertTrue(all(p["sold"] == "kg" for p in products.values()))
+        self.assertTrue(any("kategori ağacından 12" in n for n in notes))
+
     def test_discovery_stops_when_saturated_and_aggregation_categories_count_as_covered(self):
         """Site haritası keşfi, art arda yeni üst kategori çıkmayınca biter (Stop yok); 'Kategoriler'
         süzgecindeki alt kategoriler hiç ziyaret edilmez."""
@@ -215,6 +241,8 @@ class MigrosTests(unittest.TestCase):
         visited = []
 
         def fake_get(url, accept="application/json"):
+            if url.endswith("/rest/categories"):
+                return 404, ""
             if "sitemap" in url:
                 return 200, sitemap
             slug = url.split("/screens/")[1].split("?")[0]
@@ -243,6 +271,8 @@ class MigrosTests(unittest.TestCase):
         calls = {}
 
         def fake_get(url, accept="application/json"):
+            if url.endswith("/rest/categories"):
+                return 404, ""
             if "sitemap" in url:
                 return 200, sitemap
             n = int(url.rsplit("sayfa=", 1)[1])
