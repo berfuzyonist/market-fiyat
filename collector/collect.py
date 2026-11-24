@@ -186,7 +186,8 @@ def migros_item(p):
         "cat": top,
         "promo": promo,  # çoklu alım kampanyası: "2 Al 1 Öde", "2.si %70" gibi
         "brand": " ".join(str(((p.get("brand") or {}).get("name") if isinstance(p.get("brand"), dict) else "") or "").split())[:60] or None,
-        "sold": "kg" if p.get("unit") == "KILOGRAM" else None,
+        # Tartılı ürün: Migros fiyatı 1000 gram (ya da 1 kilogram) için verir
+        "sold": "kg" if (p.get("unit"), p.get("unitAmount")) in (("GRAM", 1000), ("KILOGRAM", 1), ("KILOGRAM", None)) else None,
     }
 
 
@@ -304,6 +305,28 @@ def migros(products, notes):
 
     for cid in c["seed_ids"]:  # bilinen üst kategori numaraları
         visit(f"x-c-{cid}")
+
+    # Sitenin kendi kategori ağacı (tek istek): tüm üst kategoriler buradan bulunur. Ağaç alınamazsa
+    # eski yönteme, site haritasındaki kategorileri tek tek ziyaret etmeye dönülür.
+    tops = []
+    try:
+        st, tree = get(c.get("category_tree", "https://www.migros.com.tr/rest/categories"))
+        if st == 200:
+            tops = [(x.get("data") or {}).get("prettyName") or "" for x in (json.loads(tree).get("data") or [])]
+            tops = [t for t in tops if "-c-" in t]
+    except (ValueError, AttributeError):
+        tops = []
+    if len(tops) >= 10:
+        for slug in tops:
+            try:
+                visit(slug)
+            except NotFound:
+                notes.append(f"kategori ağacındaki {slug} bulunamadı (404), atlandı")
+        notes.append(f"kategori ağacından {len(tops)} üst kategori okundu; {len(crawled)} üst kategori tarandı")
+        if gaps:
+            raise Stop(f"{len(gaps)} kategori sayfası boş döndü ({', '.join(gaps[:5])}); okunan ürünler kısmi olarak yayımlanır")
+        return
+    notes.append("kategori ağacı alınamadı; site haritasıyla keşfe dönüldü")
 
     # Site haritasındaki kategorileri, zaten taranan kategori adlarıyla eşleştir.
     status, body = get(c["sitemap"], "application/xml")
