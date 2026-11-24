@@ -1,10 +1,10 @@
 {
- "updated": "2026-11-23T14:37:30+00:00",
- "started_at": "2026-11-23T14:36:39+00:00",
- "finished_at": "2026-11-23T14:37:30+00:00",
- "checked_at": "2026-11-23T14:37:30+00:00",
- "data_updated": "2026-11-23T14:37:30+00:00",
- "last_successful_data_at": "2026-11-23T14:37:30+00:00",
+ "updated": "2026-11-24T06:21:33+00:00",
+ "started_at": "2026-11-24T06:20:42+00:00",
+ "finished_at": "2026-11-24T06:21:33+00:00",
+ "checked_at": "2026-11-24T06:21:33+00:00",
+ "data_updated": "2026-11-24T06:21:33+00:00",
+ "last_successful_data_at": "2026-11-24T06:21:33+00:00",
  "market": "bim",
  "mode": "aktuel",
  "status": "tamam",
@@ -66,7 +66,7 @@
   }
  },
  "errors": [],
- "run_id": "45196036842",
+ "run_id": "45339743801",
  "collected_products": 639,
  "total_products": 639,
  "discounted_products": 76,
@@ -83,13 +83,13 @@
  "duration_seconds": 51,
  "last_attempt_by_mode": {
   "aktuel": {
-   "checked_at": "2026-11-23T14:37:30+00:00",
+   "checked_at": "2026-11-24T06:21:33+00:00",
    "status": "tamam",
    "complete": true,
    "found": 639,
    "total": 639,
    "seconds": 51,
-   "data_updated": "2026-11-23T14:37:30+00:00",
+   "data_updated": "2026-11-24T06:21:33+00:00",
    "errors": [],
    "notes": [
     "18 Kasım Çarşamba: 17 ürün",
