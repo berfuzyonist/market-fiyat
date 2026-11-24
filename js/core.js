@@ -162,6 +162,41 @@ const PROCESSED=new Set(["puresi","salcasi","sosu","soslu","suyu","cipsi","aroma
   // ürünün kendisi değil, ilgili eşya ya da başka ürün: "Pirinç Süzgeci", "Su Kovası", "Peynir Mayası"
   "suzgec","suzgeci","kova","kovasi","paspas","maske","maskesi","mayasi","cesnisi","cesnili","harci","ozlu","surpriz","surprise","joy","oyuncakli","kafalar","boregi","emici"]);
 const searchWords=q=>fold(q).replace(/[^a-z0-9%]+/g," ").split(" ").filter(Boolean);
+// ---------- Esnek arama: eş anlamlılar, Türkçe ses değişimleri, birleşik yazım, yazım hatası ----------
+// Her sorgu kelimesi için kabul edilen biçimler. İlk biçim kelimenin kendisidir (tam puan).
+const SYN={tavuk:["pilic"],pilic:["tavuk"],kola:["cola"],cola:["kola"],cips:["cipsi"],wc:["tuvalet"],
+  dana:["sigir"],sigir:["dana"],kiyma:["kiymasi"],tuvalet:["wc"],pecete:["pecetesi"],sampuan:["sampuani"],
+  bez:["bezi"],deterjan:["deterjani"],yogurt:["yogurdu"],gazoz:["gazozu"],sut:["sutu"],ekmek:["ekmegi"]};
+function variants(w){
+  const v=[w,...(SYN[w]||[])];
+  // ünlü düşmesi: göğüs → göğsü, ağız → ağzı, burun → burnu
+  const m=w.match(/^(.{2,}[^aeiou])([iu])([^aeiou])$/);if(m&&w.length>=5)v.push(m[1]+m[3]);
+  // ünsüz yumuşaması: tavuk → tavuğu, kitap → kitabı, kanat → kanadı
+  const soft={k:"g",p:"b",t:"d"}[w.slice(-1)];if(soft&&w.length>=4)v.push(w.slice(0,-1)+soft);
+  return[...new Set(v)]}
+const lev=(a,b,max)=>{if(Math.abs(a.length-b.length)>max)return max+1;let p=Array.from({length:b.length+1},(_,i)=>i);
+  for(let i=1;i<=a.length;i++){const c=[i];let lo=i;for(let j=1;j<=b.length;j++){c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));lo=Math.min(lo,c[j])}
+    if(lo>max)return max+1;p=c}return p[b.length]};
+// Sorgu planı: her kelime için biçim listesi; hiçbir üründe geçmeyen kelime yazım hatası sayılıp
+// sözlükteki (ürün adlarındaki kelimeler) en yakın kelimelerle değiştirilir. fixed: düzeltilen kelimeler.
+function queryPlan(words,vocab,hay){
+  const fixed=[];
+  const plan=words.map(w=>{let alts=variants(w);
+    if(hay&&w.length>=4&&!alts.some(a=>hay.includes(a))&&vocab){
+      const max=w.length>=8?2:1,near=[];
+      // vocab: kelime → kaç üründe geçtiği (Map) ya da kelime listesi; yakın ve sık kelime önce
+      for(const e of vocab){const[t,n]=Array.isArray(e)?e:[e,1];if(t.length<3||Math.abs(t.length-w.length)>max+2)continue;
+        const d=lev(w,t.slice(0,Math.min(t.length,w.length+max)),max);if(d<=max)near.push([d,t,n])}
+      near.sort((a,b)=>a[0]-b[0]||b[2]-a[2]||a[1].length-b[1].length);
+      if(near.length){alts=[...new Set(near.slice(0,4).map(x=>x[1]))];fixed.push([w,alts[0]])}}
+    return alts});
+  return{plan,fixed}}
+// Bir metin plandaki her kelimeyi (herhangi bir biçimiyle) içeriyor mu; boşluksuz birleşik yazım da sayılır
+function matchPlan(text,plan){const ns=text.replace(/ /g,"");
+  return plan.every(alts=>alts.some(a=>text.includes(a)||(a.length>=5&&ns.includes(a))))}
+// Puanlama için her kelimenin adda geçen biçimi; eş anlamlı/düzeltilmiş biçim biraz daha düşük puan alır
+function resolvePlan(name,plan){const f=fold(name);return plan.map(alts=>alts.find(a=>f.includes(a))||alts[0])}
+
 function searchScore(name,cat,words){
   const f=fold(name).replace(/[^a-z0-9%]+/g," "),toks=f.split(" ").filter(Boolean);
   if(!words.length||!words.every(w=>f.includes(w)))return-1;
@@ -206,6 +241,6 @@ function histInfo(points,o,now){
     atLow:P.length>1&&cur.price<=lo+0.005&&hi>lo+0.005,events:ev,lastDisc:lastOf("disc"),lastPromo:lastOf("promo"),lastHike:lastOf("hike")};
 }
 
-const api={rowsFromSplit,histInfo,searchWords,searchScore,fold,toTs,rowsOf,promoOf,bimWhen,enrich,usable,disc,ago,priceUpdateLink,freshness,MONEY,STALE_HOURS};
+const api={rowsFromSplit,histInfo,searchWords,searchScore,variants,queryPlan,matchPlan,resolvePlan,fold,toTs,rowsOf,promoOf,bimWhen,enrich,usable,disc,ago,priceUpdateLink,freshness,MONEY,STALE_HOURS};
 if(typeof module!=="undefined"&&module.exports)module.exports=api;else root.MFC=api;
 })(typeof window!=="undefined"?window:globalThis);
