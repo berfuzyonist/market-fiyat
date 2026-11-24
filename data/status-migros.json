@@ -1,10 +1,10 @@
 {
- "updated": "2026-11-24T03:34:52+00:00",
- "started_at": "2026-11-24T03:29:55+00:00",
- "finished_at": "2026-11-24T03:34:52+00:00",
- "checked_at": "2026-11-24T03:34:52+00:00",
- "data_updated": "2026-11-24T03:34:52+00:00",
- "last_successful_data_at": "2026-11-24T03:34:52+00:00",
+ "updated": "2026-11-24T04:44:47+00:00",
+ "started_at": "2026-11-24T04:39:50+00:00",
+ "finished_at": "2026-11-24T04:44:47+00:00",
+ "checked_at": "2026-11-24T04:44:47+00:00",
+ "data_updated": "2026-11-24T04:44:47+00:00",
+ "last_successful_data_at": "2026-11-24T04:44:47+00:00",
  "market": "migros",
  "mode": "deals",
  "status": "tamam",
@@ -12,7 +12,7 @@
  "partial": false,
  "found": 2662,
  "total": 19647,
- "seconds": 297,
+ "seconds": 298,
  "notes": [
   "money-indirimli-market-urunleri-dt-5: 84/84 sayfa",
   "coklu-indirim-kampanyalari-ve-hediyeli-urunler-dt-1: 6/6 sayfa",
@@ -73,7 +73,7 @@
   }
  },
  "errors": [],
- "run_id": "45319907273",
+ "run_id": "45327924930",
  "collected_products": 2662,
  "total_products": 19647,
  "discounted_products": 2840,
@@ -87,16 +87,16 @@
   "suspicious_discount": 0,
   "bad_url": 0
  },
- "duration_seconds": 297,
+ "duration_seconds": 298,
  "last_attempt_by_mode": {
   "deals": {
-   "checked_at": "2026-11-24T03:34:52+00:00",
+   "checked_at": "2026-11-24T04:44:47+00:00",
    "status": "tamam",
    "complete": true,
    "found": 2662,
    "total": 19647,
-   "seconds": 297,
-   "data_updated": "2026-11-24T03:34:52+00:00",
+   "seconds": 298,
+   "data_updated": "2026-11-24T04:44:47+00:00",
    "errors": [],
    "notes": [
     "money-indirimli-market-urunleri-dt-5: 84/84 sayfa",
