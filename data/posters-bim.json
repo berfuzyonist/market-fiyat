@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-23T14:43:09+00:00",
+ "updated": "2026-11-24T06:37:59+00:00",
  "market": "bim",
  "items": [
   {
@@ -188,8 +188,8 @@
    "title": "BİM Aktüel · 27 Kasım Cuma",
    "group": "Aktüel",
    "label": "27 Kasım Cuma",
-   "image": "https://cdn1.bim.com.tr/uploads/afisler/30954460-0c79-4545-9bb1-99ea4c66da08.jpg",
-   "thumb": "https://cdn1.bim.com.tr/uploads/afisler/k_30954460-0c79-4545-9bb1-99ea4c66da08.jpg",
+   "image": "https://cdn1.bim.com.tr/uploads/afisler/e2dd2c1f-2564-4433-b6a1-002437fd1216.jpg",
+   "thumb": "https://cdn1.bim.com.tr/uploads/afisler/k_e2dd2c1f-2564-4433-b6a1-002437fd1216.jpg",
    "url": "https://www.bim.com.tr/Categories/680/afisler.aspx"
   },
   {
@@ -310,86 +310,6 @@
    "label": "20 Kasım-20 Aralık",
    "image": "https://cdn1.bim.com.tr/uploads/afisler/f8a78218-6cb7-4b32-92e7-22351c2bfb2d.jpg",
    "thumb": "https://cdn1.bim.com.tr/uploads/afisler/k_f8a78218-6cb7-4b32-92e7-22351c2bfb2d.jpg",
-   "url": "https://www.bim.com.tr/Categories/680/afisler.aspx"
-  },
-  {
-   "market": "bim",
-   "id": "bim:1714:0",
-   "title": "BİM İndirim · 20-23 Kasım",
-   "group": "İndirim",
-   "label": "20-23 Kasım",
-   "image": "https://cdn1.bim.com.tr/uploads/afisler/f02d0ad0-1b72-46c3-b054-0767d474c983.jpg",
-   "thumb": "https://cdn1.bim.com.tr/uploads/afisler/k_f02d0ad0-1b72-46c3-b054-0767d474c983.jpg",
-   "url": "https://www.bim.com.tr/Categories/680/afisler.aspx"
-  },
-  {
-   "market": "bim",
-   "id": "bim:1714:1",
-   "title": "BİM İndirim · 20-23 Kasım",
-   "group": "İndirim",
-   "label": "20-23 Kasım",
-   "image": "https://cdn1.bim.com.tr/uploads/afisler/64c5e5b1-ce9c-4d58-b3a8-fea74e4cb914.jpg",
-   "thumb": "https://cdn1.bim.com.tr/uploads/afisler/k_64c5e5b1-ce9c-4d58-b3a8-fea74e4cb914.jpg",
-   "url": "https://www.bim.com.tr/Categories/680/afisler.aspx"
-  },
-  {
-   "market": "bim",
-   "id": "bim:1714:2",
-   "title": "BİM İndirim · 20-23 Kasım",
-   "group": "İndirim",
-   "label": "20-23 Kasım",
-   "image": "https://cdn1.bim.com.tr/uploads/afisler/4d0eb755-ae66-405a-ab3e-1846193ee1a4.jpg",
-   "thumb": "https://cdn1.bim.com.tr/uploads/afisler/k_4d0eb755-ae66-405a-ab3e-1846193ee1a4.jpg",
-   "url": "https://www.bim.com.tr/Categories/680/afisler.aspx"
-  },
-  {
-   "market": "bim",
-   "id": "bim:1714:3",
-   "title": "BİM İndirim · 20-23 Kasım",
-   "group": "İndirim",
-   "label": "20-23 Kasım",
-   "image": "https://cdn1.bim.com.tr/uploads/afisler/54dfb3eb-4afc-4826-b334-752d54b4adab.jpg",
-   "thumb": "https://cdn1.bim.com.tr/uploads/afisler/k_54dfb3eb-4afc-4826-b334-752d54b4adab.jpg",
-   "url": "https://www.bim.com.tr/Categories/680/afisler.aspx"
-  },
-  {
-   "market": "bim",
-   "id": "bim:1714:4",
-   "title": "BİM İndirim · 20-23 Kasım",
-   "group": "İndirim",
-   "label": "20-23 Kasım",
-   "image": "https://cdn1.bim.com.tr/uploads/afisler/4ca5ed91-d7a0-4f6b-93e0-793e37fae1fd.jpg",
-   "thumb": "https://cdn1.bim.com.tr/uploads/afisler/k_4ca5ed91-d7a0-4f6b-93e0-793e37fae1fd.jpg",
-   "url": "https://www.bim.com.tr/Categories/680/afisler.aspx"
-  },
-  {
-   "market": "bim",
-   "id": "bim:1714:5",
-   "title": "BİM İndirim · 20-23 Kasım",
-   "group": "İndirim",
-   "label": "20-23 Kasım",
-   "image": "https://cdn1.bim.com.tr/uploads/afisler/bd6411f8-a598-464c-abbf-f1fa3631ebfd.jpg",
-   "thumb": "https://cdn1.bim.com.tr/uploads/afisler/k_bd6411f8-a598-464c-abbf-f1fa3631ebfd.jpg",
-   "url": "https://www.bim.com.tr/Categories/680/afisler.aspx"
-  },
-  {
-   "market": "bim",
-   "id": "bim:1714:6",
-   "title": "BİM İndirim · 20-23 Kasım",
-   "group": "İndirim",
-   "label": "20-23 Kasım",
-   "image": "https://cdn1.bim.com.tr/uploads/afisler/ab7ce3a1-e186-485f-be42-8ea4ebcb67ce.jpg",
-   "thumb": "https://cdn1.bim.com.tr/uploads/afisler/k_ab7ce3a1-e186-485f-be42-8ea4ebcb67ce.jpg",
-   "url": "https://www.bim.com.tr/Categories/680/afisler.aspx"
-  },
-  {
-   "market": "bim",
-   "id": "bim:1714:7",
-   "title": "BİM İndirim · 20-23 Kasım",
-   "group": "İndirim",
-   "label": "20-23 Kasım",
-   "image": "https://cdn1.bim.com.tr/uploads/afisler/45d557cf-f4de-446d-9dc1-690064deb8ed.jpg",
-   "thumb": "https://cdn1.bim.com.tr/uploads/afisler/k_45d557cf-f4de-446d-9dc1-690064deb8ed.jpg",
    "url": "https://www.bim.com.tr/Categories/680/afisler.aspx"
   },
   {

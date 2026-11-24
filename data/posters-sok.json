@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-22T22:13:24+00:00",
+ "updated": "2026-11-24T06:41:25+00:00",
  "market": "sok",
  "items": [
   {
@@ -12,6 +12,19 @@
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/57049046-49f8-4d6f-bf69-685eff597bcc.jpg",
    "thumb": "",
    "url": "https://www.sokmarket.com.tr/paraf500-prm-9fa957cf-74ce-468d-9ee6-6e514e932d7a"
+  },
+  {
+   "market": "sok",
+   "id": "sok:1dbe574a-1233-4570-9017-acab0453c165",
+   "title": "50 TL ve üzeri alışverişte 199.00 TL!",
+   "ids": [
+    "sok:754824"
+   ],
+   "group": "Kampanya",
+   "label": "Stoklarla sınırlıdır.",
+   "image": "https://images.ceptesok.com/promotion-assets/sub-folder/58b8d7a8-7065-4265-ac2f-73277800c36c.jpg",
+   "thumb": "",
+   "url": "https://www.sokmarket.com.tr/50-tl-ve-uzeri-alisveriste-199-00-tl-prm-1dbe574a-1233-4570-9017-acab0453c165"
   },
   {
    "market": "sok",
@@ -198,20 +211,6 @@
   },
   {
    "market": "sok",
-   "id": "sok:4a325a3c-5fab-4852-8928-bb37d951aad3",
-   "title": "50 TL ve üzeri alışverişte 30.00 TL!",
-   "ids": [
-    "sok:849995",
-    "sok:851955"
-   ],
-   "group": "Kampanya",
-   "label": "Stoklarla sınırlıdır.",
-   "image": "https://images.ceptesok.com/promotion-assets/sub-folder/26de96e5-04df-44ce-a93d-9a53d175cb35.jpg",
-   "thumb": "",
-   "url": "https://www.sokmarket.com.tr/50-tl-ve-uzeri-alisveriste-30-00-tl-prm-4a325a3c-5fab-4852-8928-bb37d951aad3"
-  },
-  {
-   "market": "sok",
    "id": "sok:84f365df-33e3-4768-bb0c-9aa5ede897f2",
    "title": "50 TL ve üzeri alışverişte 119.00 TL!",
    "ids": [
@@ -373,6 +372,19 @@
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/6bf26c33-5c69-4a3e-aa09-3dd0d314fe1d.jpg",
    "thumb": "",
    "url": "https://www.sokmarket.com.tr/50-tl-ve-uzeri-alisveriste-99-00-tl-prm-022050eb-918d-4645-9680-87207d4d2376"
+  },
+  {
+   "market": "sok",
+   "id": "sok:6a51a502-8184-45a2-91f4-fe5d1338f0c0",
+   "title": "1 ALANA 1 BEDAVA",
+   "ids": [
+    "sok:556782"
+   ],
+   "group": "Kampanya",
+   "label": "Stoklarla sınırlıdır.",
+   "image": "https://images.ceptesok.com/promotion-assets/sub-folder/54ef29c9-3ed7-4a1a-ab4d-e52d394ba91c.jpg",
+   "thumb": "",
+   "url": "https://www.sokmarket.com.tr/1-alana-1-bedava-prm-6a51a502-8184-45a2-91f4-fe5d1338f0c0"
   },
   {
    "market": "sok",
@@ -551,6 +563,20 @@
   },
   {
    "market": "sok",
+   "id": "sok:6a1cbc53-ee08-4b89-9047-dba2222d2787",
+   "title": "50 TL ve üzeri alışverişte 85.00 TL!",
+   "ids": [
+    "sok:817026",
+    "sok:816106"
+   ],
+   "group": "Kampanya",
+   "label": "Stoklarla sınırlıdır.",
+   "image": "https://images.ceptesok.com/promotion-assets/sub-folder/30da285d-be79-4a79-9a86-04454d08662b.jpg",
+   "thumb": "",
+   "url": "https://www.sokmarket.com.tr/50-tl-ve-uzeri-alisveriste-85-00-tl-prm-6a1cbc53-ee08-4b89-9047-dba2222d2787"
+  },
+  {
+   "market": "sok",
    "id": "sok:1bb51653-fb43-4e27-b6de-cbfaa14a2d3a",
    "title": "50 TL ve üzeri alışverişte 179.00 TL!",
    "ids": [
@@ -605,19 +631,6 @@
   },
   {
    "market": "sok",
-   "id": "sok:1dbe574a-1233-4570-9017-acab0453c165",
-   "title": "50 TL ve üzeri alışverişte 199.00 TL!",
-   "ids": [
-    "sok:754824"
-   ],
-   "group": "Kampanya",
-   "label": "Stoklarla sınırlıdır.",
-   "image": "https://images.ceptesok.com/promotion-assets/sub-folder/58b8d7a8-7065-4265-ac2f-73277800c36c.jpg",
-   "thumb": "",
-   "url": "https://www.sokmarket.com.tr/50-tl-ve-uzeri-alisveriste-199-00-tl-prm-1dbe574a-1233-4570-9017-acab0453c165"
-  },
-  {
-   "market": "sok",
    "id": "sok:5dbb1a03-4a74-457b-9e2a-14b012695c04",
    "title": "50 TL ve üzeri alışverişte 55.00 TL!",
    "ids": [
@@ -628,6 +641,19 @@
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/8b3fcd08-87f9-48f0-888c-555f91e06850.jpg",
    "thumb": "",
    "url": "https://www.sokmarket.com.tr/50-tl-ve-uzeri-alisveriste-55-00-tl-prm-5dbb1a03-4a74-457b-9e2a-14b012695c04"
+  },
+  {
+   "market": "sok",
+   "id": "sok:92213a3b-f989-40b6-99e6-2dfcb2c1dc6a",
+   "title": "50 TL ve üzeri alışverişte 185.00 TL!",
+   "ids": [
+    "sok:9024"
+   ],
+   "group": "Kampanya",
+   "label": "Stoklarla sınırlıdır.",
+   "image": "https://images.ceptesok.com/promotion-assets/sub-folder/7ce4fd68-f729-4c30-be8b-eeb3b387499a.jpg",
+   "thumb": "",
+   "url": "https://www.sokmarket.com.tr/50-tl-ve-uzeri-alisveriste-185-00-tl-prm-92213a3b-f989-40b6-99e6-2dfcb2c1dc6a"
   },
   {
    "market": "sok",
