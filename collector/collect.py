@@ -244,7 +244,23 @@ def migros(products, notes):
                 votes[top] = votes.get(top, 0) + 1
         return max(votes, key=votes.get) if votes else None
 
-    gaps = []
+    gaps, gap_pages = [], []
+
+    def retry_gaps():
+        """Tarama sonunda (dakikalar sonra) boş dönen sayfaları bir kez daha ister; dolu gelenler boşluk sayılmaz."""
+        if not gap_pages:
+            return
+        time.sleep(30)
+        for slug, page, prev in list(gap_pages):
+            info = page_of(slug, page)
+            items = (info or {}).get("storeProductInfos") or []
+            if items and items[0].get("id") != prev:
+                remember_categories(info)
+                for p in items:
+                    products[f"migros:{p.get('sku')}"] = migros_item(p)
+                gap_pages.remove((slug, page, prev))
+                gaps.remove(f"{slug} s.{page}")
+                notes.append(f"{slug}: sayfa {page} sonradan okundu")
 
     def crawl(slug):
         page, pages, prev, miss = 1, 1, None, 0
@@ -263,6 +279,7 @@ def migros(products, notes):
                 items = (info or {}).get("storeProductInfos") or []
             if not info or not items or items[0].get("id") == prev:
                 gaps.append(f"{slug} s.{page}")
+                gap_pages.append((slug, page, prev))
                 miss += 1
                 if miss >= 3 or page >= pages:
                     notes.append(f"{slug}: sayfa {page} boş döndü, kategorinin kalanı atlandı")
@@ -323,6 +340,7 @@ def migros(products, notes):
             except NotFound:
                 notes.append(f"kategori ağacındaki {slug} bulunamadı (404), atlandı")
         notes.append(f"kategori ağacından {len(tops)} üst kategori okundu; {len(crawled)} üst kategori tarandı")
+        retry_gaps()
         if gaps:
             raise Stop(f"{len(gaps)} kategori sayfası boş döndü ({', '.join(gaps[:5])}); okunan ürünler kısmi olarak yayımlanır")
         return
@@ -364,6 +382,7 @@ def migros(products, notes):
                 raise Stop(f"site haritası kategorilerinin çoğu 404 döndü ({len(gone)}/{extra}); site düzeni değişmiş olabilir")
     if gone:
         notes.append(f"site haritasındaki {len(gone)} kategori artık yok (404), atlandı: {', '.join(gone[:10])}")
+    retry_gaps()
     if gaps:
         raise Stop(f"{len(gaps)} kategori sayfası boş döndü ({', '.join(gaps[:5])}); okunan ürünler kısmi olarak yayımlanır")
     notes.append(f"{len(crawled)} üst kategori tarandı; {len(page_cache)} kategori sayfası tekrar istek yapılmadan önbellekten kullanıldı")
