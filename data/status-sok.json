@@ -1,22 +1,22 @@
 {
- "updated": "2026-11-24T04:03:15+00:00",
- "started_at": "2026-11-24T04:01:33+00:00",
- "finished_at": "2026-11-24T04:03:15+00:00",
- "checked_at": "2026-11-24T04:03:15+00:00",
- "data_updated": "2026-11-24T04:03:15+00:00",
- "last_successful_data_at": "2026-11-24T04:03:15+00:00",
+ "updated": "2026-11-24T05:12:05+00:00",
+ "started_at": "2026-11-24T05:10:25+00:00",
+ "finished_at": "2026-11-24T05:12:05+00:00",
+ "checked_at": "2026-11-24T05:12:05+00:00",
+ "data_updated": "2026-11-24T05:12:05+00:00",
+ "last_successful_data_at": "2026-11-24T05:12:05+00:00",
  "market": "sok",
  "mode": "deals",
  "status": "tamam",
  "complete": true,
  "partial": false,
- "found": 423,
+ "found": 420,
  "total": 2892,
- "seconds": 102,
+ "seconds": 100,
  "notes": [
   "kampanyalar: 88 ürün",
   "indirimli-urunler-cms-pl1: sitede 438, okunan 435, 22/22 sayfa (son sayfa)",
-  "423 indirimli ürün güncellendi"
+  "420 indirimli ürün güncellendi"
  ],
  "quality": {
   "category_count": 22,
@@ -59,8 +59,8 @@
   }
  },
  "errors": [],
- "run_id": "45323477242",
- "collected_products": 423,
+ "run_id": "45331400290",
+ "collected_products": 420,
  "total_products": 2892,
  "discounted_products": 440,
  "invalid_products": 0,
@@ -73,21 +73,21 @@
   "suspicious_discount": 0,
   "bad_url": 0
  },
- "duration_seconds": 102,
+ "duration_seconds": 100,
  "last_attempt_by_mode": {
   "deals": {
-   "checked_at": "2026-11-24T04:03:15+00:00",
+   "checked_at": "2026-11-24T05:12:05+00:00",
    "status": "tamam",
    "complete": true,
-   "found": 423,
+   "found": 420,
    "total": 2892,
-   "seconds": 102,
-   "data_updated": "2026-11-24T04:03:15+00:00",
+   "seconds": 100,
+   "data_updated": "2026-11-24T05:12:05+00:00",
    "errors": [],
    "notes": [
     "kampanyalar: 88 ürün",
     "indirimli-urunler-cms-pl1: sitede 438, okunan 435, 22/22 sayfa (son sayfa)",
-    "423 indirimli ürün güncellendi"
+    "420 indirimli ürün güncellendi"
    ],
    "quality_warnings": [],
    "quality": {
