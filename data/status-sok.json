@@ -1,24 +1,25 @@
 {
- "updated": "2026-11-24T11:33:44+00:00",
- "started_at": "2026-11-24T11:29:39+00:00",
- "finished_at": "2026-11-24T11:33:44+00:00",
- "checked_at": "2026-11-24T11:33:44+00:00",
- "data_updated": "2026-11-24T08:00:28+00:00",
- "last_successful_data_at": "2026-11-24T08:00:28+00:00",
+ "updated": "2026-11-24T12:39:41+00:00",
+ "started_at": "2026-11-24T12:37:52+00:00",
+ "finished_at": "2026-11-24T12:39:41+00:00",
+ "checked_at": "2026-11-24T12:39:41+00:00",
+ "data_updated": "2026-11-24T12:39:41+00:00",
+ "last_successful_data_at": "2026-11-24T12:39:41+00:00",
  "market": "sok",
  "mode": "deals",
- "status": "durduruldu: Şok kategorisi eksik/boş: indirimli-urunler-cms-pl1 (sayfa 1: durum 404, kart yok)",
- "complete": false,
+ "status": "tamam",
+ "complete": true,
  "partial": false,
- "found": 0,
- "total": 2909,
- "seconds": 245,
+ "found": 426,
+ "total": 2912,
+ "seconds": 108,
  "notes": [
-  "kampanya sayfası okunamadı (durum 200); eski kampanya bilgisi korundu",
-  "0 indirimli ürün güncellendi"
+  "kampanyalar: 91 ürün",
+  "indirimli-urunler-cms-pl1: sitede 442, okunan 454, 23/23 sayfa (son sayfa)",
+  "426 indirimli ürün güncellendi"
  ],
  "quality": {
-  "category_count": 24,
+  "category_count": 25,
   "empty_category_count": 0,
   "campaign_date_category_count": 0,
   "other_count": 27,
@@ -31,7 +32,7 @@
    "Ev & Yaşam": 274,
    "Elektronik": 39,
    "Yemeklik Malzemeler": 268,
-   "Kişisel Bakım & Kozmetik": 380,
+   "Kişisel Bakım & Kozmetik": 381,
    "Ekmek & Pastane": 56,
    "Kahvaltılık": 150,
    "Temizlik": 206,
@@ -40,32 +41,31 @@
    "Diğer": 27,
    "Kağıt Ürünleri": 53,
    "Evcil Dostlar": 43,
-   "Giyim & Aksesuar": 53,
+   "Giyim & Aksesuar": 54,
    "Meyve & Sebze": 54,
    "Dondurma": 85,
    "Ev & Mutfak": 2,
    "Et, Tavuk & Şarküteri": 1,
    "Anne & Bebek": 1,
    "Bakliyat & Temel Gıda": 2,
-   "Oyuncak": 1
+   "Oyuncak": 1,
+   "Atıştırmalık & Şekerleme": 1
   }
  },
- "quality_warnings": [
-  "Tarama başarılı değil: durduruldu: Şok kategorisi eksik/boş: indirimli-urunler-cms-pl1 (sayfa 1: durum 404, kart yok)"
- ],
+ "quality_warnings": [],
  "traffic": {
   "www.sokmarket.com.tr": {
-   "requests": 4,
-   "retries": 2,
-   "megabytes": 0.5,
+   "requests": 24,
+   "retries": 0,
+   "megabytes": 13.5,
    "errors": 0
   }
  },
  "errors": [],
- "run_id": "45384653698",
- "collected_products": 0,
- "total_products": 2909,
- "discounted_products": 457,
+ "run_id": "45395357508",
+ "collected_products": 426,
+ "total_products": 2912,
+ "discounted_products": 460,
  "invalid_products": 0,
  "data_quality": {
   "missing_id": 0,
@@ -76,26 +76,25 @@
   "suspicious_discount": 0,
   "bad_url": 0
  },
- "duration_seconds": 245,
+ "duration_seconds": 108,
  "last_attempt_by_mode": {
   "deals": {
-   "checked_at": "2026-11-24T11:33:44+00:00",
-   "status": "durduruldu: Şok kategorisi eksik/boş: indirimli-urunler-cms-pl1 (sayfa 1: durum 404, kart yok)",
-   "complete": false,
-   "found": 0,
-   "total": 2909,
-   "seconds": 245,
-   "data_updated": "2026-11-24T08:00:28+00:00",
+   "checked_at": "2026-11-24T12:39:41+00:00",
+   "status": "tamam",
+   "complete": true,
+   "found": 426,
+   "total": 2912,
+   "seconds": 108,
+   "data_updated": "2026-11-24T12:39:41+00:00",
    "errors": [],
    "notes": [
-    "kampanya sayfası okunamadı (durum 200); eski kampanya bilgisi korundu",
-    "0 indirimli ürün güncellendi"
+    "kampanyalar: 91 ürün",
+    "indirimli-urunler-cms-pl1: sitede 442, okunan 454, 23/23 sayfa (son sayfa)",
+    "426 indirimli ürün güncellendi"
    ],
-   "quality_warnings": [
-    "Tarama başarılı değil: durduruldu: Şok kategorisi eksik/boş: indirimli-urunler-cms-pl1 (sayfa 1: durum 404, kart yok)"
-   ],
+   "quality_warnings": [],
    "quality": {
-    "category_count": 24,
+    "category_count": 25,
     "empty_category_count": 0,
     "campaign_date_category_count": 0,
     "other_count": 27,
@@ -108,7 +107,7 @@
      "Ev & Yaşam": 274,
      "Elektronik": 39,
      "Yemeklik Malzemeler": 268,
-     "Kişisel Bakım & Kozmetik": 380,
+     "Kişisel Bakım & Kozmetik": 381,
      "Ekmek & Pastane": 56,
      "Kahvaltılık": 150,
      "Temizlik": 206,
@@ -117,21 +116,22 @@
      "Diğer": 27,
      "Kağıt Ürünleri": 53,
      "Evcil Dostlar": 43,
-     "Giyim & Aksesuar": 53,
+     "Giyim & Aksesuar": 54,
      "Meyve & Sebze": 54,
      "Dondurma": 85,
      "Ev & Mutfak": 2,
      "Et, Tavuk & Şarküteri": 1,
      "Anne & Bebek": 1,
      "Bakliyat & Temel Gıda": 2,
-     "Oyuncak": 1
+     "Oyuncak": 1,
+     "Atıştırmalık & Şekerleme": 1
     }
    },
    "traffic": {
     "www.sokmarket.com.tr": {
-     "requests": 4,
-     "retries": 2,
-     "megabytes": 0.5,
+     "requests": 24,
+     "retries": 0,
+     "megabytes": 13.5,
      "errors": 0
     }
    }
