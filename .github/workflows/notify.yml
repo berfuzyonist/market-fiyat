@@ -1,12 +1,16 @@
 name: Bildirimler
 
-# Telefon bildirimleri (ntfy): yeni afişler, takip listesindeki fırsatlar, sabah özeti.
+# Telefon bildirimleri (ntfy): yeni afişler, yeni çoklu alım kampanyaları, takip listesindeki fırsatlar,
+# sabah özeti. TR 00.00–07.59 arası gönderilmez; birikenler sabah gider.
 # Konu adı yalnızca NTFY_TOPIC gizli ayarındadır. Ayar yoksa iş bildirim göndermeden biter.
 on:
+  # Veri ya da afiş her yayımlandığında hemen (yeni afiş, yeni kampanya, takipteki fiyat değişimi).
+  # Bot itmeleri başka iş akışını tetiklemediği için 'workflow_run' kullanılır.
+  workflow_run:
+    workflows: ["Afişler", "Şok", "Migros", "BİM"]
+    types: [completed]
   schedule:
-    - cron: "7 6 * * *"    # TR 09:07 (sabah özeti dahil)
-    - cron: "7 14 * * *"   # TR 17:07 (öğleden sonraki afişlerden sonra)
-    - cron: "7 18 * * *"   # TR 21:07
+    - cron: "7 6 * * *"    # TR 09.07: sabah özeti (gece biriken bildirimler de bu saatte gider)
   workflow_dispatch:
     inputs:
       ornek:

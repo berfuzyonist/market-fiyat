@@ -1,11 +1,10 @@
 name: Afişler
 
-# BİM afişleri, Şok kampanya görselleri ve Migros ana sayfa kampanyaları (kapak + ürün listesi) günde iki kez okunur.
+# BİM afişleri, Şok kampanya görselleri ve Migros ana sayfa kampanyaları (kapak + ürün listesi) günde beş kez okunur (marketlere yük: her seferinde birkaç istek).
 # Görseller indirilmez; data/posters-<market>.json yalnızca marketin kendi adreslerini tutar.
 on:
   schedule:
-    - cron: "43 5 * * *"   # TR 08:43
-    - cron: "43 13 * * *"  # TR 16:43
+    - cron: "43 5,8,11,14,17 * * *"   # TR 08.43, 11.43, 14.43, 17.43, 20.43 (yeni afiş gün içinde de yakalanır)
   workflow_dispatch:
 permissions:
   contents: write
