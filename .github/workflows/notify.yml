@@ -1,0 +1,45 @@
+name: Bildirimler
+
+# Telefon bildirimleri (ntfy): yeni afişler, takip listesindeki fırsatlar, sabah özeti.
+# Konu adı yalnızca NTFY_TOPIC gizli ayarındadır. Ayar yoksa iş bildirim göndermeden biter.
+on:
+  schedule:
+    - cron: "7 6 * * *"    # TR 09:07 (sabah özeti dahil)
+    - cron: "7 14 * * *"   # TR 17:07 (öğleden sonraki afişlerden sonra)
+    - cron: "7 18 * * *"   # TR 21:07
+  workflow_dispatch:
+permissions:
+  contents: write
+  issues: read
+concurrency:
+  group: notify
+  cancel-in-progress: false
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - name: Bildirimleri gönder
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 scripts/notify.py
+      - name: Durumu kaydet
+        run: |
+          [ -f data/notify-state.json ] || exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cp data/notify-state.json "$RUNNER_TEMP/s.json"
+          for attempt in 1 2 3 4 5; do
+            git fetch --no-tags origin main && git reset --hard origin/main
+            cp "$RUNNER_TEMP/s.json" data/notify-state.json
+            git add data/notify-state.json
+            git diff --cached --quiet && exit 0
+            git commit -qm "bildirim durumu"
+            git push origin HEAD:refs/heads/main && exit 0
+            sleep $((attempt * 3))
+          done
+          exit 1
