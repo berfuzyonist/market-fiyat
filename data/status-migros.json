@@ -1,20 +1,22 @@
 {
- "updated": "2026-11-25T04:44:00+00:00",
- "started_at": "2026-11-25T04:43:53+00:00",
- "finished_at": "2026-11-25T04:44:00+00:00",
- "checked_at": "2026-11-25T04:44:00+00:00",
- "data_updated": "2026-11-25T03:40:59+00:00",
- "last_successful_data_at": "2026-11-25T03:40:59+00:00",
+ "updated": "2026-11-25T06:34:20+00:00",
+ "started_at": "2026-11-25T06:29:24+00:00",
+ "finished_at": "2026-11-25T06:34:20+00:00",
+ "checked_at": "2026-11-25T06:34:20+00:00",
+ "data_updated": "2026-11-25T06:34:20+00:00",
+ "last_successful_data_at": "2026-11-25T06:34:20+00:00",
  "market": "migros",
  "mode": "deals",
- "status": "durduruldu: www.migros.com.tr: durum 403",
- "complete": false,
+ "status": "tamam",
+ "complete": true,
  "partial": false,
- "found": 0,
- "total": 19860,
- "seconds": 7,
+ "found": 2647,
+ "total": 19862,
+ "seconds": 297,
  "notes": [
-  "0 indirimli ürün güncellendi"
+  "money-indirimli-market-urunleri-dt-5: 84/84 sayfa",
+  "coklu-indirim-kampanyalari-ve-hediyeli-urunler-dt-1: 5/5 sayfa",
+  "2647 indirimli ürün güncellendi"
  ],
  "quality": {
   "category_count": 36,
@@ -33,7 +35,7 @@
    "Kişisel Bakım, Kozmetik, Sağlık": 2744,
    "Süt & Süt Ürünleri": 23,
    "Bakliyat & Temel Gıda": 13,
-   "Et, Tavuk, Balık": 585,
+   "Et, Tavuk, Balık": 587,
    "Hazır Yemek, Meze": 289,
    "Bebek": 344,
    "Anne & Bebek": 5,
@@ -61,29 +63,20 @@
    "Giyim & Aksesuar": 14
   }
  },
- "quality_warnings": [
-  "Tarama başarılı değil: durduruldu: www.migros.com.tr: durum 403",
-  "HTTP 403: erişim sınırı/engeli; tarama durduruldu"
- ],
+ "quality_warnings": [],
  "traffic": {
   "www.migros.com.tr": {
-   "requests": 1,
+   "requests": 89,
    "retries": 0,
-   "megabytes": 0.0,
-   "errors": 1
+   "megabytes": 1.5,
+   "errors": 0
   }
  },
- "errors": [
-  {
-   "url": "https://www.migros.com.tr/rest/search/screens/money-indirimli-market-urunleri-dt-5?sayfa=1",
-   "status": 403,
-   "detail": ""
-  }
- ],
- "run_id": "45548741855",
- "collected_products": 0,
- "total_products": 19860,
- "discounted_products": 2825,
+ "errors": [],
+ "run_id": "45560957428",
+ "collected_products": 2647,
+ "total_products": 19862,
+ "discounted_products": 2828,
  "invalid_products": 0,
  "data_quality": {
   "missing_id": 0,
@@ -94,30 +87,23 @@
   "suspicious_discount": 0,
   "bad_url": 0
  },
- "duration_seconds": 7,
+ "duration_seconds": 297,
  "last_attempt_by_mode": {
   "deals": {
-   "checked_at": "2026-11-25T04:44:00+00:00",
-   "status": "durduruldu: www.migros.com.tr: durum 403",
-   "complete": false,
-   "found": 0,
-   "total": 19860,
-   "seconds": 7,
-   "data_updated": "2026-11-25T03:40:59+00:00",
-   "errors": [
-    {
-     "url": "https://www.migros.com.tr/rest/search/screens/money-indirimli-market-urunleri-dt-5?sayfa=1",
-     "status": 403,
-     "detail": ""
-    }
-   ],
+   "checked_at": "2026-11-25T06:34:20+00:00",
+   "status": "tamam",
+   "complete": true,
+   "found": 2647,
+   "total": 19862,
+   "seconds": 297,
+   "data_updated": "2026-11-25T06:34:20+00:00",
+   "errors": [],
    "notes": [
-    "0 indirimli ürün güncellendi"
+    "money-indirimli-market-urunleri-dt-5: 84/84 sayfa",
+    "coklu-indirim-kampanyalari-ve-hediyeli-urunler-dt-1: 5/5 sayfa",
+    "2647 indirimli ürün güncellendi"
    ],
-   "quality_warnings": [
-    "Tarama başarılı değil: durduruldu: www.migros.com.tr: durum 403",
-    "HTTP 403: erişim sınırı/engeli; tarama durduruldu"
-   ],
+   "quality_warnings": [],
    "quality": {
     "category_count": 36,
     "empty_category_count": 0,
@@ -135,7 +121,7 @@
      "Kişisel Bakım, Kozmetik, Sağlık": 2744,
      "Süt & Süt Ürünleri": 23,
      "Bakliyat & Temel Gıda": 13,
-     "Et, Tavuk, Balık": 585,
+     "Et, Tavuk, Balık": 587,
      "Hazır Yemek, Meze": 289,
      "Bebek": 344,
      "Anne & Bebek": 5,
@@ -165,10 +151,10 @@
    },
    "traffic": {
     "www.migros.com.tr": {
-     "requests": 1,
+     "requests": 89,
      "retries": 0,
-     "megabytes": 0.0,
-     "errors": 1
+     "megabytes": 1.5,
+     "errors": 0
     }
    }
   },
