@@ -142,10 +142,24 @@ def new_posters(state):
             items = json.loads((ROOT / "data" / f"posters-{m}.json").read_text(encoding="utf-8")).get("items") or []
         except (OSError, ValueError):
             continue
+        groups = {}
         for it in items:
-            if it.get("id") and it["id"] not in seen:
-                out.append(it)
+            if not it.get("id") or it["id"] in seen:
+                continue
+            if m == "bim":  # BİM bir günün aktüelini birkaç sayfa yayımlar: günde tek bildirim
+                k = (it.get("group"), it.get("label"))
+                if k in groups:
+                    continue
+                groups[k] = 1
+            out.append(it)
     return out
+
+
+def poster_message(it):
+    title = it.get("title") or ""
+    if it.get("market") == "bim":
+        title = f"BİM {it.get('group') or ''} · {it.get('label') or ''}"
+    return (f"Yeni afiş · {NAMES.get(it.get('market'), '')}: {title}", it.get("label") or it.get("desc") or "Yeni kampanya")
 
 
 def deal_digest(products, state, now):
@@ -185,6 +199,13 @@ def main(argv):
     state = json.loads(STATE.read_text(encoding="utf-8")) if STATE.exists() else {}
     first = not state
     products, groups = load_products(), load_groups()
+    if "--ornek" in argv:  # her marketten en yeni afiş: görüntü ve dokunma davranışını denemek için
+        for m in NAMES:
+            items = [it for it in new_posters({}) if it.get("market") == m]
+            if items:
+                t, msg = poster_message(items[0])
+                send(topic, "Örnek · " + t, msg, click=SITE + "#afis/" + items[0]["id"], attach=items[0].get("image"), tags=["label"], dry=dry)
+        return 0
     num, body = watch_issue()
     watch = expand(parse_watch(body), groups)
     sent = state.get("sent") or {}
@@ -204,9 +225,8 @@ def main(argv):
                  "\n".join(t for _, t in alerts[:12]) + (f"\n… ve {len(alerts) - 12} ürün daha" if len(alerts) > 12 else ""),
                  click=SITE + "#urun/" + alerts[0][0], tags=["moneybag"], dry=dry)
         for it in posters[:MAX_POSTERS]:
-            send(topic, f"Yeni afiş · {NAMES.get(it.get('market'), '')}: {it.get('title') or ''}",
-                 it.get("label") or it.get("desc") or "Yeni kampanya",
-                 click=SITE + "#afis/" + it["id"], attach=it.get("image") or None, tags=["label"], dry=dry)
+            t, msg = poster_message(it)
+            send(topic, t, msg, click=SITE + "#afis/" + it["id"], attach=it.get("image") or None, tags=["label"], dry=dry)
         if len(posters) > MAX_POSTERS:
             send(topic, f"{len(posters) - MAX_POSTERS} yeni afiş daha", "Tümü uygulamanın Afişler sayfasında.",
                  click=SITE + "#afisler", tags=["label"], dry=dry)
