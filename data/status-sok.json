@@ -1,22 +1,22 @@
 {
- "updated": "2026-11-25T05:37:40+00:00",
- "started_at": "2026-11-25T05:35:31+00:00",
- "finished_at": "2026-11-25T05:37:40+00:00",
- "checked_at": "2026-11-25T05:37:40+00:00",
- "data_updated": "2026-11-25T05:37:40+00:00",
- "last_successful_data_at": "2026-11-25T05:37:40+00:00",
+ "updated": "2026-11-25T06:37:58+00:00",
+ "started_at": "2026-11-25T06:35:49+00:00",
+ "finished_at": "2026-11-25T06:37:58+00:00",
+ "checked_at": "2026-11-25T06:37:58+00:00",
+ "data_updated": "2026-11-25T06:37:58+00:00",
+ "last_successful_data_at": "2026-11-25T06:37:58+00:00",
  "market": "sok",
  "mode": "deals",
  "status": "tamam",
  "complete": true,
  "partial": false,
- "found": 538,
- "total": 2988,
+ "found": 542,
+ "total": 2992,
  "seconds": 129,
  "notes": [
   "kampanyalar: 89 ürün",
-  "indirimli-urunler-cms-pl1: sitede 545, okunan 545, 28/28 sayfa (son sayfa)",
-  "538 indirimli ürün güncellendi"
+  "indirimli-urunler-cms-pl1: sitede 549, okunan 549, 28/28 sayfa (son sayfa)",
+  "542 indirimli ürün güncellendi"
  ],
  "quality": {
   "category_count": 21,
@@ -32,7 +32,7 @@
    "Ev & Yaşam": 287,
    "Elektronik": 43,
    "Yemeklik Malzemeler": 268,
-   "Kişisel Bakım & Kozmetik": 407,
+   "Kişisel Bakım & Kozmetik": 411,
    "Ekmek & Pastane": 56,
    "Kahvaltılık": 154,
    "Temizlik": 215,
@@ -58,10 +58,10 @@
   }
  },
  "errors": [],
- "run_id": "45554632038",
- "collected_products": 538,
- "total_products": 2988,
- "discounted_products": 545,
+ "run_id": "45561767719",
+ "collected_products": 542,
+ "total_products": 2992,
+ "discounted_products": 549,
  "invalid_products": 0,
  "data_quality": {
   "missing_id": 0,
@@ -75,18 +75,18 @@
  "duration_seconds": 129,
  "last_attempt_by_mode": {
   "deals": {
-   "checked_at": "2026-11-25T05:37:40+00:00",
+   "checked_at": "2026-11-25T06:37:58+00:00",
    "status": "tamam",
    "complete": true,
-   "found": 538,
-   "total": 2988,
+   "found": 542,
+   "total": 2992,
    "seconds": 129,
-   "data_updated": "2026-11-25T05:37:40+00:00",
+   "data_updated": "2026-11-25T06:37:58+00:00",
    "errors": [],
    "notes": [
     "kampanyalar: 89 ürün",
-    "indirimli-urunler-cms-pl1: sitede 545, okunan 545, 28/28 sayfa (son sayfa)",
-    "538 indirimli ürün güncellendi"
+    "indirimli-urunler-cms-pl1: sitede 549, okunan 549, 28/28 sayfa (son sayfa)",
+    "542 indirimli ürün güncellendi"
    ],
    "quality_warnings": [],
    "quality": {
@@ -103,7 +103,7 @@
      "Ev & Yaşam": 287,
      "Elektronik": 43,
      "Yemeklik Malzemeler": 268,
-     "Kişisel Bakım & Kozmetik": 407,
+     "Kişisel Bakım & Kozmetik": 411,
      "Ekmek & Pastane": 56,
      "Kahvaltılık": 154,
      "Temizlik": 215,
