@@ -36,5 +36,15 @@ class NotifyTests(unittest.TestCase):
         self.assertEqual(notify.watch_alerts(watch, {"sok:1": prod("sok:1", 29.5), "sok:2": prod("sok:2", 10, promo="2 Al 1 Öde")}, sent), [])
 
 
+    def test_multi_buy_promos_detected_and_grouped(self):
+        prods = {f"migros:{i}": {"id": f"migros:{i}", "name": f"Ürün {i}", "market": "migros", "price": 10 + i,
+                                 "in_stock": True, "promo": pr}
+                 for i, pr in enumerate(["2 Al 1 Öde", "2.si %80 İndirimli", "Money kartlı fiyat", "3 Al 2 Öde", "2 al 1 öde"])}
+        new = notify.new_promos(prods, {"promos": ["migros:3|3 Al 2 Öde"]})
+        self.assertEqual(sorted(p["id"] for p, _ in new), ["migros:0", "migros:1", "migros:4"])
+        lines = notify.promo_message(new, {"migros:4": {}})
+        self.assertTrue(lines[0].startswith("2 Al 1 Öde (Migros, 2 ürün): ★ Ürün 4"))
+
+
 if __name__ == "__main__":
     unittest.main()

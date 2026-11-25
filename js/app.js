@@ -974,7 +974,7 @@ function watchIssueURL(){const w=watchList();
   return`https://github.com/${REPO}/issues/new?title=${encodeURIComponent("Bildirim listesi "+new Date().toLocaleDateString("tr-TR"))}&body=${encodeURIComponent(body)}`}
 function notifyCard(){const n=watchList().length,topic=load("ntfy","");
   return`<section class="${card} p-4 mt-3"><h2 class="font-extrabold flex items-center gap-2"><i data-lucide="smartphone" class="w-5 h-5 text-emerald-700"></i>Telefon bildirimleri</h2>
-    <p class="text-sm text-stone-600 mt-1">Yeni afişler, takip ettiğin ürünlerdeki indirimler ve sabah özeti telefonuna bildirim olarak gelir (günde en çok üç kez: 09.07, 17.07, 21.07).</p>
+    <p class="text-sm text-stone-600 mt-1">Yeni afişler, yeni “2 Al 1 Öde” gibi kampanyalar, takip ettiğin ürünlerdeki indirimler ve sabah özeti telefonuna bildirim olarak gelir. Gece 00.00–08.00 arası sessiz; birikenler sabah gelir. Aynı konuya abone olan her telefon (ör. eşin) aynı bildirimleri alır.</p>
     <ol class="mt-3 space-y-3 text-sm list-decimal pl-5">
       <li><a class="font-bold text-emerald-700 underline" href="https://play.google.com/store/apps/details?id=io.heckel.ntfy" target="_blank" rel="noopener">ntfy uygulamasını kur</a> (ücretsiz, hesap gerekmez).</li>
       <li>Sana verilen konu adını yaz ve ntfy'de abone ol:

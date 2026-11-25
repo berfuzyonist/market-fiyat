@@ -30,7 +30,11 @@ NAMES = {"sok": "Şok", "migros": "Migros", "bim": "BİM"}
 STATE = ROOT / "data" / "notify-state.json"
 REPO = os.environ.get("GITHUB_REPOSITORY", "berfuzyonist/market-fiyat")
 OWNER = REPO.split("/")[0]
-MAX_POSTERS = 4
+MAX_POSTERS = 12
+MAX_PROMO_LINES = 10
+QUIET = range(0, 8)  # TR 00.00–07.59: bildirim gönderilmez, birikenler sabah gider
+# Çoklu alım kampanyaları ("2 Al 1 Öde", "2.si %80 İndirimli", "3 Al 2 Öde", "1 Alana 1 Bedava")
+MULTI = re.compile(r"\d+\s*al(?:ana)?\s*\d+\s*(?:öde|ode|bedava)|\d+\s*\.?\s*(?:si|sı|su|sü|ürün|urun)\b.*%|bedava|hediye", re.I)
 MAX_DEALS = 5
 DEAL_MIN = 0.30  # özet için en az %30 indirim
 DROP_MIN = 0.03  # takipte en az %3 düşüş
@@ -162,6 +166,31 @@ def poster_message(it):
     return (f"Yeni afiş · {NAMES.get(it.get('market'), '')}: {title}", it.get("label") or it.get("desc") or "Yeni kampanya")
 
 
+def new_promos(products, state):
+    """Yeni başlayan çoklu alım kampanyaları: [(ürün, kampanya)]. state['promos']: 'id|kampanya' listesi."""
+    seen = set(state.get("promos") or [])
+    out = []
+    for p in products.values():
+        pr = (p.get("promo") or "").strip()
+        if pr and p.get("in_stock") and MULTI.search(pr) and f"{p['id']}|{pr}" not in seen:
+            out.append((p, pr))
+    return out
+
+
+def promo_message(items, watch):
+    """Kampanyaya göre gruplu metin; takip edilen ürünler öne alınır."""
+    by = {}
+    for p, pr in items:
+        by.setdefault(" ".join(pr.lower().split()), (pr, []))[1].append(p)
+    lines = []
+    for _, (pr, ps) in sorted(by.items(), key=lambda kv: -len(kv[1][1])):
+        ps.sort(key=lambda p: (p["id"] not in watch, p.get("price") or 0))
+        names = ", ".join(("★ " if p["id"] in watch else "") + p["name"] for p in ps[:4])
+        more = f" +{len(ps) - 4}" if len(ps) > 4 else ""
+        lines.append(f"{pr} ({NAMES.get(ps[0]['market'], '')}, {len(ps)} ürün): {names}{more}")
+    return lines
+
+
 def deal_digest(products, state, now):
     seen = state.get("deals") or {}
     cand = [p for p in products.values() if p.get("in_stock") and disc(p) >= DEAL_MIN and p["id"] not in seen]
@@ -212,7 +241,14 @@ def main(argv):
     sent = {k: v for k, v in sent.items() if k in watch}  # listeden çıkanlar unutulur
     alerts = watch_alerts(watch, products, sent)
     posters = new_posters(state)
-    morning = time.gmtime(now).tm_hour in (5, 6, 7)  # TR 08–10 arası çalışma: sabah özeti
+    promos = new_promos(products, state) if "promos" in state else []  # kampanya takibi ilk kez: sessizce başla
+    tr_hour = (time.gmtime(now).tm_hour + 3) % 24
+    if tr_hour in QUIET and not first and "--zorla" not in argv:
+        print(f"sessiz saat (TR {tr_hour}.00): bildirim yok, durum değişmedi")
+        return 0
+    morning = 8 <= tr_hour <= 10  # sabahın ilk çalışması: günlük özet
+    if morning and time.strftime("%Y-%m-%d", time.gmtime(now + 3 * 3600)) == state.get("digest_day"):
+        morning = False  # özet bugün zaten gitti
     deals = deal_digest(products, state, now) if (morning or first) else []
 
     if first:
@@ -230,6 +266,12 @@ def main(argv):
         if len(posters) > MAX_POSTERS:
             send(topic, f"{len(posters) - MAX_POSTERS} yeni afiş daha", "Tümü uygulamanın Afişler sayfasında.",
                  click=SITE + "#afisler", tags=["label"], dry=dry)
+        if promos:
+            lines = promo_message(promos, watch)
+            hot = sum(1 for p, _ in promos if p["id"] in watch)
+            send(topic, f"{len(promos)} üründe yeni çoklu alım kampanyası" + (f" · {hot} tanesi takibinde" if hot else ""),
+                 "\n".join(lines[:MAX_PROMO_LINES]) + (f"\n… {len(lines) - MAX_PROMO_LINES} kampanya daha" if len(lines) > MAX_PROMO_LINES else ""),
+                 click=SITE + "#kampanya", tags=["gift"], dry=dry)
         if deals:
             top = deals[:MAX_DEALS]
             send(topic, "Sabah özeti: yeni büyük indirimler",
@@ -242,11 +284,15 @@ def main(argv):
         deals_state = {k: old.get(k, now) for k in keep}   # özet gönderildi: bugünkü indirimler bildirilmiş sayılır
     else:
         deals_state = {k: v for k, v in old.items() if k in keep}  # indirimden çıkan düşer; yeni olanlar sabahı bekler
+    live = {f"{p['id']}|{(p.get('promo') or '').strip()}" for p in products.values() if (p.get("promo") or "").strip()}
     state = {"version": 1, "updated": now, "issue": num, "sent": sent, "deals": deals_state,
+             "promos": sorted(live),  # biten kampanya düşer; yeniden başlarsa yeniden bildirilir
+             "digest_day": time.strftime("%Y-%m-%d", time.gmtime(now + 3 * 3600)) if (deals and morning) or first
+             else state.get("digest_day"),
              "posters": sorted({it["id"] for it in new_posters({})})}
     if not dry:
         STATE.write_text(json.dumps(state, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
-    print(f"takip {len(watch)} · uyarı {len(alerts)} · yeni afiş {len(posters)} · özet {len(deals[:MAX_DEALS])}{' · ilk çalışma' if first else ''}")
+    print(f"takip {len(watch)} · uyarı {len(alerts)} · yeni afiş {len(posters)} · yeni kampanya {len(promos)} · özet {len(deals[:MAX_DEALS])}{' · ilk çalışma' if first else ''}")
     return 0
 
 
