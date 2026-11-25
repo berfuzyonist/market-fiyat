@@ -1,10 +1,10 @@
 {
- "updated": "2026-11-25T22:35:55+00:00",
- "started_at": "2026-11-25T22:33:40+00:00",
- "finished_at": "2026-11-25T22:35:55+00:00",
- "checked_at": "2026-11-25T22:35:55+00:00",
- "data_updated": "2026-11-25T22:35:55+00:00",
- "last_successful_data_at": "2026-11-25T22:35:55+00:00",
+ "updated": "2026-11-25T23:30:04+00:00",
+ "started_at": "2026-11-25T23:28:00+00:00",
+ "finished_at": "2026-11-25T23:30:04+00:00",
+ "checked_at": "2026-11-25T23:30:04+00:00",
+ "data_updated": "2026-11-25T23:30:04+00:00",
+ "last_successful_data_at": "2026-11-25T23:30:04+00:00",
  "market": "sok",
  "mode": "deals",
  "status": "tamam",
@@ -12,10 +12,10 @@
  "partial": false,
  "found": 546,
  "total": 3016,
- "seconds": 135,
+ "seconds": 124,
  "notes": [
   "kampanyalar: 89 ürün",
-  "indirimli-urunler-cms-pl1: sitede 549, okunan 549, 28/28 sayfa (son sayfa)",
+  "indirimli-urunler-cms-pl1: sitede 550, okunan 550, 28/28 sayfa (son sayfa)",
   "546 indirimli ürün güncellendi"
  ],
  "quality": {
@@ -58,10 +58,10 @@
   }
  },
  "errors": [],
- "run_id": "45714261766",
+ "run_id": "45721562776",
  "collected_products": 546,
  "total_products": 3016,
- "discounted_products": 549,
+ "discounted_products": 550,
  "invalid_products": 0,
  "data_quality": {
   "missing_id": 0,
@@ -72,20 +72,20 @@
   "suspicious_discount": 0,
   "bad_url": 0
  },
- "duration_seconds": 135,
+ "duration_seconds": 124,
  "last_attempt_by_mode": {
   "deals": {
-   "checked_at": "2026-11-25T22:35:55+00:00",
+   "checked_at": "2026-11-25T23:30:04+00:00",
    "status": "tamam",
    "complete": true,
    "found": 546,
    "total": 3016,
-   "seconds": 135,
-   "data_updated": "2026-11-25T22:35:55+00:00",
+   "seconds": 124,
+   "data_updated": "2026-11-25T23:30:04+00:00",
    "errors": [],
    "notes": [
     "kampanyalar: 89 ürün",
-    "indirimli-urunler-cms-pl1: sitede 549, okunan 549, 28/28 sayfa (son sayfa)",
+    "indirimli-urunler-cms-pl1: sitede 550, okunan 550, 28/28 sayfa (son sayfa)",
     "546 indirimli ürün güncellendi"
    ],
    "quality_warnings": [],
