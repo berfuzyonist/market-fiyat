@@ -1,7 +1,18 @@
 {
- "updated": "2026-11-24T14:43:04+00:00",
+ "updated": "2026-11-25T06:42:52+00:00",
  "market": "sok",
  "items": [
+  {
+   "market": "sok",
+   "id": "sok:bf97e983-d082-452f-9111-a99872a2ce16",
+   "title": "Ücretsiz Teslimat",
+   "ids": [],
+   "group": "Kampanya",
+   "label": "Stoklarla sınırlıdır.",
+   "image": "https://images.ceptesok.com/promotion-assets/sub-folder/ca744dad-5e25-4429-9122-04734841533d.jpg",
+   "thumb": "",
+   "url": "https://www.sokmarket.com.tr/ucretsiz-teslimat-prm-bf97e983-d082-452f-9111-a99872a2ce16"
+  },
   {
    "market": "sok",
    "id": "sok:9fa957cf-74ce-468d-9ee6-6e514e932d7a",
@@ -15,19 +26,6 @@
   },
   {
    "market": "sok",
-   "id": "sok:198ca6d8-4b09-495f-b9fb-002aa54f61ca",
-   "title": "50 TL ve üzeri alışverişte 79.00 TL!",
-   "ids": [
-    "sok:9030"
-   ],
-   "group": "Kampanya",
-   "label": "Stoklarla sınırlıdır.",
-   "image": "https://images.ceptesok.com/promotion-assets/sub-folder/78d0d9a9-4f57-4ba2-8bd2-b676861a3f61.jpg",
-   "thumb": "",
-   "url": "https://www.sokmarket.com.tr/50-tl-ve-uzeri-alisveriste-79-00-tl-prm-198ca6d8-4b09-495f-b9fb-002aa54f61ca"
-  },
-  {
-   "market": "sok",
    "id": "sok:37aedde6-ce8d-47cd-95ed-98f99c79fc68",
    "title": "50 TL ve üzeri alışverişte 149.00 TL!",
    "ids": [
@@ -38,19 +36,6 @@
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/b6a61d03-39a0-419e-8303-abd84bdfad4f.jpg",
    "thumb": "",
    "url": "https://www.sokmarket.com.tr/50-tl-ve-uzeri-alisveriste-149-00-tl-prm-37aedde6-ce8d-47cd-95ed-98f99c79fc68"
-  },
-  {
-   "market": "sok",
-   "id": "sok:1dbe574a-1233-4570-9017-acab0453c165",
-   "title": "50 TL ve üzeri alışverişte 199.00 TL!",
-   "ids": [
-    "sok:754824"
-   ],
-   "group": "Kampanya",
-   "label": "Stoklarla sınırlıdır.",
-   "image": "https://images.ceptesok.com/promotion-assets/sub-folder/58b8d7a8-7065-4265-ac2f-73277800c36c.jpg",
-   "thumb": "",
-   "url": "https://www.sokmarket.com.tr/50-tl-ve-uzeri-alisveriste-199-00-tl-prm-1dbe574a-1233-4570-9017-acab0453c165"
   },
   {
    "market": "sok",
@@ -167,10 +152,10 @@
    "id": "sok:256b900f-60cf-4c73-9fc6-a49170570b6c",
    "title": "50 TL ve üzeri alışverişte 139.00 TL!",
    "ids": [
-    "sok:781588",
     "sok:783426",
     "sok:866201",
-    "sok:783427"
+    "sok:783427",
+    "sok:781588"
    ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
@@ -225,9 +210,9 @@
    "title": "50 TL ve üzeri alışverişte 129.00 TL!",
    "ids": [
     "sok:542785",
+    "sok:73390",
     "sok:858431",
-    "sok:240610",
-    "sok:73390"
+    "sok:240610"
    ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
@@ -268,8 +253,8 @@
    "id": "sok:2958efe0-2212-47c8-b691-d9ecb72a8c77",
    "title": "50 TL ve üzeri alışverişte 139.00 TL!",
    "ids": [
-    "sok:745552",
-    "sok:744631"
+    "sok:744631",
+    "sok:745552"
    ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
@@ -296,8 +281,8 @@
    "title": "50 TL ve üzeri alışverişte 139.00 TL!",
    "ids": [
     "sok:650358",
-    "sok:411938",
-    "sok:164993"
+    "sok:164993",
+    "sok:411938"
    ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
@@ -376,9 +361,9 @@
    "id": "sok:022050eb-918d-4645-9680-87207d4d2376",
    "title": "50 TL ve üzeri alışverişte 99.00 TL!",
    "ids": [
-    "sok:486089",
+    "sok:9255",
     "sok:1276",
-    "sok:9255"
+    "sok:486089"
    ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
@@ -443,8 +428,8 @@
    "id": "sok:0e4cfdb1-4fd9-434f-bcc6-b7fe16291ee6",
    "title": "50 TL ve üzeri alışverişte 249.00 TL!",
    "ids": [
-    "sok:3879",
-    "sok:826674"
+    "sok:826674",
+    "sok:3879"
    ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
@@ -470,8 +455,8 @@
    "id": "sok:faee7253-3364-4fd9-b5ac-76ee5fc5fc9c",
    "title": "50 TL ve üzeri alışverişte 179.00 TL!",
    "ids": [
-    "sok:630440",
-    "sok:631365"
+    "sok:631365",
+    "sok:630440"
    ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
@@ -563,9 +548,9 @@
    "id": "sok:9b2789b5-09d0-4e7c-8235-b4bbea881b42",
    "title": "50 TL ve üzeri alışverişte 149.00 TL!",
    "ids": [
+    "sok:1576",
     "sok:319312",
     "sok:319311",
-    "sok:1576",
     "sok:2313"
    ],
    "group": "Kampanya",
@@ -579,8 +564,8 @@
    "id": "sok:6a1cbc53-ee08-4b89-9047-dba2222d2787",
    "title": "50 TL ve üzeri alışverişte 85.00 TL!",
    "ids": [
-    "sok:816106",
-    "sok:817026"
+    "sok:817026",
+    "sok:816106"
    ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
@@ -593,8 +578,8 @@
    "id": "sok:1bb51653-fb43-4e27-b6de-cbfaa14a2d3a",
    "title": "50 TL ve üzeri alışverişte 179.00 TL!",
    "ids": [
-    "sok:153149",
-    "sok:155103"
+    "sok:155103",
+    "sok:153149"
    ],
    "group": "Kampanya",
    "label": "Stoklarla sınırlıdır.",
@@ -741,8 +726,8 @@
    "id": "sok:a2e68322-ebaf-4ee0-a1ff-d52fcf9e59ce",
    "title": "50 TL ve üzeri alışverişte 110.00 TL!",
    "ids": [
-    "sok:506142",
     "sok:481452",
+    "sok:506142",
     "sok:480531"
    ],
    "group": "Kampanya",
