@@ -277,8 +277,8 @@ const SOK_GROUPS={"#-tl-ve-uzeri-alisveriste-#-#-tl":["Kasa Arkası İndirimleri
 function groupBim(list){
   const out=[],at={};
   list.forEach(it=>{if(it.market!=="bim"){out.push(it);return}const k=it.group+"|"+it.label;
-    if(at[k]==null){at[k]=out.length;out.push({...it,id:"bim:"+k,images:[it.image],thumbs:[it.thumb||it.image]})}
-    else{const g=out[at[k]];g.images.push(it.image);g.thumbs.push(it.thumb||it.image)}});
+    if(at[k]==null){at[k]=out.length;out.push({...it,id:"bim:"+k,images:[it.image],thumbs:[it.thumb||it.image],src:[it.id]})}
+    else{const g=out[at[k]];g.images.push(it.image);g.thumbs.push(it.thumb||it.image);g.src.push(it.id)}});
   return out}
 function groupSok(list){
   const key=it=>it.market!=="sok"?null:String(it.url||"").replace(/^https:\/\/www\.sokmarket\.com\.tr\//,"").replace(/-prm-.*$/,"").replace(/\d+/g,"#");
@@ -287,7 +287,7 @@ function groupSok(list){
   list.forEach(it=>{const k=key(it);if(!k||groups[k].length<2){out.push(it);return}
     if(done.has(k))return;done.add(k);const g=groups[k],[title,label]=SOK_GROUPS[k]||[g[0].title,g[0].label];
     out.push({market:"sok",id:"sok:grup:"+k.replace(/#/g,"n"),title,label,group:"Kampanya",image:g[0].image,images:g.map(x=>x.image),
-      thumb:"",collage:true,url:"https://www.sokmarket.com.tr/kampanyalar",ids:[...new Set(g.flatMap(x=>x.ids||[]))],parts:g.length})});
+      thumb:"",collage:true,url:"https://www.sokmarket.com.tr/kampanyalar",ids:[...new Set(g.flatMap(x=>x.ids||[]))],parts:g.length,src:g.map(x=>x.id)})});
   return out}
 // Birden çok görselli kampanyada kapak: ilk dört görselden kolaj
 const coverImg=(it,cls)=>it.collage
@@ -341,8 +341,13 @@ function stepViewer(d){const it=POST[VIEW_I],pages=(it&&it.images)||[];
 let CAMP="",CV={sort:"",n:40};
 const campCount=it=>it.market==="migros"?(it.count||it.ids.length):it.ids.filter(id=>OI[id]).length;
 const campTitle=it=>it.market==="bim"?`BİM ${it.group} · ${it.label}`:it.title;
+// Bildirimden gelen adres tek bir afişin kimliğini taşır (gruplanmış BİM/Şok afişleri, Migros "migros:<slug>")
+const findPoster=k=>POST.find(x=>campKey(x)===k||x.id===k||(x.src||[]).includes(k));
 function drawCamp(){
-  const it=POST.find(x=>campKey(x)===CAMP);
+  let it=POST.find(x=>campKey(x)===CAMP);
+  if(!it&&O.length){const f=findPoster(CAMP);
+    if(f&&isCamp(f)){CAMP=campKey(f);it=f;history.replaceState(null,"","#afis/"+encodeURIComponent(CAMP))}
+    else if(f){const i=POST.indexOf(f);go("posters");openViewer(i,Math.max(0,(f.src||[]).indexOf(CAMP)));return}}
   if(!it||!O.length){$("campHead").innerHTML=O.length?empty("gift","Kampanya bulunamadı","Kampanya sona ermiş ya da marketin sayfasından kaldırılmış olabilir."):`<div class="sk-card skel !h-40"></div>`;$("campGrid").innerHTML="";$("campMore").innerHTML="";return}
   const mk=it.market,mg=mk==="migros",objs=it.ids.map(id=>OI[id]).filter(Boolean),r=objs.slice();
   if(CV.sort==="price")r.sort((a,b)=>(usable(b)-usable(a))||a.price-b.price);

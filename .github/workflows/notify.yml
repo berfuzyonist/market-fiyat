@@ -8,6 +8,11 @@ on:
     - cron: "7 14 * * *"   # TR 17:07 (öğleden sonraki afişlerden sonra)
     - cron: "7 18 * * *"   # TR 21:07
   workflow_dispatch:
+    inputs:
+      ornek:
+        description: "Her marketten en yeni afişi örnek bildirim olarak gönder"
+        type: boolean
+        default: false
 permissions:
   contents: write
   issues: read
@@ -26,7 +31,7 @@ jobs:
         env:
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python3 scripts/notify.py
+        run: python3 scripts/notify.py ${{ inputs.ornek && '--ornek' || '' }}
       - name: Durumu kaydet
         run: |
           [ -f data/notify-state.json ] || exit 0
