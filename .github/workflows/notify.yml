@@ -42,10 +42,12 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           cp data/notify-state.json "$RUNNER_TEMP/s.json"
+          [ -f data/barcodes-user.json ] && cp data/barcodes-user.json "$RUNNER_TEMP/b.json" || true
           for attempt in 1 2 3 4 5; do
             git fetch --no-tags origin main && git reset --hard origin/main
             cp "$RUNNER_TEMP/s.json" data/notify-state.json
-            git add data/notify-state.json
+            [ -f "$RUNNER_TEMP/b.json" ] && cp "$RUNNER_TEMP/b.json" data/barcodes-user.json || true
+            git add data/notify-state.json data/barcodes-user.json 2>/dev/null || git add data/notify-state.json
             git diff --cached --quiet && exit 0
             git commit -qm "bildirim durumu"
             git push origin HEAD:refs/heads/main && exit 0

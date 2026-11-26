@@ -493,7 +493,7 @@ function drawV(){
     <div class="grid gap-3 lg:grid-cols-3 items-start">${cards}</div>
     <section class="pc !p-4 mt-3 text-sm"><div class="flex items-center gap-2">${badge("a101",1)}<span class="font-display font-extrabold text-lg">A101</span><span class="ml-auto">${chip("Veri yok","bg-stone-200 text-stone-700 dark:bg-stone-800 dark:text-stone-200")}</span></div>
       <p class="mt-2 text-stone-600 dark:text-stone-300">A101'in izin verilmiş bir veri kaynağı yok; sitesi otomatik erişime kapalı. Fiyat üretilmez, yalnızca resmi siteye bağlantı verilir.</p>
-      <a class="inline-flex items-center gap-1 mt-2 font-bold text-emerald-700 dark:text-emerald-400" href="https://www.a101.com.tr/" target="_blank" rel="noopener">A101 sitesine git<i data-lucide="external-link" class="w-4 h-4"></i></a></section>`}
+      <a class="inline-flex items-center gap-1 mt-2 font-bold text-emerald-700 dark:text-emerald-400" href="https://www.a101.com.tr/" target="_blank" rel="noopener">A101 sitesine git<i data-lucide="external-link" class="w-4 h-4"></i></a></section>`+`<p class="text-xs text-stone-500 mt-3">Barkod sözlüğü: <a class="underline" href="https://world.openfoodfacts.org" target="_blank" rel="noopener">Open Food Facts</a> açık verisi (ODbL 1.0), haftada bir güncellenir; marketlerin ürünleriyle eşleştirilir. Okuttuğun ve eşleştirdiğin barkodlar takip listesiyle paylaşılır.</p>`}
 
 // ---------- Birim fiyat karşılaştırması ----------
 function unitPanel(q){
@@ -692,8 +692,8 @@ function productPage(g){
   </div>`}
 function drawS(){
   const raw=$("q").value.trim(),w=MFC.searchWords(raw);
-  if(only&&GI[only]){$("res").innerHTML=productPage(GI[only]);return}
-  const ban=pending?`<div class="col-span-full rounded-2xl bg-amber-100 text-amber-900 p-4 text-sm"><p class="font-bold">Barkod ${esc(pending)} henüz tanınmıyor</p><p>Ürünü adıyla arayın, ürün sayfasında "Bu barkodla eşleştir"e dokunun. Ürün başına bir kez yeterli.</p><button data-cancel class="mt-2 font-bold underline">Vazgeç</button></div>`:"";
+  if(only&&GI[only]){$("res").innerHTML=(BCASK&&pending?`<div class="rounded-2xl bg-amber-100 text-amber-900 p-4 text-sm mb-3"><p class="font-bold">Barkod ${esc(pending)}: bu ürün olabilir</p><p>Doğruysa aşağıdaki “Bu barkodla eşleştir”e dokun. Değilse ürünü adıyla ara.</p><button data-bcother class="mt-2 font-bold underline">Başka ürün ara</button></div>`:"")+productPage(GI[only]);return}
+  const ban=pending?`<div class="col-span-full rounded-2xl bg-amber-100 text-amber-900 p-4 text-sm"><p class="font-bold">Barkod ${esc(pending)} henüz tanınmıyor</p><p>${raw?"Açık ürün veritabanındaki adıyla aradım; doğru ürünü açıp":"Ürünü adıyla arayın, ürün sayfasında"} “Bu barkodla eşleştir”e dokunun. Ürün başına bir kez yeterli; takip listesiyle gönderince eşinin telefonunda da tanınır.</p><button data-cancel class="mt-2 font-bold underline">Vazgeç</button></div>`:"";
   if(!w.length){$("res").innerHTML=ban+(G.length?`<div class="col-span-full">${empty("search","Ne arıyorsun?","Ürün adı, marka ya da barkod yaz. Örneğin “su”, “süt”, “yüzey temizleyici”.")}<div class="flex flex-wrap gap-2 mt-3">${UNIT_Q.map(([q,l,ic])=>`<button data-uq="${esc(q)}" class="uchip"><i data-lucide="${ic}" class="w-4 h-4 text-emerald-600"></i>${l}</button>`).join("")}</div></div>`:"");return}
   const gs=g=>g.s||(g.s=MFC.fold(g.offers.map(o=>o.brand?o.brand+" "+o.name:o.name).join(" ")).replace(/[^a-z0-9%]+/g," "));
   // Seçili marketlerdeki en ucuz teklif; süzgeçler (bölüm, indirim, kampanya, fiyat aralığı) bu teklife uygulanır
@@ -970,7 +970,9 @@ function watchList(){const out=new Map();
   return[...out.values()]}
 function watchIssueURL(){const w=watchList();
   const body=["<!-- Market Fiyat bildirim listesi. Değiştirmek için uygulamadan yeniden gönder; eski talebi kapatabilirsin. -->",
-    ...w.map(e=>`${e.g.key} | ${e.g.name.replace(/\|/g,"/")}${e.target?` | hedef=${String(e.target).replace(".",",")}`:""}`)].join("\n");
+    ...w.map(e=>`${e.g.key} | ${e.g.name.replace(/\|/g,"/")}${e.target?` | hedef=${String(e.target).replace(".",",")}`:""}`),
+    // öğretilen barkodlar: herkesin (eşinin) telefonunda tanınır
+    ...Object.entries(bmap).filter(([b,k])=>/^\d{8,14}$/.test(b)&&GI[k]).map(([b,k])=>`barkod ${b} = ${k}`)].join("\n");
   return`https://github.com/${REPO}/issues/new?title=${encodeURIComponent("Bildirim listesi "+new Date().toLocaleDateString("tr-TR"))}&body=${encodeURIComponent(body)}`}
 function notifyCard(){const n=watchList().length,topic=load("ntfy","");
   return`<section class="${card} p-4 mt-3"><h2 class="font-extrabold flex items-center gap-2"><i data-lucide="smartphone" class="w-5 h-5 text-emerald-700"></i>Telefon bildirimleri</h2>
@@ -1134,7 +1136,21 @@ let noteT;function note(m){$("note").textContent=m;$("note").classList.remove("h
 function show(key){only=key;setQ("");go("search")}
 
 // ---------- Barkod ----------
-function onCode(b){const k=bmap[b];if(k&&GI[k]){only=k;pending=null}else{only=null;pending=b}setQ("");go("search")}
+// Barkod sözlüğü: Open Food Facts (açık veri, ODbL) barkodları bizim ürünlerle önceden eşleştirildi
+// (data/client/barcodes.json); ilk okutmada bir kez iner. Kişisel eşleştirme (bmap) her zaman önce gelir.
+let BC=null,BCP=null,BCASK=null;
+const loadBC=()=>BCP||(BCP=get("data/client/barcodes.json").then(d=>BC=d||{codes:{},names:{}}).catch(()=>BC={codes:{},names:{}}));
+const bcVariants=b=>[b,b.length===12?"0"+b:null,b.length===13&&b[0]==="0"?b.slice(1):null].filter(Boolean); // UPC-A ↔ EAN-13
+async function onCode(b){
+  b=String(b).replace(/\D/g,"");BCASK=null;
+  const mine=bcVariants(b).map(x=>bmap[x]).find(k=>k&&GI[k]);
+  if(mine){only=GI[mine].key;pending=null;setQ("");go("search");return}
+  await loadBC();
+  const hit=bcVariants(b).map(x=>BC.codes&&BC.codes[x]).find(h=>h&&GI[h[0]]);
+  const nm=bcVariants(b).map(x=>BC.names&&BC.names[x]).find(Boolean);
+  if(hit&&hit[1]>=0.9){only=GI[hit[0]].key;pending=null;setQ("");go("search");note("Barkod tanındı.");return}
+  if(hit){only=GI[hit[0]].key;pending=b;BCASK={code:b,score:hit[1]};setQ("");go("search");return} // olası: onay ister
+  only=null;pending=b;setQ(nm||"");go("search")}
 async function scan(){
   if(!("BarcodeDetector" in window)){go("search");note("Bu tarayıcı kamerayla barkod okumayı desteklemiyor. Barkod numarasını arama kutusuna yazıp Enter'a basın.");return}
   let stream;try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}})}catch(e){note("Kamera açılamadı. Tarayıcıda kamera iznini kontrol edin.");return}
@@ -1231,8 +1247,9 @@ document.addEventListener("click",e=>{const t=s=>e.target.closest(s);let el;
   else if(el=t("[data-usize]")){USIZE=USIZE===el.dataset.usize?"":el.dataset.usize;redraw()}
   else if(el=t("[data-grp]")){const k=el.dataset.grp;B.grp=el.dataset.stay&&B.grp===k?"":k;B.cat="";B.page=0;if(!el.dataset.stay){Object.assign(B,{m:"",disc:false,sort:"disc"});go("browse")}else redraw()}
   else if(el=t("[data-uq]")){only=null;pending=null;setQ(el.dataset.uq);go("search")}
-  else if(el=t("[data-map]")){bmap[pending]=el.dataset.map;save("bmap",bmap);only=el.dataset.map;pending=null;redraw();note("Barkod eşleştirildi. Bir dahaki okutmada ürün doğrudan açılır.")}
-  else if(t("[data-cancel]")){pending=null;redraw()}
+  else if(el=t("[data-map]")){BCASK=null;bmap[pending]=el.dataset.map;save("bmap",bmap);only=el.dataset.map;pending=null;redraw();note("Barkod eşleştirildi. Bir dahaki okutmada ürün doğrudan açılır.")}
+  else if(t("[data-cancel]")){pending=null;BCASK=null;redraw()}
+  else if(t("[data-bcother]")){only=null;BCASK=null;setQ("");go("search");$("q").focus()}
   else if(el=t("[data-fresh]")){const id=el.dataset.fresh;
     if(el.dataset.open){FRESH.add(id);show(el.dataset.open)}else{FRESH.has(id)?FRESH.delete(id):FRESH.add(id);redraw()}}
   else if(el=t("a[data-req]")){reqs[el.dataset.req]=Math.floor(Date.now()/1000);save("req",reqs);
@@ -1251,7 +1268,7 @@ document.addEventListener("click",e=>{const t=s=>e.target.closest(s);let el;
   else if(el=t("[data-buddel]")){BUD.spends=BUD.spends.filter(x=>x.t!==+el.dataset.buddel);save("budget",BUD);redraw()}
   else if(el=t("[data-view]")){if(el.dataset.view==="search"){only=null}go(el.dataset.view);if(el.dataset.focus)(innerWidth>=768?$("qd"):$("q")).focus()}});
 let qT;QS.forEach(inp=>{
-  inp.oninput=()=>{setQ(inp.value);only=null;pending=null;clearTimeout(qT);
+  inp.oninput=()=>{setQ(inp.value);only=null;BCASK=null; // eşleştirilecek barkod (pending) aramada korunurclearTimeout(qT);
     qT=setTimeout(()=>{if(view!=="search"){go("search",1)}else{drawS();icons();sync(true)}},150)};
   inp.onchange=()=>{const v=inp.value.trim();if(/^\d{8,14}$/.test(v))onCode(v)};
   inp.onkeydown=e=>{if(e.key==="Enter")inp.blur()};

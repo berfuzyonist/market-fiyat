@@ -79,6 +79,11 @@ def parse_watch(body):
     return out
 
 
+def parse_barcodes(body):
+    """Talepteki 'barkod 8690504017301 = sok:10' satırları: kullanıcının öğrettiği barkodlar."""
+    return {m.group(1): m.group(2) for m in re.finditer(r"barkod\s+(\d{8,14})\s*=\s*((?:sok|migros|bim):[\w.\-]+)", body or "")}
+
+
 def watch_issue():
     """Sahibin açtığı en yeni açık 'Bildirim listesi' talebi (numara, metin) ya da (None, '')."""
     token = os.environ.get("GITHUB_TOKEN")
@@ -237,6 +242,12 @@ def main(argv):
         return 0
     num, body = watch_issue()
     watch = expand(parse_watch(body), groups)
+    learned = parse_barcodes(body)
+    if learned and not dry:
+        bpath = ROOT / "data" / "barcodes-user.json"
+        old = json.loads(bpath.read_text(encoding="utf-8")).get("codes", {}) if bpath.exists() else {}
+        if {**old, **learned} != old:
+            bpath.write_text(json.dumps({"codes": dict(sorted({**old, **learned}.items()))}, ensure_ascii=False, indent=0) + "\n", encoding="utf-8")
     sent = state.get("sent") or {}
     sent = {k: v for k, v in sent.items() if k in watch}  # listeden çıkanlar unutulur
     alerts = watch_alerts(watch, products, sent)
