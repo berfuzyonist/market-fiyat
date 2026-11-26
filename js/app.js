@@ -4,12 +4,9 @@ const M={sok:{n:"Şok",at:"Şok'ta",c:"bg-yellow-400 text-yellow-950",bar:"#eab3
 const VIEWS=["home","compare","promos","browse","search","list","posters","camp","track","analysis","status"];
 const $=id=>document.getElementById(id);
 const tl=x=>x.toLocaleString("tr-TR",{minimumFractionDigits:2,maximumFractionDigits:2})+" ₺";
-// Raf etiketi fiyatı: lira büyük, kuruş üstte küçük (marketteki etiket gibi); ekran okuyucuya düz metin
-const lp=x=>{const[a,b]=tl(x).replace(" ₺","").split(",");return`<span class="lp" aria-label="${tl(x)}"><b>${a}</b><sup>,${b}</sup><small>₺</small></span>`};
-// Etiketin altındaki barkod deseni: ürün kimliğinden türetilir (yalnızca süs; gerçek barkod değil)
-const bars=id=>{let h=0,g=[],x=0;for(const c of String(id))h=(h*31+c.charCodeAt(0))>>>0;
-  for(let i=0;i<18;i++){h=(h*1103515245+12345)>>>0;const w=1+(h>>>16)%3,gap=1+(h>>>20)%2;g.push(`currentColor ${x}px ${x+w}px,transparent ${x+w}px ${x+w+gap}px`);x+=w+gap}
-  return`<span class="bc" aria-hidden="true" style="width:${x}px;background:linear-gradient(90deg,${g.join(",")})"></span>`};
+// Canlı rakam: fiyat değişken yazı tipiyle dizilir; indirim derinleştikçe rakam kalınlaşır ve genişler (wght 300→900, wdth 72→132)
+const axis=d=>{const t=Math.max(0,Math.min(1,(d||0)/0.6));return{w:Math.round(300+600*t),x:Math.round(72+60*t)}};
+const vp=(x,d,cls="")=>{const a=axis(d);return`<span class="vp ${cls}" style="--w:${a.w};--x:${a.x}" aria-label="${tl(x)}">${tl(x).replace(" ₺","")}<small>₺</small></span>`};
 const lday=ts=>ts?new Date(ts*1000).toLocaleDateString("tr-TR",{day:"2-digit",month:"2-digit"}):"";
 const num=x=>x.toLocaleString("tr-TR");
 const pct=x=>"%"+Math.round(x*100);
@@ -173,13 +170,13 @@ function pcard(o,opt={}){
     ${p&&p.kind!=="bim"&&ok?`<span class="promo-tag">${esc(p.label)}</span>`:""}${gone?`<span class="stamp">BİTTİ</span>`:""}</div>
   <p class="lname" data-show="${esc(key)}">${esc(o.name)}</p>
   <p class="lunit tabular">${u||"&nbsp;"}${multi?` · <span class="${low?"text-emerald-700 font-bold":""}">${low?"en ucuz · ":""}${avail(g).length} markette</span>`:""}</p>
-  <div class="lprice ${d?"sale":""} ${low&&!d?"rev":""}">
-    ${d?`<span class="lcut">%${Math.round(d*100)}</span><s class="tabular">${tl(o.regular)}</s>`:""}
-    ${lp(o.price)}
+  <div class="lprice">
+    ${d?`<p class="lmeta"><span class="lcut">−%${Math.round(d*100)}</span><s>${tl(o.regular)}</s></p>`:`<p class="lmeta">${low?`<span class="lcut">EN UCUZ</span>`:"&nbsp;"}</p>`}
+    ${vp(o.price,d+(low?0.12:0))}
   </div>
   ${p&&p.kind==="basket"&&p.min&&p.eff<o.price&&ok?`<p class="text-[11px] font-extrabold text-violet-700 leading-tight mt-1">Kasada ${tl(p.eff)}</p>`:""}
   ${moneyChip(o)?`<div class="mt-1">${moneyChip(o)}</div>`:""}${stateChip(o)&&!gone?`<div class="mt-1">${stateChip(o)}</div>`:""}
-  <p class="lfoot">${bars(o.id)}<time title="${o.stale?"Eski veri: ":"Fiyatın okunduğu gün: "}${esc(MFC.ago(o.seen)||"")}">${o.stale?"eski · ":""}${lday(o.seen)}</time></p>
+  <p class="lfoot"><span>${o.stale?"ESKİ VERİ":"OKUNDU"}</span><time title="${o.stale?"Eski veri: ":"Fiyatın okunduğu gün: "}${esc(MFC.ago(o.seen)||"")}">${lday(o.seen)}</time></p>
   ${opt.strip?"":`<button data-fresh="${esc(o.id)}" data-open="${esc(key)}" class="self-start mt-1 text-[11px] font-bold text-blue-700 dark:text-blue-300 flex items-center gap-1"><i data-lucide="badge-check" class="w-3.5 h-3.5"></i>Güncel mi?</button>`}
   ${inC?stepper(g):`<button data-add="${esc(key)}" ${ok?"":"disabled"} aria-label="Listeye ekle" class="add ${ok?"":"opacity-30"}"><i data-lucide="plus" class="w-5 h-5"></i></button>`}
 </article>`}
@@ -443,7 +440,7 @@ function drawH(){
   const st=O.filter(usable);
   drawHCmp(st);
   $("cats").innerHTML=GROUPS.map(([k,l,ic,bg,fg])=>`<button data-grp="${k}" class="cat"><span class="ic" style="background:${bg};color:${fg}"><i data-lucide="${ic}" class="w-7 h-7"></i></span>${l}</button>`).join("");
-  $("deals").innerHTML=st.filter(o=>disc(o)>0).sort((a,b)=>disc(b)-disc(a)).slice(0,20).map((o,i)=>pcard(o,{strip:1,i})).join("")||`<p class="text-sm text-stone-500">Şu an indirim görünmüyor.</p>`;
+  drawDeals(SPEC_TOUCHED?SPEC/100:null);
   drawPostShelf();drawHDrops();
   $("units").innerHTML=UNIT_Q.map(([q,l,ic])=>`<button data-uq="${esc(q)}" class="uchip"><i data-lucide="${ic}" class="w-4 h-4 text-emerald-600"></i>${l}</button>`).join("");
   $("stores").innerHTML=DATA_M.filter(m=>O.some(o=>o.market===m)).map(m=>{const n=st.filter(o=>o.market===m),d=n.filter(o=>disc(o)>0).length,s=CHECK[m],failed=s&&s.status!=="tamam"&&!s.partial,part=s&&s.partial;
@@ -458,25 +455,44 @@ function drawH(){
   drawHList();drawPulse();
   $("upd").textContent=updated?"Güncel: "+new Date(updated).toLocaleString("tr-TR",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}):"-"}
 
-// "Bugünün rafı": market etiketleri (indirimdeki ürün, ortalama oran, veri saati) ve indirim oranlarının dağılımı
+// Ana sayfa "eksen": indirim eşiği kaydırıcısı. Sürükledikçe dev rakam (eşiği geçen ürün sayısı), market sayaçları
+// ve fırsat rafı parmağın altında canlı değişir; rakamların kalınlığı/genişliği eşiğe bağlı.
+let SPEC=20,SPEC_T=0,SPEC_TOUCHED=false;
+function specData(){const st=O.filter(o=>usable(o)&&o.in_stock&&!o.na);return{st,dd:st.filter(o=>disc(o)>=0.05)}}
 function drawPulse(){
-  const el=$("hPulse");if(!el||!O.length)return;
-  const st=O.filter(o=>usable(o)&&o.in_stock&&!o.na),dd=st.filter(o=>disc(o)>=0.05);
+  const el=$("hPulse");if(!el||!O.length)return;const{st,dd}=specData();
   if(!dd.length){el.innerHTML="";return}
-  const avg=dd.reduce((a,o)=>a+disc(o),0)/dd.length,ms=DATA_M.filter(m=>st.some(o=>o.market===m));
-  const bins=[[0.05,0.2,"%5–20"],[0.2,0.3,"%20–30"],[0.3,0.5,"%30–50"],[0.5,1,"%50+"]].map(([a,b,l])=>({l,n:dd.filter(o=>disc(o)>=a&&disc(o)<b).length}));
-  const mx=Math.max(...bins.map(b=>b.n)),top=bins.reduce((a,b)=>b.n>a.n?b:a);
-  const promoN=st.filter(o=>o._promo&&o._promo.kind==="multi").length;
-  const hm=t=>t?new Date(t).toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"}):"";
-  el.innerHTML=`<div class="board">
-    <h2 class="text-xl font-bold">Bugünün rafı</h2>
-    <p class="text-sm mt-0.5 bsub"><b class="tabular">${num(dd.length)}</b> üründe indirim var, ortalama <b class="tabular">%${Math.round(avg*100)}</b>.</p>
-    <div class="mlabs" style="grid-template-columns:repeat(${ms.length},minmax(0,1fr))">${ms.map(m=>{const all=st.filter(o=>o.market===m),n=all.filter(o=>disc(o)>=0.05),a=n.length?n.reduce((x,o)=>x+disc(o),0)/n.length:0;
-      return`<button data-go="deals" class="mlab"><span class="mband ${M[m].c}">${M[m].n}</span><span class="mnum tabular">${num(n.length)}</span><span class="mcap">indirimde</span><span class="mavg tabular">ort. %${Math.round(a*100)}</span><span class="mtime">${bars(m)}<time>${hm(UPD[m])}</time></span></button>`}).join("")}</div>
-    <div class="flex items-baseline justify-between mt-5"><h3 class="text-sm font-bold">İndirim oranları</h3><span class="text-xs bsub">en kalabalık: ${top.l}</span></div>
-    <div class="depth">${bins.map((b,i)=>`<div class="dcol"><span class="dval tabular">${num(b.n)}</span><span class="dbar" style="--h:${Math.max(6,Math.round(b.n/mx*64))}px;--i:${i}"></span><span class="dlab">${b.l}</span></div>`).join("")}</div>
-    ${promoN?`<button data-view="promos" data-plain="1" class="bpromo"><i data-lucide="gift" class="w-4 h-4"></i><span><b class="tabular">${num(promoN)}</b> üründe bedava ürünlü kampanya</span><i data-lucide="chevron-right" class="w-4 h-4 ml-auto"></i></button>`:""}
-  </div>`}
+  const ms=DATA_M.filter(m=>st.some(o=>o.market===m));
+  el.innerHTML=`<div class="spec">
+    <div class="spec-head"><h2>İndirim ekseni</h2><span class="mono" id="specRead"></span></div>
+    <div class="spec-stage"><span class="spec-num" id="specNum">0</span></div>
+    <p class="spec-cap" id="specCap"></p>
+    <div class="spec-ax"><label for="specR" class="mono">EN AZ İNDİRİM</label><span class="mono"><b id="specV"></b></span></div>
+    <input type="range" id="specR" min="5" max="70" step="1" value="${SPEC}" aria-describedby="specCap">
+    <div class="spec-ends mono"><span>%5</span><span>%70</span></div>
+    <div class="spec-pre">${[10,25,40,55].map(v=>`<button data-spec="${v}" class="mono">%${v}+</button>`).join("")}</div>
+    <div class="spec-mk" style="grid-template-columns:repeat(${ms.length},minmax(0,1fr))">${ms.map(m=>`<div class="smk"><span class="mono">${M[m].n.toLocaleUpperCase("tr")}</span><b data-smk="${m}">0</b><span class="mono smk-s" data-smks="${m}"></span></div>`).join("")}</div>
+    <button data-go="deals" class="spec-go"><span>Bu fırsatları gör</span><i data-lucide="arrow-right" class="w-4 h-4"></i></button>
+  </div>`;
+  const r=$("specR");r.oninput=()=>{SPEC_TOUCHED=true;setSpec(+r.value,true)};
+  el.querySelectorAll("[data-spec]").forEach(b=>b.onclick=()=>{SPEC_TOUCHED=true;tweenSpec(+b.dataset.spec)});
+  setSpec(SPEC,false,true)}
+function tweenSpec(to){const from=SPEC,t0=performance.now(),D=matchMedia("(prefers-reduced-motion: reduce)").matches?1:650;
+  const f=t=>{const k=Math.min(1,(t-t0)/D),e=1-Math.pow(1-k,4);setSpec(Math.round(from+(to-from)*e),true);if(k<1)requestAnimationFrame(f)};requestAnimationFrame(f)}
+function setSpec(v,live,first){SPEC=v;const{dd}=specData(),th=v/100,hit=dd.filter(o=>disc(o)>=th),a=axis(th*1.15);
+  const n=$("specNum");if(!n)return;n.style.setProperty("--w",a.w);n.style.setProperty("--x",a.x);n.textContent=num(hit.length);
+  n.style.fontSize="100px";const W=n.parentNode.clientWidth*0.94,H=n.parentNode.clientHeight*0.92;n.style.fontSize=Math.min(H,W/n.scrollWidth*100)+"px";
+  $("specV").textContent="%"+v;$("specR").value=v;$("specR").style.setProperty("--p",((v-5)/65*100)+"%");
+  $("specRead").textContent=`wght ${a.w} · wdth ${a.x}`;
+  $("specCap").innerHTML=`üründe en az <b>%${v}</b> indirim var`;
+  document.querySelectorAll("[data-smk]").forEach(e=>{const m=e.dataset.smk,k=hit.filter(o=>o.market===m).length,t=dd.filter(o=>o.market===m).length;
+    e.textContent=num(k);const b=axis(t?k/t*0.6:0);b.x=Math.min(b.x,104);e.style.setProperty("--w",b.w);e.style.setProperty("--x",b.x);
+    document.querySelector(`[data-smks="${m}"]`).textContent=t?"%"+Math.round(k/t*100)+" PAY":""});
+  document.querySelectorAll("[data-spec]").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.spec===v));
+  if(live&&!first){cancelAnimationFrame(SPEC_T);SPEC_T=requestAnimationFrame(()=>drawDeals(th))}}
+// Fırsat rafı: kaydırıcı eşiğindeki ürünler (eşiğe en yakın olandan derine doğru)
+function drawDeals(th){const st=O.filter(usable);const r=th==null?st.filter(o=>disc(o)>0).sort((a,b)=>disc(b)-disc(a)):st.filter(o=>disc(o)>=th).sort((a,b)=>disc(a)-disc(b)||(b.regular-b.price)-(a.regular-a.price));
+  $("deals").innerHTML=r.slice(0,20).map((o,i)=>pcard(o,{strip:1,i})).join("")||`<p class="text-sm text-stone-500">Bu eşikte indirim yok; kaydırıcıyı sola çek.</p>`;icons()}
 // Ana sayfanın başı: listenin özeti ve en ucuz plan (liste boşsa nasıl başlanacağı)
 function drawHList(){
   const el=$("hList");if(!el)return;const list=uniq(cart);
