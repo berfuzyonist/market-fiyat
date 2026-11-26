@@ -1,25 +1,28 @@
-# Design: Raf etiketi
+# Design: Canlı rakamlar
 
-Every price is a shelf label, the thing a Turkish shopper already trusts in the aisle. Mode: Operate. Layer: `css/raf.css` on `body.raf`, above `css/apple.css`.
+An interactive type specimen applied to prices. Prices are set in a variable face whose weight and width follow the discount: the deeper the cut, the heavier and wider the numeral. Mode: Operate. Layer: `css/canli.css` on `body.canli`, above `css/apple.css`. Replaced "Raf etiketi" on 2026-11-26 at the user's request ("bambaşka, bol animasyonlu, bol etkileşimli").
 
 ## Palette
-- Ground `--bg` cool shelf metal (#e6e9ec / dark #131518).
-- Rail `--rail` graphite (#22272c / dark #0a0b0d): top bar, reversed "cheapest" labels. `--shelfrail` draws the shelf under horizontal rows.
-- Label `--surface` paper white / dark #1d2024.
-- Sale `--sale` chrome yellow #ffd31a with `--saleink` red numerals: discount sticker, depth bars, logo and cart button.
-- Action `--accent` green: only on things you press (add, primary buttons, links).
-- Market colours (Şok yellow, Migros orange, BİM red, A101 blue, Koop green) stay as store badges and label bands.
+- Paper `--bg` #fafaf8, card #fff, fill #f0efeb, divider #d8d8d6. Dark: ink ground #0b0b0d, card #141417, divider #2b2b30.
+- Ink `--ink` #0b0b0d (dark #f2f1ec).
+- Accent `--accent` cobalt #1e4baf (dark #7d97ff): actions, discount figures, slider, selected states.
+- Market colours stay only as store badges.
 
 ## Type
-- UI: Inter (workhorse).
-- Numerals: Barlow Condensed 500/700/800 (OFL, self-hosted in `fonts/`), via `--num`.
-- Prices render with `lp()`: lira large, kuruş raised small, ₺ small.
+- Prices and headings: Anybody variable (wght 100–900, wdth 50–150), self-hosted, OFL.
+- Labels and readouts: JetBrains Mono, 10–12px uppercase, tracked.
+- Body: Inter.
+- `axis(d)` maps discount 0–60%+ to wght 300→900 and wdth 72→132. `vp()` renders a price with `--w` and `--x`.
 
-## Components
-- Product card (`pcard`): image, name, unit price, `.lprice` label (yellow tilted sticker when discounted, red `%` corner tab, struck old price; graphite reversed when it is the cheapest of its group), footer with decorative barcode from the id and the read date.
-- States: stale = dashed label edge and faded price (form, not hue); ended = grayscale image and red "BİTTİ" stamp.
-- Home "Bugünün rafı": one label per market (band, discounted count, average cut, data time), yellow depth bars on a rail, campaign link.
-- Corners: labels 10px, inner stickers 4px, tags 4px.
+## Signature interaction
+The home "İndirim ekseni": dragging the minimum-discount slider (or tapping a %10+/%25+/%40+/%55+ preset, which tweens) live-morphs a giant count of matching products, the per-market counts, and re-ranks the deals shelf. A mono readout shows the current wght/wdth.
 
 ## Motion
-One moment: depth bars rise from the rail (ease-out, staggered). Reduced motion disables it.
+- Every price morphs in from wght 100/wdth 50 on entry, staggered.
+- The giant numeral breathes slowly when idle and pauses while dragging.
+- Pressing or hovering a card thickens its price.
+- Shelf cards rise in sequence. The add button rotates on press. Tab underlines slide.
+- Reduced motion turns all of it off.
+
+## Shape
+Hairline 1px borders, 2–4px corners, no shadows. Stale data uses a dashed card edge and faded price. Ended offers get a "BİTTİ" mono stamp and a grayscale image.
