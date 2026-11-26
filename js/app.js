@@ -1324,8 +1324,9 @@ document.addEventListener("visibilitychange",checkFresh);setInterval(checkFresh,
 addEventListener("offline",offNote);if(navigator.onLine===false)setTimeout(offNote,1500);
 route(); // açılışta adresteki sayfaya git (yenilemede aynı ürün açık kalır)
 // Afiş dosyaları küçük: fiyat verisini beklemeden gelir gelmez rafa çizilir (ilk ekranın en büyük görseli).
-const postersP=Promise.all(["bim","migros","sok"].map(m=>get(`data/posters-${m}.json`)));
-postersP.then(ps=>ps.forEach((p,i)=>{if(p&&p.updated)PUPD[["bim","migros","sok"][i]]=p.updated})).catch(()=>{});
+const PMK=["bim","migros","sok","a101"]; // A101: e-posta aboneliğinden gelen afişler
+const postersP=Promise.all(PMK.map(m=>get(`data/posters-${m}.json`).catch(()=>null)));
+postersP.then(ps=>ps.forEach((p,i)=>{if(p&&p.updated)PUPD[PMK[i]]=p.updated})).catch(()=>{});
 postersP.then(posters=>{if(O.length)return;POST=groupBim(groupSok(posters.flatMap(p=>(p&&Array.isArray(p.items)?p.items:[]).filter(it=>it&&/^https:\/\//.test(it.image||"")))));
   if(view==="home"){drawPostShelf();icons()}else if(view==="posters")redraw()}).catch(()=>{});
 // Fiyat verisi: önce data/client (katalog önbellekte kalır, her açılışta yalnızca fiyat dosyaları iner;
