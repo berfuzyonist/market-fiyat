@@ -637,11 +637,13 @@ function productInfo(g){
   return`<div class="${card} p-4 mt-4 enter"><h2 class="font-extrabold flex items-center gap-2"><i data-lucide="info" class="w-5 h-5 text-emerald-600"></i>Ürün bilgisi</h2>
     <div class="mt-2 space-y-2 text-[14px] leading-relaxed text-stone-700">${out.map(x=>`<p>${x}</p>`).join("")}</div>
     <p class="mt-3 text-[11px] text-stone-400">Bu metin uygulamadaki fiyat verisinden otomatik hazırlanır; marketin resmi ürün açıklaması değildir.</p></div>`}
-// A101 ve Market Fiyatı (TÜBİTAK) için veri alınmaz; yalnızca bağlantı verilir. Ürün adı panoya kopyalanır,
+// A101, Market Fiyatı (TÜBİTAK), Akakçe ve Cimri için veri alınmaz (açık API yok; Akakçe/Cimri otomatik
+// erişime kapalı); yalnızca bağlantı verilir. Akakçe/Cimri bağlantısı ürün adıyla arama sayfasını açar. Ürün adı panoya kopyalanır,
 // açılan sitenin arama kutusuna yapıştırılabilir.
 function extLinks(g){
   const a=(href,l,sub)=>`<a href="${href}" target="_blank" rel="noopener" data-copyname="${esc(g.name)}" class="flex items-center gap-3 py-2.5"><span class="flex-1"><span class="block text-sm font-bold">${l}</span><span class="block text-[11px] text-stone-600">${sub}</span></span><i data-lucide="external-link" class="w-4 h-4 text-stone-500"></i></a>`;
-  return`<section class="${card} px-4 py-1 mt-3 ${div}">${a("https://marketfiyati.org.tr/","Market Fiyatı'nda karşılaştır","TÜBİTAK sitesi; A101 ve diğer zincirler. Ürün adı panoya kopyalanır.")}${a("https://www.a101.com.tr/","A101'de bak","Bu uygulamada A101 fiyatı yok. Ürün adı panoya kopyalanır.")}</section>`}
+  const q=encodeURIComponent(g.name.replace(/\s+/g," ").trim());
+  return`<section class="${card} px-4 py-1 mt-3 ${div}">${a(`https://www.akakce.com/arama/?q=${q}`,"Akakçe'de internet fiyatları","Online mağazalar (Trendyol, Hepsiburada, Amazon…); kargo dahil olmayabilir.")}${a(`https://www.cimri.com/arama?q=${q}`,"Cimri'de internet fiyatları","Online mağazalar ve Cimri Market karşılaştırması.")}${a("https://marketfiyati.org.tr/","Market Fiyatı'nda karşılaştır","TÜBİTAK sitesi; A101 ve diğer zincirler. Ürün adı panoya kopyalanır.")}${a("https://www.a101.com.tr/","A101'de bak","Bu uygulamada A101 fiyatı yok. Ürün adı panoya kopyalanır.")}</section>`}
 // Market sitesi ürün sayfası
 function productPage(g){
   g.offers.forEach(o=>loadHist(o.market));
