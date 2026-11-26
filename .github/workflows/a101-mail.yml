@@ -1,0 +1,48 @@
+name: A101 afişleri
+
+# A101 afişleri, A101'in afiş aboneliğiyle gönderdiği e-postalardan okunur (yalnızca bu iş için açılmış
+# Gmail kutusu, yalnızca okunur). A101'in sitesine istek atılmaz. Kimlik: A101_MAIL_USER, A101_MAIL_PASS.
+on:
+  schedule:
+    - cron: "37 5,8,11,14,17 * * *"   # TR 08.37, 11.37, 14.37, 17.37, 20.37
+  workflow_dispatch:
+    inputs:
+      deneme:
+        description: "Yalnızca bağlantıyı ve bulunan e-postaları göster (dosya yazmaz)"
+        type: boolean
+        default: false
+permissions:
+  contents: write
+concurrency:
+  group: a101-mail
+  cancel-in-progress: false
+jobs:
+  a101:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - name: E-postaları oku
+        env:
+          A101_MAIL_USER: ${{ secrets.A101_MAIL_USER }}
+          A101_MAIL_PASS: ${{ secrets.A101_MAIL_PASS }}
+        run: python3 scripts/a101_mail.py ${{ inputs.deneme && '--deneme' || '' }}
+      - name: Kaydet
+        if: ${{ !inputs.deneme }}
+        run: |
+          [ -f data/posters-a101.json ] || exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cp data/posters-a101.json "$RUNNER_TEMP/p.json"
+          for attempt in 1 2 3 4 5; do
+            git fetch --no-tags origin main && git reset --hard origin/main
+            cp "$RUNNER_TEMP/p.json" data/posters-a101.json
+            git add data/posters-a101.json
+            git diff --cached --quiet && exit 0
+            git commit -qm "A101 afişleri (e-posta)"
+            git push origin HEAD:refs/heads/main && exit 0
+            sleep $((attempt * 3))
+          done
+          exit 1

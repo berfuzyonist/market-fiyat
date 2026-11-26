@@ -26,7 +26,7 @@ sys.path.insert(0, str(ROOT / "collector"))
 import collect  # noqa: E402
 
 SITE = "https://berfuzyonist.github.io/market-fiyat/"
-NAMES = {"sok": "Şok", "migros": "Migros", "bim": "BİM"}
+NAMES = {"sok": "Şok", "migros": "Migros", "bim": "BİM", "a101": "A101"}  # A101: yalnız afiş (e-posta)
 STATE = ROOT / "data" / "notify-state.json"
 REPO = os.environ.get("GITHUB_REPOSITORY", "berfuzyonist/market-fiyat")
 OWNER = REPO.split("/")[0]
