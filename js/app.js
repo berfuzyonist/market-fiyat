@@ -4,9 +4,8 @@ const M={sok:{n:"Şok",at:"Şok'ta",c:"bg-yellow-400 text-yellow-950",bar:"#eab3
 const VIEWS=["home","compare","promos","browse","search","list","posters","camp","track","analysis","status"];
 const $=id=>document.getElementById(id);
 const tl=x=>x.toLocaleString("tr-TR",{minimumFractionDigits:2,maximumFractionDigits:2})+" ₺";
-// Canlı rakam: fiyat değişken yazı tipiyle dizilir; indirim derinleştikçe rakam kalınlaşır ve genişler (wght 300→900, wdth 72→132)
-const axis=d=>{const t=Math.max(0,Math.min(1,(d||0)/0.6));return{w:Math.round(300+600*t),x:Math.round(72+60*t)}};
-const vp=(x,d,cls="")=>{const a=axis(d);return`<span class="vp ${cls}" style="--w:${a.w};--x:${a.x}" aria-label="${tl(x)}">${tl(x).replace(" ₺","")}<small>₺</small></span>`};
+// Fiyat: lira büyük, kuruş küçük
+const pr=x=>{const[a,b]=tl(x).replace(" ₺","").split(",");return`<span class="pr" aria-label="${tl(x)}"><b>${a}</b><small>,${b} ₺</small></span>`};
 const lday=ts=>ts?new Date(ts*1000).toLocaleDateString("tr-TR",{day:"2-digit",month:"2-digit"}):"";
 const num=x=>x.toLocaleString("tr-TR");
 const pct=x=>"%"+Math.round(x*100);
@@ -171,15 +170,15 @@ function pcard(o,opt={}){
   <p class="lname" data-show="${esc(key)}">${esc(o.name)}</p>
   <p class="lunit tabular">${u||"&nbsp;"}${multi?` · <span class="${low?"text-emerald-700 font-bold":""}">${low?"en ucuz · ":""}${avail(g).length} markette</span>`:""}</p>
   <div class="lprice">
-    ${d?`<p class="lmeta"><span class="lcut">−%${Math.round(d*100)}</span><s>${tl(o.regular)}</s></p>`:`<p class="lmeta">${low?`<span class="lcut">EN UCUZ</span>`:"&nbsp;"}</p>`}
-    ${vp(o.price,d+(low?0.12:0))}
+    ${d?`<p class="lmeta"><span class="lcut">−%${Math.round(d*100)}</span><s>${tl(o.regular)}</s></p>`:`<p class="lmeta">${low?`<span class="lbest">En ucuz</span>`:"&nbsp;"}</p>`}
+    ${pr(o.price)}
   </div>
   ${p&&p.kind==="basket"&&p.min&&p.eff<o.price&&ok?`<p class="text-[11px] font-extrabold text-violet-700 leading-tight mt-1">Kasada ${tl(p.eff)}</p>`:""}
   ${moneyChip(o)?`<div class="mt-1">${moneyChip(o)}</div>`:""}${stateChip(o)&&!gone?`<div class="mt-1">${stateChip(o)}</div>`:""}
-  <p class="lfoot"><span>${o.stale?"ESKİ VERİ":"OKUNDU"}</span><time title="${o.stale?"Eski veri: ":"Fiyatın okunduğu gün: "}${esc(MFC.ago(o.seen)||"")}">${lday(o.seen)}</time></p>
+  <p class="lfoot"><span>${o.stale?"Eski veri":"Okundu"}</span><time title="${o.stale?"Eski veri: ":"Fiyatın okunduğu gün: "}${esc(MFC.ago(o.seen)||"")}">${lday(o.seen)}</time></p>
   ${opt.strip?"":`<button data-fresh="${esc(o.id)}" data-open="${esc(key)}" class="self-start mt-1 text-[11px] font-bold text-blue-700 dark:text-blue-300 flex items-center gap-1"><i data-lucide="badge-check" class="w-3.5 h-3.5"></i>Güncel mi?</button>`}
   ${inC?stepper(g):`<button data-add="${esc(key)}" ${ok?"":"disabled"} aria-label="Listeye ekle" class="add ${ok?"":"opacity-30"}"><i data-lucide="plus" class="w-5 h-5"></i></button>`}
-</article>`}
+<span class="glare" aria-hidden="true"></span></article>`}
 // ---------- Karşılaştırma verisi ----------
 function buildCompare(){CMP_PARTS.forEach(f=>f())}
 // Üç parça ayrı ayrı (boşta, sırayla) çalıştırılabilsin diye bölündü: tek seferde telefonda ~1 sn kilitliyordu
@@ -418,7 +417,7 @@ function drawPostShelf(){
   $("hPost").innerHTML=cols.map((c,j)=>per[c[0].market]
     ?`<div class="${c[0].market==="migros"?"w-64":"w-44"} shrink-0 flex flex-col gap-2.5" style="--i:${j}">${c.map(it=>campMini(it)).join("")}</div>`
     :posterCard(c[0],POST.indexOf(c[0]),"w-40 shrink-0")).join("")+POSTER_LINKS.map(l=>linkCard(l,"w-44 shrink-0")).join("");
-  EAGER=0;
+  EAGER=0;drawStories();
 }
 // Ana sayfanın karşılaştırmaya bağlı bölümleri (tanıtım alanı, fiyat farkı rafı, temel ihtiyaçlar):
 // ad çözümlemesi bitince yalnızca bunlar yenilenir.
@@ -440,7 +439,7 @@ function drawH(){
   const st=O.filter(usable);
   drawHCmp(st);
   $("cats").innerHTML=GROUPS.map(([k,l,ic,bg,fg])=>`<button data-grp="${k}" class="cat"><span class="ic" style="background:${bg};color:${fg}"><i data-lucide="${ic}" class="w-7 h-7"></i></span>${l}</button>`).join("");
-  drawDeals(SPEC_TOUCHED?SPEC/100:null);
+  drawDeals();
   drawPostShelf();drawHDrops();
   $("units").innerHTML=UNIT_Q.map(([q,l,ic])=>`<button data-uq="${esc(q)}" class="uchip"><i data-lucide="${ic}" class="w-4 h-4 text-emerald-600"></i>${l}</button>`).join("");
   $("stores").innerHTML=DATA_M.filter(m=>O.some(o=>o.market===m)).map(m=>{const n=st.filter(o=>o.market===m),d=n.filter(o=>disc(o)>0).length,s=CHECK[m],failed=s&&s.status!=="tamam"&&!s.partial,part=s&&s.partial;
@@ -455,44 +454,40 @@ function drawH(){
   drawHList();drawPulse();
   $("upd").textContent=updated?"Güncel: "+new Date(updated).toLocaleString("tr-TR",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}):"-"}
 
-// Ana sayfa "eksen": indirim eşiği kaydırıcısı. Sürükledikçe dev rakam (eşiği geçen ürün sayısı), market sayaçları
-// ve fırsat rafı parmağın altında canlı değişir; rakamların kalınlığı/genişliği eşiğe bağlı.
-let SPEC=20,SPEC_T=0,SPEC_TOUCHED=false;
-function specData(){const st=O.filter(o=>usable(o)&&o.in_stock&&!o.na);return{st,dd:st.filter(o=>disc(o)>=0.05)}}
+// Öne çıkanlar: büyük cam kartlar; kaydırınca kartlar 3B dönerek öne gelir (kapak akışı)
 function drawPulse(){
-  const el=$("hPulse");if(!el||!O.length)return;const{st,dd}=specData();
+  const el=$("hPulse");if(!el||!O.length)return;
+  const st=O.filter(o=>usable(o)&&o.in_stock&&!o.na),dd=st.filter(o=>disc(o)>=0.05);
   if(!dd.length){el.innerHTML="";return}
-  const ms=DATA_M.filter(m=>st.some(o=>o.market===m));
-  el.innerHTML=`<div class="spec">
-    <div class="spec-head"><h2>İndirim ekseni</h2><span class="mono" id="specRead"></span></div>
-    <div class="spec-stage"><span class="spec-num" id="specNum">0</span></div>
-    <p class="spec-cap" id="specCap"></p>
-    <div class="spec-ax"><label for="specR" class="mono">EN AZ İNDİRİM</label><span class="mono"><b id="specV"></b></span></div>
-    <input type="range" id="specR" min="5" max="70" step="1" value="${SPEC}" aria-describedby="specCap">
-    <div class="spec-ends mono"><span>%5</span><span>%70</span></div>
-    <div class="spec-pre">${[10,25,40,55].map(v=>`<button data-spec="${v}" class="mono">%${v}+</button>`).join("")}</div>
-    <div class="spec-mk" style="grid-template-columns:repeat(${ms.length},minmax(0,1fr))">${ms.map(m=>`<div class="smk"><span class="mono">${M[m].n.toLocaleUpperCase("tr")}</span><b data-smk="${m}">0</b><span class="mono smk-s" data-smks="${m}"></span></div>`).join("")}</div>
-    <button data-go="deals" class="spec-go"><span>Bu fırsatları gör</span><i data-lucide="arrow-right" class="w-4 h-4"></i></button>
+  const avg=dd.reduce((a,o)=>a+disc(o),0)/dd.length,seen=new Set();
+  // Her marketten sırayla: indirim oranı × fiyatın büyüklüğü (log) en yüksek olanlar; aynı ürün bir kez
+  const by={};dd.filter(o=>disc(o)>=0.25&&o.image&&o.image.startsWith("https://")).sort((a,b)=>disc(b)*Math.log10(b.regular+10)-disc(a)*Math.log10(a.regular+10))
+    .filter(o=>{const k=(GI[o.id]||{}).key||o.id;if(seen.has(k))return false;seen.add(k);return true}).forEach(o=>(by[o.market]=by[o.market]||[]).push(o));
+  const top=[];for(let i=0;top.length<10&&Object.values(by).some(a=>a.length>i);i++)Object.values(by).forEach(a=>{if(a[i]&&top.length<10)top.push(a[i])});
+  el.innerHTML=`<div class="spot">
+    <div class="spot-head"><h2>Öne çıkanlar</h2><p><b class="tabular">${num(dd.length)}</b> üründe indirim · ortalama <b class="tabular">%${Math.round(avg*100)}</b></p></div>
+    <div class="spot-track noscroll" id="spotT">${top.map((o,i)=>{const g=GI[o.id],key=g?g.key:o.id,inC=g&&inCart(g);return`<article class="spc" style="--mc:${M[o.market].bar}">
+      <div class="spc-img" data-show="${esc(key)}"><img src="${esc(o.image)}" alt="${esc(o.name)}" loading="${i<2?"eager":"lazy"}" onerror="this.style.visibility='hidden'"></div>
+      <div class="spc-body"><div class="flex items-center justify-between gap-2">${badge(o.market,1)}<span class="lcut">−%${Math.round(disc(o)*100)}</span></div>
+        <p class="spc-name" data-show="${esc(key)}">${esc(o.name)}</p>
+        <div class="flex items-end justify-between gap-2 mt-2"><div><s class="spc-old">${tl(o.regular)}</s>${pr(o.price)}</div>
+        ${inC?`<span class="spc-in">Listede</span>`:`<button data-add="${esc(key)}" aria-label="Listeye ekle" class="spc-add"><i data-lucide="plus" class="w-5 h-5"></i></button>`}</div></div></article>`}).join("")}</div>
+    <div class="spot-dots" id="spotD">${top.map((_,i)=>`<i class="${i?"":"on"}"></i>`).join("")}</div>
   </div>`;
-  const r=$("specR");r.oninput=()=>{SPEC_TOUCHED=true;setSpec(+r.value,true)};
-  el.querySelectorAll("[data-spec]").forEach(b=>b.onclick=()=>{SPEC_TOUCHED=true;tweenSpec(+b.dataset.spec)});
-  setSpec(SPEC,false,true)}
-function tweenSpec(to){const from=SPEC,t0=performance.now(),D=matchMedia("(prefers-reduced-motion: reduce)").matches?1:650;
-  const f=t=>{const k=Math.min(1,(t-t0)/D),e=1-Math.pow(1-k,4);setSpec(Math.round(from+(to-from)*e),true);if(k<1)requestAnimationFrame(f)};requestAnimationFrame(f)}
-function setSpec(v,live,first){SPEC=v;const{dd}=specData(),th=v/100,hit=dd.filter(o=>disc(o)>=th),a=axis(th*1.15);
-  const n=$("specNum");if(!n)return;n.style.setProperty("--w",a.w);n.style.setProperty("--x",a.x);n.textContent=num(hit.length);
-  n.style.fontSize="100px";const W=n.parentNode.clientWidth*0.94,H=n.parentNode.clientHeight*0.92;n.style.fontSize=Math.min(H,W/n.scrollWidth*100)+"px";
-  $("specV").textContent="%"+v;$("specR").value=v;$("specR").style.setProperty("--p",((v-5)/65*100)+"%");
-  $("specRead").textContent=`wght ${a.w} · wdth ${a.x}`;
-  $("specCap").innerHTML=`üründe en az <b>%${v}</b> indirim var`;
-  document.querySelectorAll("[data-smk]").forEach(e=>{const m=e.dataset.smk,k=hit.filter(o=>o.market===m).length,t=dd.filter(o=>o.market===m).length;
-    e.textContent=num(k);const b=axis(t?k/t*0.6:0);b.x=Math.min(b.x,104);e.style.setProperty("--w",b.w);e.style.setProperty("--x",b.x);
-    document.querySelector(`[data-smks="${m}"]`).textContent=t?"%"+Math.round(k/t*100)+" PAY":""});
-  document.querySelectorAll("[data-spec]").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.spec===v));
-  if(live&&!first){cancelAnimationFrame(SPEC_T);SPEC_T=requestAnimationFrame(()=>drawDeals(th))}}
-// Fırsat rafı: kaydırıcı eşiğindeki ürünler (eşiğe en yakın olandan derine doğru)
-function drawDeals(th){const st=O.filter(usable);const r=th==null?st.filter(o=>disc(o)>0).sort((a,b)=>disc(b)-disc(a)):st.filter(o=>disc(o)>=th).sort((a,b)=>disc(a)-disc(b)||(b.regular-b.price)-(a.regular-a.price));
-  $("deals").innerHTML=r.slice(0,20).map((o,i)=>pcard(o,{strip:1,i})).join("")||`<p class="text-sm text-stone-500">Bu eşikte indirim yok; kaydırıcıyı sola çek.</p>`;icons()}
+  const t=$("spotT");let raf=0;t.onscroll=()=>{cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>flow(t))};flow(t)}
+const RM=matchMedia("(prefers-reduced-motion: reduce)").matches;
+function flow(t){const r=t.getBoundingClientRect(),c=r.left+r.width/2;let best=0,bd=1e9;
+  [...t.children].forEach((e,i)=>{const b=e.getBoundingClientRect(),p=Math.max(-1.6,Math.min(1.6,(b.left+b.width/2-c)/b.width));
+    const q=Math.abs(p);if(!RM)e.style.transform=`translateZ(${(-140*q).toFixed(1)}px) rotateY(${(-32*p).toFixed(2)}deg) scale(${(1-Math.min(q,1)*.1).toFixed(3)})`;e.style.opacity=(1-Math.min(q,1.4)*.45).toFixed(3);if(Math.abs(p)<bd){bd=Math.abs(p);best=i}});
+  const d=$("spotD");if(d)[...d.children].forEach((x,i)=>x.classList.toggle("on",i===best))}
+// Hikâyeler: afişler ve kampanyalar Instagram hikâyesi gibi halkalı yuvarlaklar
+function drawStories(){const el=$("hStory");if(!el)return;const by={},live=[];sortedPosters().forEach(it=>(by[it.market]=by[it.market]||[]).push(it));
+  for(let i=0;live.length<16&&Object.values(by).some(a=>a.length>i);i++)Object.values(by).forEach(a=>{if(a[i]&&live.length<16)live.push(a[i])});
+  el.innerHTML=live.length?`<div class="stories noscroll">${live.map((it,i)=>`<button ${isCamp(it)?`data-camp="${esc(campKey(it))}"`:`data-poster="${POST.indexOf(it)}"`} class="story" style="--i:${i}">
+    <span class="sring"><span class="sin">${coverImg(it,"")}</span></span><span class="sname">${M[it.market]?M[it.market].n:esc(it.market)}</span></button>`).join("")}</div>`:""}
+// Fırsat rafı: en derin indirimler
+function drawDeals(){const st=O.filter(usable);const r=st.filter(o=>disc(o)>0).sort((a,b)=>disc(b)-disc(a));
+  $("deals").innerHTML=r.slice(0,20).map((o,i)=>pcard(o,{strip:1,i})).join("")||`<p class="text-sm text-stone-500">Şu an indirim görünmüyor.</p>`;icons()}
 // Ana sayfanın başı: listenin özeti ve en ucuz plan (liste boşsa nasıl başlanacağı)
 function drawHList(){
   const el=$("hList");if(!el)return;const list=uniq(cart);
@@ -1017,7 +1012,6 @@ function drawT(){
   const alarms=Object.keys(ALARMS).filter(k=>GI[k]&&ALARMS[k].length);
   const perm="Notification" in window?Notification.permission:"unsupported";
   $("track").innerHTML=`<h1 class="page-title">Takip</h1><p class="text-sm text-stone-600 mt-1">Favorilerin, fiyat alarmların ve bildirimlerin. Hepsi yalnızca bu telefonda saklanır.</p>
-  <div class="flex items-center gap-2 mt-3 overflow-x-auto noscroll" role="radiogroup" aria-label="Görünüm"><span class="text-sm font-bold shrink-0">Görünüm</span>${[["sistem","Telefona göre"],["acik","Açık"],["koyu","Koyu"]].map(([k,l])=>`<button data-theme="${k}" role="radio" aria-checked="${MFTheme.pref()===k}" class="chipx !py-2 !px-3 shrink-0 ${MFTheme.pref()===k?"bg-emerald-700 text-white":"bg-white ring-1 ring-stone-300 text-stone-800"}">${l}</button>`).join("")}</div>
   <section class="${card} p-4 mt-4"><div class="flex items-center justify-between"><h2 class="font-extrabold flex items-center gap-2"><i data-lucide="bell" class="w-5 h-5 text-emerald-700"></i>Bildirimler</h2>${INBOX.some(x=>!x.read)?`<button data-readall class="text-xs font-bold text-emerald-800 underline">Tümünü okundu say</button>`:""}</div>
     ${INBOX.length?`<div class="mt-1 ${div}">${INBOX.slice(0,30).map(x=>`<div data-show="${esc(x.key)}" class="py-2.5 cursor-pointer ${x.read?"opacity-70":""}"><p class="text-[13px] ${x.read?"":"font-bold"}">${esc(x.text)}</p><p class="text-[11px] text-stone-500">${new Date(x.ts).toLocaleString("tr-TR",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})}</p></div>`).join("")}</div>`:`<p class="text-sm text-stone-500 mt-1">Henüz bildirim yok. Bir ürünün sayfasından fiyat alarmı kurabilirsin.</p>`}
     ${perm==="default"?`<button data-notifperm class="mt-3 w-full rounded-xl ring-1 ring-emerald-700 text-emerald-800 font-bold py-2.5">Telefon bildirimlerine izin ver</button><p class="text-[11px] text-stone-500 mt-1">Bildirim, uygulama açıldığında yeni bir alarm tetiklenirse gelir. Uygulama kapalıyken fiyat denetlemek sunucu gerektirir; bu uygulama sunucusuz çalışır.</p>`:perm==="denied"?`<p class="text-[11px] text-stone-500 mt-2">Telefon bildirimleri tarayıcı ayarlarından kapalı; bildirimler yalnızca bu sayfada görünür.</p>`:""}</section>
@@ -1272,7 +1266,7 @@ document.addEventListener("submit",e=>{if(!e.target.matches("[data-noteform]"))r
   const v=($("noteIn").value||"").trim().slice(0,60);if(!v)return;NOTES.push({t:v,d:0});save("notes",NOTES);redraw();setTimeout(()=>{const i=$("noteIn");if(i)i.focus()},50)});
 document.addEventListener("click",e=>{const t=s=>e.target.closest(s);let el;
   if(el=t("[data-add]")){const g=GI[el.dataset.add];if(g){const adding=!inCart(g);
-    if(adding)fly(el);else delete QTY[g.key];cart=adding?[...cart,g.key]:cart.filter(x=>GI[x]!==g);save("cart",cart);save("qty",QTY);redraw();
+    if(adding){fly(el);burst(el)}else delete QTY[g.key];cart=adding?[...cart,g.key]:cart.filter(x=>GI[x]!==g);save("cart",cart);save("qty",QTY);redraw();
     if(adding){const nb=document.querySelector(`[data-add="${CSS.escape(g.key)}"].add`);if(nb)nb.classList.add("pop")}}}
   else if(el=t("[data-inc]")){const g=GI[el.dataset.inc];if(g){QTY[g.key]=qtyOf(g)+1;save("qty",QTY);if(!inCart(g)){cart=[...cart,g.key];save("cart",cart)}if(navigator.vibrate)navigator.vibrate(10);redraw();bumpCount()}}
   else if(el=t("[data-dec]")){const g=GI[el.dataset.dec];if(g){const q=qtyOf(g);if(q>1)QTY[g.key]=q-1;else{delete QTY[g.key];cart=cart.filter(x=>GI[x]!==g);save("cart",cart)}save("qty",QTY);redraw()}}
@@ -1439,3 +1433,19 @@ Promise.all([loadRows(statusP),statusP,get("data/price-checks.json"),postersP]).
   badgeBell();setTimeout(checkAlarms,800);
   WARM=false;warmUp(O,()=>buildCompareIdle(()=>{if(view==="home"){drawHCmp(O.filter(usable));icons();drawHDrops()}}));
 }).catch(e=>{note("Fiyat verisi yüklenemedi: "+e.message)});
+
+// Kartlar parmağın/imlecin altında 3B eğilir, üstünde ışık parlaması gezinir (hareket azaltmada kapalı)
+(()=>{if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;let cur=null;
+  const off=()=>{if(cur){cur.classList.remove("tilting");cur.style.removeProperty("--rx");cur.style.removeProperty("--ry");cur=null}};
+  document.addEventListener("pointermove",e=>{const c=e.target.closest&&e.target.closest(".pc:not(.\\!p-0)");if(c!==cur)off();if(!c)return;cur=c;
+    const r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;
+    c.classList.add("tilting");c.style.setProperty("--rx",((0.5-y)*10).toFixed(2)+"deg");c.style.setProperty("--ry",((x-0.5)*12).toFixed(2)+"deg");
+    c.style.setProperty("--gx",(x*100).toFixed(1)+"%");c.style.setProperty("--gy",(y*100).toFixed(1)+"%")},{passive:true});
+  ["pointerup","pointercancel","pointerleave","scroll"].forEach(k=>document.addEventListener(k,off,{passive:true,capture:k==="scroll"}))})();
+// Listeye eklerken renkli parçacık patlaması
+function burst(el){if(matchMedia("(prefers-reduced-motion: reduce)").matches||!el.animate)return;const r=el.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
+  const C=["#feda75","#fa7e1e","#d62976","#962fbf","#4f5bd5","#ffffff"];
+  for(let i=0;i<18;i++){const d=document.createElement("i");d.className="pt";const a=Math.random()*Math.PI*2,v=40+Math.random()*70,s=4+Math.random()*6;
+    d.style.cssText=`left:${cx}px;top:${cy}px;width:${s}px;height:${s}px;background:${C[i%C.length]}`;document.body.appendChild(d);
+    d.animate([{transform:"translate(-50%,-50%) scale(1)",opacity:1},{transform:`translate(calc(-50% + ${Math.cos(a)*v}px),calc(-50% + ${Math.sin(a)*v}px)) scale(.2)`,opacity:0}],
+      {duration:650+Math.random()*350,easing:"cubic-bezier(.16,1,.3,1)"}).onfinish=()=>d.remove()}}

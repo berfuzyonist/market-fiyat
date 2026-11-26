@@ -25,7 +25,7 @@ GitHub Pages PWA; data refreshed by GitHub Actions collectors several times a da
 - No dependency outside GitHub (no external servers or paid infra). No secrets in frontend or commits.
 
 ## Brand Commitments
-Name "marketfiyat". Turkish interface. Market colours identify each store (Şok yellow, Migros orange, BİM red, A101 blue, Koop green).
+Name "marketfiyat". Turkish interface. Market colours identify each store (Şok yellow, Migros orange, BİM red, A101 blue, Koop green). Owner's stated taste (2026-11-26): premium and luxurious, dark, Instagram/Spotify feel, showy motion; rejected the shelf-label and variable-type directions as not it / too crude.
 
 ## Evidence on Hand
 Real product data in data/, poster images, price history. No testimonials or user counts exist; do not invent them.
