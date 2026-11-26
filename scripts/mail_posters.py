@@ -130,6 +130,26 @@ def main(argv):
         print("A101_MAIL_USER / A101_MAIL_PASS gizli ayarları yok; atlandı.")
         return 0
     rc = 0
+    if "--deneme" in argv:  # tanı: kutudaki son e-postaların yalnızca gönderen alan adı ve konusu (adres yazılmaz)
+        try:
+            box = imaplib.IMAP4_SSL("imap.gmail.com", 993, timeout=60)
+            box.login(user, pwd)
+            for folder in ("INBOX", '"[Gmail]/Spam"'):
+                st, _ = box.select(folder, readonly=True)
+                if st != "OK":
+                    continue
+                _, data = box.search(None, "ALL")
+                nums = (data[0] or b"").split()
+                print(f"{folder}: {len(nums)} e-posta")
+                for num in nums[-15:]:
+                    _, parts = box.fetch(num, "(BODY.PEEK[HEADER.FIELDS (FROM SUBJECT)])")
+                    raw = next((q[1] for q in parts if isinstance(q, tuple)), b"")
+                    msg = email.message_from_bytes(raw)
+                    dom = email.utils.parseaddr(msg.get("From", ""))[1].split("@")[-1].lower()
+                    print(f"  · {dom} · {' '.join(dec(msg.get('Subject')).split())[:70]}")
+            box.logout()
+        except (imaplib.IMAP4.error, OSError) as e:
+            print(f"tanı yapılamadı: {type(e).__name__}")
     for market, (_, _, name) in SENDERS.items():
         try:
             mails = fetch(user, pwd, market)
