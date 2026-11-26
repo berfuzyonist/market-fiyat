@@ -204,7 +204,7 @@ def deal_digest(products, state, now):
 
 
 def send(topic, title, message, click=None, attach=None, tags=None, dry=False):
-    body = {"topic": topic, "title": title[:120], "message": message[:3500]}
+    body = {"topic": topic, "title": title[:120], "message": message[:3500], "icon": SITE + "icon-192.png"}  # uygulamanın simgesi
     if click:
         body["click"] = click
     if attach:
