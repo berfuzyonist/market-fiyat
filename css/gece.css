@@ -46,11 +46,17 @@ html.dark .apple.gece{--bg:#07070b;--surface:rgb(255 255 255/.05);--card:rgb(22 
 .gece .pc,.gece .hlist,.gece .qtile,.gece .store,.gece .slide,.gece .filters,.gece .rounded-\[20px\].border,.gece .uchip{
   background:linear-gradient(180deg,rgb(255 255 255/.075),rgb(255 255 255/.03));border:1px solid var(--line);box-shadow:var(--shadow);border-radius:var(--r);color:var(--ink)}
 .gece .bg-white{background-color:rgb(255 255 255/.05)}
-.gece .hlist .bg-white,.gece .ph,.gece .pc .bg-white{background:#fff}
+.gece .ph,.gece img.bg-white,.gece .hlist .bg-white,.gece .pc .relative.bg-white{background:#fff}
+/* Açık zeminli eski parçalar: koyu camda okunur kalsın */
+.gece .bg-stone-50,.gece .bg-stone-100{background-color:rgb(255 255 255/.06)}
+.gece .ring-stone-200,.gece .ring-stone-300{--tw-ring-color:rgb(255 255 255/.1)}
+.gece .urow .fill{background:linear-gradient(90deg,rgb(255 255 255/.11),rgb(255 255 255/.03))}
+.gece .urow .fill[style*="a7f3d0"]{background:linear-gradient(90deg,rgb(126 226 168/.32),rgb(126 226 168/.06))!important}
+.gece .urow{background:rgb(255 255 255/.03)}
 
 /* Ürün kartı: galeri kartı, 3B eğilme ve ışık parlaması */
-.gece .pc{position:relative;transform:perspective(800px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .6s var(--ease),border-color .3s;will-change:transform}
-.gece .pc.tilting{transition:transform .08s linear;border-color:rgb(255 255 255/.2)}
+.gece .pc.lab{position:relative;transform:perspective(800px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .6s var(--ease),border-color .3s;will-change:transform}
+.gece .pc.lab.tilting{transition:transform .08s linear;border-color:rgb(255 255 255/.2)}
 .gece .pc .ph{border-radius:16px;box-shadow:inset 0 0 0 1px rgb(0 0 0/.04)}
 .glare{position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .4s;
   background:radial-gradient(circle at var(--gx,50%) var(--gy,0%),rgb(255 255 255/.22),transparent 50%);mix-blend-mode:soft-light}
@@ -134,3 +140,38 @@ html.dark .apple.gece{--bg:#07070b;--surface:rgb(255 255 255/.05);--card:rgb(22 
 .gece [data-reveal]:not(.in):not(.shown){filter:blur(8px)}
 .pt{position:fixed;z-index:90;border-radius:50%;pointer-events:none;box-shadow:0 0 10px currentColor}
 @media(prefers-reduced-motion:reduce){.gece::before,.sring,.lcut::after,.story,.gece .shelf>.pc{animation:none!important}}
+
+/* Hikâye görüntüleyici */
+.story.seen .sring{background:rgb(255 255 255/.22);animation:none}
+.sv{position:fixed;inset:0;z-index:80;display:none;background:#000;touch-action:none;user-select:none;-webkit-user-select:none}
+.sv.on{display:block}
+.sv-stage{position:absolute;inset:0;perspective:1200px;overflow:hidden}
+.sv-card{position:absolute;inset:0;backface-visibility:hidden;background:#000;overflow:hidden;transform-style:preserve-3d}
+@media(min-width:640px){.sv-card{inset:16px auto 16px 50%;width:min(440px,calc(100vh*.56));transform:translateX(-50%);border-radius:18px}}
+.sv-bg{position:absolute;inset:-40px;opacity:.55}
+.sv-bg img{width:100%;height:100%;object-fit:cover;filter:blur(40px) saturate(1.4)}
+.sv-img{position:absolute;inset:64px 0 120px;width:100%;height:calc(100% - 184px);object-fit:contain;animation:svin .5s var(--ease)}
+@keyframes svin{from{opacity:0;transform:scale(1.04)}}
+.sv-shade{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgb(0 0 0/.55),transparent 18%,transparent 70%,rgb(0 0 0/.75))}
+.sv-bars{position:absolute;top:calc(env(safe-area-inset-top) + 10px);left:10px;right:10px;display:flex;gap:4px}
+.sv-seg{flex:1;height:3px;border-radius:9px;background:rgb(255 255 255/.3);overflow:hidden}
+.sv-seg i{display:block;height:100%;width:0;background:#fff;border-radius:9px}
+.sv-seg.done i{width:100%}
+.sv-seg.on i{animation:svbar linear forwards}
+@keyframes svbar{to{width:100%}}
+.sv-card.paused .sv-seg.on i{animation-play-state:paused}
+.sv-top{position:absolute;top:calc(env(safe-area-inset-top) + 22px);left:12px;right:6px;display:flex;align-items:center;gap:10px;color:#fff;font-size:14px}
+.sv-av{width:38px;height:38px;border-radius:50%;padding:2px;background:var(--grad);flex:0 0 auto}
+.sv-av img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid #000;background:#fff}
+.sv-sub{font-size:12px;opacity:.8}
+.sv-x{width:44px;height:44px;display:grid;place-items:center;color:#fff}
+.sv-bottom{position:absolute;left:14px;right:14px;bottom:calc(env(safe-area-inset-bottom) + 18px);color:#fff}
+.sv-chip{display:inline-block;max-width:100%;font-size:12.5px;font-weight:600;padding:6px 12px;border-radius:999px;background:rgb(255 255 255/.14);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sv-cta{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;height:50px;border-radius:999px;background:#fff;color:#000;font-weight:800;font-family:var(--hd);font-size:15px;transition:transform .3s var(--spring)}
+.sv-cta:active{transform:scale(.95)}
+.sv-ext{width:50px;height:50px;border-radius:999px;display:grid;place-items:center;color:#fff;background:rgb(255 255 255/.14);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+@media(prefers-reduced-motion:reduce){.sv-img{animation:none}}
+/* Eski yeşil degrade kutular (ürün sayfasında "En ucuz" kutusu vb.): beyaz yazı okunur kalsın */
+.gece [style*="linear-gradient(135deg,#047857"]{background:var(--grad)!important;color:#fff}
+.gece [style*="linear-gradient(135deg,#047857"] .text-emerald-100,.gece [style*="linear-gradient(135deg,#047857"] .text-emerald-50{color:rgb(255 255 255/.85)}
+.gece .buybar{background:rgb(14 14 20/.82)}

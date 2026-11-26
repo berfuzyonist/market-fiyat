@@ -22,6 +22,8 @@ A premium dark design. The user pinned it after three rejected directions (shelf
 - **Discount badges:** a light sheen sweeps across them every 3.6 s.
 - **Shelves and sections:** cards rise with a blur-in; sections reveal with a blur-in.
 
+- **Hikâye görüntüleyici:** dokununca tam ekran hikâye açılır. Üstte sayfa çubukları ilerler (5,5 sn); sağa dokun = sonraki, sola = önceki, basılı tut = durur, yana kaydır = sonraki market hikâyesi (3B küp dönüşü), aşağı çek = kapanır, geri tuşu kapatır. Arkada görselin bulanık kopyası, altta "Ürünleri gör" ya da "Afişi yakınlaştır" ve marketin sayfası. İzlenen hikâyenin halkası sönükleşir.
+
 ## Shape
 22px card radius, 28px spotlight cards, pills for chips, tabs and buttons.
 
