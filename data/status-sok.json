@@ -1,22 +1,22 @@
 {
- "updated": "2026-11-26T14:26:51+00:00",
- "started_at": "2026-11-26T14:24:34+00:00",
- "finished_at": "2026-11-26T14:26:51+00:00",
- "checked_at": "2026-11-26T14:26:51+00:00",
- "data_updated": "2026-11-26T14:26:51+00:00",
- "last_successful_data_at": "2026-11-26T14:26:51+00:00",
+ "updated": "2026-11-26T15:39:29+00:00",
+ "started_at": "2026-11-26T15:37:01+00:00",
+ "finished_at": "2026-11-26T15:39:29+00:00",
+ "checked_at": "2026-11-26T15:39:29+00:00",
+ "data_updated": "2026-11-26T15:39:29+00:00",
+ "last_successful_data_at": "2026-11-26T15:39:29+00:00",
  "market": "sok",
  "mode": "deals",
  "status": "tamam",
  "complete": true,
  "partial": false,
- "found": 541,
+ "found": 533,
  "total": 3003,
- "seconds": 138,
+ "seconds": 148,
  "notes": [
   "kampanyalar: 90 ürün",
-  "indirimli-urunler-cms-pl1: sitede 546, okunan 546, 28/28 sayfa (son sayfa)",
-  "541 indirimli ürün güncellendi"
+  "indirimli-urunler-cms-pl1: sitede 544, okunan 544, 28/28 sayfa (son sayfa)",
+  "533 indirimli ürün güncellendi"
  ],
  "quality": {
   "category_count": 21,
@@ -40,12 +40,12 @@
    "Et & Tavuk & Şarküteri": 57,
    "Kağıt Ürünleri": 57,
    "Evcil Dostlar": 44,
-   "Giyim & Aksesuar": 49,
-   "Dondurma": 85,
-   "Meyve & Sebze": 47,
-   "Ev & Mutfak": 1,
    "Diğer": 8,
-   "Anne & Bebek": 1
+   "Giyim & Aksesuar": 49,
+   "Meyve & Sebze": 47,
+   "Dondurma": 85,
+   "Anne & Bebek": 1,
+   "Ev & Mutfak": 1
   }
  },
  "quality_warnings": [],
@@ -58,8 +58,8 @@
   }
  },
  "errors": [],
- "run_id": "45838694010",
- "collected_products": 541,
+ "run_id": "45850849336",
+ "collected_products": 533,
  "total_products": 3003,
  "discounted_products": 546,
  "invalid_products": 0,
@@ -72,21 +72,21 @@
   "suspicious_discount": 0,
   "bad_url": 0
  },
- "duration_seconds": 138,
+ "duration_seconds": 148,
  "last_attempt_by_mode": {
   "deals": {
-   "checked_at": "2026-11-26T14:26:51+00:00",
+   "checked_at": "2026-11-26T15:39:29+00:00",
    "status": "tamam",
    "complete": true,
-   "found": 541,
+   "found": 533,
    "total": 3003,
-   "seconds": 138,
-   "data_updated": "2026-11-26T14:26:51+00:00",
+   "seconds": 148,
+   "data_updated": "2026-11-26T15:39:29+00:00",
    "errors": [],
    "notes": [
     "kampanyalar: 90 ürün",
-    "indirimli-urunler-cms-pl1: sitede 546, okunan 546, 28/28 sayfa (son sayfa)",
-    "541 indirimli ürün güncellendi"
+    "indirimli-urunler-cms-pl1: sitede 544, okunan 544, 28/28 sayfa (son sayfa)",
+    "533 indirimli ürün güncellendi"
    ],
    "quality_warnings": [],
    "quality": {
@@ -111,12 +111,12 @@
      "Et & Tavuk & Şarküteri": 57,
      "Kağıt Ürünleri": 57,
      "Evcil Dostlar": 44,
-     "Giyim & Aksesuar": 49,
-     "Dondurma": 85,
-     "Meyve & Sebze": 47,
-     "Ev & Mutfak": 1,
      "Diğer": 8,
-     "Anne & Bebek": 1
+     "Giyim & Aksesuar": 49,
+     "Meyve & Sebze": 47,
+     "Dondurma": 85,
+     "Anne & Bebek": 1,
+     "Ev & Mutfak": 1
     }
    },
    "traffic": {
