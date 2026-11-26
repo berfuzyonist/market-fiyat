@@ -16,6 +16,11 @@ class NotifyTests(unittest.TestCase):
         self.assertEqual(w["migros:123"]["target"], 39.9)
         self.assertIsNone(w["sok:10"]["target"])
 
+    def test_parse_barcodes(self):
+        b = notify.parse_barcodes("migros:1 | Süt\nbarkod 8690504017301 = sok:10\nbarkod 12 = sok:1")
+        self.assertEqual(b, {"8690504017301": "sok:10"})
+        self.assertNotIn("barkod", "".join(notify.parse_watch("barkod 8690504017301 = sok:10")))
+
     def test_expand_adds_other_markets_of_group(self):
         w = notify.expand({"sok:1": {"target": None}}, [["sok:1", "migros:9"]])
         self.assertEqual(set(w), {"sok:1", "migros:9"})

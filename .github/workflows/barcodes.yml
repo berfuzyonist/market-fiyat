@@ -1,0 +1,40 @@
+name: Barkodlar
+
+# Haftada bir: Open Food Facts (açık veri, ODbL 1.0) toplu dosyasından Türkiye ürünlerinin barkodları
+# alınır (data/off-tr.json) ve market ürünleriyle eşleştirilir (data/client/barcodes.json).
+# Marketlerin sitelerine istek atılmaz.
+on:
+  schedule:
+    - cron: "17 2 * * 1"   # Pazartesi TR 05.17
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: barcodes
+  cancel-in-progress: false
+jobs:
+  barcodes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - name: Open Food Facts Türkiye ürünleri
+        run: python3 scripts/fetch_off.py
+      - name: Kaydet
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cp data/off-tr.json "$RUNNER_TEMP/off.json"
+          for attempt in 1 2 3 4 5; do
+            git fetch --no-tags origin main && git reset --hard origin/main
+            cp "$RUNNER_TEMP/off.json" data/off-tr.json
+            node scripts/build_client.mjs
+            git add data/off-tr.json data/client
+            git diff --cached --quiet && exit 0
+            git commit -qm "barkod sözlüğü (Open Food Facts)"
+            git push origin HEAD:refs/heads/main && exit 0
+            sleep $((attempt * 3))
+          done
+          exit 1

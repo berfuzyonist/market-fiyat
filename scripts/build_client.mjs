@@ -43,7 +43,42 @@ groups.sort((a, b) => (a[0] < b[0] ? -1 : 1));
 const matchV = createHash("sha256").update(readFileSync("js/match.js")).digest("hex").slice(0, 12);
 write(`${DIR}/groups.json`, dump({ match: matchV, catalogs: Object.fromEntries(Object.entries(index.markets).map(([m, x]) => [m, x.catalog])), groups }));
 index.match = matchV;
+// Barkodlar: Open Food Facts'tan (ODbL) gelen barkod → ad/marka/miktar, bizim ürünlerle eşleştirilir.
+// Aday: aynı marka ve aynı boy; puan: benzer ürün puanı (MF.similar). >= 0.9 kesin, 0.5–0.9 "olası".
+const off = load("data/off-tr.json");
+if (off && Array.isArray(off.products)) {
+  const by = new Map();
+  for (const o of allRows) { const p = o._p; if (!p || !p.size) continue; const k = p.brand + "|" + p.size; (by.get(k) || by.set(k, []).get(k)).push(o); }
+  const codes = {}, names = {};
+  for (const [code, name0, brand, qty] of off.products) {
+    let nm = name0;
+    if (brand && !MF.fold(nm).startsWith(MF.fold(brand))) nm = brand + " " + nm;
+    if (qty && !/\d\s*(g|gr|kg|ml|l|lt|cl)\b/i.test(nm)) nm += " " + qty;
+    const p = MF.parse(nm); if (!p || !p.size) continue;
+    const r = MF.similar({ _p: p, id: "off", market: "off", name: nm, price: 1 }, by.get(p.brand + "|" + p.size) || [], { sameMarket: true, ratio: 1.01 });
+    if (r.length && r[0].score >= 0.5) { codes[code] = [r[0].o.id, Math.round(Math.min(1, r[0].score) * 100) / 100]; continue; }
+    // Yedek: barkodun adındaki ayırt edici kelimelerin hepsi tek bir adayda geçiyorsa (ya da o marka ve boyda
+    // tek ürün varsa) "olası" eşleşme: "Torku Banada 700g" → "Torku Banada Kakaolu Fındık Kreması 700 G"
+    const cs = by.get(p.brand + "|" + p.size) || [];
+    const own = p.toks.slice(1).filter((t) => !/^[\d.%]/.test(t) && t.length > 2);
+    const hit = cs.filter((o) => own.length && own.every((t) => o._p.toks.some((x) => x.startsWith(t) || t.startsWith(x))));
+    if (hit.length === 1) codes[code] = [hit[0].id, 0.7];
+    else if (cs.length === 1 && own.length <= 1) codes[code] = [cs[0].id, 0.6];
+  }
+  // Eşleşmeyenlerin adı: okutulunca arama kutusuna yazılır, kullanıcı doğru ürünü seçip barkodu bağlar
+  for (const [code, name0, brand, qty] of off.products) {
+    if (codes[code]) continue;
+    let nm = name0;
+    if (brand && !MF.fold(nm).startsWith(MF.fold(brand))) nm = brand + " " + nm;
+    if (/[a-zçğıöşü]/i.test(nm)) names[code] = (nm + (qty && !/\d\s*(g|gr|kg|ml|l|lt|cl)\b/i.test(nm) ? " " + qty : "")).slice(0, 80);
+  }
+  // Kullanıcının öğrettiği barkodlar (takip listesiyle gönderilir, bildirim işi kaydeder): en güvenilir kaynak
+  const user = load("data/barcodes-user.json");
+  for (const [code, id] of Object.entries((user && user.codes) || {})) if (/^\d{8,14}$/.test(code)) { codes[code] = [id, 1]; delete names[code]; }
+  write(`${DIR}/barcodes.json`, dump({ source: "Open Food Facts (ODbL 1.0)", off: off.updated, codes, names }));
+  index.barcodes = Object.keys(codes).length;
+}
 // index.json yalnızca içerik değişince yazılır ("built" alanı karşılaştırmaya girmez)
 const prev = load(`${DIR}/index.json`);
 if (!prev || dump({ ...prev, built: 0 }) !== dump({ ...index, built: 0 })) write(`${DIR}/index.json`, dump(index));
-console.log("client data:", Object.entries(index.markets).map(([m, x]) => `${m} ${x.count} (${x.catalog})`).join(", "), "| groups", groups.length);
+console.log("client data:", Object.entries(index.markets).map(([m, x]) => `${m} ${x.count} (${x.catalog})`).join(", "), "| groups", groups.length, "| barcodes", index.barcodes || 0);
