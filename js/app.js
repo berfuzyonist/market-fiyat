@@ -4,6 +4,13 @@ const M={sok:{n:"Şok",at:"Şok'ta",c:"bg-yellow-400 text-yellow-950",bar:"#eab3
 const VIEWS=["home","compare","promos","browse","search","list","posters","camp","track","analysis","status"];
 const $=id=>document.getElementById(id);
 const tl=x=>x.toLocaleString("tr-TR",{minimumFractionDigits:2,maximumFractionDigits:2})+" ₺";
+// Raf etiketi fiyatı: lira büyük, kuruş üstte küçük (marketteki etiket gibi); ekran okuyucuya düz metin
+const lp=x=>{const[a,b]=tl(x).replace(" ₺","").split(",");return`<span class="lp" aria-label="${tl(x)}"><b>${a}</b><sup>,${b}</sup><small>₺</small></span>`};
+// Etiketin altındaki barkod deseni: ürün kimliğinden türetilir (yalnızca süs; gerçek barkod değil)
+const bars=id=>{let h=0,g=[],x=0;for(const c of String(id))h=(h*31+c.charCodeAt(0))>>>0;
+  for(let i=0;i<18;i++){h=(h*1103515245+12345)>>>0;const w=1+(h>>>16)%3,gap=1+(h>>>20)%2;g.push(`currentColor ${x}px ${x+w}px,transparent ${x+w}px ${x+w+gap}px`);x+=w+gap}
+  return`<span class="bc" aria-hidden="true" style="width:${x}px;background:linear-gradient(90deg,${g.join(",")})"></span>`};
+const lday=ts=>ts?new Date(ts*1000).toLocaleDateString("tr-TR",{day:"2-digit",month:"2-digit"}):"";
 const num=x=>x.toLocaleString("tr-TR");
 const pct=x=>"%"+Math.round(x*100);
 const norm=s=>(s||"").toLocaleLowerCase("tr");
@@ -159,20 +166,20 @@ function freshPanel(o){
 const updBtn=(o,cls)=>{const u=priceUpdateLink(o);return u?`<a href="${esc(u)}" data-req="${esc(o.id)}" target="_blank" rel="noopener noreferrer" class="${cls}"><i data-lucide="refresh-cw" class="w-3.5 h-3.5 inline -mt-0.5"></i> Fiyatı Güncelle</a>`:""};
 function pcard(o,opt={}){
   const g=GI[o.id],key=g?g.key:o.id,d=disc(o),p=o._promo,inC=g&&inCart(g),u=unitTxt(o),ok=usable(o);
-  const multi=g&&avail(g).length>1;
-  return`<article class="pc ${opt.strip?"w-[46vw] max-w-[180px] sm:w-44 shrink-0":""}" style="--i:${opt.i||0}">
+  const multi=g&&avail(g).length>1,low=multi&&best(g)===o,gone=o.na==="ended";
+  return`<article class="pc lab ${opt.strip?"w-[46vw] max-w-[180px] sm:w-44 shrink-0":""} ${o.stale?"stale":""} ${gone?"gone":""}" style="--i:${opt.i||0}">
   <div class="ph" data-show="${esc(key)}">${o.image&&o.image.startsWith("https://")?`<img src="${esc(o.image)}" alt="${esc(o.name)}" loading="lazy" onerror="this.style.visibility='hidden'">`:`<i data-lucide="package" class="w-10 h-10 text-stone-300"></i>`}
-    ${d?`<span class="disc-tag">%${Math.round(d*100)}</span>`:""}<span class="mk-tag">${badge(o.market,1)}</span>
-    ${p&&p.kind!=="bim"&&ok?`<span class="promo-tag">${esc(p.label)}</span>`:""}</div>
-  <p class="text-[13px] font-bold leading-snug mt-2 h-[2.3rem] line-clamp-2" data-show="${esc(key)}">${esc(o.name)}</p>
-  <p class="text-[11px] text-stone-500 tabular h-4">${u}${multi?` · <span class="text-emerald-700 font-bold">${avail(g).length} markette</span>`:""}</p>
-  <div class="mt-1.5 pr-11 min-h-[2.6rem]">
-    ${d?`<p class="text-xs text-stone-400 line-through tabular leading-none">${tl(o.regular)}</p>`:""}
-    <p class="price tabular ${d?"text-red-600":""}">${tl(o.price)}</p>
-    ${d?`<div class="savebar" role="img" aria-label="Etiket fiyatının %${Math.round((1-d)*100)}'i"><span style="--w:${Math.round((1-d)*100)}%"></span></div>`:""}
-    ${p&&p.kind==="basket"&&p.min&&p.eff<o.price&&ok?`<p class="text-[11px] font-extrabold text-violet-700 leading-tight mt-0.5">Kasada ${tl(p.eff)}</p>`:""}
-    ${moneyChip(o)}${stateChip(o)?`<div class="mt-0.5">${stateChip(o)}</div>`:""}
+    <span class="mk-tag">${badge(o.market,1)}</span>
+    ${p&&p.kind!=="bim"&&ok?`<span class="promo-tag">${esc(p.label)}</span>`:""}${gone?`<span class="stamp">BİTTİ</span>`:""}</div>
+  <p class="lname" data-show="${esc(key)}">${esc(o.name)}</p>
+  <p class="lunit tabular">${u||"&nbsp;"}${multi?` · <span class="${low?"text-emerald-700 font-bold":""}">${low?"en ucuz · ":""}${avail(g).length} markette</span>`:""}</p>
+  <div class="lprice ${d?"sale":""} ${low&&!d?"rev":""}">
+    ${d?`<span class="lcut">%${Math.round(d*100)}</span><s class="tabular">${tl(o.regular)}</s>`:""}
+    ${lp(o.price)}
   </div>
+  ${p&&p.kind==="basket"&&p.min&&p.eff<o.price&&ok?`<p class="text-[11px] font-extrabold text-violet-700 leading-tight mt-1">Kasada ${tl(p.eff)}</p>`:""}
+  ${moneyChip(o)?`<div class="mt-1">${moneyChip(o)}</div>`:""}${stateChip(o)&&!gone?`<div class="mt-1">${stateChip(o)}</div>`:""}
+  <p class="lfoot">${bars(o.id)}<time title="${o.stale?"Eski veri: ":"Fiyatın okunduğu gün: "}${esc(MFC.ago(o.seen)||"")}">${o.stale?"eski · ":""}${lday(o.seen)}</time></p>
   ${opt.strip?"":`<button data-fresh="${esc(o.id)}" data-open="${esc(key)}" class="self-start mt-1 text-[11px] font-bold text-blue-700 dark:text-blue-300 flex items-center gap-1"><i data-lucide="badge-check" class="w-3.5 h-3.5"></i>Güncel mi?</button>`}
   ${inC?stepper(g):`<button data-add="${esc(key)}" ${ok?"":"disabled"} aria-label="Listeye ekle" class="add ${ok?"":"opacity-30"}"><i data-lucide="plus" class="w-5 h-5"></i></button>`}
 </article>`}
@@ -451,35 +458,25 @@ function drawH(){
   drawHList();drawPulse();
   $("upd").textContent=updated?"Güncel: "+new Date(updated).toLocaleString("tr-TR",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}):"-"}
 
-// "Bugün" panosu: kaç üründe indirim, marketlere göre indirim payı (halkalar), indirim derinliği (sütunlar)
-function ring(pct,color,label,sub){const r=26,c=2*Math.PI*r,v=Math.max(0,Math.min(1,pct));
-  return`<div class="flex flex-col items-center gap-1 min-w-0"><svg viewBox="0 0 64 64" class="w-16 h-16 -rotate-90" aria-hidden="true">
-    <circle cx="32" cy="32" r="${r}" fill="none" stroke="var(--fill,#e8e8ed)" stroke-width="7"/>
-    <circle cx="32" cy="32" r="${r}" fill="none" stroke="${color}" stroke-width="7" stroke-linecap="round" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${c.toFixed(1)}" class="ringv" style="--to:${(c*(1-v)).toFixed(1)}"/></svg>
-    <span class="-mt-[46px] mb-[22px] text-[13px] font-bold tabular">%${Math.round(v*100)}</span><span class="text-xs font-bold">${label}</span><span class="text-[11px] text-stone-500 tabular">${sub}</span></div>`}
+// "Bugünün rafı": market etiketleri (indirimdeki ürün, ortalama oran, veri saati) ve indirim oranlarının dağılımı
 function drawPulse(){
   const el=$("hPulse");if(!el||!O.length)return;
   const st=O.filter(o=>usable(o)&&o.in_stock&&!o.na),dd=st.filter(o=>disc(o)>=0.05);
   if(!dd.length){el.innerHTML="";return}
   const avg=dd.reduce((a,o)=>a+disc(o),0)/dd.length,ms=DATA_M.filter(m=>st.some(o=>o.market===m));
   const bins=[[0.05,0.2,"%5–20"],[0.2,0.3,"%20–30"],[0.3,0.5,"%30–50"],[0.5,1,"%50+"]].map(([a,b,l])=>({l,n:dd.filter(o=>disc(o)>=a&&disc(o)<b).length}));
-  const mx=Math.max(...bins.map(b=>b.n));
+  const mx=Math.max(...bins.map(b=>b.n)),top=bins.reduce((a,b)=>b.n>a.n?b:a);
   const promoN=st.filter(o=>o._promo&&o._promo.kind==="multi").length;
-  el.innerHTML=`<div class="pulse">
-    <div class="flex items-start justify-between gap-3"><div><p class="text-xs font-bold uppercase tracking-wide text-stone-500">Bugün marketlerde</p>
-      <p class="mt-1 text-[40px] leading-none font-extrabold tracking-tight tabular"><span data-count="${dd.length}">${num(dd.length)}</span></p>
-      <p class="text-sm text-stone-600 mt-1 whitespace-nowrap">üründe indirim · ort. <b class="text-red-600">%${Math.round(avg*100)}</b></p></div>
-      ${promoN?`<button data-view="promos" data-plain="1" class="pulse-chip"><i data-lucide="gift" class="w-4 h-4"></i><span><b class="tabular">${num(promoN)}</b> bedava ürünlü kampanya</span></button>`:""}</div>
-    <div class="grid gap-2 mt-4" style="grid-template-columns:repeat(${ms.length},minmax(0,1fr))">${ms.map(m=>{const all=st.filter(o=>o.market===m).length,n=dd.filter(o=>o.market===m).length;return ring(all?n/all:0,M[m].bar,M[m].n,`${num(n)} indirim`)}).join("")}</div>
-    <p class="text-xs font-bold text-stone-500 mt-4 mb-2">İndirim derinliği</p>
-    <div class="flex items-end gap-2 h-20">${bins.map((b,i)=>`<div class="flex-1 flex flex-col items-center justify-end h-full gap-1"><span class="text-[11px] font-bold tabular">${num(b.n)}</span><span class="dbar" style="--h:${Math.max(5,Math.round(b.n/mx*56))}px;--i:${i}"></span></div>`).join("")}</div>
-    <div class="flex gap-2 mt-1">${bins.map(b=>`<span class="flex-1 text-center text-[11px] text-stone-500">${b.l}</span>`).join("")}</div>
-  </div>`;
-  countUp(el)}
-// Sayılar 0'dan değerine akar (hareket azaltma tercihine uyar)
-function countUp(root){if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
-  root.querySelectorAll("[data-count]").forEach(e=>{const to=+e.dataset.count,t0=performance.now(),D=900;
-    const f=t=>{const k=Math.min(1,(t-t0)/D),v=Math.round(to*(1-Math.pow(1-k,3)));e.textContent=num(v);if(k<1)requestAnimationFrame(f)};requestAnimationFrame(f)})}
+  const hm=t=>t?new Date(t).toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"}):"";
+  el.innerHTML=`<div class="board">
+    <h2 class="text-xl font-bold">Bugünün rafı</h2>
+    <p class="text-sm mt-0.5 bsub"><b class="tabular">${num(dd.length)}</b> üründe indirim var, ortalama <b class="tabular">%${Math.round(avg*100)}</b>.</p>
+    <div class="mlabs" style="grid-template-columns:repeat(${ms.length},minmax(0,1fr))">${ms.map(m=>{const all=st.filter(o=>o.market===m),n=all.filter(o=>disc(o)>=0.05),a=n.length?n.reduce((x,o)=>x+disc(o),0)/n.length:0;
+      return`<button data-go="deals" class="mlab"><span class="mband ${M[m].c}">${M[m].n}</span><span class="mnum tabular">${num(n.length)}</span><span class="mcap">indirimde</span><span class="mavg tabular">ort. %${Math.round(a*100)}</span><span class="mtime">${bars(m)}<time>${hm(UPD[m])}</time></span></button>`}).join("")}</div>
+    <div class="flex items-baseline justify-between mt-5"><h3 class="text-sm font-bold">İndirim oranları</h3><span class="text-xs bsub">en kalabalık: ${top.l}</span></div>
+    <div class="depth">${bins.map((b,i)=>`<div class="dcol"><span class="dval tabular">${num(b.n)}</span><span class="dbar" style="--h:${Math.max(6,Math.round(b.n/mx*64))}px;--i:${i}"></span><span class="dlab">${b.l}</span></div>`).join("")}</div>
+    ${promoN?`<button data-view="promos" data-plain="1" class="bpromo"><i data-lucide="gift" class="w-4 h-4"></i><span><b class="tabular">${num(promoN)}</b> üründe bedava ürünlü kampanya</span><i data-lucide="chevron-right" class="w-4 h-4 ml-auto"></i></button>`:""}
+  </div>`}
 // Ana sayfanın başı: listenin özeti ve en ucuz plan (liste boşsa nasıl başlanacağı)
 function drawHList(){
   const el=$("hList");if(!el)return;const list=uniq(cart);

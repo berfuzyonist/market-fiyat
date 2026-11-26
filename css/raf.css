@@ -1,0 +1,110 @@
+/* Raf etiketi dünyası (body.raf). apple.css'in üstüne biner; yapı aynı, görünüm marketteki raftan gelir.
+   Zemin: soğuk raf metali. Şerit: grafit raf rayı (üst çubuk ve yatay rafların altı).
+   Etiket: kâğıt beyazı, dar ve kalın rakamlar (lira büyük, kuruş üstte). İndirim: krom sarısı etiket, kırmızı rakam.
+   Yeşil yalnızca dokunulabilen şeylerde. Eski veri renkle değil kesik kenarla gösterilir. */
+.raf{--bg:#e6e9ec;--surface:#fff;--ink:#14171a;--ink2:#3d4349;--ink3:#5f666d;--line:rgb(20 23 26/.12);--fill:#d9dde1;
+  --rail:#22272c;--rail2:#2f353b;--shelfrail:#22272c;--railink:#f3f4f5;--sale:#ffd31a;--saleink:#c40d1e;--saleline:#e0b400;
+  --accent:#0f7a3c;--accent2:#0b6531;--fill-accent:#0f7a3c;--accentSoft:#dcefe3;--danger:#c40d1e;
+  --shadow:0 1px 0 rgb(20 23 26/.06),0 2px 6px -2px rgb(20 23 26/.14);--r:10px;
+  --num:"Barlow Condensed","Arial Narrow",sans-serif;
+  background:var(--bg)!important}
+html.dark .raf{--bg:#131518;--surface:#1d2024;--ink:#eef0f2;--ink2:#c9ced3;--ink3:#9aa1a8;--line:rgb(255 255 255/.1);--fill:#2a2e33;
+  --rail:#0a0b0d;--rail2:#1a1d21;--shelfrail:#3a4047;--railink:#eef0f2;--sale:#ffd31a;--saleink:#b0081a;--saleline:#d4a900;
+  --accent:#3ccf78;--accent2:#3ccf78;--fill-accent:#13813f;--accentSoft:#10291a;--danger:#ff7a70;--shadow:0 0 0 1px rgb(255 255 255/.06)}
+.raf ::selection{background:var(--sale);color:#14171a}
+.raf{caret-color:var(--accent);accent-color:var(--accent)}
+.raf :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.raf .tabular{font-variant-numeric:tabular-nums}
+
+/* Raf rayı: üst çubuk grafit, arama kutusu beyaz etiket */
+.raf .topbar{background:var(--rail);color:var(--railink);box-shadow:0 2px 0 var(--rail2);-webkit-backdrop-filter:none;backdrop-filter:none}
+.raf .topbar .icon-btn{color:var(--railink)}
+.raf .topbar .icon-btn:hover{background:var(--rail2)}
+.raf .brand-accent{color:var(--sale)}
+.raf .logo-mark{background:var(--sale);color:#14171a;border-radius:6px}
+.raf .cart-btn{background:var(--sale);color:#14171a}
+html.dark .raf .cart-btn{background:var(--sale);color:#14171a}
+.raf .search{background:#fff;color:#14171a;border-radius:8px}
+.raf .search svg,.raf .search input::placeholder{color:#5f666d}
+.raf .search input{color:#14171a}
+.raf .search:focus-within{box-shadow:0 0 0 3px rgb(255 211 26/.55)}
+.raf .topbar [data-view="status"]{color:#b9bfc5}
+.raf .topbar nav button{color:#c9ced3}
+
+/* Ürün kartı = raf etiketi */
+.raf .pc{border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--line)}
+.raf .pc .ph{border-radius:6px}
+@media(hover:hover){.raf .pc:hover{transform:translateY(-2px);box-shadow:0 1px 0 rgb(20 23 26/.06),0 10px 18px -8px rgb(20 23 26/.28)}}
+.raf .lname{font-size:13px;font-weight:600;line-height:1.25;margin-top:8px;height:2.5em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.raf .lunit{font-size:11px;color:var(--ink3);height:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.raf .lprice{position:relative;margin:6px 44px 0 0;display:flex;flex-wrap:wrap;align-items:baseline;column-gap:6px;min-height:40px}
+.raf .lprice s{font-size:12px;color:var(--ink3);text-decoration-thickness:1.5px;order:1;width:100%;line-height:1}
+.raf .lprice .lp{order:2}
+.lp{font-family:var(--num);font-weight:800;line-height:.9;letter-spacing:-.01em;white-space:nowrap;display:inline-flex;align-items:flex-start;color:var(--ink)}
+.lp b{font-weight:800;font-size:30px}
+.lp sup{font-size:15px;top:0;line-height:1;margin-top:2px;font-weight:700}
+.lp small{font-size:14px;font-weight:700;margin:3px 0 0 2px}
+/* İndirim: etiketin üstüne yapıştırılmış sarı etiket */
+.raf .lprice.sale{background:var(--sale);border:1px solid var(--saleline);border-radius:4px;padding:6px 8px 5px;margin-left:-4px;transform:rotate(-1.2deg);
+  box-shadow:0 2px 4px -1px rgb(80 60 0/.35)}
+.raf .lprice.sale .lp{color:var(--saleink)}
+.raf .lprice.sale s{color:#5a4a00}
+.lcut{position:absolute;top:-9px;right:-10px;background:var(--saleink);color:#fff;font-family:var(--num);font-weight:800;font-size:14px;line-height:1;padding:4px 5px;border-radius:3px;transform:rotate(4deg)}
+/* Aynı ürünün en ucuzu: ters çevrilmiş (grafit) etiket */
+.raf .lprice.rev{background:var(--rail);border-radius:4px;padding:6px 8px 5px;margin-left:-4px}
+.raf .lprice.rev .lp{color:#fff}
+.raf .lfoot{margin-right:42px;display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:8px;padding-top:6px;border-top:1px dashed var(--line);
+  font-family:var(--num);font-weight:500;font-size:12px;color:var(--ink3);letter-spacing:.02em}
+.bc{display:block;height:12px;color:var(--ink2);opacity:.55}
+/* Eski veri: kesik kenar ve soluk etiket (renk değil, biçim) */
+.raf .pc.stale{border:1.5px dashed var(--ink3);box-shadow:none}
+.raf .pc.stale .lprice,.raf .pc.stale .ph{opacity:.6}
+.raf .pc.gone .ph img{filter:grayscale(1);opacity:.6}
+.stamp{position:absolute;inset:auto 8px 10px auto;border:2.5px solid var(--saleink);color:var(--saleink);font-family:var(--num);font-weight:800;font-size:20px;letter-spacing:.08em;
+  padding:0 8px;border-radius:4px;transform:rotate(-10deg);background:rgb(255 255 255/.75)}
+.raf .add{background:var(--fill-accent);border-radius:8px}
+.raf .add.in{border-radius:8px}
+.raf .promo-tag{background:#4b2bbf;border-radius:4px;font-weight:700}
+.raf .mk-tag span{border-radius:4px}
+
+/* Yatay raflar: ürünler bir rafın üstünde durur */
+.raf .shelf{position:relative;padding-bottom:22px!important}
+.raf .shelf::after{content:"";position:sticky;left:0;display:block;flex:0 0 0}
+.raf [data-hpane]{position:relative}
+.raf [data-hpane]::after{content:"";position:absolute;left:-16px;right:-16px;bottom:8px;height:12px;background:var(--shelfrail);
+  box-shadow:0 6px 10px -4px rgb(20 23 26/.45),inset 0 2px 0 var(--rail2)}
+
+/* Bugünün rafı */
+.board{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 16px 16px;box-shadow:var(--shadow)}
+.bsub{color:var(--ink2)}
+.mlabs{display:grid;gap:8px;margin-top:14px}
+.mlab{display:flex;flex-direction:column;align-items:stretch;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:6px;overflow:hidden;
+  box-shadow:0 2px 0 var(--shelfrail);transition:transform .25s cubic-bezier(.22,1,.36,1)}
+.mlab:active{transform:translateY(2px)}
+.mband{display:block;font-weight:700;font-size:12px;padding:4px 8px;border-radius:0!important}
+.mnum{font-family:var(--num);font-weight:800;font-size:34px;line-height:.95;padding:8px 8px 0}
+.mcap{font-size:11px;color:var(--ink3);padding:0 8px}
+.mavg{font-family:var(--num);font-weight:700;font-size:16px;padding:2px 8px 0;color:var(--saleink)}
+html.dark .mavg{color:var(--sale)}
+.mtime{display:flex;align-items:center;justify-content:space-between;gap:4px;margin-top:8px;padding:5px 8px;border-top:1px dashed var(--line);font-family:var(--num);font-size:12px;color:var(--ink3)}
+.mtime .bc{height:10px;max-width:46px;overflow:hidden}
+.depth{display:flex;align-items:flex-end;gap:8px;height:104px;margin-top:8px}
+.dcol{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:4px}
+.dval{font-family:var(--num);font-weight:700;font-size:15px}
+.raf .dbar{display:block;width:100%;height:var(--h);background:var(--sale);border:1px solid var(--saleline);border-radius:3px 3px 0 0;
+  transform-origin:bottom;animation:grow .7s cubic-bezier(.22,1,.36,1) calc(var(--i)*80ms) both}
+.dlab{font-size:11px;color:var(--ink3);border-top:3px solid var(--shelfrail);width:100%;text-align:center;padding-top:4px}
+.bpromo{display:flex;align-items:center;gap:8px;width:100%;margin-top:14px;padding:10px 12px;border-radius:8px;background:var(--accentSoft);color:var(--accent);font-size:13.5px;font-weight:600;text-align:left}
+
+/* Diğer yüzeyler: aynı köşe dili */
+.raf .hlist,.raf .qtile{border-radius:12px;border:1px solid var(--line)}
+.raf .qi{border-radius:8px}
+.raf .seg{border-radius:10px}.raf .seg button{border-radius:7px}
+.raf .bottom-nav{border-radius:16px}
+.raf .store,.raf .uwin,.raf .slide{border-radius:12px}
+.raf .chipx{border-radius:4px}
+@media(prefers-reduced-motion:reduce){.raf .dbar,.raf .mlab{animation:none;transition:none}}
+/* Birim fiyatın en ucuzu: ters çevrilmiş grafit etiket, rakam sarı */
+.raf .uwin{background:var(--rail)!important;border-radius:10px;box-shadow:0 3px 0 var(--saleline)}
+.raf .uwin .font-display.font-extrabold{font-family:var(--num);font-weight:800;font-size:1.6rem;color:var(--sale);letter-spacing:0}
+html.dark .raf .uwin{background:#2a2f35!important}
