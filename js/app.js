@@ -481,9 +481,11 @@ function flow(t){const r=t.getBoundingClientRect(),c=r.left+r.width/2;let best=0
     const q=Math.abs(p);if(!RM)e.style.transform=`translateZ(${(-140*q).toFixed(1)}px) rotateY(${(-32*p).toFixed(2)}deg) scale(${(1-Math.min(q,1)*.1).toFixed(3)})`;e.style.opacity=(1-Math.min(q,1.4)*.45).toFixed(3);if(Math.abs(p)<bd){bd=Math.abs(p);best=i}});
   const d=$("spotD");if(d)[...d.children].forEach((x,i)=>x.classList.toggle("on",i===best))}
 // Hikâyeler: afişler ve kampanyalar Instagram hikâyesi gibi halkalı yuvarlaklar
+let STORY_LIST=[];const STORY_SEEN=new Set(load("storySeen",[]));
 function drawStories(){const el=$("hStory");if(!el)return;const by={},live=[];sortedPosters().forEach(it=>(by[it.market]=by[it.market]||[]).push(it));
   for(let i=0;live.length<16&&Object.values(by).some(a=>a.length>i);i++)Object.values(by).forEach(a=>{if(a[i]&&live.length<16)live.push(a[i])});
-  el.innerHTML=live.length?`<div class="stories noscroll">${live.map((it,i)=>`<button ${isCamp(it)?`data-camp="${esc(campKey(it))}"`:`data-poster="${POST.indexOf(it)}"`} class="story" style="--i:${i}">
+  STORY_LIST=live;
+  el.innerHTML=live.length?`<div class="stories noscroll">${live.map((it,i)=>`<button data-story="${i}" aria-label="${esc(campTitle(it))} hikâyesini aç" class="story ${STORY_SEEN.has(it.id)?"seen":""}" style="--i:${i}">
     <span class="sring"><span class="sin">${coverImg(it,"")}</span></span><span class="sname">${M[it.market]?M[it.market].n:esc(it.market)}</span></button>`).join("")}</div>`:""}
 // Fırsat rafı: en derin indirimler
 function drawDeals(){const st=O.filter(usable);const r=st.filter(o=>disc(o)>0).sort((a,b)=>disc(b)-disc(a));
@@ -567,7 +569,7 @@ function unitPanel(q){
     <div class="space-y-1.5">${(UOPEN?r.sizes:r.sizes.slice(0,4)).map((s,i)=>{const h=s.best,w=h===b,key=q+"|"+s.label,open=USIZE===key;
       return`<div data-usize="${esc(key)}" class="urow cursor-pointer ${w?"ring-2 ring-emerald-500":""} ${open?"!rounded-b-none":""}">
         <span class="fill" style="width:${Math.max(8,h.u.v/max*100)}%;animation-delay:${i*50}ms;${w?"background:#a7f3d0":""}"></span>
-        <div class="relative flex items-center gap-2"><span class="w-[5.4rem] shrink-0 font-display font-extrabold text-[13px] leading-tight">${esc(s.label)}</span>
+        <div class="relative flex items-center gap-2"><span class="w-[3.6rem] shrink-0 font-display font-extrabold text-[13px] leading-tight">${esc(s.label)}</span>
           <span class="flex-1 min-w-0"><span class="block text-xs font-semibold truncate">${esc(h.o.name)}</span><span class="text-[11px] text-stone-500">${badge(h.o.market,1)} ${tl(h.o.price)}${s.count>1?` · ${s.count} seçenek`:""}</span></span>
           <span class="text-right shrink-0 tabular font-extrabold ${w?good:""}">${tl(h.u.v)}<span class="text-[11px] font-bold">/${u}</span></span>
           ${s.count>1?`<i data-lucide="${open?"chevron-up":"chevron-down"}" class="w-4 h-4 shrink-0 text-stone-500"></i>`:""}</div></div>${open?sizeBrands(s,u):""}`}).join("")}</div>
@@ -1177,6 +1179,7 @@ function sync(replace){
   replace?history.replaceState(null,"",url):history.pushState(null,"",url);
 }
 function route(){
+  if(window.__sv&&window.__sv.open){window.__sv.close(true);return} // geri tuşu önce hikâyeyi kapatır
   const h=decodeURIComponent(location.hash.slice(1)),[k,...rest]=h.split("/"),arg=rest.join("/");
   routing=true;
   try{
@@ -1270,6 +1273,7 @@ document.addEventListener("click",e=>{const t=s=>e.target.closest(s);let el;
     if(adding){const nb=document.querySelector(`[data-add="${CSS.escape(g.key)}"].add`);if(nb)nb.classList.add("pop")}}}
   else if(el=t("[data-inc]")){const g=GI[el.dataset.inc];if(g){QTY[g.key]=qtyOf(g)+1;save("qty",QTY);if(!inCart(g)){cart=[...cart,g.key];save("cart",cart)}if(navigator.vibrate)navigator.vibrate(10);redraw();bumpCount()}}
   else if(el=t("[data-dec]")){const g=GI[el.dataset.dec];if(g){const q=qtyOf(g);if(q>1)QTY[g.key]=q-1;else{delete QTY[g.key];cart=cart.filter(x=>GI[x]!==g);save("cart",cart)}save("qty",QTY);redraw()}}
+  else if(el=t("[data-story]")){openStory(+el.dataset.story)}
   else if(el=t("[data-camp]")){openCamp(el.dataset.camp)}
   else if(t("[data-share]")){shareList()}
   else if(el=t("[data-fav]")){const g=GI[el.dataset.fav];if(g){if(isFav(g))FAV=FAV.filter(f=>f.key!==g.key);else{const b=best(g);FAV.unshift({key:g.key,price:b?b.price:0,at:Date.now()})}save("fav",FAV);redraw()}}
@@ -1437,7 +1441,7 @@ Promise.all([loadRows(statusP),statusP,get("data/price-checks.json"),postersP]).
 // Kartlar parmağın/imlecin altında 3B eğilir, üstünde ışık parlaması gezinir (hareket azaltmada kapalı)
 (()=>{if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;let cur=null;
   const off=()=>{if(cur){cur.classList.remove("tilting");cur.style.removeProperty("--rx");cur.style.removeProperty("--ry");cur=null}};
-  document.addEventListener("pointermove",e=>{const c=e.target.closest&&e.target.closest(".pc:not(.\\!p-0)");if(c!==cur)off();if(!c)return;cur=c;
+  document.addEventListener("pointermove",e=>{const c=e.target.closest&&e.target.closest(".pc.lab");if(c!==cur)off();if(!c)return;cur=c;
     const r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;
     c.classList.add("tilting");c.style.setProperty("--rx",((0.5-y)*10).toFixed(2)+"deg");c.style.setProperty("--ry",((x-0.5)*12).toFixed(2)+"deg");
     c.style.setProperty("--gx",(x*100).toFixed(1)+"%");c.style.setProperty("--gy",(y*100).toFixed(1)+"%")},{passive:true});
@@ -1449,3 +1453,71 @@ function burst(el){if(matchMedia("(prefers-reduced-motion: reduce)").matches||!e
     d.style.cssText=`left:${cx}px;top:${cy}px;width:${s}px;height:${s}px;background:${C[i%C.length]}`;document.body.appendChild(d);
     d.animate([{transform:"translate(-50%,-50%) scale(1)",opacity:1},{transform:`translate(calc(-50% + ${Math.cos(a)*v}px),calc(-50% + ${Math.sin(a)*v}px)) scale(.2)`,opacity:0}],
       {duration:650+Math.random()*350,easing:"cubic-bezier(.16,1,.3,1)"}).onfinish=()=>d.remove()}}
+
+// ---------- Hikâye görüntüleyici (Instagram tarzı) ----------
+// Afiş/kampanya hikâyeleri tam ekran: üstte sayfa ilerleme çubukları, dokun sağ/sol = sonraki/önceki sayfa,
+// basılı tut = durdur, yana kaydır = sonraki/önceki market hikâyesi (küp dönüşü), aşağı çek = kapat.
+// Geri tuşu hikâyeyi kapatır. Hareket azaltma tercihinde geçişler animasyonsuz.
+const SV={open:false,i:0,k:0,el:null,card:null,t0:0,busy:false,DUR:5500};window.__sv=SV;
+const svPages=it=>(it.images&&it.images.length?it.images:[it.image]).slice(0,10);
+function svCard(i){const it=STORY_LIST[i],pages=svPages(it),w=posterState(it),camp=isCamp(it),m=M[it.market];
+  const c=document.createElement("div");c.className="sv-card";c.style.setProperty("--mc",m?m.bar:"#888");
+  c.innerHTML=`<div class="sv-bg"><img alt="" src="${esc(pages[0])}"></div>
+    <img class="sv-img" alt="${esc(campTitle(it))}" src="${esc(pages[0])}">
+    <div class="sv-shade"></div>
+    <div class="sv-bars">${pages.map(()=>`<span class="sv-seg"><i></i></span>`).join("")}</div>
+    <div class="sv-top"><span class="sv-av"><img alt="" src="${esc(it.thumb||(it.thumbs&&it.thumbs[0])||pages[0])}"></span>
+      <span class="min-w-0 flex-1"><b class="block truncate">${m?m.n:esc(it.market)}</b><span class="block truncate sv-sub">${esc(it.market==="bim"?it.group+" · "+it.label:it.title)}</span></span>
+      <button class="sv-x" data-svx aria-label="Kapat"><i data-lucide="x" class="w-6 h-6"></i></button></div>
+    <div class="sv-bottom">
+      ${w&&w.state==="soon"?`<span class="sv-chip">Yakında başlıyor</span>`:it.label&&it.market!=="bim"?`<span class="sv-chip">${esc(it.label)}</span>`:""}
+      <div class="flex gap-2 mt-3">
+        <button class="sv-cta" data-svgo>${camp?`<i data-lucide="shopping-bag" class="w-5 h-5"></i>Ürünleri gör · ${num(campCount(it))}`:`<i data-lucide="zoom-in" class="w-5 h-5"></i>Afişi yakınlaştır`}</button>
+        ${it.url?`<a class="sv-ext" href="${esc(it.url)}" target="_blank" rel="noopener" aria-label="Marketin sayfasında aç"><i data-lucide="external-link" class="w-5 h-5"></i></a>`:""}
+      </div></div>`;
+  return c}
+function openStory(i){if(!STORY_LIST[i])return;
+  if(!SV.el){SV.el=document.createElement("div");SV.el.className="sv";SV.el.setAttribute("role","dialog");SV.el.setAttribute("aria-modal","true");SV.el.setAttribute("aria-label","Afiş hikâyeleri");
+    SV.el.innerHTML=`<div class="sv-stage"></div>`;document.body.appendChild(SV.el);svWire()}
+  SV.open=true;SV.i=i;SV.k=0;const st=SV.el.firstChild;st.innerHTML="";SV.card=svCard(i);st.appendChild(SV.card);icons();
+  SV.el.classList.add("on");document.body.style.overflow="hidden";history.pushState({sv:1},"",location.href);
+  if(!RM&&SV.el.animate)SV.el.animate([{opacity:0,transform:"scale(.92)"},{opacity:1,transform:"none"}],{duration:380,easing:"cubic-bezier(.16,1,.3,1)"});
+  svShow(0)}
+function svSeen(it){if(!STORY_SEEN.has(it.id)){STORY_SEEN.add(it.id);save("storySeen",[...STORY_SEEN].slice(-200))}}
+function svShow(k){const it=STORY_LIST[SV.i],pages=svPages(it);SV.k=k;svSeen(it);const c=SV.card;
+  c.querySelector(".sv-img").src=pages[k];c.querySelector(".sv-bg img").src=pages[k];
+  c.querySelectorAll(".sv-seg").forEach((s,j)=>{s.classList.toggle("done",j<k);s.classList.remove("on");if(j===k){void s.offsetWidth;s.classList.add("on")}});
+  const seg=c.querySelectorAll(".sv-seg")[k];seg.firstChild.style.animationDuration=SV.DUR+"ms";seg.firstChild.onanimationend=()=>svNext();
+  // sonraki görseli önceden yükle
+  const nx=pages[k+1]||(STORY_LIST[SV.i+1]&&svPages(STORY_LIST[SV.i+1])[0]);if(nx){const im=new Image();im.src=nx}}
+function svNext(){const pages=svPages(STORY_LIST[SV.i]);if(SV.k+1<pages.length)svShow(SV.k+1);else if(SV.i+1<STORY_LIST.length)svJump(1);else SV.close()}
+function svPrev(){if(SV.k>0)svShow(SV.k-1);else if(SV.i>0)svJump(-1,true);else svShow(0)}
+// Küp dönüşüyle başka market hikâyesine geçiş
+function svJump(d,toLast){if(SV.busy)return;const ni=SV.i+d;if(!STORY_LIST[ni]){if(d>0)SV.close();return}
+  const st=SV.el.firstChild,old=SV.card,nw=svCard(ni);st.appendChild(nw);icons();SV.i=ni;SV.card=nw;
+  const k=toLast?svPages(STORY_LIST[ni]).length-1:0;
+  if(RM||!old.animate){old.remove();svShow(k);return}
+  SV.busy=true;const W=st.clientWidth/2,o=`translateZ(-${W}px)`,e=`translateZ(${W}px)`;
+  const a=old.animate([{transform:`${o} rotateY(0deg) ${e}`},{transform:`${o} rotateY(${d>0?-90:90}deg) ${e}`,filter:"brightness(.4)"}],{duration:520,easing:"cubic-bezier(.65,0,.35,1)",fill:"forwards"});
+  nw.animate([{transform:`${o} rotateY(${d>0?90:-90}deg) ${e}`,filter:"brightness(.4)"},{transform:`${o} rotateY(0deg) ${e}`}],{duration:520,easing:"cubic-bezier(.65,0,.35,1)"});
+  a.onfinish=()=>{old.remove();SV.busy=false};svShow(k)}
+SV.close=function(fromBack){if(!SV.open)return;SV.open=false;const el=SV.el;
+  const fin=()=>{el.classList.remove("on");el.style.transform="";el.firstChild.innerHTML="";document.body.style.overflow="";drawStories()};
+  if(!RM&&el.animate)el.animate([{opacity:1},{opacity:0,transform:(el.style.transform||"")+" scale(.9)"}],{duration:260,easing:"ease-in"}).onfinish=fin;else fin();
+  if(!fromBack&&history.state&&history.state.sv)history.back()};
+function svPause(p){if(SV.card)SV.card.classList.toggle("paused",p)}
+function svWire(){const el=SV.el;let x0=0,y0=0,tDown=0,drag=false,moved=false;
+  el.addEventListener("pointerdown",e=>{if(e.target.closest("button,a"))return;x0=e.clientX;y0=e.clientY;tDown=performance.now();drag=true;moved=false;svPause(true)});
+  el.addEventListener("pointermove",e=>{if(!drag)return;const dx=e.clientX-x0,dy=e.clientY-y0;if(Math.abs(dx)>8||Math.abs(dy)>8)moved=true;
+    if(dy>0&&Math.abs(dy)>Math.abs(dx)){el.style.transform=`translateY(${dy}px) scale(${Math.max(.8,1-dy/1400)})`;el.style.opacity=String(Math.max(.4,1-dy/600))}});
+  const up=e=>{if(!drag)return;drag=false;const dx=e.clientX-x0,dy=e.clientY-y0,dt=performance.now()-tDown;svPause(false);el.style.opacity="";
+    if(dy>110&&Math.abs(dy)>Math.abs(dx)){SV.close();return}
+    el.style.transition="transform .3s cubic-bezier(.16,1,.3,1)";el.style.transform="";setTimeout(()=>el.style.transition="",320);
+    if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)){svJump(dx<0?1:-1);return}
+    if(!moved&&dt<300){if(e.clientX<innerWidth*0.3)svPrev();else svNext()}};
+  el.addEventListener("pointerup",up);el.addEventListener("pointercancel",up);
+  el.addEventListener("click",e=>{if(e.target.closest("[data-svx]")){e.stopPropagation();SV.close()}
+    else if(e.target.closest("[data-svgo]")){e.stopPropagation();const it=STORY_LIST[SV.i],k=SV.k;SV.close();
+      setTimeout(()=>{if(isCamp(it))openCamp(campKey(it));else openViewer(POST.indexOf(it),k)},300)}});
+  addEventListener("keydown",e=>{if(!SV.open)return;if(e.key==="Escape")SV.close();else if(e.key==="ArrowRight")svNext();else if(e.key==="ArrowLeft")svPrev()});
+  document.addEventListener("visibilitychange",()=>svPause(document.hidden))}
