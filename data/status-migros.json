@@ -1,22 +1,22 @@
 {
- "updated": "2026-11-26T06:34:40+00:00",
- "started_at": "2026-11-26T06:29:36+00:00",
- "finished_at": "2026-11-26T06:34:40+00:00",
- "checked_at": "2026-11-26T06:34:40+00:00",
- "data_updated": "2026-11-26T06:34:40+00:00",
- "last_successful_data_at": "2026-11-26T06:34:40+00:00",
+ "updated": "2026-11-26T08:03:39+00:00",
+ "started_at": "2026-11-26T07:58:43+00:00",
+ "finished_at": "2026-11-26T08:03:39+00:00",
+ "checked_at": "2026-11-26T08:03:39+00:00",
+ "data_updated": "2026-11-26T08:03:39+00:00",
+ "last_successful_data_at": "2026-11-26T08:03:39+00:00",
  "market": "migros",
  "mode": "deals",
  "status": "tamam",
  "complete": true,
  "partial": false,
- "found": 2643,
+ "found": 2644,
  "total": 19968,
- "seconds": 304,
+ "seconds": 296,
  "notes": [
   "money-indirimli-market-urunleri-dt-5: 84/84 sayfa",
   "coklu-indirim-kampanyalari-ve-hediyeli-urunler-dt-1: 6/6 sayfa",
-  "2643 indirimli ürün güncellendi"
+  "2644 indirimli ürün güncellendi"
  ],
  "quality": {
   "category_count": 36,
@@ -68,15 +68,15 @@
   "www.migros.com.tr": {
    "requests": 90,
    "retries": 0,
-   "megabytes": 1.5,
+   "megabytes": 1.6,
    "errors": 0
   }
  },
  "errors": [],
- "run_id": "45768547618",
- "collected_products": 2643,
+ "run_id": "45779331898",
+ "collected_products": 2644,
  "total_products": 19968,
- "discounted_products": 2785,
+ "discounted_products": 2786,
  "invalid_products": 0,
  "data_quality": {
   "missing_id": 0,
@@ -87,21 +87,21 @@
   "suspicious_discount": 0,
   "bad_url": 0
  },
- "duration_seconds": 304,
+ "duration_seconds": 296,
  "last_attempt_by_mode": {
   "deals": {
-   "checked_at": "2026-11-26T06:34:40+00:00",
+   "checked_at": "2026-11-26T08:03:39+00:00",
    "status": "tamam",
    "complete": true,
-   "found": 2643,
+   "found": 2644,
    "total": 19968,
-   "seconds": 304,
-   "data_updated": "2026-11-26T06:34:40+00:00",
+   "seconds": 296,
+   "data_updated": "2026-11-26T08:03:39+00:00",
    "errors": [],
    "notes": [
     "money-indirimli-market-urunleri-dt-5: 84/84 sayfa",
     "coklu-indirim-kampanyalari-ve-hediyeli-urunler-dt-1: 6/6 sayfa",
-    "2643 indirimli ürün güncellendi"
+    "2644 indirimli ürün güncellendi"
    ],
    "quality_warnings": [],
    "quality": {
@@ -153,7 +153,7 @@
     "www.migros.com.tr": {
      "requests": 90,
      "retries": 0,
-     "megabytes": 1.5,
+     "megabytes": 1.6,
      "errors": 0
     }
    }
