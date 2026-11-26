@@ -169,6 +169,7 @@ function pcard(o,opt={}){
   <div class="mt-1.5 pr-11 min-h-[2.6rem]">
     ${d?`<p class="text-xs text-stone-400 line-through tabular leading-none">${tl(o.regular)}</p>`:""}
     <p class="price tabular ${d?"text-red-600":""}">${tl(o.price)}</p>
+    ${d?`<div class="savebar" role="img" aria-label="Etiket fiyatının %${Math.round((1-d)*100)}'i"><span style="--w:${Math.round((1-d)*100)}%"></span></div>`:""}
     ${p&&p.kind==="basket"&&p.min&&p.eff<o.price&&ok?`<p class="text-[11px] font-extrabold text-violet-700 leading-tight mt-0.5">Kasada ${tl(p.eff)}</p>`:""}
     ${moneyChip(o)}${stateChip(o)?`<div class="mt-0.5">${stateChip(o)}</div>`:""}
   </div>
@@ -447,9 +448,38 @@ function drawH(){
   $("recent").innerHTML=r.length?`<div class="pc px-4 py-1 ${div}">`+r.map(g=>{const b=best(g);
     return`<div data-show="${esc(g.key)}" class="flex items-center gap-3 py-3">${img(g.image,"w-11 h-11 shrink-0")}<span class="flex-1 text-sm font-bold">${esc(g.name)}</span>${b?badge(b.market,1)+`<span class="price text-base tabular">${tl(b.price)}</span>`:chip("Tükendi","bg-stone-200 text-stone-600")}</div>`}).join("")+`</div>`
     :empty("shopping-cart","Listen boş","Ürünlerdeki yeşil + düğmesiyle ekle; en ucuz markete göre gruplanır.");
-  drawHList();
+  drawHList();drawPulse();
   $("upd").textContent=updated?"Güncel: "+new Date(updated).toLocaleString("tr-TR",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}):"-"}
 
+// "Bugün" panosu: kaç üründe indirim, marketlere göre indirim payı (halkalar), indirim derinliği (sütunlar)
+function ring(pct,color,label,sub){const r=26,c=2*Math.PI*r,v=Math.max(0,Math.min(1,pct));
+  return`<div class="flex flex-col items-center gap-1 min-w-0"><svg viewBox="0 0 64 64" class="w-16 h-16 -rotate-90" aria-hidden="true">
+    <circle cx="32" cy="32" r="${r}" fill="none" stroke="var(--fill,#e8e8ed)" stroke-width="7"/>
+    <circle cx="32" cy="32" r="${r}" fill="none" stroke="${color}" stroke-width="7" stroke-linecap="round" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${c.toFixed(1)}" class="ringv" style="--to:${(c*(1-v)).toFixed(1)}"/></svg>
+    <span class="-mt-[46px] mb-[22px] text-[13px] font-bold tabular">%${Math.round(v*100)}</span><span class="text-xs font-bold">${label}</span><span class="text-[11px] text-stone-500 tabular">${sub}</span></div>`}
+function drawPulse(){
+  const el=$("hPulse");if(!el||!O.length)return;
+  const st=O.filter(o=>usable(o)&&o.in_stock&&!o.na),dd=st.filter(o=>disc(o)>=0.05);
+  if(!dd.length){el.innerHTML="";return}
+  const avg=dd.reduce((a,o)=>a+disc(o),0)/dd.length,ms=DATA_M.filter(m=>st.some(o=>o.market===m));
+  const bins=[[0.05,0.2,"%5–20"],[0.2,0.3,"%20–30"],[0.3,0.5,"%30–50"],[0.5,1,"%50+"]].map(([a,b,l])=>({l,n:dd.filter(o=>disc(o)>=a&&disc(o)<b).length}));
+  const mx=Math.max(...bins.map(b=>b.n));
+  const promoN=st.filter(o=>o._promo&&o._promo.kind==="multi").length;
+  el.innerHTML=`<div class="pulse">
+    <div class="flex items-start justify-between gap-3"><div><p class="text-xs font-bold uppercase tracking-wide text-stone-500">Bugün marketlerde</p>
+      <p class="mt-1 text-[40px] leading-none font-extrabold tracking-tight tabular"><span data-count="${dd.length}">${num(dd.length)}</span></p>
+      <p class="text-sm text-stone-600 mt-1 whitespace-nowrap">üründe indirim · ort. <b class="text-red-600">%${Math.round(avg*100)}</b></p></div>
+      ${promoN?`<button data-view="promos" data-plain="1" class="pulse-chip"><i data-lucide="gift" class="w-4 h-4"></i><span><b class="tabular">${num(promoN)}</b> bedava ürünlü kampanya</span></button>`:""}</div>
+    <div class="grid gap-2 mt-4" style="grid-template-columns:repeat(${ms.length},minmax(0,1fr))">${ms.map(m=>{const all=st.filter(o=>o.market===m).length,n=dd.filter(o=>o.market===m).length;return ring(all?n/all:0,M[m].bar,M[m].n,`${num(n)} indirim`)}).join("")}</div>
+    <p class="text-xs font-bold text-stone-500 mt-4 mb-2">İndirim derinliği</p>
+    <div class="flex items-end gap-2 h-20">${bins.map((b,i)=>`<div class="flex-1 flex flex-col items-center justify-end h-full gap-1"><span class="text-[11px] font-bold tabular">${num(b.n)}</span><span class="dbar" style="--h:${Math.max(5,Math.round(b.n/mx*56))}px;--i:${i}"></span></div>`).join("")}</div>
+    <div class="flex gap-2 mt-1">${bins.map(b=>`<span class="flex-1 text-center text-[11px] text-stone-500">${b.l}</span>`).join("")}</div>
+  </div>`;
+  countUp(el)}
+// Sayılar 0'dan değerine akar (hareket azaltma tercihine uyar)
+function countUp(root){if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  root.querySelectorAll("[data-count]").forEach(e=>{const to=+e.dataset.count,t0=performance.now(),D=900;
+    const f=t=>{const k=Math.min(1,(t-t0)/D),v=Math.round(to*(1-Math.pow(1-k,3)));e.textContent=num(v);if(k<1)requestAnimationFrame(f)};requestAnimationFrame(f)})}
 // Ana sayfanın başı: listenin özeti ve en ucuz plan (liste boşsa nasıl başlanacağı)
 function drawHList(){
   const el=$("hList");if(!el)return;const list=uniq(cart);
@@ -592,7 +622,11 @@ function histCard(g){
   const X=t=>L+(x1>x0?(t-x0)/(x1-x0):1)*(W-L-R),Y=v=>T+(1-(v-y0)/(y1-y0))*(H-T-B);
   const lines=S.map(({o,h})=>{const c=M[o.market].bar,pts=h.points;let d=`M${X(pts[0].ts).toFixed(1)} ${Y(pts[0].price).toFixed(1)}`;
     pts.slice(1).forEach(p=>{d+=` H${X(p.ts).toFixed(1)} V${Y(p.price).toFixed(1)}`});d+=` H${X(x1).toFixed(1)}`;
-    return`<path d="${d}" fill="none" stroke="${c}" stroke-width="2.5" stroke-linejoin="round" class="draw"/>`+
+    const gid="g"+o.market,area=S.length===1?`<defs><linearGradient id="${gid}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${c}" stop-opacity=".28"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></linearGradient></defs><path d="${d} V${(H-B).toFixed(1)} H${X(pts[0].ts).toFixed(1)} Z" fill="url(#${gid})" class="fadein"/>`:"";
+    const lo=pts.reduce((a,p)=>p.price<a.price?p:a,pts[0]),last=pts[pts.length-1];
+    const lab=S.length===1&&h.changes?`<text x="${Math.min(W-R-30,Math.max(L+20,X(lo.ts))).toFixed(1)}" y="${(Y(lo.price)+14).toFixed(1)}" font-size="9" font-weight="700" fill="#15803d" text-anchor="middle">en düşük ${tl(lo.price)}</text>`:"";
+    return area+`<path d="${d}" fill="none" stroke="${c}" stroke-width="2.5" stroke-linejoin="round" class="draw"/>`+lab+
+      `<circle cx="${X(x1).toFixed(1)}" cy="${Y(last.price).toFixed(1)}" r="4" fill="${c}" class="pulsept"/>`+
       pts.map(p=>`<circle cx="${X(p.ts).toFixed(1)}" cy="${Y(p.price).toFixed(1)}" r="${p.regular>p.price+0.005?3.5:2.5}" fill="${p.regular>p.price+0.005?"#dc2626":c}" stroke="#fff" stroke-width="1"><title>${dshort(p.ts)} · ${tl(p.price)}${p.promo?" · "+esc(p.promo):""}</title></circle>`).join("")}).join("");
   const grid=[y0+(y1-y0)*0.08,(y0+y1)/2,y1-(y1-y0)*0.08].map(v=>`<line x1="${L}" x2="${W-R}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" stroke="#e7e5e4" stroke-dasharray="3 3"/><text x="${L-4}" y="${(Y(v)+3).toFixed(1)}" text-anchor="end" font-size="9" fill="#78716c">${tl(v).replace(" ₺","")}</text>`).join("");
   const svg=`<svg viewBox="0 0 ${W} ${H}" class="w-full mt-2" role="img" aria-label="Fiyat grafiği">${grid}${lines}
