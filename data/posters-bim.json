@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-26T06:39:23+00:00",
+ "updated": "2026-11-26T09:47:44+00:00",
  "market": "bim",
  "items": [
   {
@@ -30,16 +30,6 @@
    "label": "17 Kasım Salı",
    "image": "https://cdn1.bim.com.tr/uploads/afisler/cd829434-3bd5-4f44-a70b-c90ae8383855.jpg",
    "thumb": "https://cdn1.bim.com.tr/uploads/afisler/k_cd829434-3bd5-4f44-a70b-c90ae8383855.jpg",
-   "url": "https://www.bim.com.tr/Categories/680/afisler.aspx"
-  },
-  {
-   "market": "bim",
-   "id": "bim:1711:0",
-   "title": "BİM Aktüel · 18 Kasım Çarşamba",
-   "group": "Aktüel",
-   "label": "18 Kasım Çarşamba",
-   "image": "https://cdn1.bim.com.tr/uploads/afisler/2c08a7dc-ff1d-4e01-93f2-9754d6395362.jpg",
-   "thumb": "https://cdn1.bim.com.tr/uploads/afisler/k_2c08a7dc-ff1d-4e01-93f2-9754d6395362.jpg",
    "url": "https://www.bim.com.tr/Categories/680/afisler.aspx"
   },
   {
@@ -244,16 +234,6 @@
   },
   {
    "market": "bim",
-   "id": "bim:1456:0",
-   "title": "BİM Aktüel · 02 Aralık Çarşamba",
-   "group": "Aktüel",
-   "label": "02 Aralık Çarşamba",
-   "image": "https://cdn1.bim.com.tr/uploads/afisler/1326dbda-6626-46ed-9277-661349bbc2e4.jpg",
-   "thumb": "https://cdn1.bim.com.tr/uploads/afisler/k_1326dbda-6626-46ed-9277-661349bbc2e4.jpg",
-   "url": "https://www.bim.com.tr/Categories/680/afisler.aspx"
-  },
-  {
-   "market": "bim",
    "id": "bim:1198:0",
    "title": "BİM İndirim · 24 Mart-31 Aralık",
    "group": "İndirim",
@@ -314,12 +294,32 @@
   },
   {
    "market": "bim",
+   "id": "bim:1711:0",
+   "title": "BİM Afiş · 18 Kasım Çarşamba",
+   "group": "Afiş",
+   "label": "18 Kasım Çarşamba",
+   "image": "https://cdn1.bim.com.tr/uploads/afisler/2c08a7dc-ff1d-4e01-93f2-9754d6395362.jpg",
+   "thumb": "https://cdn1.bim.com.tr/uploads/afisler/k_2c08a7dc-ff1d-4e01-93f2-9754d6395362.jpg",
+   "url": "https://www.bim.com.tr/Categories/680/afisler.aspx"
+  },
+  {
+   "market": "bim",
    "id": "bim:1450:0",
    "title": "BİM Afiş · 25 Kasım Çarşamba",
    "group": "Afiş",
    "label": "25 Kasım Çarşamba",
    "image": "https://cdn1.bim.com.tr/uploads/afisler/f3adff4c-7ea5-40ba-a940-6505db4066ab.jpg",
    "thumb": "https://cdn1.bim.com.tr/uploads/afisler/k_f3adff4c-7ea5-40ba-a940-6505db4066ab.jpg",
+   "url": "https://www.bim.com.tr/Categories/680/afisler.aspx"
+  },
+  {
+   "market": "bim",
+   "id": "bim:1456:0",
+   "title": "BİM Afiş · 02 Aralık Çarşamba",
+   "group": "Afiş",
+   "label": "02 Aralık Çarşamba",
+   "image": "https://cdn1.bim.com.tr/uploads/afisler/1326dbda-6626-46ed-9277-661349bbc2e4.jpg",
+   "thumb": "https://cdn1.bim.com.tr/uploads/afisler/k_1326dbda-6626-46ed-9277-661349bbc2e4.jpg",
    "url": "https://www.bim.com.tr/Categories/680/afisler.aspx"
   }
  ]
