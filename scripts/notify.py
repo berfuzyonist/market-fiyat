@@ -144,23 +144,62 @@ def watch_alerts(watch, products, sent):
     return lines
 
 
-def new_posters(state):
-    seen, out = set(state.get("posters") or []), []
+AYLAR = {"ocak": 1, "subat": 2, "şubat": 2, "mart": 3, "nisan": 4, "mayis": 5, "mayıs": 5, "haziran": 6, "temmuz": 7,
+         "agustos": 8, "ağustos": 8, "eylul": 9, "eylül": 9, "ekim": 10, "kasim": 11, "kasım": 11, "aralik": 12, "aralık": 12}
+
+
+def last_date(text, today):
+    """Metindeki son 'gün ay' tarihi (ör. '26-29 Kasım' → 29 Kasım, '20 Kasım-20 Aralık' → 20 Aralık).
+    Yıl yazmıyorsa bugüne en yakın yıl seçilir. Bulunamazsa None."""
+    import datetime
+    found = re.findall(r"(?:\d{1,2}\s*(?:ve|-|–)\s*)?(\d{1,2})\.?\s*(ocak|şubat|subat|mart|nisan|mayıs|mayis|haziran|temmuz|ağustos|agustos|eylül|eylul|ekim|kasım|kasim|aralık|aralik)(?:\s+(\d{4}))?",
+                       (text or "").lower())
+    if not found:
+        return None
+    d, mon, y = found[-1]
+    best = None
+    for yr in ([int(y)] if y else [today.year - 1, today.year, today.year + 1]):
+        try:
+            c = datetime.date(yr, AYLAR[mon], int(d))
+        except ValueError:
+            continue
+        if best is None or abs((c - today).days) < abs((best - today).days):
+            best = c
+    return best
+
+
+def expired(it, today):
+    """Afişin son geçerlilik günü geçmiş mi (BİM aktüel: satış günü; diğerleri: yazan son tarih)."""
+    end = last_date(" ".join(str(it.get(k) or "") for k in ("label", "title", "desc")), today)
+    return end is not None and end < today
+
+
+def poster_items():
+    out = []
     for m in NAMES:
         try:
-            items = json.loads((ROOT / "data" / f"posters-{m}.json").read_text(encoding="utf-8")).get("items") or []
+            out += json.loads((ROOT / "data" / f"posters-{m}.json").read_text(encoding="utf-8")).get("items") or []
         except (OSError, ValueError):
             continue
-        groups = {}
-        for it in items:
-            if not it.get("id") or it["id"] in seen:
-                continue
-            if m == "bim":  # BİM bir günün aktüelini birkaç sayfa yayımlar: günde tek bildirim
-                k = (it.get("group"), it.get("label"))
-                if k in groups:
-                    continue
-                groups[k] = 1
-            out.append(it)
+    return [it for it in out if it.get("id")]
+
+
+def new_posters(state, today=None):
+    """Yeni afişler: hiç görülmemiş ve süresi dolmamış. BİM'in aynı günkü sayfaları tek bildirim; o günün
+    sayfalarından biri daha önce görüldüyse hiçbiri yeni sayılmaz."""
+    import datetime
+    today = today or (datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=3)).date()
+    seen = set(state.get("posters") or [])
+    items = poster_items()
+    key = lambda it: (it.get("market"), it.get("group"), it.get("label")) if it.get("market") == "bim" else it["id"]
+    old_groups = {key(it) for it in items if it["id"] in seen}
+    out, done = [], set()
+    for it in items:
+        k = key(it)
+        if it["id"] in seen or k in old_groups or k in done or expired(it, today):
+            continue
+        done.add(k)
+        out.append(it)
     return out
 
 
@@ -300,7 +339,7 @@ def main(argv):
              "promos": sorted(live),  # biten kampanya düşer; yeniden başlarsa yeniden bildirilir
              "digest_day": time.strftime("%Y-%m-%d", time.gmtime(now + 3 * 3600)) if (deals and morning) or first
              else state.get("digest_day"),
-             "posters": sorted({it["id"] for it in new_posters({})})}
+             "posters": sorted({it["id"] for it in poster_items()})}  # tüm sayfalar (gruplanmadan)
     if not dry:
         STATE.write_text(json.dumps(state, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
     print(f"takip {len(watch)} · uyarı {len(alerts)} · yeni afiş {len(posters)} · yeni kampanya {len(promos)} · özet {len(deals[:MAX_DEALS])}{' · ilk çalışma' if first else ''}")

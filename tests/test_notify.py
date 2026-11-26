@@ -21,6 +21,26 @@ class NotifyTests(unittest.TestCase):
         self.assertEqual(b, {"8690504017301": "sok:10"})
         self.assertNotIn("barkod", "".join(notify.parse_watch("barkod 8690504017301 = sok:10")))
 
+    def test_poster_dates_and_bim_pages(self):
+        import datetime
+        today = datetime.date(2026, 11, 26)
+        self.assertEqual(notify.last_date("26-29 Kasım", today), datetime.date(2026, 11, 29))
+        self.assertEqual(notify.last_date("20 Kasım-20 Aralık", today), datetime.date(2026, 12, 20))
+        self.assertEqual(notify.last_date("1 ve 30 Kasım 2026 tarihleri arasında", today), datetime.date(2026, 11, 30))
+        self.assertTrue(notify.expired({"label": "24 Kasım Salı"}, today))
+        self.assertFalse(notify.expired({"label": "Stoklarla sınırlıdır."}, today))
+        items = [{"market": "bim", "id": "bim:1:0", "group": "Aktüel", "label": "27 Kasım Cuma"},
+                 {"market": "bim", "id": "bim:1:1", "group": "Aktüel", "label": "27 Kasım Cuma"},
+                 {"market": "bim", "id": "bim:2:0", "group": "Aktüel", "label": "01 Aralık Salı"},
+                 {"market": "bim", "id": "bim:3:0", "group": "Aktüel", "label": "20 Kasım Cuma"}]
+        orig = notify.poster_items
+        notify.poster_items = lambda: items
+        try:
+            new = notify.new_posters({"posters": ["bim:1:0"]}, today)
+        finally:
+            notify.poster_items = orig
+        self.assertEqual([it["id"] for it in new], ["bim:2:0"])  # aynı günün 2. sayfası ve geçmiş gün yok
+
     def test_expand_adds_other_markets_of_group(self):
         w = notify.expand({"sok:1": {"target": None}}, [["sok:1", "migros:9"]])
         self.assertEqual(set(w), {"sok:1", "migros:9"})
