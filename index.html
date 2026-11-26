@@ -21,10 +21,10 @@
 <link rel="preload" href="fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="css/fonts.css?v=792dbf51d5">
 <link rel="stylesheet" href="css/app.css?v=85219587ad">
-<link rel="stylesheet" href="css/tw.css?v=cff7d02be8">
-<link rel="stylesheet" href="css/apple.css?v=627cbf82e0">
+<link rel="stylesheet" href="css/tw.css?v=94cf49c88c">
+<link rel="stylesheet" href="css/apple.css?v=19618b8445">
 <script src="js/theme.js?v=cfe70e0367"></script>
-<script src="js/icons.js?v=fa622982d1"></script>
+<script src="js/icons.js?v=d0265a702d"></script>
 </head>
 <body class="apple bg-[#f3f6f4] text-stone-900 dark:bg-stone-950 dark:text-stone-100 font-sans antialiased">
 
@@ -71,14 +71,32 @@
 
   <!-- Ana sayfa -->
   <div id="home" class="space-y-7">
-    <div class="-mb-3"><h1 class="font-display font-extrabold text-lg lg:text-2xl tracking-tight">Akıllı alışverişin yeni yolu.</h1><p class="hidden sm:block text-sm text-stone-600">Şok, Migros ve BİM fiyatları, kampanyaları ve afişleri tek yerde.</p></div>
-    <section aria-label="Öne çıkanlar" class="relative">
-      <div id="banner" class="banner noscroll"><div class="slide skel"></div></div>
-      <div id="dots" class="flex justify-center gap-1.5 mt-2.5"></div>
-    </section>
+    <h1 class="sr-only">Market Fiyat: Şok, Migros ve BİM fiyatları, kampanyaları ve afişleri tek yerde</h1>
 
-    <section data-reveal>
-      <div id="cats" class="cats noscroll"></div>
+    <!-- 1. Listem: en sık iş; liste varsa en ucuz plan özeti -->
+    <section id="hList" aria-label="Alışveriş listem" class="!mt-0"></section>
+
+    <!-- 2. Hızlı işler -->
+    <nav aria-label="Hızlı erişim" class="grid grid-cols-4 gap-2.5">
+      <button data-view="posters" data-plain="1" class="qtile"><span class="qi bg-sky-100 text-sky-700"><i data-lucide="newspaper" class="w-6 h-6"></i></span>Afişler</button>
+      <button data-view="promos" data-plain="1" class="qtile"><span class="qi bg-violet-100 text-violet-700"><i data-lucide="gift" class="w-6 h-6"></i></span>Kampanya</button>
+      <button data-view="compare" data-plain="1" class="qtile"><span class="qi bg-emerald-100 text-emerald-700"><i data-lucide="scale" class="w-6 h-6"></i></span>Karşılaştır</button>
+      <button data-scan class="qtile"><span class="qi bg-amber-100 text-amber-800"><i data-lucide="scan-line" class="w-6 h-6"></i></span>Barkod</button>
+    </nav>
+
+    <!-- 3. Fırsatlar: tek raf, sekmeli -->
+    <section data-reveal aria-label="Fırsatlar">
+      <div class="shelf-head"><h2>Fırsatlar</h2><button id="hTabAll" data-go="deals" class="see-all">Tümü<i data-lucide="chevron-right" class="w-4 h-4"></i></button></div>
+      <div id="hTabs" role="tablist" class="seg noscroll mb-3">
+        <button role="tab" data-htab="deals" aria-selected="true">İndirimde</button>
+        <button role="tab" data-htab="promo" aria-selected="false">Bedava ürünlü</button>
+        <button role="tab" data-htab="drops" aria-selected="false">Fiyatı düşen</button>
+        <button role="tab" data-htab="cmp" aria-selected="false">Market farkı</button>
+      </div>
+      <div data-hpane="deals"><div id="deals" tabindex="0" role="region" aria-label="Günün fırsatları" class="shelf noscroll stagger"></div></div>
+      <div data-hpane="promo" class="hidden"><div id="hPromo" tabindex="0" role="region" aria-label="Bedava ürünlü kampanyalar" class="shelf noscroll stagger"></div></div>
+      <div data-hpane="drops" class="hidden" id="hDrops"><p id="hDropsSub" class="text-sm text-stone-600 -mt-1 mb-3"></p><div id="hDropsList" tabindex="0" role="region" aria-label="Fiyatı düşenler" class="shelf noscroll stagger"></div></div>
+      <div data-hpane="cmp" class="hidden"><div id="hCmp" tabindex="0" role="region" aria-label="Aynı ürün, farklı fiyat" class="shelf noscroll stagger"></div></div>
     </section>
 
     <section data-reveal>
@@ -87,41 +105,23 @@
     </section>
 
     <section data-reveal>
-      <div class="shelf-head"><h2><i data-lucide="flame" class="w-5 h-5 text-orange-500"></i>Günün fırsatları</h2><button data-go="deals" class="see-all">Tümü<i data-lucide="chevron-right" class="w-4 h-4"></i></button></div>
-      <div id="deals" tabindex="0" role="region" aria-label="Günün fırsatları" class="shelf noscroll stagger"></div>
+      <div id="cats" class="cats noscroll"></div>
     </section>
 
     <section data-reveal>
-      <div class="shelf-head"><h2><i data-lucide="ruler" class="w-5 h-5 text-emerald-600"></i>Birim fiyatta en ucuzu bul</h2></div>
-      <p class="text-sm text-stone-500 -mt-1 mb-3">Marka fark etmeksizin litre, kilo ya da adet fiyatına göre karşılaştır.</p>
+      <div class="shelf-head"><h2>Birim fiyatta en ucuzu</h2></div>
+      <p class="text-sm text-stone-500 -mt-1 mb-3">Marka fark etmeksizin litre, kilo ya da adet fiyatına göre.</p>
       <div id="units" class="grid grid-rows-2 grid-flow-col auto-cols-max gap-2 overflow-x-auto noscroll -mx-3 px-3 pb-1"></div>
     </section>
 
-    <section data-reveal id="hDrops" class="hidden">
-      <div class="shelf-head"><h2><i data-lucide="trending-down" class="w-5 h-5 text-emerald-600"></i>Fiyatı düşenler</h2><button data-view="analysis" data-plain="1" class="see-all">Analiz<i data-lucide="chevron-right" class="w-4 h-4"></i></button></div>
-      <p id="hDropsSub" class="text-sm text-stone-600 -mt-1 mb-3"></p>
-      <div id="hDropsList" tabindex="0" role="region" aria-label="Fiyatı düşenler" class="shelf noscroll stagger"></div>
+    <section data-reveal aria-label="Marketler">
+      <div class="shelf-head"><h2>Marketler</h2><button data-view="status" data-plain="1" class="see-all">Veri durumu<i data-lucide="chevron-right" class="w-4 h-4"></i></button></div>
+      <div id="stores" class="grid grid-cols-3 gap-2.5 lg:gap-4"></div>
+      <div id="hStaple" class="mt-3"></div>
     </section>
 
-    <section data-reveal id="stores" class="grid grid-cols-3 gap-2.5 lg:gap-4"></section>
-    <button data-view="status" data-plain="1" class="-mt-3 self-start inline-flex items-center gap-1 text-xs font-bold text-stone-600 dark:text-stone-300 hover:underline"><i data-lucide="activity" class="w-4 h-4"></i>Veri durumu ve son taramalar</button>
-
-    <section data-reveal>
-      <div class="shelf-head"><h2><i data-lucide="scale" class="w-5 h-5 text-emerald-600"></i>Aynı ürün, farklı fiyat</h2><button data-view="compare" data-plain="1" class="see-all">Tümü<i data-lucide="chevron-right" class="w-4 h-4"></i></button></div>
-      <div id="hCmp" tabindex="0" role="region" aria-label="Aynı ürün, farklı fiyat" class="shelf noscroll stagger"></div>
-    </section>
-
-    <section data-reveal>
-      <div class="shelf-head"><h2><i data-lucide="gift" class="w-5 h-5 text-violet-600"></i>Bedava ürünlü kampanyalar</h2><button data-view="promos" data-plain="1" class="see-all">Tümü<i data-lucide="chevron-right" class="w-4 h-4"></i></button></div>
-      <div id="hPromo" tabindex="0" role="region" aria-label="Bedava ürünlü kampanyalar" class="shelf noscroll stagger"></div>
-    </section>
-
-    <section data-reveal id="hStaple"></section>
-
-    <section data-reveal>
-      <div class="shelf-head"><h2><i data-lucide="history" class="w-5 h-5 text-emerald-600"></i>Listene son eklediklerin</h2></div>
-      <div id="recent"></div>
-    </section>
+    <section aria-label="Öne çıkanlar" class="hidden"><div id="banner"></div><div id="dots"></div></section>
+    <div id="recent" class="hidden"></div>
     <div id="tiles" class="hidden"></div><p id="heroStat" class="hidden"></p>
   </div>
 
@@ -246,5 +246,5 @@
 <script src="js/insights.js?v=839b613725"></script>
 <script src="js/budget.js?v=dbd7b0782d"></script>
 <script src="js/basket.js?v=460949c3d5"></script>
-<script src="js/app.js?v=4eff39c9be"></script>
+<script src="js/app.js?v=ab51e1aba8"></script>
 </body></html>

@@ -137,7 +137,7 @@ function stateChip(o){
   if(!o.in_stock)return chip("Tükendi","bg-stone-200 text-stone-600");
   return"";
 }
-const moneyChip=o=>o.money&&disc(o)?chip("Money ile","bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300"):"";
+const moneyChip=o=>o.money&&disc(o)?chip("Money kartla","bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300"):"";
 // Ürünün en son ne zaman kaynaktan doğrulandığı ve kullanıcı kontrolü
 function checkLine(o){
   const r=reqs[o.id],now=Date.now()/1000,waiting=r&&now-r<900&&!(o.checked&&MFC.toTs(o.checked.checked_at)>r);
@@ -447,7 +447,26 @@ function drawH(){
   $("recent").innerHTML=r.length?`<div class="pc px-4 py-1 ${div}">`+r.map(g=>{const b=best(g);
     return`<div data-show="${esc(g.key)}" class="flex items-center gap-3 py-3">${img(g.image,"w-11 h-11 shrink-0")}<span class="flex-1 text-sm font-bold">${esc(g.name)}</span>${b?badge(b.market,1)+`<span class="price text-base tabular">${tl(b.price)}</span>`:chip("Tükendi","bg-stone-200 text-stone-600")}</div>`}).join("")+`</div>`
     :empty("shopping-cart","Listen boş","Ürünlerdeki yeşil + düğmesiyle ekle; en ucuz markete göre gruplanır.");
+  drawHList();
   $("upd").textContent=updated?"Güncel: "+new Date(updated).toLocaleString("tr-TR",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}):"-"}
+
+// Ana sayfanın başı: listenin özeti ve en ucuz plan (liste boşsa nasıl başlanacağı)
+function drawHList(){
+  const el=$("hList");if(!el)return;const list=uniq(cart);
+  if(!list.length){el.innerHTML=`<div class="hlist flex items-center gap-4"><span class="qi bg-emerald-100 text-emerald-700 shrink-0"><i data-lucide="list-checks" class="w-6 h-6"></i></span>
+    <div class="flex-1 min-w-0"><p class="font-bold">Alışveriş listen boş</p><p class="text-sm text-stone-600">Ürün ekle; hangi marketten alırsan en ucuza geleceğini hesaplayayım.</p></div>
+    <button data-focusq class="rounded-full bg-emerald-700 text-white font-bold text-sm px-4 py-2 shrink-0">Ürün ara</button></div>`;return}
+  let plan=null;try{plan=currentPlan(list).opt.multi}catch(e){}
+  const ms=plan?plan.markets.map(m=>M[m]?M[m].n:m).join(" + "):"",miss=plan?plan.missing.length:0;
+  el.innerHTML=`<button data-view="list" data-plain="1" class="hlist w-full text-left">
+    <div class="flex items-center justify-between"><p class="font-bold">Listem · ${num(list.length)} ürün</p><span class="text-sm font-bold text-emerald-700 flex items-center">Listeye git<i data-lucide="chevron-right" class="w-4 h-4"></i></span></div>
+    ${plan&&plan.total?`<p class="mt-1 text-sm text-stone-600">En ucuz plan: <b class="text-stone-900 dark:text-stone-100 tabular">${tlc(plan.total)}</b>${ms?` · ${esc(ms)}`:""}${miss?` · ${miss} ürün hiçbir markette yok`:""}</p>`:""}
+    <div class="flex -space-x-2 mt-3">${list.slice(0,6).map(g=>`<span class="w-10 h-10 rounded-full bg-white ring-2 ring-white overflow-hidden grid place-items-center">${g.image?`<img src="${esc(g.image)}" alt="" class="w-full h-full object-contain" loading="lazy">`:""}</span>`).join("")}${list.length>6?`<span class="w-10 h-10 rounded-full bg-stone-200 ring-2 ring-white grid place-items-center text-xs font-bold">+${list.length-6}</span>`:""}</div></button>`}
+// Fırsatlar rafı sekmeleri
+let HTAB="deals";const HTAB_ALL={deals:'data-go="deals"',promo:'data-view="promos" data-plain="1"',drops:'data-view="analysis" data-plain="1"',cmp:'data-view="compare" data-plain="1"'};
+function setHTab(k){HTAB=k;document.querySelectorAll("[data-htab]").forEach(b=>b.setAttribute("aria-selected",b.dataset.htab===k));
+  document.querySelectorAll("[data-hpane]").forEach(p=>p.classList.toggle("hidden",p.dataset.hpane!==k));
+  const a=$("hTabAll");if(a){["data-go","data-view","data-plain"].forEach(x=>a.removeAttribute(x));HTAB_ALL[k].split(" ").forEach(kv=>{const[n,v]=kv.split("=");a.setAttribute(n,v.replace(/"/g,""))})}}
 
 // ---------- Veri durumu (#veri): her market için tarama, indirim kontrolü ve son başarılı veri ayrı ayrı ----------
 // Başarısız ya da kısmi tarama başarılı gibi gösterilmez; eski veri gizlenmez, yaşıyla birlikte yazılır.
@@ -872,7 +891,7 @@ function dropRow(x,period){const c=period==="last"?x.st.last:x.st[period],g=GI[x
 function drawHDrops(){
   if(!INS){if(WARM)insights().then(()=>{if(view==="home"){drawHDrops();icons()}});return} // açılışta: ısınma bitince
   const k=PK(),d=INS.rows.filter(x=>x.st[k]&&x.st[k].pct<=-0.05).sort((a,b)=>a.st[k].pct-b.st[k].pct);
-  $("hDrops").classList.toggle("hidden",!d.length);if(!d.length)return;
+  const tb=document.querySelector('[data-htab="drops"]');if(tb)tb.classList.toggle("hidden",!d.length);if(!d.length)return;
   $("hDropsSub").textContent=`${k==="d7"?"Son 7 günde":"Fiyat takibi başladığından beri"} ${num(d.length)} üründe fiyat en az %5 düştü (kayıtlı geçmişe göre).`;
   $("hDropsList").innerHTML=d.slice(0,14).map((x,i)=>{const g=GI[x.o.id];return`<article data-show="${esc(g?g.key:x.o.id)}" class="pc w-44 shrink-0" style="--i:${i}">
     <div class="ph">${x.o.image?`<img src="${esc(x.o.image)}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">`:""}</div>
@@ -1265,6 +1284,9 @@ document.addEventListener("click",e=>{const t=s=>e.target.closest(s);let el;
   else if(el=t("[data-go]")){Object.assign(B,{m:"",grp:"",cat:"",disc:true,sort:"disc",page:0});go("browse")}
   else if(el=t("[data-bm]")){B.m=el.dataset.bm;B.page=0;if(el.dataset.open){Object.assign(B,{grp:"",cat:"",disc:false,sort:"disc"});go("browse")}else redraw()}
   else if(t("#reload"))location.reload();
+  else if(el=t("[data-htab]")){setHTab(el.dataset.htab)}
+  else if(t("[data-scan]"))scan();
+  else if(t("[data-focusq]")){const q=$("q");if(q){q.focus();q.scrollIntoView({block:"center"})}}
   else if(el=t("[data-theme]")){MFTheme.set(el.dataset.theme);redraw()}
   else if(el=t("[data-copyname]")){try{navigator.clipboard.writeText(el.dataset.copyname)}catch(e){}}
   else if(el=t("[data-buddel]")){BUD.spends=BUD.spends.filter(x=>x.t!==+el.dataset.buddel);save("budget",BUD);redraw()}
