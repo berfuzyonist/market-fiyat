@@ -1,6 +1,6 @@
 "use strict";
 /* Market Fiyat arayüzü. Eşleştirme mantığı js/match.js içinde (MF). */
-const M={sok:{n:"Şok",at:"Şok'ta",c:"bg-yellow-400 text-yellow-950",bar:"#eab308"},migros:{n:"Migros",at:"Migros'ta",c:"bg-orange-700 text-white",bar:"#f97316"},a101:{n:"A101",at:"A101'de",c:"bg-cyan-700 text-white",bar:"#0891b2"},bim:{n:"BİM",at:"BİM'de",c:"bg-red-600 text-white",bar:"#dc2626"}},ORD=Object.keys(M);
+const M={sok:{n:"Şok",at:"Şok'ta",c:"bg-yellow-400 text-yellow-950",bar:"#eab308"},migros:{n:"Migros",at:"Migros'ta",c:"bg-orange-700 text-white",bar:"#f97316"},a101:{n:"A101",at:"A101'de",c:"bg-cyan-700 text-white",bar:"#0891b2"},koop:{n:"Tarım Kredi",at:"Tarım Kredi'de",c:"bg-green-700 text-white",bar:"#15803d"},bim:{n:"BİM",at:"BİM'de",c:"bg-red-600 text-white",bar:"#dc2626"}},ORD=Object.keys(M);
 const VIEWS=["home","compare","promos","browse","search","list","posters","camp","track","analysis","status"];
 const $=id=>document.getElementById(id);
 const tl=x=>x.toLocaleString("tr-TR",{minimumFractionDigits:2,maximumFractionDigits:2})+" ₺";
@@ -1324,7 +1324,7 @@ document.addEventListener("visibilitychange",checkFresh);setInterval(checkFresh,
 addEventListener("offline",offNote);if(navigator.onLine===false)setTimeout(offNote,1500);
 route(); // açılışta adresteki sayfaya git (yenilemede aynı ürün açık kalır)
 // Afiş dosyaları küçük: fiyat verisini beklemeden gelir gelmez rafa çizilir (ilk ekranın en büyük görseli).
-const PMK=["bim","migros","sok","a101"]; // A101: e-posta aboneliğinden gelen afişler
+const PMK=["bim","migros","sok","a101","koop"]; // A101: e-posta aboneliğinden gelen afişler
 const postersP=Promise.all(PMK.map(m=>get(`data/posters-${m}.json`).catch(()=>null)));
 postersP.then(ps=>ps.forEach((p,i)=>{if(p&&p.updated)PUPD[PMK[i]]=p.updated})).catch(()=>{});
 postersP.then(posters=>{if(O.length)return;POST=groupBim(groupSok(posters.flatMap(p=>(p&&Array.isArray(p.items)?p.items:[]).filter(it=>it&&/^https:\/\//.test(it.image||"")))));

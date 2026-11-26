@@ -7,7 +7,7 @@ on:
   # Veri ya da afiş her yayımlandığında hemen (yeni afiş, yeni kampanya, takipteki fiyat değişimi).
   # Bot itmeleri başka iş akışını tetiklemediği için 'workflow_run' kullanılır.
   workflow_run:
-    workflows: ["Afişler", "Şok", "Migros", "BİM", "A101 afişleri"]
+    workflows: ["Afişler", "Şok", "Migros", "BİM", "E-posta afişleri"]
     types: [completed]
   schedule:
     - cron: "7 6 * * *"    # TR 09.07: sabah özeti (gece biriken bildirimler de bu saatte gider)

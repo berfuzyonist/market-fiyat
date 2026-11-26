@@ -1,6 +1,6 @@
-name: A101 afişleri
+name: E-posta afişleri
 
-# A101 afişleri, A101'in afiş aboneliğiyle gönderdiği e-postalardan okunur (yalnızca bu iş için açılmış
+# A101 ve Tarım Kredi afişleri, marketlerin abonelikle gönderdiği e-postalardan okunur (yalnızca bu iş için açılmış
 # Gmail kutusu, yalnızca okunur). A101'in sitesine istek atılmaz. Kimlik: A101_MAIL_USER, A101_MAIL_PASS.
 on:
   schedule:
@@ -28,20 +28,20 @@ jobs:
         env:
           A101_MAIL_USER: ${{ secrets.A101_MAIL_USER }}
           A101_MAIL_PASS: ${{ secrets.A101_MAIL_PASS }}
-        run: python3 scripts/a101_mail.py ${{ inputs.deneme && '--deneme' || '' }}
+        run: python3 scripts/mail_posters.py ${{ inputs.deneme && '--deneme' || '' }}
       - name: Kaydet
         if: ${{ !inputs.deneme }}
         run: |
-          [ -f data/posters-a101.json ] || exit 0
+          ls data/posters-a101.json data/posters-koop.json >/dev/null 2>&1 || ls data/posters-a101.json >/dev/null 2>&1 || ls data/posters-koop.json >/dev/null 2>&1 || exit 0
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          cp data/posters-a101.json "$RUNNER_TEMP/p.json"
+          mkdir -p "$RUNNER_TEMP/p" && cp data/posters-a101.json data/posters-koop.json "$RUNNER_TEMP/p/" 2>/dev/null || true
           for attempt in 1 2 3 4 5; do
             git fetch --no-tags origin main && git reset --hard origin/main
-            cp "$RUNNER_TEMP/p.json" data/posters-a101.json
-            git add data/posters-a101.json
+            cp "$RUNNER_TEMP"/p/*.json data/ 2>/dev/null || true
+            git add data/posters-a101.json data/posters-koop.json 2>/dev/null || git add data/posters-*.json
             git diff --cached --quiet && exit 0
-            git commit -qm "A101 afişleri (e-posta)"
+            git commit -qm "E-posta afişleri"
             git push origin HEAD:refs/heads/main && exit 0
             sleep $((attempt * 3))
           done

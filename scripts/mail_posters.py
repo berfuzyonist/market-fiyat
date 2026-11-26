@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""A101 afişleri: A101'in afiş aboneliğiyle gönderdiği e-postalardan (yalnızca bu iş için açılmış Gmail kutusu).
+"""E-posta afişleri: marketlerin bülten/afiş aboneliğiyle gönderdiği e-postalardan (yalnızca bu iş için
+açılmış Gmail kutusu). Şu an: A101 (afiş aboneliği), Tarım Kredi Kooperatif Market (bülten).
 
 Siteye istek atılmaz; A101'in kendi gönderdiği e-postalar okunur. Kimlik bilgileri yalnızca GitHub gizli
 ayarlarında (A101_MAIL_USER, A101_MAIL_PASS: Google uygulama şifresi). Yalnızca A101 göndericili e-postalar
 okunur; e-posta içeriği ve adresler kayda geçmez.
 
-Çıktı: data/posters-a101.json (diğer marketlerin afiş biçimiyle aynı). Okuma başarısız olursa eski dosya
+Çıktı: data/posters-<market>.json (diğer marketlerin afiş biçimiyle aynı). Okuma başarısız olursa eski dosya
 korunur. --deneme: yalnızca bağlantıyı ve bulunan A101 e-postalarının konu/görsel sayısını yazar.
 """
 import email
@@ -22,7 +23,11 @@ import sys
 import time
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-OUT = ROOT / "data" / "posters-a101.json"
+# market → (IMAP FROM araması, gönderenin alan adında geçmesi gerekenler, ad)
+SENDERS = {
+    "a101": (["a101"], ["a101.com.tr", "a101.com"], "A101"),
+    "koop": (["tkkoop", "tarimkredi", "koopmarket", "kooperatif"], ["tkkoop.com.tr", "tarimkredi", "koopmarket", "kooperatif"], "Tarım Kredi"),
+}
 DAYS = 21
 MIN_SIDE = 400  # e-postadaki küçük simge/logo görselleri elenir (boyut yazıyorsa)
 
@@ -68,22 +73,26 @@ def links(doc):
     return [html.unescape(u) for u in re.findall(r'<a\b[^>]*href\s*=\s*["\'](https://[^"\']+)', doc, flags=re.I)]
 
 
-def fetch(user, pwd):
+def fetch(user, pwd, market):
+    froms, domains, _ = SENDERS[market]
     box = imaplib.IMAP4_SSL("imap.gmail.com", 993, timeout=60)
     box.login(user, pwd)
     box.select("INBOX", readonly=True)  # yalnızca okunur: e-postalar okundu işaretlenmez, silinmez
     since = time.strftime("%d-%b-%Y", time.gmtime(time.time() - DAYS * 86400))
-    _, data = box.search(None, "SINCE", since, "FROM", "a101")
+    nums = []
+    for f in froms:
+        _, data = box.search(None, "SINCE", since, "FROM", f)
+        nums += [n for n in (data[0] or b"").split() if n not in nums]
     mails = []
-    for num in (data[0] or b"").split()[-40:]:
+    for num in sorted(nums, key=int)[-40:]:
         _, parts = box.fetch(num, "(RFC822)")
         raw = next((p[1] for p in parts if isinstance(p, tuple)), None)
         if not raw:
             continue
         msg = email.message_from_bytes(raw)
         frm = email.utils.parseaddr(msg.get("From", ""))[1].lower()
-        if not frm.endswith(("a101.com.tr", "a101.com")) and "a101" not in frm.split("@")[-1]:
-            continue  # yalnızca A101'in kendi alan adından gelenler
+        if not any(d in frm.split("@")[-1] for d in domains):
+            continue  # yalnızca marketin kendi alan adından gelenler
         try:
             ts = email.utils.parsedate_to_datetime(msg.get("Date")).timestamp()
         except (TypeError, ValueError):
@@ -95,17 +104,18 @@ def fetch(user, pwd):
     return mails
 
 
-def build(mails):
+def build(mails, market):
+    name = SENDERS[market][2]
     items = []
     for m in sorted(mails, key=lambda m: -m["ts"]):
-        title = m["subject"] or "A101 afişi"
+        title = m["subject"] or f"{name} afişi"
         day = time.strftime("%d.%m.%Y", time.gmtime(m["ts"] + 3 * 3600))
-        url = next((u for u in m["links"] if "a101.com.tr" in u and ("afis" in u or "aktuel" in u or "kampanya" in u)),
-                   "https://www.a101.com.tr/")
+        home = {"a101": "https://www.a101.com.tr/", "koop": "https://www.tkkoop.com.tr/"}[market]
+        url = next((u for u in m["links"] if home.split("//")[1].strip("/") in u and ("afis" in u or "aktuel" in u or "kampanya" in u)), home)
         key = hashlib.sha1(title.encode()).hexdigest()[:10]
         for i, img in enumerate(m["images"][:12]):
-            items.append({"market": "a101", "id": f"a101:{key}:{i}", "title": title, "group": "Afiş",
-                          "label": title, "desc": f"A101 e-postası · {day}", "image": img, "thumb": img, "url": url})
+            items.append({"market": market, "id": f"{market}:{key}:{i}", "title": title, "group": "Afiş",
+                          "label": title, "desc": f"{name} e-postası · {day}", "image": img, "thumb": img, "url": url})
     seen, out = set(), []
     for it in items:  # aynı görsel birden çok e-postada gelirse bir kez
         if it["image"] not in seen:
@@ -119,31 +129,33 @@ def main(argv):
     if not user or not pwd:
         print("A101_MAIL_USER / A101_MAIL_PASS gizli ayarları yok; atlandı.")
         return 0
-    try:
-        mails = fetch(user, pwd)
-    except (imaplib.IMAP4.error, OSError) as e:
-        print(f"e-posta kutusuna bağlanılamadı: {type(e).__name__}", file=sys.stderr)
-        return 1
-    if "--deneme" in argv:
-        print(f"bağlantı tamam; son {DAYS} günde A101'den {len(mails)} e-posta")
-        for m in mails:
-            hosts = sorted({re.sub(r'^https://([^/]+)/.*', r'\1', u) for u in m["images"]})
-            print(f"- {m['domain']} · {m['subject'][:80]} · {len(m['images'])} görsel · {', '.join(hosts)}")
-        return 0
-    items = build(mails)
-    if not items:
-        print("A101 e-postasında afiş bulunamadı; dosya değişmedi.")
-        return 0
-    old = json.loads(OUT.read_text(encoding="utf-8")) if OUT.exists() else {}
-    if old.get("items") == items:
-        print("değişiklik yok")
-        return 0
-    OUT.write_text(json.dumps({"market": "a101", "updated": time.strftime("%Y-%m-%dT%H:%M:%S+00:00", time.gmtime()),
-                               "source": "A101 afiş aboneliği e-postaları", "items": items},
-                              ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
-    print(f"{len(items)} A101 afişi yazıldı")
-    return 0
-
+    rc = 0
+    for market, (_, _, name) in SENDERS.items():
+        try:
+            mails = fetch(user, pwd, market)
+        except (imaplib.IMAP4.error, OSError) as e:
+            print(f"e-posta kutusuna bağlanılamadı: {type(e).__name__}", file=sys.stderr)
+            return 1
+        if "--deneme" in argv:
+            print(f"{name}: son {DAYS} günde {len(mails)} e-posta")
+            for m in mails:
+                hosts = sorted({re.sub(r'^https://([^/]+)/.*', r'\1', u) for u in m["images"]})
+                print(f"- {m['domain']} · {m['subject'][:80]} · {len(m['images'])} görsel · {', '.join(hosts)}")
+            continue
+        items = build(mails, market)
+        out = ROOT / "data" / f"posters-{market}.json"
+        if not items:
+            print(f"{name}: e-postada afiş bulunamadı; dosya değişmedi.")
+            continue
+        old = json.loads(out.read_text(encoding="utf-8")) if out.exists() else {}
+        if old.get("items") == items:
+            print(f"{name}: değişiklik yok")
+            continue
+        out.write_text(json.dumps({"market": market, "updated": time.strftime("%Y-%m-%dT%H:%M:%S+00:00", time.gmtime()),
+                                   "source": f"{name} e-posta aboneliği", "items": items},
+                                  ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+        print(f"{name}: {len(items)} afiş yazıldı")
+    return rc
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv[1:]))
