@@ -255,3 +255,12 @@ test("birim karşılaştırma: tadı/türevi olan ürün o ürün sayılmaz", ()
   MF.group(rows);
   assert.deepEqual(MF.unitCompare(rows,"tavuk").sizes.flatMap(s=>s.items.map(h=>h.o.id)).sort(),["migros:1","migros:2"]);
 });
+
+test("market bağlantısından ürün: Migros -p-<onaltılık> → SKU", () => {
+  const p=C.productFromURL("https://www.migros.com.tr/grocery-mp/bahs-cookie-dream-protein-bar-45-g-p-6e0035");
+  assert.deepEqual(p,{market:"migros",id:"migros:07209013",name:"Bahs Cookie Dream Protein Bar 45 G"});
+  assert.equal(C.productFromURL("https://www.migros.com.tr/pinar-sut-1-l-p-1b2d4e").id,"migros:01781070");
+  assert.equal(C.productFromURL("https://example.com/x-p-12"),null);
+  const link=C.addProductLink(p);assert.match(link,/issues\/new\?title=%5B%C3%9CR%C3%9CN\+EKLE%5D/);
+  assert.match(decodeURIComponent(link.replace(/\+/g," ")),/"add":true/);
+});

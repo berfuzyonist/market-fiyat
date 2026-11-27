@@ -1,6 +1,7 @@
 name: Tek Ürün Fiyat Güncelleme
 
-# Uygulamadaki "Fiyatı Güncelle" bağlantısı "[FİYAT GÜNCELLE]" başlıklı bir talep açar.
+# Uygulamadaki "Fiyatı Güncelle" bağlantısı "[FİYAT GÜNCELLE]", "Bağlantıdan ürün ekle" ise "[ÜRÜN EKLE]"
+# başlıklı bir talep açar (ekleme şimdilik yalnız Migros).
 # Yalnızca depo sahibi/üyesi/katkıcısının talepleri işlenir. Ürün tek istekle
 # marketin herkese açık kaynağından okunur; bütün katalog taranmaz.
 on:
@@ -21,7 +22,7 @@ jobs:
   refresh:
     if: >-
       github.event.issue.pull_request == null &&
-      startsWith(github.event.issue.title, '[FİYAT GÜNCELLE]') &&
+      (startsWith(github.event.issue.title, '[FİYAT GÜNCELLE]') || startsWith(github.event.issue.title, '[ÜRÜN EKLE]')) &&
       contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association)
     runs-on: ubuntu-latest
     timeout-minutes: 10

@@ -7,11 +7,11 @@ ezilmemelidir. Kural: aynı ürün iki tarafta da varsa son doğrulama zamanı (
 daha yeni olan satır kalır.
 
 Yalnızca yayımlanmış katalogda olan ürünler:
-- tam ve eksiksiz tarama (full/aktuel, complete): son GRACE (3 gün) içinde hiç
-  doğrulanmamışsa katalogdan çıkmış sayılır ve düşer. Tek bir taramada görünmemesi
-  yetmez: Migros'un kategori sayfaları her gece ürünlerin farklı bir kısmını gösteriyor
-  (27 Kasım gecesi 16.457 ürün okundu, bir gün önce doğrulanmış 2.155 ürün görünmedi).
-  Böyle ürünler son doğrulama zamanıyla kalır; uygulama onları "eski veri" diye gösterir;
+- tam ve eksiksiz tarama (full/aktuel, complete): taramada görünmeyen ürün "stokta yok"
+  olarak kalır (fiyatı ve son doğrulama zamanı değişmez); GRACE (30 gün) boyunca hiçbir
+  taramada görünmezse katalogdan çıkmış sayılır ve düşer. Sebep: marketlerin kategori
+  listeleri stokta olmayan ürünü göstermiyor (Migros "STOCK_OUT" ürünü listelemiyor; ürün
+  sayfası ise duruyor). Gece gece stok değiştikçe ürünler silinip geri geliyordu;
 - indirim taraması veya kısmi tam tarama: korunur.
 """
 import importlib.util
@@ -29,7 +29,7 @@ def _collector():
     return module
 
 
-GRACE = 3 * 86400
+GRACE = 30 * 86400
 
 
 def merge_rows(current, incoming, replace_catalog, started_ts, grace=GRACE):
@@ -49,7 +49,8 @@ def merge_rows(current, incoming, replace_catalog, started_ts, grace=GRACE):
         if replace_catalog and not recent:
             dropped += 1
             continue
-        out[pid] = cur
+        # Eksiksiz taramada görünmedi: listede yok = stokta yok (fiyat ve doğrulama zamanı aynen kalır)
+        out[pid] = {**cur, "in_stock": False} if replace_catalog else cur
         kept_only += 1
     return out, {"kept_newer": kept_newer, "kept_current_only": kept_only, "dropped": dropped}
 

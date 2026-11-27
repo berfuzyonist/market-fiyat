@@ -33,6 +33,14 @@ class RequestParsingTests(unittest.TestCase):
     def test_valid(self):
         self.assertEqual(uop.parse_request(body("sok", "sok:10", " Cola  1 L ")), ("sok", "sok:10", "Cola 1 L"))
 
+    def test_add_request(self):
+        add = ("<!-- market-fiyat-price-update\n" + json.dumps({"market": "migros", "id": "migros:07209013",
+               "name": "Bahs Cookie Dream Protein Bar 45 G", "add": True}) + "\n-->")
+        self.assertTrue(uop.wants_add(add))
+        self.assertEqual(uop.parse_request(add), ("migros", "migros:07209013", "Bahs Cookie Dream Protein Bar 45 G"))
+        self.assertFalse(uop.wants_add(body("migros", "migros:07209013", "x")))
+        self.assertFalse(uop.wants_add(add.replace('"migros"', '"sok"', 1)))  # ekleme yalnız Migros
+
     def test_rejections(self):
         cases = {
             "işaret yok": "merhaba",

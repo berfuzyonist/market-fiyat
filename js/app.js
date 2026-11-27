@@ -758,6 +758,13 @@ function productPage(g){
   </div>`}
 function drawS(){
   const raw=$("q").value.trim(),w=MFC.searchWords(raw);
+  // Market ürün bağlantısı yapıştırıldıysa: üründe varsa onu aç, yoksa eklemeyi öner
+  {const pu=MFC.productFromURL(raw);if(pu&&!only){
+    if(GI[pu.id]){show(GI[pu.id].key);return}
+    const link=MFC.addProductLink(pu);
+    $("res").innerHTML=`<div class="col-span-full">${empty("package-plus","Bu ürün sitemizde yok",`${esc(M[pu.market].n)}: ${esc(pu.name)}. Ekleme talebi aç; GitHub Actions yalnız bu ürünü Migros'un ürün sayfasından okur ve ekler (1-2 dakika). Stokta olmasa da eklenir.`)}
+      ${link?`<p class="text-center mt-3"><a href="${esc(link)}" target="_blank" rel="noopener" data-req="${esc(pu.id)}" class="inline-flex items-center gap-2 rounded-full bg-emerald-700 text-white font-bold px-5 py-3"><i data-lucide="plus" class="w-5 h-5"></i>Ürünü ekle</a></p>`:""}</div>`;
+    icons();return}}
   if(only&&GI[only]){$("res").innerHTML=(BCASK&&pending?`<div class="rounded-2xl bg-amber-100 text-amber-900 p-4 text-sm mb-3"><p class="font-bold">Barkod ${esc(pending)}: bu ürün olabilir</p><p>Doğruysa aşağıdaki “Bu barkodla eşleştir”e dokun. Değilse ürünü adıyla ara.</p><button data-bcother class="mt-2 font-bold underline">Başka ürün ara</button></div>`:"")+productPage(GI[only]);return}
   const ban=pending?`<div class="col-span-full rounded-2xl bg-amber-100 text-amber-900 p-4 text-sm"><p class="font-bold">Barkod ${esc(pending)} henüz tanınmıyor</p><p>${raw?"Açık ürün veritabanındaki adıyla aradım; doğru ürünü açıp":"Ürünü adıyla arayın, ürün sayfasında"} “Bu barkodla eşleştir”e dokunun. Ürün başına bir kez yeterli; takip listesiyle gönderince eşinin telefonunda da tanınır.</p><button data-cancel class="mt-2 font-bold underline">Vazgeç</button></div>`:"";
   if(!w.length){$("res").innerHTML=ban+(G.length?`<div class="col-span-full">${empty("search","Ne arıyorsun?","Ürün adı, marka ya da barkod yaz. Örneğin “su”, “süt”, “yüzey temizleyici”.")}<div class="flex flex-wrap gap-2 mt-3">${UNIT_Q.map(([q,l,ic])=>`<button data-uq="${esc(q)}" class="uchip"><i data-lucide="${ic}" class="w-4 h-4 text-emerald-600"></i>${l}</button>`).join("")}</div></div>`:"");return}
@@ -800,7 +807,8 @@ function drawS(){
       return`<div class="${gridc}">${cards(r.slice(0,split),0)}</div>
         <div class="col-span-full mt-4 flex items-center gap-2"><span class="h-px flex-1 bg-stone-200 dark:bg-stone-800"></span><p class="text-xs font-bold text-stone-500 text-center">Başka bölümlerde de geçiyor · ${esc(lab.slice(0,3).join(" · "))}</p><span class="h-px flex-1 bg-stone-200 dark:bg-stone-800"></span></div>
         <div class="${gridc} opacity-80">${cards(rest,split)}</div>`})():empty("search-x","Sonuç bulunamadı",nFilters()?"Süzgeçleri gevşetmeyi dene.":"Başka bir kelime dene."))
-    +(total>60?`<p class="col-span-full text-center text-sm text-stone-500">${num(total)} sonuçtan ilk 60'ı gösteriliyor. Aramayı daraltabilirsin.</p>`:"")}
+    +(total>60?`<p class="col-span-full text-center text-sm text-stone-500">${num(total)} sonuçtan ilk 60'ı gösteriliyor. Aramayı daraltabilirsin.</p>`:"")
+    +`<p class="col-span-full text-center text-xs text-stone-500 mt-2">Aradığın Migros ürünü yok mu? Ürünün Migros bağlantısını arama kutusuna yapıştır; ekleyelim.</p>`}
 
 function filterPanel(){
   if(!S.open)return"";

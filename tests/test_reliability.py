@@ -489,13 +489,14 @@ class DataMergeTests(unittest.TestCase):
         self.assertEqual(st["dropped"], 1)
 
     def test_complete_catalog_keeps_recently_verified_missing_rows(self):
-        # Tek gecelik taramada görünmeyen ama son 3 günde doğrulanmış ürün silinmez; 3 günden eskisi düşer
+        # Eksiksiz taramada görünmeyen ürün "stokta yok" olarak kalır; 30 günden eskisi düşer
         day = 86400
-        cur = {"sok:11": prod("sok:11", seen=10 * day), "sok:12": prod("sok:12", seen=8 * day), "sok:13": prod("sok:13", seen=5 * day)}
-        inc = {"sok:11": prod("sok:11", seen=10 * day + 5)}
-        out, st = self.m.merge_rows(cur, inc, True, 10 * day)
+        cur = {"sok:11": prod("sok:11", seen=40 * day), "sok:12": prod("sok:12", seen=35 * day), "sok:13": prod("sok:13", seen=5 * day)}
+        inc = {"sok:11": prod("sok:11", seen=40 * day + 5)}
+        out, st = self.m.merge_rows(cur, inc, True, 40 * day)
         self.assertEqual(sorted(out), ["sok:11", "sok:12"])
-        self.assertEqual(out["sok:12"]["seen"], 8 * day)      # doğrulama zamanı korunur (eski veri olarak görünür)
+        self.assertEqual(out["sok:12"]["seen"], 35 * day)      # doğrulama zamanı korunur
+        self.assertFalse(out["sok:12"]["in_stock"])             # listede yok = stokta yok
         self.assertEqual(st["dropped"], 1)
 
     def test_deals_or_partial_keep_everything(self):
