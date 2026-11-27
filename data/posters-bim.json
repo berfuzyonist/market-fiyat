@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-26T09:47:44+00:00",
+ "updated": "2026-11-27T06:40:43+00:00",
  "market": "bim",
  "items": [
   {
@@ -234,6 +234,36 @@
   },
   {
    "market": "bim",
+   "id": "bim:1457:0",
+   "title": "BİM Aktüel · 04 Aralık Cuma",
+   "group": "Aktüel",
+   "label": "04 Aralık Cuma",
+   "image": "https://cdn1.bim.com.tr/uploads/afisler/5e906f96-ef4c-4522-b2e7-7f43823507a3.jpg",
+   "thumb": "https://cdn1.bim.com.tr/uploads/afisler/k_5e906f96-ef4c-4522-b2e7-7f43823507a3.jpg",
+   "url": "https://www.bim.com.tr/Categories/680/afisler.aspx"
+  },
+  {
+   "market": "bim",
+   "id": "bim:1457:1",
+   "title": "BİM Aktüel · 04 Aralık Cuma",
+   "group": "Aktüel",
+   "label": "04 Aralık Cuma",
+   "image": "https://cdn1.bim.com.tr/uploads/afisler/ef1a6a46-2ed2-491a-9369-cec7dfc9bd48.png",
+   "thumb": "https://cdn1.bim.com.tr/uploads/afisler/k_ef1a6a46-2ed2-491a-9369-cec7dfc9bd48.png",
+   "url": "https://www.bim.com.tr/Categories/680/afisler.aspx"
+  },
+  {
+   "market": "bim",
+   "id": "bim:1457:2",
+   "title": "BİM Aktüel · 04 Aralık Cuma",
+   "group": "Aktüel",
+   "label": "04 Aralık Cuma",
+   "image": "https://cdn1.bim.com.tr/uploads/afisler/76285daf-e95c-47df-911a-1855287b05f3.png",
+   "thumb": "https://cdn1.bim.com.tr/uploads/afisler/k_76285daf-e95c-47df-911a-1855287b05f3.png",
+   "url": "https://www.bim.com.tr/Categories/680/afisler.aspx"
+  },
+  {
+   "market": "bim",
    "id": "bim:1198:0",
    "title": "BİM İndirim · 24 Mart-31 Aralık",
    "group": "İndirim",
@@ -290,6 +320,56 @@
    "label": "21-27 Kasım",
    "image": "https://cdn1.bim.com.tr/uploads/afisler/d9bcaf4f-766e-4615-b359-9cd32c80ebc0.jpg",
    "thumb": "https://cdn1.bim.com.tr/uploads/afisler/k_d9bcaf4f-766e-4615-b359-9cd32c80ebc0.jpg",
+   "url": "https://www.bim.com.tr/Categories/680/afisler.aspx"
+  },
+  {
+   "market": "bim",
+   "id": "bim:1722:0",
+   "title": "BİM İndirim · 27-30 Kasım",
+   "group": "İndirim",
+   "label": "27-30 Kasım",
+   "image": "https://cdn1.bim.com.tr/uploads/afisler/67256f8d-b54a-4ee0-85f9-2dc89787eee6.jpg",
+   "thumb": "https://cdn1.bim.com.tr/uploads/afisler/k_67256f8d-b54a-4ee0-85f9-2dc89787eee6.jpg",
+   "url": "https://www.bim.com.tr/Categories/680/afisler.aspx"
+  },
+  {
+   "market": "bim",
+   "id": "bim:1722:1",
+   "title": "BİM İndirim · 27-30 Kasım",
+   "group": "İndirim",
+   "label": "27-30 Kasım",
+   "image": "https://cdn1.bim.com.tr/uploads/afisler/7df6a3dd-ff45-4c17-a242-26bc4a89e927.jpg",
+   "thumb": "https://cdn1.bim.com.tr/uploads/afisler/k_7df6a3dd-ff45-4c17-a242-26bc4a89e927.jpg",
+   "url": "https://www.bim.com.tr/Categories/680/afisler.aspx"
+  },
+  {
+   "market": "bim",
+   "id": "bim:1722:2",
+   "title": "BİM İndirim · 27-30 Kasım",
+   "group": "İndirim",
+   "label": "27-30 Kasım",
+   "image": "https://cdn1.bim.com.tr/uploads/afisler/8f07eb1e-0020-40b6-9671-208043e570ec.jpg",
+   "thumb": "https://cdn1.bim.com.tr/uploads/afisler/k_8f07eb1e-0020-40b6-9671-208043e570ec.jpg",
+   "url": "https://www.bim.com.tr/Categories/680/afisler.aspx"
+  },
+  {
+   "market": "bim",
+   "id": "bim:1722:3",
+   "title": "BİM İndirim · 27-30 Kasım",
+   "group": "İndirim",
+   "label": "27-30 Kasım",
+   "image": "https://cdn1.bim.com.tr/uploads/afisler/b69377f1-50a3-4e2f-a0dd-eaf2e9f28dc5.jpg",
+   "thumb": "https://cdn1.bim.com.tr/uploads/afisler/k_b69377f1-50a3-4e2f-a0dd-eaf2e9f28dc5.jpg",
+   "url": "https://www.bim.com.tr/Categories/680/afisler.aspx"
+  },
+  {
+   "market": "bim",
+   "id": "bim:1722:4",
+   "title": "BİM İndirim · 27-30 Kasım",
+   "group": "İndirim",
+   "label": "27-30 Kasım",
+   "image": "https://cdn1.bim.com.tr/uploads/afisler/57e5b4f8-9877-40e4-af19-8596749ad9b3.jpg",
+   "thumb": "https://cdn1.bim.com.tr/uploads/afisler/k_57e5b4f8-9877-40e4-af19-8596749ad9b3.jpg",
    "url": "https://www.bim.com.tr/Categories/680/afisler.aspx"
   },
   {

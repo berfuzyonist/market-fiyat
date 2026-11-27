@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-26T12:46:23+00:00",
+ "updated": "2026-11-27T06:44:23+00:00",
  "market": "sok",
  "items": [
   {
@@ -23,19 +23,6 @@
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/57049046-49f8-4d6f-bf69-685eff597bcc.jpg",
    "thumb": "",
    "url": "https://www.sokmarket.com.tr/paraf500-prm-9fa957cf-74ce-468d-9ee6-6e514e932d7a"
-  },
-  {
-   "market": "sok",
-   "id": "sok:8065a065-f187-4530-b828-38446a3a88f1",
-   "title": "50 TL ve üzeri alışverişte 175.00 TL!",
-   "ids": [
-    "sok:839990"
-   ],
-   "group": "Kampanya",
-   "label": "Stoklarla sınırlıdır.",
-   "image": "https://images.ceptesok.com/promotion-assets/sub-folder/9c6ab7f4-bd30-4de5-90b7-dfb4829bbcd3.jpg",
-   "thumb": "",
-   "url": "https://www.sokmarket.com.tr/50-tl-ve-uzeri-alisveriste-175-00-tl-prm-8065a065-f187-4530-b828-38446a3a88f1"
   },
   {
    "market": "sok",
@@ -476,6 +463,19 @@
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/1674e30f-2958-466e-a894-547ef6cf4112.jpg",
    "thumb": "",
    "url": "https://www.sokmarket.com.tr/50-tl-ve-uzeri-alisveriste-179-00-tl-prm-faee7253-3364-4fd9-b5ac-76ee5fc5fc9c"
+  },
+  {
+   "market": "sok",
+   "id": "sok:df680613-3f29-45ab-9e60-2145a21f961a",
+   "title": "1 ALANA 1 BEDAVA",
+   "ids": [
+    "sok:609093"
+   ],
+   "group": "Kampanya",
+   "label": "Stoklarla sınırlıdır.",
+   "image": "https://images.ceptesok.com/promotion-assets/sub-folder/ec22b039-65f1-4cb7-9c04-3b1657c2b0be.jpg",
+   "thumb": "",
+   "url": "https://www.sokmarket.com.tr/1-alana-1-bedava-prm-df680613-3f29-45ab-9e60-2145a21f961a"
   },
   {
    "market": "sok",
