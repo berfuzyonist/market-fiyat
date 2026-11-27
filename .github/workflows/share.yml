@@ -27,7 +27,7 @@ jobs:
           for attempt in 1 2 3 4 5; do
             git fetch --no-tags origin main && git reset --hard origin/main
             node scripts/build_share.mjs
-            git add -A urun afis
+            git add -A urun afis data/slugs.json data/client/slugs-*.json
             git diff --cached --quiet && exit 0
             git commit -qm "paylaşım önizlemeleri"
             git push origin HEAD:refs/heads/main && exit 0

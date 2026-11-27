@@ -23,6 +23,7 @@ main{display:grid;place-items:center;height:100%;text-align:center;padding:24px}
   parts = parts.slice(at);
   var seg = parts.map(function (p) { try { return decodeURIComponent(p); } catch (e) { return p; } });
   var h = "";
+  // (okunur adresin sayfası artık yoksa — ürün kalkmış — uygulama "bulunamadı" der; eski kod adresleri de çalışır)
   if (seg[0] === "urun" && seg.length >= 3) h = "#urun/" + encodeURIComponent(seg[1] + ":" + seg.slice(2).join("/"));
   else if (seg[0] === "urun" && seg[1]) h = "#urun/" + encodeURIComponent(seg[1]);
   else if (seg[0] === "afis" && seg[1]) h = "#afis/" + encodeURIComponent(seg.slice(1).join("/"));
