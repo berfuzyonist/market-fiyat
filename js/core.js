@@ -20,11 +20,27 @@ const toTs=v=>{if(typeof v==="number")return v;const t=Date.parse(v||"");return 
 
 // Market veri dosyasındaki dizi satırlarını nesneye çevirir; geçersiz fiyatlı satırı atar,
 // normal fiyatı güncel fiyattan düşük satırda indirim üretmez.
+// Tamamı büyük harf adlar ("İÇİM %0,5 YAĞLI SÜT 1 L") okunaklı yazılır: "İçim %0,5 Yağlı Süt 1 L".
+// Kısaltmalar (TV, LED, USB, XL…) ve rakamlı sözcükler olduğu gibi kalır; birimler Ml/Kg biçimine döner.
+const KEEPUP=new Set(["TV","LED","USB","XL","XXL","XS","S","M","L","HD","UHD","AH","V","W","BT","DVD","LCD","OLED","QLED","PC","TL","CC","EDT","EDP","SPF","LG","TCL","HP","JBL","ACE"]);
+const UNITW={ML:"Ml",KG:"Kg",GR:"Gr",LT:"Lt",CM:"Cm",MM:"Mm",G:"G"};
+// Türkçe büyük I küçükte ı'dır ("YAĞLI" → "Yağlı"); Türkçe harfi olmayan yabancı sözcükte i ("CLASSIC" → "Classic").
+const FOREIGN=/(IC|IO|IA|IE|EI|AI|OI|ING|TION|SH|TH|W|Q|X)/;
+function pretty(n){const s=String(n||"");
+  // 3+ harfli sözcüklerin hiçbirinde küçük harf yoksa ad büyük harfle yazılmıştır ("20 g" gibi birimler sayılmaz)
+  const ws=s.split(/\s+/).filter(w=>/[A-Za-zÇĞİÖŞÜçğıöşü]{3}/.test(w));
+  if(!ws.length||ws.some(w=>/[a-zçğıöşü]/.test(w))||!/[A-ZÇĞİÖŞÜ]{4}/.test(s))return s;
+  return s.split(/(\s+)/).map(w=>{if(!/[A-ZÇĞİÖŞÜ]/.test(w)||/\d/.test(w))return w;
+    const core=w.replace(/[^A-ZÇĞİÖŞÜ]/g,"");if(UNITW[core])return w.replace(core,UNITW[core]);if(KEEPUP.has(core))return w;
+    const tr=/[ÇĞİÖŞÜ]/.test(core),lo=!tr&&FOREIGN.test(core)?w.replace(/I/g,"i").toLocaleLowerCase("tr"):w.toLocaleLowerCase("tr");
+    const i=lo.search(/[a-zçğıöşü]/);return i<0?lo:lo.slice(0,i)+lo[i].toLocaleUpperCase("tr")+lo.slice(i+1)}).join("")}
 function rowsOf(d){
   if(!d||!Array.isArray(d.products))return[];
   const fields=Array.isArray(d.fields)?d.fields:["id","name","price","regular","in_stock","image","url","cat","promo","seen"];
-  const at=Object.fromEntries(fields.map((f,i)=>[f,i])),upd=toTs(d.updated),out=[];
-  for(const r of d.products){
+  const at=Object.fromEntries(fields.map((f,i)=>[f,i])),upd=toTs(d.updated),out=[],seenKeys=new Set();
+  // tekrar elemede hangisinin kalacağı kaynak sırasından bağımsız olsun: küçük ürün kodu kalır
+  const prods=[...d.products].sort((a,b)=>{const x=Array.isArray(a)?String(a[at.id]):"",y=Array.isArray(b)?String(b[at.id]):"";return x<y?-1:x>y?1:0});
+  for(const r of prods){
     const x=Array.isArray(r)?r:null;if(!x)continue;
     const id=String(x[at.id]||""),m=id.split(":")[0];if(!id||!m)continue;
     const p=(d.prefix||{})[m]||{},cs=(d.cats||{})[m]||[];
@@ -34,7 +50,10 @@ function rowsOf(d){
     const seen=at.seen!=null&&Number.isInteger(x[at.seen])?x[at.seen]:upd;
     const raw=String(x[at.promo]||""),money=raw.includes(MONEY);
     const promo=raw.split(" · ").filter(s=>s&&s!==MONEY).join(" · ");
-    out.push(row({id,market:m,name:String(x[at.name]),price,regular,in_stock:!!x[at.in_stock],
+    // Aynı markette birebir aynı kayıt (ad, fiyat, etiket fiyatı aynı; farklı ürün kodu): bir kez görünür
+    const dk=m+"|"+String(x[at.name]).toLocaleLowerCase("tr").replace(/\s+/g," ").trim()+"|"+price+"|"+regular;
+    if(seenKeys.has(dk))continue;seenKeys.add(dk);
+    out.push(row({id,market:m,name:pretty(x[at.name]),price,regular,in_stock:!!x[at.in_stock],
       image:x[at.image]?(p.image||"")+x[at.image]:"",url:x[at.url]?(p.url||"")+x[at.url]:"",
       cat:typeof x[at.cat]==="number"?cs[x[at.cat]]||"":"",promo,money,seen,
       // isteğe bağlı alanlar (yalnız bazı marketlerde): yapılandırılmış marka, tartılı satış ("kg")
@@ -243,6 +262,6 @@ function histInfo(points,o,now){
     atLow:P.length>1&&cur.price<=lo+0.005&&hi>lo+0.005,events:ev,lastDisc:lastOf("disc"),lastPromo:lastOf("promo"),lastHike:lastOf("hike")};
 }
 
-const api={rowsFromSplit,histInfo,searchWords,searchScore,variants,queryPlan,matchPlan,resolvePlan,fold,toTs,rowsOf,promoOf,bimWhen,enrich,usable,disc,ago,priceUpdateLink,freshness,MONEY,STALE_HOURS};
+const api={pretty,rowsFromSplit,histInfo,searchWords,searchScore,variants,queryPlan,matchPlan,resolvePlan,fold,toTs,rowsOf,promoOf,bimWhen,enrich,usable,disc,ago,priceUpdateLink,freshness,MONEY,STALE_HOURS};
 if(typeof module!=="undefined"&&module.exports)module.exports=api;else root.MFC=api;
 })(typeof window!=="undefined"?window:globalThis);

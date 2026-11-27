@@ -7,8 +7,11 @@ ezilmemelidir. Kural: aynı ürün iki tarafta da varsa son doğrulama zamanı (
 daha yeni olan satır kalır.
 
 Yalnızca yayımlanmış katalogda olan ürünler:
-- tam ve eksiksiz tarama (full/aktuel, complete): taramanın başlangıcından sonra
-  doğrulanmamışsa katalogdan çıkmış sayılır ve düşer;
+- tam ve eksiksiz tarama (full/aktuel, complete): son GRACE (3 gün) içinde hiç
+  doğrulanmamışsa katalogdan çıkmış sayılır ve düşer. Tek bir taramada görünmemesi
+  yetmez: Migros'un kategori sayfaları her gece ürünlerin farklı bir kısmını gösteriyor
+  (27 Kasım gecesi 16.457 ürün okundu, bir gün önce doğrulanmış 2.155 ürün görünmedi).
+  Böyle ürünler son doğrulama zamanıyla kalır; uygulama onları "eski veri" diye gösterir;
 - indirim taraması veya kısmi tam tarama: korunur.
 """
 import importlib.util
@@ -26,7 +29,10 @@ def _collector():
     return module
 
 
-def merge_rows(current, incoming, replace_catalog, started_ts):
+GRACE = 3 * 86400
+
+
+def merge_rows(current, incoming, replace_catalog, started_ts, grace=GRACE):
     """current/incoming: id -> kayıt (seen alanıyla). Döner: (birleşik, sayaçlar)."""
     out, kept_newer, kept_only, dropped = {}, 0, 0, 0
     for pid, row in incoming.items():
@@ -39,7 +45,7 @@ def merge_rows(current, incoming, replace_catalog, started_ts):
     for pid, cur in current.items():
         if pid in incoming:
             continue
-        recent = isinstance(cur.get("seen"), int) and started_ts and cur["seen"] > started_ts
+        recent = isinstance(cur.get("seen"), int) and started_ts and cur["seen"] > started_ts - grace
         if replace_catalog and not recent:
             dropped += 1
             continue

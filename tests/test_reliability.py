@@ -484,8 +484,18 @@ class DataMergeTests(unittest.TestCase):
     def test_complete_catalog_drops_delisted_but_keeps_recent(self):
         cur = {"sok:1": prod("sok:1", seen=100), "sok:2": prod("sok:2", seen=100), "sok:3": prod("sok:3", seen=900)}
         inc = {"sok:1": prod("sok:1", seen=800)}
-        out, st = self.m.merge_rows(cur, inc, True, 500)
+        out, st = self.m.merge_rows(cur, inc, True, 500, grace=0)
         self.assertEqual(sorted(out), ["sok:1", "sok:3"])  # sok:2 kaldırıldı, sok:3 tarama sırasında doğrulandı
+        self.assertEqual(st["dropped"], 1)
+
+    def test_complete_catalog_keeps_recently_verified_missing_rows(self):
+        # Tek gecelik taramada görünmeyen ama son 3 günde doğrulanmış ürün silinmez; 3 günden eskisi düşer
+        day = 86400
+        cur = {"sok:11": prod("sok:11", seen=10 * day), "sok:12": prod("sok:12", seen=8 * day), "sok:13": prod("sok:13", seen=5 * day)}
+        inc = {"sok:11": prod("sok:11", seen=10 * day + 5)}
+        out, st = self.m.merge_rows(cur, inc, True, 10 * day)
+        self.assertEqual(sorted(out), ["sok:11", "sok:12"])
+        self.assertEqual(out["sok:12"]["seen"], 8 * day)      # doğrulama zamanı korunur (eski veri olarak görünür)
         self.assertEqual(st["dropped"], 1)
 
     def test_deals_or_partial_keep_everything(self):
