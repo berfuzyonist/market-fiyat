@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-27T09:49:30+00:00",
+ "updated": "2026-11-27T12:46:48+00:00",
  "market": "sok",
  "items": [
   {
@@ -23,6 +23,20 @@
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/57049046-49f8-4d6f-bf69-685eff597bcc.jpg",
    "thumb": "",
    "url": "https://www.sokmarket.com.tr/paraf500-prm-9fa957cf-74ce-468d-9ee6-6e514e932d7a"
+  },
+  {
+   "market": "sok",
+   "id": "sok:f6010a15-a2b1-4867-b919-4c6891d37c91",
+   "title": "50 TL ve üzeri alışverişte 75.00 TL!",
+   "ids": [
+    "sok:700475",
+    "sok:701389"
+   ],
+   "group": "Kampanya",
+   "label": "Stoklarla sınırlıdır.",
+   "image": "https://images.ceptesok.com/promotion-assets/sub-folder/93cdec50-095f-477b-b606-3d4fcb010796.jpg",
+   "thumb": "",
+   "url": "https://www.sokmarket.com.tr/50-tl-ve-uzeri-alisveriste-75-00-tl-prm-f6010a15-a2b1-4867-b919-4c6891d37c91"
   },
   {
    "market": "sok",
@@ -119,20 +133,6 @@
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/5cb5f133-ef23-414e-aa04-f7814f4e03d4.jpg",
    "thumb": "",
    "url": "https://www.sokmarket.com.tr/50-tl-ve-uzeri-alisveriste-145-00-tl-prm-407e08f2-834c-47d6-8dd1-5ff7525de88d"
-  },
-  {
-   "market": "sok",
-   "id": "sok:f6010a15-a2b1-4867-b919-4c6891d37c91",
-   "title": "50 TL ve üzeri alışverişte 75.00 TL!",
-   "ids": [
-    "sok:700475",
-    "sok:701389"
-   ],
-   "group": "Kampanya",
-   "label": "Stoklarla sınırlıdır.",
-   "image": "https://images.ceptesok.com/promotion-assets/sub-folder/93cdec50-095f-477b-b606-3d4fcb010796.jpg",
-   "thumb": "",
-   "url": "https://www.sokmarket.com.tr/50-tl-ve-uzeri-alisveriste-75-00-tl-prm-f6010a15-a2b1-4867-b919-4c6891d37c91"
   },
   {
    "market": "sok",
