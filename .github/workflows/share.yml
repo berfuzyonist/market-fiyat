@@ -1,0 +1,36 @@
+name: Paylaşım önizlemeleri
+
+# WhatsApp vb. bağlantı önizlemesi için ürün ve afiş sayfaları (scripts/build_share.mjs):
+# veri ya da afiş yayımlandıktan sonra yeniden üretilir; yalnızca değişen dosyalar yazılır.
+on:
+  workflow_run:
+    workflows: ["Afişler", "Şok", "Migros", "BİM", "E-posta afişleri"]
+    types: [completed]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: share-pages
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - name: Üret ve kaydet
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for attempt in 1 2 3 4 5; do
+            git fetch --no-tags origin main && git reset --hard origin/main
+            node scripts/build_share.mjs
+            git add -A urun afis
+            git diff --cached --quiet && exit 0
+            git commit -qm "paylaşım önizlemeleri"
+            git push origin HEAD:refs/heads/main && exit 0
+            sleep $((attempt * 3))
+          done
+          exit 1

@@ -1184,7 +1184,8 @@ let routing=false;
 const BASE=location.origin+location.pathname.replace(/[^/]*$/,"");
 function linkOf(){
   if(view==="search"&&only){const i=only.indexOf(":");return BASE+"urun/"+encodeURIComponent(only.slice(0,i))+"/"+encodeURIComponent(only.slice(i+1))}
-  if(view==="camp"&&CAMP)return BASE+"afis/"+encodeURIComponent(CAMP);
+  // kampanya: ilk afiş sayfasının kimliği (paylaşım önizleme sayfası onun adıyla üretilir: scripts/build_share.mjs)
+  if(view==="camp"&&CAMP){const it=findPoster(CAMP),id=it?((it.src&&it.src[0])||it.id):CAMP;return BASE+"afis/"+String(id).replace(/[^A-Za-z0-9._-]+/g,"-").replace(/^-+|-+$/g,"").slice(0,120)}
   if(view==="search"){const q=$("q").value.trim();if(q)return BASE+"ara/"+encodeURIComponent(q)}
   return location.href}
 async function shareNow(){const url=linkOf();let title="marketfiyat",text="";
