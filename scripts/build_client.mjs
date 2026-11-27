@@ -17,12 +17,16 @@ const load = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } catch 
 const dump = (o) => JSON.stringify(o, null, 0);
 const write = (p, s) => { if (existsSync(p) && readFileSync(p, "utf8") === s) return false; writeFileSync(p + ".tmp", s); renameSync(p + ".tmp", p); return true; };
 
-const index = { built: new Date().toISOString(), markets: {} }, allRows = [], SRC = [];
+const index = { built: new Date().toISOString(), markets: {}, paused: [] }, allRows = [], SRC = [];
+// Şikâyet/kaldırma talebiyle durdurulan marketler (config.json paused_markets) istemciye hiç gitmez
+const PAUSED = (load("config.json") || {}).paused_markets || [];
 for (const m of MARKETS) {
+  if (PAUSED.includes(m)) continue;
   const d = load(`data/${m}.json`);
   if (!d || !Array.isArray(d.products) || !d.products.length) continue;
   SRC.push([m, d]); allRows.push(...C.rowsOf(d));
 }
+index.paused = PAUSED;
 // Eşleştirme: uygulamanın kendi match.js'iyle (bölüm hesabı için tek ürünlü gruplar da gerekir)
 const allGroups = MF.group(allRows);
 // Bölüm (reyon): her ürüne bir kez yazılır. Önce marketin kategorisi + ad düzeltmesi (MF.deptOf);

@@ -1104,7 +1104,16 @@ def category_quality(products):
     }
 
 
+def paused(market):
+    """config.json paused_markets: şikâyet/kaldırma talebi gelen market. Hiç istek yapılmaz."""
+    return market in (CFG.get("paused_markets") or [])
+
+
 def main():
+    target = sys.argv[2] if sys.argv[1] == "posters" else sys.argv[1]
+    if paused(target):
+        print(f"{target}: config.json paused_markets içinde; veri toplanmadı.")
+        return 0
     if sys.argv[1] == "posters":
         return posters_main(sys.argv[2])
     market, mode = sys.argv[1], sys.argv[2]

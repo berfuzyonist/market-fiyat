@@ -133,7 +133,9 @@ def check(result_path):
     result.update(market=market, id=pid, name=name)
     c = collector()
     current = c.read_old(market).get(pid)
-    if not current:
+    if c.paused(market):
+        result.update(stage="request", message="Bu marketten veri toplama durduruldu; kontrol edilmedi.")
+    elif not current:
         result.update(stage="request", message="Ürün bu marketin güncel kataloğunda yok; kontrol edilmedi.")
     elif not same_name(current.get("name"), name):
         result.update(stage="request", message="Talepteki ürün adı katalogdaki kayıtla eşleşmedi; kontrol edilmedi.")
