@@ -123,7 +123,7 @@ def watch_alerts(watch, products, sent):
     lines = []
     for pid, w in watch.items():
         p = products.get(pid)
-        if not p or not p.get("in_stock") or not (p.get("price") or 0) > 0:
+        if not p or not (p.get("price") or 0) > 0:  # stok önemsenmez (online stok ≠ şube)
             continue
         price, promo, d = p["price"], p.get("promo") or "", disc(p)
         prev = sent.get(pid)
@@ -216,7 +216,7 @@ def new_promos(products, state):
     out = []
     for p in products.values():
         pr = (p.get("promo") or "").strip()
-        if pr and p.get("in_stock") and MULTI.search(pr) and f"{p['id']}|{pr}" not in seen:
+        if pr and MULTI.search(pr) and f"{p['id']}|{pr}" not in seen:
             out.append((p, pr))
     return out
 
@@ -237,7 +237,7 @@ def promo_message(items, watch):
 
 def deal_digest(products, state, now):
     seen = state.get("deals") or {}
-    cand = [p for p in products.values() if p.get("in_stock") and disc(p) >= DEAL_MIN and p["id"] not in seen]
+    cand = [p for p in products.values() if disc(p) >= DEAL_MIN and p["id"] not in seen]
     cand.sort(key=lambda p: (-disc(p), p.get("price") or 0))
     return cand
 

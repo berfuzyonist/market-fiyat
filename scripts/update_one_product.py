@@ -271,7 +271,6 @@ def apply(result_path, comment_path):
             lines = ["**Ürün eklendi.**", ""] + head + [
                 f"- Fiyat: {tl(fresh['price'])}{disc}",
                 f"- Kampanya: {md(item.get('promo') or '—')}",
-                f"- Stok durumu (Migros online): {'Stokta' if fresh['in_stock'] else 'Stokta yok'}",
                 f"- Kontrol zamanı (TR): {when_tr}",
                 f"- Kaynak: {fresh.get('source') or '—'} (tek ürün isteği, katalog taranmadı)"]
     elif not result.get("ok"):
@@ -318,13 +317,12 @@ def apply(result_path, comment_path):
         verdict = ("Fiyat değişmedi." if not changed_price else
                    f"Fiyat {'arttı' if diff > 0 else 'düştü'}: {tl(abs(diff))} ({pct_txt})")
         discount = f" (normal fiyat {tl(regular)}, %{round((1 - price / regular) * 100)} indirim)" if regular > price else ""
-        title = "Fiyat güncellendi" if changed_price else "Stok durumu güncellendi" if changed else "Fiyat değişmedi"
+        title = "Fiyat güncellendi" if changed_price else "Fiyat değişmedi"
         lines = [f"**{title}.**", ""] + head + [
             f"- Önceki fiyat: {tl(old_price)}",
             f"- Yeni fiyat: {tl(price)}{discount}",
             f"- Fiyat değişimi: {tl(diff) if changed_price else '0,00 TL'}",
             f"- Değişim yüzdesi: {pct_txt if changed_price else '%0'}",
-            f"- Stok durumu: {'Stokta' if in_stock else 'Stokta yok'}" + (" (BİM stok bilgisi yayımlamaz)" if market == "bim" else ""),
             f"- Kontrol zamanı (TR): {when_tr}",
             f"- İşlem sonucu: {verdict}",
             f"- Kaynak: {fresh.get('source') or '—'} (tek ürün isteği, katalog taranmadı)"]

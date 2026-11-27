@@ -143,8 +143,8 @@ class CheckApplyTests(unittest.TestCase):
     def test_out_of_stock_only(self):
         self.fresh = {"name": "Crown Cola Pet 250 ml", "price": 14.0, "regular": 14.0, "in_stock": False}
         text, data, checks = self.run_flow()
-        self.assertIn("Stok durumu güncellendi", text)
-        self.assertFalse(data["sok:10"]["in_stock"])
+        self.assertIn("Fiyat değişmedi", text)          # stok bilgisi kullanıcıya gösterilmez
+        self.assertFalse(data["sok:10"]["in_stock"])      # ama veride kalır
 
     def test_not_found_keeps_old_price(self):
         self.fresh = self.c.NotFound("sok:10")

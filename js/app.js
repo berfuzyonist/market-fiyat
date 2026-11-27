@@ -138,7 +138,6 @@ const dayTxt=d=>d?d.toLocaleDateString("tr-TR",{day:"numeric",month:"long"}):"";
 function stateChip(o){
   if(o.na==="soon")return chip(`Yakında · ${dayTxt(o.when.start)}`,"bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-300");
   if(o.na==="ended")return chip(o.when&&o.when.end?`Süresi doldu · ${dayTxt(o.when.end)}`:"Satış dönemi geçti","bg-stone-200 text-stone-600");
-  if(!o.in_stock)return chip("Tükendi","bg-stone-200 text-stone-600");
   return"";
 }
 const moneyChip=o=>o.money&&disc(o)?chip("Money kartla","bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300"):"";
@@ -458,7 +457,7 @@ function drawH(){
 // Öne çıkanlar: büyük cam kartlar; kaydırınca kartlar 3B dönerek öne gelir (kapak akışı)
 function drawPulse(){
   const el=$("hPulse");if(!el||!O.length)return;
-  const st=O.filter(o=>usable(o)&&o.in_stock&&!o.na),dd=st.filter(o=>disc(o)>=0.05);
+  const st=O.filter(o=>usable(o)),dd=st.filter(o=>disc(o)>=0.05);
   if(!dd.length){el.innerHTML="";return}
   const avg=dd.reduce((a,o)=>a+disc(o),0)/dd.length,seen=new Set();
   // Her marketten sırayla: indirim oranı × fiyatın büyüklüğü (log) en yüksek olanlar; aynı ürün bir kez
@@ -531,14 +530,14 @@ function attemptRow(mode,a){
 function drawV(){
   const el=$("status");
   if(!Object.keys(CHECK).length){el.innerHTML=`<h1 class="page-title">Veri durumu</h1><div class="skel h-40 rounded-2xl mt-4"></div>`;return}
-  const cards=DATA_M.map(m=>{const s=CHECK[m]||{},h=health(m),rows=O.filter(o=>o.market===m),st=rows.filter(o=>o.in_stock&&!o.na),
+  const cards=DATA_M.map(m=>{const s=CHECK[m]||{},h=health(m),rows=O.filter(o=>o.market===m),st=rows.filter(o=>!o.na),
       stale=rows.filter(o=>o.stale).length,dq=s.data_quality||{},bad=Object.values(dq).reduce((a,b)=>a+(+b||0),0),
       modes=Object.entries(s.last_attempt_by_mode||{}).sort(([a],[b])=>(a==="full")-(b==="full")),warn=[...(s.quality_warnings||[]),...(s.errors||[])],
       tr=Object.values(s.traffic||{})[0];
     return`<section class="pc !p-4 lg:!p-5"><div class="flex items-center gap-2 flex-wrap">${badge(m,1)}<span class="font-display font-extrabold text-lg">${M[m].n}</span><span class="ml-auto">${chip(h.l,h.c)}</span></div>
       <dl class="grid grid-cols-2 gap-x-4 gap-y-2 mt-3 text-sm">
         <div><dt class="text-xs text-stone-600 dark:text-stone-300">Son başarılı veri</dt><dd class="font-bold tabular">${when(s.last_successful_data_at||UPD[m])}</dd></div>
-        <div><dt class="text-xs text-stone-600 dark:text-stone-300">Sitede gösterilen</dt><dd class="font-bold tabular">${num(rows.length)} ürün · ${num(st.length)} stokta</dd></div>
+        <div><dt class="text-xs text-stone-600 dark:text-stone-300">Sitede gösterilen</dt><dd class="font-bold tabular">${num(rows.length)} ürün · ${num(st.length)} satışta</dd></div>
         <div><dt class="text-xs text-stone-600 dark:text-stone-300">${MFC.STALE_HOURS} saatten eski fiyat</dt><dd class="font-bold tabular">${rows.length?"%"+Math.round(stale/rows.length*100):"-"} <span class="font-normal text-xs">(${num(stale)})</span></dd></div>
         <div><dt class="text-xs text-stone-600 dark:text-stone-300">Hatalı kayıt (ayıklandı)</dt><dd class="font-bold tabular">${num(bad)}</dd></div>
         <div><dt class="text-xs text-stone-600 dark:text-stone-300">Afişler son değişti</dt><dd class="font-bold tabular">${PUPD[m]?when(PUPD[m]):"-"}</dd></div>
@@ -729,7 +728,7 @@ function productPage(g){
         <p class="font-display font-extrabold text-4xl tabular mt-1">${tl(b.price)}</p>
         ${sv>0.005?`<p class="text-sm font-bold mt-1">Diğer marketlere göre ${tl(sv)}'ye kadar ucuz</p>`:""}
         ${b._promo&&b._promo.kind!=="bim"?`<p class="text-sm mt-1 text-emerald-50">${promoLine(b)}</p>`:""}
-        <span class="absolute -right-6 -bottom-10 w-32 h-32 rounded-full bg-white/10"></span></div>`:`<div class="mt-4 rounded-[20px] p-4 bg-stone-200 dark:bg-stone-800 font-bold">${g.offers.some(o=>o.na==="soon")?"Henüz satışta değil":"Şu an stokta yok"}</div>`}
+        <span class="absolute -right-6 -bottom-10 w-32 h-32 rounded-full bg-white/10"></span></div>`:`<div class="mt-4 rounded-[20px] p-4 bg-stone-200 dark:bg-stone-800 font-bold">${g.offers.some(o=>o.na==="soon")?"Henüz satışta değil":"Kampanyası bitti"}</div>`}
       <h2 class="mt-5 mb-2 font-extrabold">Marketlerdeki fiyatlar</h2>
       <div class="space-y-2">${offers.map((o,i)=>{const w=o===b&&av.length>1,d=disc(o)>0,ok=usable(o);
         return`<div class="${card} p-3 border-l-[6px] ${w?"ring-2 ring-emerald-500":""} enter" style="border-left-color:${M[o.market].bar};animation-delay:${i*60}ms">
@@ -847,7 +846,7 @@ function alternatives(g,limit=3){
   const b=best(g),p=b&&b._p,u=b&&MF.unitPrice(b),out=[];
   if(p&&u&&p.qty&&p.toks.length>=3){
     const need=p.toks.slice(1,3),own=u.v;
-    for(const o of O){if(!usable(o)||!o.in_stock||GI[o.id]===g)continue;const q=o._p;if(!q||!q.qty||q.qty.u!==p.qty.u)continue;
+    for(const o of O){if(!usable(o)||GI[o.id]===g)continue;const q=o._p;if(!q||!q.qty||q.qty.u!==p.qty.u)continue;
       const r=q.qty.n/p.qty.n;if(r<0.8||r>1.25||!need.every(t=>q.toks.includes(t)))continue;
       const v=MF.unitPrice(o);if(!v||v.v>own*0.95)continue;
       const og=GI[o.id];if(!og||best(og)!==o)continue;out.push({o,g:og,save:1-v.v/own})}
@@ -862,7 +861,7 @@ function alternatives(g,limit=3){
 let SIX=null;
 function similarCard(g){
   const b=best(g)||g.offers[0],u=b&&MF.unitPrice(b);if(!u)return"";
-  if(!SIX)SIX=MF.typeIndex(O.filter(o=>usable(o)&&o.in_stock&&!o.na));
+  if(!SIX)SIX=MF.typeIndex(O.filter(o=>usable(o)));
   const have=new Set(avail(g).map(o=>o.market)),res=MF.similarIn(SIX,b,{grp:grpOf}).filter(x=>!have.has(x.o.market)&&x.score>=0.15);
   const per={};for(const x of res){const og=GI[x.o.id];if(!og||og===g)continue;(per[x.o.market]=per[x.o.market]||[]);if(per[x.o.market].length<2)per[x.o.market].push({...x,g:og})}
   const ms=DATA_M.filter(m=>per[m]);if(!ms.length)return"";
@@ -873,7 +872,7 @@ function similarCard(g){
 function sameSizeCard(g){
   const b=best(g)||g.offers[0],u=b&&MF.unitPrice(b);
   const seen=new Set(),rows=[];
-  if(u)for(const h of MF.sameSize(b,O.filter(o=>usable(o)&&o.in_stock))){const og=GI[h.o.id];if(!og||og===g||seen.has(og.key))continue;
+  if(u)for(const h of MF.sameSize(b,O.filter(o=>usable(o)))){const og=GI[h.o.id];if(!og||og===g||seen.has(og.key))continue;
     if(best(og)!==h.o)continue;seen.add(og.key);rows.push({o:h.o,g:og,u:h.u})}
   if(!rows.length){const alts=alternatives(g,3);if(!alts.length)return"";
     return`<div class="${card} p-4 mt-4 enter"><h2 class="font-extrabold flex items-center gap-2"><i data-lucide="arrow-down-wide-narrow" class="w-5 h-5 text-sky-600"></i>Daha ucuz muadiller</h2><p class="text-xs text-stone-500 mt-0.5">Aynı tür, benzer boy; birim fiyatı daha düşük.</p>
