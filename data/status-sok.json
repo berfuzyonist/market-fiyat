@@ -1,22 +1,22 @@
 {
- "updated": "2026-11-27T06:36:40+00:00",
- "started_at": "2026-11-27T06:34:29+00:00",
- "finished_at": "2026-11-27T06:36:40+00:00",
- "checked_at": "2026-11-27T06:36:40+00:00",
- "data_updated": "2026-11-27T06:36:40+00:00",
- "last_successful_data_at": "2026-11-27T06:36:40+00:00",
+ "updated": "2026-11-27T08:04:00+00:00",
+ "started_at": "2026-11-27T08:01:36+00:00",
+ "finished_at": "2026-11-27T08:04:00+00:00",
+ "checked_at": "2026-11-27T08:04:00+00:00",
+ "data_updated": "2026-11-27T08:04:00+00:00",
+ "last_successful_data_at": "2026-11-27T08:04:00+00:00",
  "market": "sok",
  "mode": "deals",
  "status": "tamam",
  "complete": true,
  "partial": false,
- "found": 535,
+ "found": 534,
  "total": 2996,
- "seconds": 132,
+ "seconds": 144,
  "notes": [
-  "kampanyalar: 90 ürün",
+  "kampanyalar: 92 ürün",
   "indirimli-urunler-cms-pl1: sitede 543, okunan 543, 28/28 sayfa (son sayfa)",
-  "535 indirimli ürün güncellendi"
+  "534 indirimli ürün güncellendi"
  ],
  "quality": {
   "category_count": 21,
@@ -58,8 +58,8 @@
   }
  },
  "errors": [],
- "run_id": "45952716409",
- "collected_products": 535,
+ "run_id": "45962518845",
+ "collected_products": 534,
  "total_products": 2996,
  "discounted_products": 544,
  "invalid_products": 0,
@@ -72,21 +72,21 @@
   "suspicious_discount": 0,
   "bad_url": 0
  },
- "duration_seconds": 132,
+ "duration_seconds": 144,
  "last_attempt_by_mode": {
   "deals": {
-   "checked_at": "2026-11-27T06:36:40+00:00",
+   "checked_at": "2026-11-27T08:04:00+00:00",
    "status": "tamam",
    "complete": true,
-   "found": 535,
+   "found": 534,
    "total": 2996,
-   "seconds": 132,
-   "data_updated": "2026-11-27T06:36:40+00:00",
+   "seconds": 144,
+   "data_updated": "2026-11-27T08:04:00+00:00",
    "errors": [],
    "notes": [
-    "kampanyalar: 90 ürün",
+    "kampanyalar: 92 ürün",
     "indirimli-urunler-cms-pl1: sitede 543, okunan 543, 28/28 sayfa (son sayfa)",
-    "535 indirimli ürün güncellendi"
+    "534 indirimli ürün güncellendi"
    ],
    "quality_warnings": [],
    "quality": {
