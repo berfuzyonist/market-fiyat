@@ -1,24 +1,22 @@
 {
- "updated": "2026-11-27T12:52:57+00:00",
- "started_at": "2026-11-27T12:13:19+00:00",
- "finished_at": "2026-11-27T12:52:57+00:00",
- "checked_at": "2026-11-27T12:52:57+00:00",
- "data_updated": "2026-11-27T12:52:57+00:00",
- "last_successful_data_at": "2026-11-27T12:52:57+00:00",
+ "updated": "2026-11-27T13:59:13+00:00",
+ "started_at": "2026-11-27T13:54:10+00:00",
+ "finished_at": "2026-11-27T13:59:13+00:00",
+ "checked_at": "2026-11-27T13:59:13+00:00",
+ "data_updated": "2026-11-27T13:59:13+00:00",
+ "last_successful_data_at": "2026-11-27T13:59:13+00:00",
  "market": "migros",
- "mode": "full",
- "status": "durduruldu: 2 kategori sayfası boş döndü (kisisel-bakim-kozmetik-saglik-c-8 s.26, kitap-kirtasiye-oyuncak-c-118ec s.79); okunan ürünler kısmi olarak yayımlanır",
- "complete": false,
- "partial": true,
- "found": 16631,
+ "mode": "deals",
+ "status": "tamam",
+ "complete": true,
+ "partial": false,
+ "found": 2642,
  "total": 19434,
- "seconds": 2379,
+ "seconds": 303,
  "notes": [
-  "kisisel-bakim-kozmetik-saglik-c-8: sayfa 26 boş döndü, atlanıp devam edildi",
-  "kitap-kirtasiye-oyuncak-c-118ec: sayfa 79 boş döndü, kategorinin kalanı atlandı",
-  "kategori ağacından 25 üst kategori okundu; 19 üst kategori tarandı",
-  "yeni sonuç eksik (16631 ürün), eski veri (19224 ürün) korundu",
-  "kısmi yayım: 16631 ürünün fiyatı güncellendi, kalan 2803 ürün önceki doğrulamasıyla korundu"
+  "money-indirimli-market-urunleri-dt-5: 84/84 sayfa",
+  "coklu-indirim-kampanyalari-ve-hediyeli-urunler-dt-1: 6/6 sayfa",
+  "2642 indirimli ürün güncellendi"
  ],
  "quality": {
   "category_count": 19,
@@ -48,20 +46,18 @@
    "Kitap, Kırtasiye, Oyuncak": 2318
   }
  },
- "quality_warnings": [
-  "Tarama başarılı değil: durduruldu: 2 kategori sayfası boş döndü (kisisel-bakim-kozmetik-saglik-c-8 s.26, kitap-kirtasiye-oyuncak-c-118ec s.79); okunan ürünler kısmi olarak yayımlanır"
- ],
+ "quality_warnings": [],
  "traffic": {
   "www.migros.com.tr": {
-   "requests": 667,
+   "requests": 90,
    "retries": 0,
-   "megabytes": 8.1,
+   "megabytes": 1.6,
    "errors": 0
   }
  },
  "errors": [],
- "run_id": "45996807701",
- "collected_products": 16631,
+ "run_id": "46011090057",
+ "collected_products": 2642,
  "total_products": 19434,
  "discounted_products": 2577,
  "invalid_products": 0,
@@ -74,21 +70,21 @@
   "suspicious_discount": 0,
   "bad_url": 0
  },
- "duration_seconds": 2379,
+ "duration_seconds": 303,
  "last_attempt_by_mode": {
   "deals": {
-   "checked_at": "2026-11-27T12:38:34+00:00",
+   "checked_at": "2026-11-27T13:59:13+00:00",
    "status": "tamam",
    "complete": true,
-   "found": 2654,
-   "total": 19224,
+   "found": 2642,
+   "total": 19434,
    "seconds": 303,
-   "data_updated": "2026-11-27T12:38:34+00:00",
+   "data_updated": "2026-11-27T13:59:13+00:00",
    "errors": [],
    "notes": [
     "money-indirimli-market-urunleri-dt-5: 84/84 sayfa",
     "coklu-indirim-kampanyalari-ve-hediyeli-urunler-dt-1: 6/6 sayfa",
-    "2654 indirimli ürün güncellendi"
+    "2642 indirimli ürün güncellendi"
    ],
    "quality_warnings": [],
    "quality": {
@@ -98,25 +94,25 @@
     "other_count": 0,
     "other_ratio": 0.0,
     "category_counts": {
-     "Temel Gıda": 1599,
-     "Süt, Kahvaltılık": 1491,
-     "Atıştırmalık": 1957,
-     "İçecek": 1318,
-     "Fırın, Pastane": 326,
-     "Kişisel Bakım, Kozmetik, Sağlık": 2753,
-     "Et, Tavuk, Balık": 601,
-     "Hazır Yemek, Meze": 287,
-     "Bebek": 342,
+     "Temel Gıda": 1602,
+     "Süt, Kahvaltılık": 1503,
+     "Atıştırmalık": 1991,
+     "İçecek": 1327,
+     "Fırın, Pastane": 329,
+     "Kişisel Bakım, Kozmetik, Sağlık": 2774,
+     "Et, Tavuk, Balık": 607,
+     "Hazır Yemek, Meze": 293,
+     "Bebek": 348,
      "Dondurma": 208,
      "Dondurulmuş Gıda": 213,
-     "Evcil Hayvan": 247,
-     "Meyve, Sebze": 230,
+     "Evcil Hayvan": 260,
+     "Meyve, Sebze": 233,
      "Çiçek": 53,
-     "Ev, Yaşam": 3587,
-     "Deterjan, Temizlik": 1078,
+     "Ev, Yaşam": 3659,
+     "Deterjan, Temizlik": 1085,
      "Kağıt, Islak Mendil": 144,
-     "Elektronik": 483,
-     "Kitap, Kırtasiye, Oyuncak": 2307
+     "Elektronik": 487,
+     "Kitap, Kırtasiye, Oyuncak": 2318
     }
    },
    "traffic": {
