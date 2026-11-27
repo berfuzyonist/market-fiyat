@@ -1215,6 +1215,11 @@ function go(v,keep){
   const el=$(v);el.classList.remove("enter");void el.offsetWidth;el.classList.add("enter");
   redraw();if(!keep)scrollTo(0,0);sync()}
 const QS=[$("q"),$("qd")];const setQ=v=>QS.forEach(i=>i.value=v);
+// Panoya kopyala: önce eşzamanlı yöntem (tıklama anında, yeni sekme açılmadan), olmazsa Clipboard API
+function copyNow(text){let ok=false;
+  try{const ta=document.createElement("textarea");ta.value=text;ta.setAttribute("readonly","");ta.style.cssText="position:fixed;top:0;left:0;opacity:0";
+    document.body.appendChild(ta);ta.select();ta.setSelectionRange(0,text.length);ok=document.execCommand("copy");ta.remove()}catch(e){}
+  if(!ok&&navigator.clipboard)navigator.clipboard.writeText(text).catch(()=>{});return ok}
 let noteT;function note(m){$("note").textContent=m;$("note").classList.remove("hidden");clearTimeout(noteT);noteT=setTimeout(()=>$("note").classList.add("hidden"),7000)}
 function show(key){only=key;setQ("");go("search")}
 
@@ -1338,6 +1343,9 @@ document.addEventListener("click",e=>{const t=s=>e.target.closest(s);let el;
     if(el.dataset.open){FRESH.add(id);show(el.dataset.open)}else{FRESH.has(id)?FRESH.delete(id):FRESH.add(id);redraw()}}
   else if(el=t("a[data-req]")){reqs[el.dataset.req]=Math.floor(Date.now()/1000);save("req",reqs);
     note("GitHub talep sayfası açıldı. Orada “Create” düğmesine basın: GitHub Actions yalnızca bu ürünü marketin sitesinden kontrol eder ve sonucu talebe yazar (genellikle 1-2 dakika). Sonra bu sayfayı yenileyin.")}
+  // Dış bağlantıda ürün adını panoya kopyala (bağlantı yine açılır). Genel "a" dalından önce olmalı;
+  // yeni sekme açılınca sayfa odağı kaybettiği için kopyalama tıklama anında, eşzamanlı yapılır.
+  else if(el=t("[data-copyname]")){copyNow(el.dataset.copyname);note(`“${el.dataset.copyname}” panoya kopyalandı; açılan sitede arama kutusuna yapıştır.`)}
   else if(t("a")){}
   else if(el=t("[data-page]")){({C,K,B})[el.dataset.pg].page=+el.dataset.page;redraw();scrollTo(0,0)}
   else if(el=t("[data-show]"))show(el.dataset.show);
@@ -1351,7 +1359,6 @@ document.addEventListener("click",e=>{const t=s=>e.target.closest(s);let el;
   else if(t("[data-scan]"))scan();
   else if(t("[data-focusq]")){const q=$("q");if(q){q.focus();q.scrollIntoView({block:"center"})}}
   else if(el=t("[data-theme]")){MFTheme.set(el.dataset.theme);redraw()}
-  else if(el=t("[data-copyname]")){try{navigator.clipboard.writeText(el.dataset.copyname)}catch(e){}}
   else if(el=t("[data-buddel]")){BUD.spends=BUD.spends.filter(x=>x.t!==+el.dataset.buddel);save("budget",BUD);redraw()}
   else if(el=t("[data-view]")){if(el.dataset.view==="search"){only=null}go(el.dataset.view);if(el.dataset.focus)(innerWidth>=768?$("qd"):$("q")).focus()}});
 let qT;QS.forEach(inp=>{
