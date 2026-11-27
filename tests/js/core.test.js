@@ -221,3 +221,37 @@ test("benzer ürünler: aynı tür ve yakın boy, başka market; farklı çeşit
   const s=MF.similarIn(ix,rows[4]).map(x=>x.o.id);
   assert.deepEqual(s,["migros:4","migros:3"]);            // laktozsuz çeşit geride
 });
+
+test("bölüm: ad yanlış rafı düzeltir; yumurta aramasında sürpriz/oyuncak yumurta boy karşılaştırmasına girmez", () => {
+  const MF=require("../../js/match.js");
+  assert.equal(MF.deptOf("Kinder Surprise Yumurta 20 g","Kahvaltılık"),"atistirmalik");     // BİM rafı yanlış
+  assert.equal(MF.deptOf("Anadolu Çiftliği M Yumurta 30'lu (53-63 g)","Et & Tavuk & Şarküteri"),"sut"); // Şok rafı
+  assert.equal(MF.deptOf("Sonic Joy Süpriz Yumurta 17.5 g","Atıştırmalık"),"atistirmalik");
+  assert.equal(MF.deptOf("Lisanslı Klasik Jumbo Sürpriz Yumurta","Kitap, Kırtasiye, Oyuncak"),"ev"); // oyuncak rafı kalır
+  assert.equal(MF.deptOf("Filiz Yumurtalı Erişte 350 G","Temel Gıda"),"temel");
+  assert.equal(MF.deptOf("Knorr Kremalı Tavuk Çorbası 65 G","Hazır Yemek, Meze"),"temel");
+  // niyet: gıda baskın değilse bile gıda yeterliyse evcil düşer; tek bölüm yarıyı geçerse yalnız o
+  assert.deepEqual([...MF.intentDepts(["evcil","evcil","evcil","et","et","temel"])],["et"]);
+  assert.deepEqual([...MF.intentDepts(["evcil","evcil","evcil","et","temel","donuk"])].sort(),["donuk","et","temel"]);
+  assert.deepEqual([...MF.intentDepts(["sut","sut","sut","atistirmalik","ev"])],["sut"]);
+  assert.equal(MF.intentDepts(["temizlik","bakim","ev"]),null);
+  const mk=(id,name,price,cat)=>({id,market:id.split(":")[0],name,price,regular:price,in_stock:1,cat});
+  const rows=[mk("migros:1","Keskinoğlu M Orta Boy Yumurta 10'lu (53-62 G)",90,"Süt, Kahvaltılık"),
+    mk("sok:1","Anadolu Çiftliği L Yumurta 15'li (63-72 g)",140,"Et & Tavuk & Şarküteri"),
+    mk("migros:2","Güres M Orta Boy Yumurta 30'lu (53-63 G)",260,"Süt, Kahvaltılık"),
+    mk("migros:3","Hello Kitty Kalp Yumurta 2 x 5 G",94.95,"Atıştırmalık"),
+    mk("sok:2","Sonic Joy Süpriz Yumurta 17.5 g",29.95,"Atıştırmalık"),
+    mk("sok:3","Kinder Joy Sürpriz Yumurta 3'lü 60 g",120,"Atıştırmalık")];
+  MF.group(rows);
+  const r=MF.unitCompare(rows,"yumurta"),ids=r.sizes.flatMap(s=>s.items.map(h=>h.o.id)).sort();
+  assert.deepEqual(ids,["migros:1","migros:2","sok:1"]);
+});
+
+test("birim karşılaştırma: tadı/türevi olan ürün o ürün sayılmaz", () => {
+  const MF=require("../../js/match.js");
+  const mk=(id,name,price,cat)=>({id,market:id.split(":")[0],name,price,regular:price,in_stock:1,cat});
+  const rows=[mk("sok:1","Dudomi Tavuk Çeşnili Noodle 70 g",15,"Yemeklik Malzemeler"),mk("sok:2","Knorr Kremalı Tavuk Çorbası 65 g",20,"Yemeklik Malzemeler"),
+    mk("migros:1","Banvit Bütün Tavuk 1500 G",180,"Et, Tavuk, Balık"),mk("migros:2","Şenpiliç Tavuk Baget 1000 G",150,"Et, Tavuk, Balık")];
+  MF.group(rows);
+  assert.deepEqual(MF.unitCompare(rows,"tavuk").sizes.flatMap(s=>s.items.map(h=>h.o.id)).sort(),["migros:1","migros:2"]);
+});

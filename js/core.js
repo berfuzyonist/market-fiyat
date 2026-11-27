@@ -38,7 +38,9 @@ function rowsOf(d){
       image:x[at.image]?(p.image||"")+x[at.image]:"",url:x[at.url]?(p.url||"")+x[at.url]:"",
       cat:typeof x[at.cat]==="number"?cs[x[at.cat]]||"":"",promo,money,seen,
       // isteğe bağlı alanlar (yalnız bazı marketlerde): yapılandırılmış marka, tartılı satış ("kg")
-      brand:at.brand!=null&&x[at.brand]?String(x[at.brand]):"",sold:at.sold!=null&&x[at.sold]==="kg"?"kg":""}));
+      brand:at.brand!=null&&x[at.brand]?String(x[at.brand]):"",sold:at.sold!=null&&x[at.sold]==="kg"?"kg":"",
+      // yayımda yazılan bölüm (reyon) anahtarı; eski veride yok → istemci addan/kategoriden hesaplar
+      dep:at.dep!=null&&typeof x[at.dep]==="number"?(d.deps||[])[x[at.dep]]||"":""}));
   }
   return out;
 }
@@ -54,7 +56,7 @@ function rowsFromSplit(cat,pr){
     // fiyat dosyası: [fiyat, etiket fiyatı (0 = fiyatla aynı), stok, kampanya, doğrulama - base (sn)]
     // katalogda ek alanlar (marka, satış birimi) varsa sona eklenir
     return[c[0],c[1],q[0],q[1]||q[0],q[2],c[2],c[3],c[4],q[3],q[4]==null?null:base+q[4],...c.slice(5)]});
-  return rowsOf({updated:pr.updated,prefix:cat.prefix,cats:cat.cats,
+  return rowsOf({updated:pr.updated,prefix:cat.prefix,cats:cat.cats,deps:cat.deps,
     fields:["id","name","price","regular","in_stock","image","url","cat","promo","seen",...(cat.fields||[]).slice(5)],products:rows});
 }
 

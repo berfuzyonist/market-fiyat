@@ -17,16 +17,33 @@ const load = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } catch 
 const dump = (o) => JSON.stringify(o, null, 0);
 const write = (p, s) => { if (existsSync(p) && readFileSync(p, "utf8") === s) return false; writeFileSync(p + ".tmp", s); renameSync(p + ".tmp", p); return true; };
 
-const index = { built: new Date().toISOString(), markets: {} }, allRows = [];
+const index = { built: new Date().toISOString(), markets: {} }, allRows = [], SRC = [];
 for (const m of MARKETS) {
   const d = load(`data/${m}.json`);
   if (!d || !Array.isArray(d.products) || !d.products.length) continue;
+  SRC.push([m, d]); allRows.push(...C.rowsOf(d));
+}
+// Eşleştirme: uygulamanın kendi match.js'iyle (bölüm hesabı için tek ürünlü gruplar da gerekir)
+const allGroups = MF.group(allRows);
+// Bölüm (reyon): her ürüne bir kez yazılır. Önce marketin kategorisi + ad düzeltmesi (MF.deptOf);
+// sonra aynı ürünün marketlerdeki teklifleri çoğunluk bölümüne çekilir (Şok yumurtayı Et'e koysa da
+// Migros'taki eşi Süt & Kahvaltı'daysa ikisi de orada görünür).
+const DEP = new Map(allRows.map((o) => [o.id, MF.deptOf(o.name, o.cat)]));
+for (const g of allGroups) {
+  if (g.offers.length < 2) continue;
+  const n = {}; for (const o of g.offers) { const d = DEP.get(o.id); if (d) n[d] = (n[d] || 0) + 1; }
+  const top = Object.keys(n).sort((a, b) => n[b] - n[a]);
+  if (top.length > 1 && n[top[0]] > n[top[1]]) for (const o of g.offers) DEP.set(o.id, top[0]);
+}
+const depIx = Object.fromEntries(MF.DEPTS.map((k, i) => [k, i]));
+for (const [m, d] of SRC) {
   const f = d.fields, at = Object.fromEntries(f.map((k, i) => [k, i]));
   const P = [...d.products].sort((a, b) => (a[at.id] < b[at.id] ? -1 : a[at.id] > b[at.id] ? 1 : 0));
   // Markete özgü ek alanlar (ör. Migros: brand, sold) katalogun sonuna eklenir; değerler seyrek değişir.
+  // Son alan "dep": bölüm (deps listesindeki sıra; bölümsüzse null).
   const extra = f.filter((k) => !["id", "name", "price", "regular", "in_stock", "image", "url", "cat", "promo", "seen"].includes(k));
-  const catBody = { market: m, prefix: d.prefix || {}, cats: d.cats || {}, fields: ["id", "name", "image", "url", "cat", ...extra],
-    products: P.map((r) => [r[at.id], r[at.name], r[at.image], r[at.url], r[at.cat], ...extra.map((k) => r[at[k]] ?? null)]) };
+  const catBody = { market: m, prefix: d.prefix || {}, cats: d.cats || {}, deps: MF.DEPTS, fields: ["id", "name", "image", "url", "cat", ...extra, "dep"],
+    products: P.map((r) => { const dp = DEP.get(String(r[at.id])); return [r[at.id], r[at.name], r[at.image], r[at.url], r[at.cat], ...extra.map((k) => r[at[k]] ?? null), dp ? depIx[dp] : null]; }) };
   const v = createHash("sha256").update(dump(catBody)).digest("hex").slice(0, 12);
   const seens = P.map((r) => r[at.seen]).filter(Number.isInteger), base = seens.length ? Math.min(...seens) : 0;
   const prices = { market: m, updated: d.updated, catalog: v, base, fields: ["price", "regular0", "in_stock", "promo", "seenOffset"],
@@ -35,10 +52,9 @@ for (const m of MARKETS) {
   write(`${DIR}/${m}-catalog.json`, dump({ v, ...catBody }));
   write(`${DIR}/${m}-prices.json`, dump(prices));
   index.markets[m] = { catalog: v, updated: d.updated, count: P.length };
-  allRows.push(...C.rowsOf(d));
 }
 // Eşleştirme: uygulamanın kendi match.js'iyle, birden çok teklifli gruplar
-const groups = MF.group(allRows).filter((g) => g.offers.length > 1).map((g) => g.offers.map((o) => o.id).sort());
+const groups = allGroups.filter((g) => g.offers.length > 1).map((g) => g.offers.map((o) => o.id).sort());
 groups.sort((a, b) => (a[0] < b[0] ? -1 : 1));
 const matchV = createHash("sha256").update(readFileSync("js/match.js")).digest("hex").slice(0, 12);
 write(`${DIR}/groups.json`, dump({ match: matchV, catalogs: Object.fromEntries(Object.entries(index.markets).map(([m, x]) => [m, x.catalog])), groups }));

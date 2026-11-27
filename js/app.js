@@ -80,7 +80,8 @@ const GROUPS=[
   ["evcil","Evcil Hayvan","paw-print","#f5f5f4","#57534e",/evcil/],
   ["ev","Ev & Yaşam","sofa","#f1f5f9","#334155",/^ev\b|yasam|mutfak|elektronik|giyim|oyuncak|bahce|kitap|cicek|otomotiv|hobi/],
 ];
-const grpOf=o=>o._g!==undefined?o._g:(o._g=(GROUPS.find(g=>g[5].test(fold(o.cat)))||[""])[0]);
+// Bölüm: yayımda veriye yazılan "dep" (ad düzeltmeli, marketler arası tutarlı); yoksa addan/kategoriden hesaplanır
+const grpOf=o=>o._g!==undefined?o._g:(o._g=o.dep||MF.deptOf(o.name,o.cat));
 const UNIT_Q=[["su","Su","droplet"],["süt","Süt","milk"],["yumurta","Yumurta","egg"],["ekmek","Ekmek","croissant"],["beyaz peynir","Beyaz peynir","square"],["kaşar","Kaşar","square"],["yoğurt","Yoğurt","cup-soda"],["tereyağı","Tereyağı","square"],["zeytin","Zeytin","circle"],
   ["ayçiçek yağı","Ayçiçek yağı","flask-conical"],["zeytinyağı","Zeytinyağı","flask-conical"],["toz şeker","Şeker","candy"],["un","Un","package"],["pirinç","Pirinç","wheat"],["bulgur","Bulgur","wheat"],["mercimek","Mercimek","bean"],["nohut","Nohut","bean"],["makarna","Makarna","utensils"],["salça","Salça","soup"],
   ["çay","Çay","coffee"],["kahve","Kahve","coffee"],["tavuk","Tavuk","drumstick"],["kıyma","Kıyma","beef"],["domates","Domates","apple"],["patates","Patates","apple"],["soğan","Soğan","apple"],["muz","Muz","banana"],["elma","Elma","apple"],
@@ -777,10 +778,10 @@ function drawS(){
     return MFC.searchScore(o.name,o.cat,rw)-rw.filter((x,i)=>x!==w[i]).length*2}))+avail(g).length*0.6+(best(g)?1:0)]));
   // Baskın bölüm: en alakalı 40 sonucun çoğu hangi bölümdeyse (yumurta → kahvaltılık, pirinç → temel gıda)
   // o bölümdeki ürünler öne alınır; "Sürpriz Yumurta", "Pirinç Süzgeci" gibi başka bölümden adaşlar geriler.
-  const top=[...r].sort((a,b)=>rel.get(b)-rel.get(a)).slice(0,40),cnt={};
-  top.forEach(g=>{const k=grpOf(best(g)||g.offers[0]);if(k)cnt[k]=(cnt[k]||0)+1});
-  const dom=Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a])[0];
-  if(dom&&cnt[dom]>=top.length*0.3)r.forEach(g=>{if(grpOf(best(g)||g.offers[0])===dom)rel.set(g,rel.get(g)+6)});
+  // Niyet edilen bölüm(ler) (MF.intentDepts): yarıdan fazlası tek bölümdeyse o; değilse gıda ağırlıklıysa gıda bölümleri
+  const top=[...r].sort((a,b)=>rel.get(b)-rel.get(a)).slice(0,40);
+  const want=MF.intentDepts(top.map(g=>grpOf(best(g)||g.offers[0]))),domOn=!!want,inW=g=>want&&want.has(grpOf(pick(g)||g.offers[0]));
+  if(domOn)r.forEach(g=>{if(want.has(grpOf(best(g)||g.offers[0])))rel.set(g,rel.get(g)+6)});
   r.sort({rel:(a,b)=>rel.get(b)-rel.get(a),pa:(a,b)=>bp(a)-bp(b),unit:(a,b)=>up(a)-up(b),disc:(a,b)=>disc(pick(b)||{})-disc(pick(a)||{})}[S.sort]);
   const total=r.length;r=r.slice(0,60);
   const sorts=[["rel","Önerilen"],["pa","En ucuz"],["unit","Birim fiyat"],["disc","İndirim"]];
@@ -789,7 +790,16 @@ function drawS(){
     `<div class="col-span-full flex items-center gap-2 overflow-x-auto noscroll"><p class="text-sm font-bold shrink-0 mr-1">${num(total)} ürün</p>
       <button data-sfopen class="shrink-0 chipx !py-2 !px-3 ${nFilters()?"bg-emerald-700 text-white":"bg-white ring-1 ring-stone-300 text-stone-800"}"><i data-lucide="sliders-horizontal" class="w-4 h-4"></i>Süzgeç${nFilters()?` (${nFilters()})`:""}</button>
       ${sorts.map(([k,l])=>pill("data-ss",k,l,S.sort===k,"bg-emerald-600 text-white")).join("")}</div>`+filterPanel()+
-    (r.length?`<div class="col-span-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2.5 lg:gap-3 stagger">${r.map((g,i)=>pcard(pick(g)||g.offers[0],{i})).join("")}</div>`:empty("search-x","Sonuç bulunamadı",nFilters()?"Süzgeçleri gevşetmeyi dene.":"Başka bir kelime dene."))
+    (r.length?(()=>{const gridc="col-span-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2.5 lg:gap-3 stagger";
+      // Önerilen sıralamada baskın bölümün dışındaki adaşlar ayrı başlık altında: "yumurta" → önce yumurtalar,
+      // sonra "Başka bölümlerde de geçiyor: Atıştırmalık (sürpriz yumurta) · Ev & Yaşam (oyuncak)"
+      const dg=g=>grpOf(pick(g)||g.offers[0]),split=domOn&&S.sort==="rel"&&!S.k?r.findIndex(g=>!inW(g)):-1;
+      const cards=(a,o)=>a.map((g,i)=>pcard(pick(g)||g.offers[0],{i:i+o})).join("");
+      if(split<=0)return`<div class="${gridc}">${cards(r,0)}</div>`;
+      const rest=r.slice(split),lab=[...new Set(rest.map(dg))].map(k=>(GROUPS.find(x=>x[0]===k)||[0,"Diğer"])[1]);
+      return`<div class="${gridc}">${cards(r.slice(0,split),0)}</div>
+        <div class="col-span-full mt-4 flex items-center gap-2"><span class="h-px flex-1 bg-stone-200 dark:bg-stone-800"></span><p class="text-xs font-bold text-stone-500 text-center">Başka bölümlerde de geçiyor · ${esc(lab.slice(0,3).join(" · "))}</p><span class="h-px flex-1 bg-stone-200 dark:bg-stone-800"></span></div>
+        <div class="${gridc} opacity-80">${cards(rest,split)}</div>`})():empty("search-x","Sonuç bulunamadı",nFilters()?"Süzgeçleri gevşetmeyi dene.":"Başka bir kelime dene."))
     +(total>60?`<p class="col-span-full text-center text-sm text-stone-500">${num(total)} sonuçtan ilk 60'ı gösteriliyor. Aramayı daraltabilirsin.</p>`:"")}
 
 function filterPanel(){
