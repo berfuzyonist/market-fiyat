@@ -165,3 +165,15 @@ hesaplanmaz), son değişim, 30 günün en düşüğü, gerçek indirim (marketi
 hemen önceki kayıtlı fiyata göre gözlenen düşüş) ve temel sepet endeksi (her markette bulunan temel ürünler,
 en düşük birim fiyat × standart miktar; resmi enflasyon verisi değildir). Analiz sayfası `#analiz`; takip 7
 günü doldurana kadar değişimler takip başlangıcına göre gösterilir.
+
+## Şikâyet ve kaldırma talepleri
+
+Yasal uyarı, kullanım koşulları ve gizlilik metni `yasal.html`'dedir. Uygulama ilk açılışta özetini gösterir ve onay ister (`LEGAL_V`; metin önemli ölçüde değişirse bu sayı artırılır, herkesten yeniden onay istenir). İletişim adresi: supermarketfiyatlari@gmail.com.
+
+Bir market veya hak sahibi şikâyet ederse hemen yapılacaklar:
+
+1. `config.json` → `"paused_markets": ["migros"]` (ilgili market anahtarı: `migros`, `sok`, `bim`, `a101`, `koop`).
+   Bundan sonra o markete hiçbir istek gitmez. Toplayıcılar, afiş çekme, e-posta afişleri ve "Fiyatı Güncelle" durur, yayımlama adımı atlanır.
+   Bir sonraki yayımda o marketin ürünleri ve afişleri uygulamadan kalkar (istemci verisi ve `index.json` → `paused`).
+2. Tamamen silme istenirse `data/<market>.json`, `data/status-<market>.json`, `data/history-<market>.json`, `data/posters-<market>.json` ve `data/client/<market>-*.json` dosyaları kaldırılır.
+3. Talebe yanıt verilir. Yasal metinde en geç 3 iş günü öngörülmüştür.

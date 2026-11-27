@@ -9,6 +9,11 @@ case "$market" in
   *) echo "Unknown market: $market" >&2; exit 2 ;;
 esac
 
+# Durdurulan market (config.json paused_markets): yayımlanacak bir şey yok
+if python3 -c "import json,sys;sys.exit(0 if sys.argv[1] in (json.load(open('config.json')).get('paused_markets') or []) else 1)" "$market"; then
+  echo "$market paused_markets içinde; yayımlanmadı."; exit 0
+fi
+
 data_rel="data/${market}.json"
 status_rel="data/status-${market}.json"
 tmp="$(mktemp -d)"

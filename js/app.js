@@ -1432,14 +1432,18 @@ addEventListener("offline",offNote);if(navigator.onLine===false)setTimeout(offNo
 route(); // açılışta adresteki sayfaya git (yenilemede aynı ürün açık kalır)
 // Afiş dosyaları küçük: fiyat verisini beklemeden gelir gelmez rafa çizilir (ilk ekranın en büyük görseli).
 const PMK=["bim","migros","sok","a101","koop"]; // A101: e-posta aboneliğinden gelen afişler
-const postersP=Promise.all(PMK.map(m=>get(`data/posters-${m}.json`).catch(()=>null)));
+// Şikâyet/kaldırma talebiyle durdurulan marketler (config.json → index.json "paused"): verisi ve afişi gösterilmez
+const idxP=get("data/client/index.json").catch(()=>null);
+const pausedP=idxP.then(i=>(i&&Array.isArray(i.paused)?i.paused:[]));
+const postersP=Promise.all([pausedP,...PMK.map(m=>get(`data/posters-${m}.json`).catch(()=>null))])
+  .then(([pz,...ps])=>ps.map((p,i)=>pz.includes(PMK[i])?null:p));
 postersP.then(ps=>ps.forEach((p,i)=>{if(p&&p.updated)PUPD[PMK[i]]=p.updated})).catch(()=>{});
 postersP.then(posters=>{if(O.length)return;POST=groupBim(groupSok(posters.flatMap(p=>(p&&Array.isArray(p.items)?p.items:[]).filter(it=>it&&/^https:\/\//.test(it.image||"")))));
   if(view==="home"){drawPostShelf();icons()}else if(view==="posters")redraw()}).catch(()=>{});
 // Fiyat verisi: önce data/client (katalog önbellekte kalır, her açılışta yalnızca fiyat dosyaları iner;
 // eşleştirme hazır gelir), olmazsa tam market dosyaları. Katalog ve fiyat sürümü uyuşmazsa tam dosyaya düşülür.
 async function loadRows(statusP){
-  const [idx,sts]=await Promise.all([get("data/client/index.json"),statusP]);
+  const [idx,sts]=await Promise.all([idxP,statusP]);const pz=(idx&&idx.paused)||[];
   const stOf=m=>sts&&sts[DATA_M.indexOf(m)];
   if(idx&&idx.markets){try{
     const ms=DATA_M.filter(m=>idx.markets[m]);
@@ -1449,7 +1453,7 @@ async function loadRows(statusP){
       // fiyat dosyası market durumundaki son veri zamanından eskiyse (yayım sırası) o market tam dosyadan okunur
       const du=MFC.toTs((stOf(m)||{}).data_updated),pu=MFC.toTs(prs[i].updated);if(du&&pu&&pu<du)return;
       per[m]={rows:r,updated:prs[i].updated}});
-    const lack=DATA_M.filter(m=>!per[m]);
+    const lack=DATA_M.filter(m=>!per[m]&&!pz.includes(m));
     if(lack.length){const fs=await Promise.all(lack.map(m=>get(`data/${m}.json`)));lack.forEach((m,i)=>{per[m]={rows:MFC.rowsOf(fs[i]),updated:fs[i]&&fs[i].updated}})}
     const ok=grp&&Array.isArray(grp.groups)&&ms.every(m=>grp.catalogs&&grp.catalogs[m]===cats[ms.indexOf(m)].v);
     return{per,groups:ok&&!lack.length?grp.groups:null}}catch(e){}}
@@ -1561,3 +1565,24 @@ function svWire(){const el=SV.el;let x0=0,y0=0,tDown=0,drag=false,moved=false;
       setTimeout(()=>{if(isCamp(it))openCamp(campKey(it));else openViewer(POST.indexOf(it),k)},300)}});
   addEventListener("keydown",e=>{if(!SV.open)return;if(e.key==="Escape")SV.close();else if(e.key==="ArrowRight")svNext();else if(e.key==="ArrowLeft")svPrev()});
   document.addEventListener("visibilitychange",()=>svPause(document.hidden))}
+
+// ---------- Yasal uyarı onayı ----------
+// İlk açılışta (ve metnin sürümü değişince) kısa özet + tam metin bağlantısı gösterilir; "Kabul ediyorum"
+// denince bu cihazda saklanır. Tam metin: yasal.html.
+const LEGAL_V=1;
+(function legalGate(){if(load("yasal",0)>=LEGAL_V)return;
+  const el=document.createElement("div");el.className="legal";el.setAttribute("role","dialog");el.setAttribute("aria-modal","true");el.setAttribute("aria-labelledby","legalT");
+  el.innerHTML=`<div class="legal-card">
+    <h2 id="legalT">Kullanmadan önce</h2>
+    <ul>
+      <li><b>Kişisel ve ücretsiz bir araç.</b> Hiçbir marketle bağlantısı yok; satış ya da reklam yapılmaz.</li>
+      <li><b>Fiyatlar bilgi amaçlıdır.</b> Marketlerin herkese açık sayfalarından okunur; gecikmeli ya da hatalı olabilir. Satın almadan önce marketteki fiyat esas alınır.</li>
+      <li><b>Kişisel verin toplanmaz.</b> Listen, favorilerin ve ayarların yalnızca bu cihazda tutulur.</li>
+      <li><b>Markalar ve görseller sahiplerine aittir.</b> Kaldırma talepleri: supermarketfiyatlari@gmail.com</li>
+    </ul>
+    <a href="yasal.html" class="legal-more">Yasal uyarı, kullanım koşulları ve gizlilik metninin tamamı ›</a>
+    <button class="legal-ok" data-legalok>Okudum, kabul ediyorum</button>
+  </div>`;
+  document.body.appendChild(el);document.body.style.overflow="hidden";
+  el.querySelector("[data-legalok]").onclick=()=>{save("yasal",LEGAL_V);document.body.style.overflow="";el.classList.add("out");setTimeout(()=>el.remove(),300)};
+  setTimeout(()=>el.querySelector("[data-legalok]").focus(),50)})();

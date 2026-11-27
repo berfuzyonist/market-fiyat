@@ -150,7 +150,14 @@ def main(argv):
             box.logout()
         except (imaplib.IMAP4.error, OSError) as e:
             print(f"tanı yapılamadı: {type(e).__name__}")
+    try:
+        paused = json.loads((pathlib.Path(__file__).resolve().parent.parent / "config.json").read_text(encoding="utf-8")).get("paused_markets") or []
+    except (OSError, ValueError):
+        paused = []
     for market, (_, _, name) in SENDERS.items():
+        if market in paused:  # şikâyet/kaldırma talebi: bu marketin e-postaları işlenmez
+            print(f"{name}: paused_markets içinde; atlandı.")
+            continue
         try:
             mails = fetch(user, pwd, market)
         except (imaplib.IMAP4.error, OSError) as e:

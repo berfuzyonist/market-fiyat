@@ -1,4 +1,6 @@
 {
+  "_paused_markets": "Şikâyet/kaldırma talebinde market anahtarı buraya yazılır (ör. [\"migros\"]): veri toplama ve afiş çekme durur, uygulama o marketi göstermez.",
+  "paused_markets": [],
   "user_agent": "market-fiyat-kisisel/0.3 (+https://github.com/berfuzyonist/market-fiyat)",
   "delay_seconds": 3,
   "retry_attempts": 2,
