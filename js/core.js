@@ -133,7 +133,10 @@ function enrich(o,opt){
   o.stale=!!(o.seen&&now/1000-o.seen>STALE_HOURS*3600);
   return o;
 }
-const usable=o=>o.in_stock&&!o.na;
+// Stok gösterilmez, karşılaştırmayı da etkilemez: marketlerin online stoğu şubedekiyle aynı değil
+// (internette tükenen ürün mağazada rafta olabilir). Uygulama sepet/karşılaştırma aracıdır, market değil.
+// Yalnız kampanyası bitmiş ya da henüz başlamamış (na) BİM aktüel ürünü kullanılamaz.
+const usable=o=>!o.na;
 // İndirim yalnızca normal fiyat güncel ve geçerliyken gösterilir.
 const disc=o=>usable(o)&&!o.stale&&o.regular>o.price&&o.price>0?1-o.price/o.regular:0;
 

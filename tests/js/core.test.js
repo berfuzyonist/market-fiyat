@@ -30,7 +30,7 @@ test("indirim hesabı",()=>{
   const o=C.enrich({id:"sok:1",market:"sok",price:75,regular:100,in_stock:true,seen:NOW/1000-60},{now:NOW});
   assert.equal(C.disc(o),0.25);
   assert.equal(C.disc(C.enrich({id:"sok:2",market:"sok",price:100,regular:100,in_stock:true,seen:NOW/1000},{now:NOW})),0);
-  assert.equal(C.disc(C.enrich({id:"sok:3",market:"sok",price:75,regular:100,in_stock:false,seen:NOW/1000},{now:NOW})),0,"stokta yoksa indirim listesine girmez");
+  assert.equal(C.disc(C.enrich({id:"sok:3",market:"sok",price:75,regular:100,in_stock:false,seen:NOW/1000},{now:NOW})),0.25,"online stok önemsenmez (şubede olabilir)");
 });
 test("48 saatten eski doğrulamada indirim gösterilmez",()=>{
   const o=C.enrich({id:"sok:1",market:"sok",price:75,regular:100,in_stock:true,seen:NOW/1000-49*3600},{now:NOW});
