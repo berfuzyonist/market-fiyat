@@ -1,10 +1,10 @@
 {
- "updated": "2026-11-27T06:25:26+00:00",
- "started_at": "2026-11-27T06:24:29+00:00",
- "finished_at": "2026-11-27T06:25:26+00:00",
- "checked_at": "2026-11-27T06:25:26+00:00",
- "data_updated": "2026-11-27T06:25:26+00:00",
- "last_successful_data_at": "2026-11-27T06:25:26+00:00",
+ "updated": "2026-11-27T14:30:52+00:00",
+ "started_at": "2026-11-27T14:29:53+00:00",
+ "finished_at": "2026-11-27T14:30:52+00:00",
+ "checked_at": "2026-11-27T14:30:52+00:00",
+ "data_updated": "2026-11-27T14:30:52+00:00",
+ "last_successful_data_at": "2026-11-27T14:30:52+00:00",
  "market": "bim",
  "mode": "aktuel",
  "status": "tamam",
@@ -12,7 +12,7 @@
  "partial": false,
  "found": 803,
  "total": 803,
- "seconds": 57,
+ "seconds": 59,
  "notes": [
   "18 Kasım Çarşamba: 17 ürün",
   "17 Kasım Salı: 78 ürün",
@@ -58,9 +58,7 @@
    "Kağıt Ürünleri": 5
   }
  },
- "quality_warnings": [
-  "'Diğer' kategorisi önceki duruma göre belirgin arttı: %25.7 → %31.9"
- ],
+ "quality_warnings": [],
  "traffic": {
   "www.bim.com.tr": {
    "requests": 15,
@@ -70,7 +68,7 @@
   }
  },
  "errors": [],
- "run_id": "45951649698",
+ "run_id": "46016434894",
  "collected_products": 803,
  "total_products": 803,
  "discounted_products": 76,
@@ -84,16 +82,16 @@
   "suspicious_discount": 0,
   "bad_url": 0
  },
- "duration_seconds": 57,
+ "duration_seconds": 59,
  "last_attempt_by_mode": {
   "aktuel": {
-   "checked_at": "2026-11-27T06:25:26+00:00",
+   "checked_at": "2026-11-27T14:30:52+00:00",
    "status": "tamam",
    "complete": true,
    "found": 803,
    "total": 803,
-   "seconds": 57,
-   "data_updated": "2026-11-27T06:25:26+00:00",
+   "seconds": 59,
+   "data_updated": "2026-11-27T14:30:52+00:00",
    "errors": [],
    "notes": [
     "18 Kasım Çarşamba: 17 ürün",
@@ -111,9 +109,7 @@
     "03-30 Kasım: 40 ürün",
     "21-27 Kasım: 36 ürün"
    ],
-   "quality_warnings": [
-    "'Diğer' kategorisi önceki duruma göre belirgin arttı: %25.7 → %31.9"
-   ],
+   "quality_warnings": [],
    "quality": {
     "category_count": 20,
     "empty_category_count": 0,
