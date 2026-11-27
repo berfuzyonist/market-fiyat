@@ -155,6 +155,26 @@ function priceUpdateLink(o){
   return`https://github.com/${REPO}/issues/new?`+new URLSearchParams({title,body}).toString();
 }
 
+// Marketin ürün bağlantısından ürün kimliği: Migros ".../bahs-cookie-dream-protein-bar-45-g-p-6e0035"
+// (onaltılık 6e0035 = SKU 07209013). Ad, adresteki okunur kısımdan çıkarılır.
+function productFromURL(u){
+  const m=String(u||"").match(/^https?:\/\/(?:www\.)?migros\.com\.tr\/(?:[a-z0-9-]+\/)*([a-z0-9-]+?)-p-([0-9a-f]+)\b/i);
+  if(!m)return null;
+  const sku=String(parseInt(m[2],16));if(!/^\d{1,12}$/.test(sku))return null;
+  const name=m[1].split("-").filter(Boolean).map(w=>w.charAt(0).toLocaleUpperCase("tr")+w.slice(1)).join(" ");
+  return{market:"migros",id:"migros:"+sku.padStart(8,"0"),name}}
+// "Bağlantıdan ürün ekle": katalogda olmayan ürün için talep (GitHub Actions yalnız o ürünü okuyup ekler)
+function addProductLink(p){
+  if(!p||p.market!=="migros"||!/^migros:\d{4,12}$/.test(p.id))return"";
+  const marker={market:p.market,id:p.id,name:p.name,add:true};
+  const title=`[ÜRÜN EKLE] ${MARKETS[p.market]} · ${p.name}`.slice(0,240);
+  const body="Bu talep Market Fiyat uygulamasından oluşturuldu. Göndermek için aşağıdaki **Create** düğmesine basın.\n\n"+
+    "GitHub Actions yalnızca bu ürünü marketin herkese açık ürün sayfasından okur ve kataloğa ekler; sonucu bu talebe yorum olarak yazar. "+
+    "Fiyatı doğrulanamayan ürün eklenmez.\n\n"+
+    "<!-- market-fiyat-price-update\n"+JSON.stringify(marker)+"\n-->\n";
+  return`https://github.com/${REPO}/issues/new?`+new URLSearchParams({title,body}).toString();
+}
+
 // "Fiyat güncel mi?": hesap gerektirmez, hiçbir şey kaydetmez. Market siteleri tarayıcıdan
 // okunmaya izin vermediği (CORS) için canlı sorgu yapılamaz; karar, fiyatın marketin sitesinden
 // en son ne zaman doğrulandığına ve marketin son tarama sonucuna göre verilir.
@@ -262,6 +282,6 @@ function histInfo(points,o,now){
     atLow:P.length>1&&cur.price<=lo+0.005&&hi>lo+0.005,events:ev,lastDisc:lastOf("disc"),lastPromo:lastOf("promo"),lastHike:lastOf("hike")};
 }
 
-const api={pretty,rowsFromSplit,histInfo,searchWords,searchScore,variants,queryPlan,matchPlan,resolvePlan,fold,toTs,rowsOf,promoOf,bimWhen,enrich,usable,disc,ago,priceUpdateLink,freshness,MONEY,STALE_HOURS};
+const api={pretty,productFromURL,addProductLink,rowsFromSplit,histInfo,searchWords,searchScore,variants,queryPlan,matchPlan,resolvePlan,fold,toTs,rowsOf,promoOf,bimWhen,enrich,usable,disc,ago,priceUpdateLink,freshness,MONEY,STALE_HOURS};
 if(typeof module!=="undefined"&&module.exports)module.exports=api;else root.MFC=api;
 })(typeof window!=="undefined"?window:globalThis);

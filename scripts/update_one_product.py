@@ -92,6 +92,16 @@ def save_json(path, data):
     os.replace(tmp, path)
 
 
+def wants_add(body):
+    """Talep "ürün ekle" mi? (uygulamadaki "Bağlantıdan ürün ekle"; şimdilik yalnız Migros)"""
+    match = MARKER.search(body or "")
+    try:
+        req = json.loads(match.group(1)) if match else {}
+    except ValueError:
+        return False
+    return isinstance(req, dict) and req.get("add") is True and str(req.get("market")) == "migros"
+
+
 def parse_request(body):
     """Issue gövdesindeki işareti doğrular. Hata metni veya (market, id, ad) döner."""
     match = MARKER.search(body or "")
@@ -135,8 +145,31 @@ def check(result_path):
     current = c.read_old(market).get(pid)
     if c.paused(market):
         result.update(stage="request", message="Bu marketten veri toplama durduruldu; kontrol edilmedi.")
+    elif not current and wants_add(body):
+        # Katalogda olmayan ürünü ekle: yalnız bu ürün, marketin ürün sayfası kaynağından okunur.
+        # (Migros kategori listeleri stokta olmayan ürünü göstermediği için tarama bazı ürünleri hiç görmez.)
+        try:
+            fresh = c.ONE[market]({"id": pid, "name": name})
+        except c.NotFound:
+            result.update(stage="source", message="Ürün eklenemedi: ürün marketin sitesinde bulunamadı.")
+        except c.Stop as e:
+            result.update(stage="source", message=f"Ürün eklenemedi: {e}")
+        except Exception as e:  # noqa: BLE001
+            result.update(stage="source", message=f"Ürün eklenemedi: beklenmeyen kaynak yanıtı ({type(e).__name__}).")
+        else:
+            price, regular = fresh.get("price"), fresh.get("regular")
+            if not fresh.get("name") or not all(isinstance(v, (int, float)) and math.isfinite(v) and v > 0 for v in (price, regular)):
+                result.update(stage="verify", message="Ürün eklenemedi: kaynaktaki ad ya da fiyat geçersiz.")
+            else:
+                item = {k: v for k, v in fresh.items() if k != "source"}
+                item["regular"] = max(float(regular), float(price))
+                result.update(ok=True, stage="added", checked_at=now_iso(), name=fresh["name"], item=item,
+                              fresh={"price": round(float(price), 2), "regular": round(item["regular"], 2),
+                                     "in_stock": bool(fresh.get("in_stock")), "source": fresh.get("source", "")})
+        result["requests"] = {h: s.get("requests", 0) for h, s in c.STATS.items()}
     elif not current:
-        result.update(stage="request", message="Ürün bu marketin güncel kataloğunda yok; kontrol edilmedi.")
+        result.update(stage="request", message="Ürün bu marketin güncel kataloğunda yok; kontrol edilmedi. "
+                      "(Migros ürünü için uygulamadaki “Bağlantıdan ürün ekle” kullanılabilir.)")
     elif not same_name(current.get("name"), name):
         result.update(stage="request", message="Talepteki ürün adı katalogdaki kayıtla eşleşmedi; kontrol edilmedi.")
     else:
@@ -221,7 +254,27 @@ def apply(result_path, comment_path):
         print("\n".join(lines))
         return
 
-    if not result.get("ok"):
+    if result.get("stage") == "added" and result.get("ok"):
+        item, fresh = result["item"], result["fresh"]
+        if current:
+            lines = ["**Ürün zaten katalogda.**", ""] + head + ["- İşlem sonucu: Veri değiştirilmedi."]
+        else:
+            row = dict(item, seen=ts)
+            catalog[pid] = row
+            previous = json.loads(data_path.read_text(encoding="utf-8"))
+            c.write(market, catalog, previous.get("updated"), data_path)
+            record.update(status="added", new_price=fresh["price"], new_regular=fresh["regular"],
+                          in_stock=fresh["in_stock"], message="")
+            checks["checks"][pid] = record
+            head = [f"- Ürün: {md(item.get('name'))}", f"- Market: {MARKETS[market]}", f"- Ürün kimliği: `{pid}`"]
+            disc = f" (normal fiyat {tl(fresh['regular'])})" if fresh["regular"] > fresh["price"] else ""
+            lines = ["**Ürün eklendi.**", ""] + head + [
+                f"- Fiyat: {tl(fresh['price'])}{disc}",
+                f"- Kampanya: {md(item.get('promo') or '—')}",
+                f"- Stok durumu (Migros online): {'Stokta' if fresh['in_stock'] else 'Stokta yok'}",
+                f"- Kontrol zamanı (TR): {when_tr}",
+                f"- Kaynak: {fresh.get('source') or '—'} (tek ürün isteği, katalog taranmadı)"]
+    elif not result.get("ok"):
         record.update(status="failed", message=result.get("message"), new_price=None, new_regular=None)
         checks["checks"][pid] = record
         lines = ["**Ürün doğrulanamadı.**", ""] + head + [
