@@ -15,6 +15,19 @@
    "old_regular": 119.95,
    "status": "unchanged"
   },
+  "migros:07209013": {
+   "checked_at": "2026-11-27T09:33:30+00:00",
+   "in_stock": false,
+   "issue": "77",
+   "market": "migros",
+   "message": "",
+   "name": "Bahs Cookie Dream Protein Bar 45 G",
+   "new_price": 94.95,
+   "new_regular": 94.95,
+   "old_price": null,
+   "old_regular": null,
+   "status": "added"
+  },
   "migros:30610382": {
    "change": 0.0,
    "change_pct": 0.0,
@@ -31,6 +44,6 @@
    "status": "unchanged"
   }
  },
- "updated": "2026-11-22T19:35:48+00:00",
+ "updated": "2026-11-27T09:33:31+00:00",
  "v": 1
 }
