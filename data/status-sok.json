@@ -1,29 +1,29 @@
 {
- "updated": "2026-11-27T23:01:23+00:00",
- "started_at": "2026-11-27T22:59:15+00:00",
- "finished_at": "2026-11-27T23:01:23+00:00",
- "checked_at": "2026-11-27T23:01:23+00:00",
- "data_updated": "2026-11-27T23:01:23+00:00",
- "last_successful_data_at": "2026-11-27T23:01:23+00:00",
+ "updated": "2026-11-27T23:57:00+00:00",
+ "started_at": "2026-11-27T23:55:06+00:00",
+ "finished_at": "2026-11-27T23:57:00+00:00",
+ "checked_at": "2026-11-27T23:57:00+00:00",
+ "data_updated": "2026-11-27T23:57:00+00:00",
+ "last_successful_data_at": "2026-11-27T23:57:00+00:00",
  "market": "sok",
  "mode": "deals",
  "status": "tamam",
  "complete": true,
  "partial": false,
- "found": 530,
- "total": 3012,
- "seconds": 128,
+ "found": 499,
+ "total": 3017,
+ "seconds": 114,
  "notes": [
   "kampanyalar: 92 ürün",
-  "indirimli-urunler-cms-pl1: sitede 540, okunan 540, 27/27 sayfa (son sayfa)",
-  "530 indirimli ürün güncellendi"
+  "indirimli-urunler-cms-pl1: sitede 501, okunan 501, 26/26 sayfa (son sayfa)",
+  "499 indirimli ürün güncellendi"
  ],
  "quality": {
   "category_count": 21,
   "empty_category_count": 0,
   "campaign_date_category_count": 0,
-  "other_count": 8,
-  "other_ratio": 0.0027,
+  "other_count": 10,
+  "other_ratio": 0.0033,
   "category_counts": {
    "İçecek": 219,
    "Anne - Bebek & Çocuk": 236,
@@ -40,8 +40,8 @@
    "Süt & Süt Ürünleri": 167,
    "Kağıt Ürünleri": 57,
    "Evcil Dostlar": 43,
-   "Diğer": 8,
-   "Giyim & Aksesuar": 49,
+   "Diğer": 10,
+   "Giyim & Aksesuar": 52,
    "Meyve & Sebze": 49,
    "Dondurma": 85,
    "Anne & Bebek": 1,
@@ -51,17 +51,17 @@
  "quality_warnings": [],
  "traffic": {
   "www.sokmarket.com.tr": {
-   "requests": 28,
+   "requests": 27,
    "retries": 0,
-   "megabytes": 15.8,
+   "megabytes": 15.3,
    "errors": 0
   }
  },
  "errors": [],
- "run_id": "46079849368",
- "collected_products": 530,
- "total_products": 3012,
- "discounted_products": 541,
+ "run_id": "46085081829",
+ "collected_products": 499,
+ "total_products": 3017,
+ "discounted_products": 573,
  "invalid_products": 0,
  "data_quality": {
   "missing_id": 0,
@@ -72,29 +72,29 @@
   "suspicious_discount": 0,
   "bad_url": 0
  },
- "duration_seconds": 128,
+ "duration_seconds": 114,
  "last_attempt_by_mode": {
   "deals": {
-   "checked_at": "2026-11-27T23:01:23+00:00",
+   "checked_at": "2026-11-27T23:57:00+00:00",
    "status": "tamam",
    "complete": true,
-   "found": 530,
-   "total": 3012,
-   "seconds": 128,
-   "data_updated": "2026-11-27T23:01:23+00:00",
+   "found": 499,
+   "total": 3017,
+   "seconds": 114,
+   "data_updated": "2026-11-27T23:57:00+00:00",
    "errors": [],
    "notes": [
     "kampanyalar: 92 ürün",
-    "indirimli-urunler-cms-pl1: sitede 540, okunan 540, 27/27 sayfa (son sayfa)",
-    "530 indirimli ürün güncellendi"
+    "indirimli-urunler-cms-pl1: sitede 501, okunan 501, 26/26 sayfa (son sayfa)",
+    "499 indirimli ürün güncellendi"
    ],
    "quality_warnings": [],
    "quality": {
     "category_count": 21,
     "empty_category_count": 0,
     "campaign_date_category_count": 0,
-    "other_count": 8,
-    "other_ratio": 0.0027,
+    "other_count": 10,
+    "other_ratio": 0.0033,
     "category_counts": {
      "İçecek": 219,
      "Anne - Bebek & Çocuk": 236,
@@ -111,8 +111,8 @@
      "Süt & Süt Ürünleri": 167,
      "Kağıt Ürünleri": 57,
      "Evcil Dostlar": 43,
-     "Diğer": 8,
-     "Giyim & Aksesuar": 49,
+     "Diğer": 10,
+     "Giyim & Aksesuar": 52,
      "Meyve & Sebze": 49,
      "Dondurma": 85,
      "Anne & Bebek": 1,
@@ -121,9 +121,9 @@
    },
    "traffic": {
     "www.sokmarket.com.tr": {
-     "requests": 28,
+     "requests": 27,
      "retries": 0,
-     "megabytes": 15.8,
+     "megabytes": 15.3,
      "errors": 0
     }
    }
