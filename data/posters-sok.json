@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-27T12:46:48+00:00",
+ "updated": "2026-11-27T15:39:52+00:00",
  "market": "sok",
  "items": [
   {
@@ -23,6 +23,20 @@
    "image": "https://images.ceptesok.com/promotion-assets/sub-folder/57049046-49f8-4d6f-bf69-685eff597bcc.jpg",
    "thumb": "",
    "url": "https://www.sokmarket.com.tr/paraf500-prm-9fa957cf-74ce-468d-9ee6-6e514e932d7a"
+  },
+  {
+   "market": "sok",
+   "id": "sok:31afffed-f328-41dc-8ce5-98100c052bdc",
+   "title": "50 TL ve üzeri alışverişte 159.00 TL!",
+   "ids": [
+    "sok:8763",
+    "sok:542784"
+   ],
+   "group": "Kampanya",
+   "label": "Stoklarla sınırlıdır.",
+   "image": "https://images.ceptesok.com/promotion-assets/sub-folder/10a2bdb7-aaeb-4c39-8384-f3b5497fe8df.jpg",
+   "thumb": "",
+   "url": "https://www.sokmarket.com.tr/50-tl-ve-uzeri-alisveriste-159-00-tl-prm-31afffed-f328-41dc-8ce5-98100c052bdc"
   },
   {
    "market": "sok",

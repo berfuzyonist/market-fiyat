@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-27T06:40:43+00:00",
+ "updated": "2026-11-27T15:39:31+00:00",
  "market": "bim",
  "items": [
   {
@@ -260,6 +260,56 @@
    "label": "04 Aralık Cuma",
    "image": "https://cdn1.bim.com.tr/uploads/afisler/76285daf-e95c-47df-911a-1855287b05f3.png",
    "thumb": "https://cdn1.bim.com.tr/uploads/afisler/k_76285daf-e95c-47df-911a-1855287b05f3.png",
+   "url": "https://www.bim.com.tr/Categories/680/afisler.aspx"
+  },
+  {
+   "market": "bim",
+   "id": "bim:1458:0",
+   "title": "BİM Aktüel · 06 Aralık Pazar",
+   "group": "Aktüel",
+   "label": "06 Aralık Pazar",
+   "image": "https://cdn1.bim.com.tr/uploads/afisler/6d487fa9-b101-4e34-a2ea-e23cdd337347.jpg",
+   "thumb": "https://cdn1.bim.com.tr/uploads/afisler/k_6d487fa9-b101-4e34-a2ea-e23cdd337347.jpg",
+   "url": "https://www.bim.com.tr/Categories/680/afisler.aspx"
+  },
+  {
+   "market": "bim",
+   "id": "bim:1458:1",
+   "title": "BİM Aktüel · 06 Aralık Pazar",
+   "group": "Aktüel",
+   "label": "06 Aralık Pazar",
+   "image": "https://cdn1.bim.com.tr/uploads/afisler/76abffd7-8626-4288-9220-05ae76430c2d.jpg",
+   "thumb": "https://cdn1.bim.com.tr/uploads/afisler/k_76abffd7-8626-4288-9220-05ae76430c2d.jpg",
+   "url": "https://www.bim.com.tr/Categories/680/afisler.aspx"
+  },
+  {
+   "market": "bim",
+   "id": "bim:1458:2",
+   "title": "BİM Aktüel · 06 Aralık Pazar",
+   "group": "Aktüel",
+   "label": "06 Aralık Pazar",
+   "image": "https://cdn1.bim.com.tr/uploads/afisler/7745771d-2fb6-41a3-8d34-b4c8a9e6378f.jpg",
+   "thumb": "https://cdn1.bim.com.tr/uploads/afisler/k_7745771d-2fb6-41a3-8d34-b4c8a9e6378f.jpg",
+   "url": "https://www.bim.com.tr/Categories/680/afisler.aspx"
+  },
+  {
+   "market": "bim",
+   "id": "bim:1458:3",
+   "title": "BİM Aktüel · 06 Aralık Pazar",
+   "group": "Aktüel",
+   "label": "06 Aralık Pazar",
+   "image": "https://cdn1.bim.com.tr/uploads/afisler/5635c303-6036-47b3-86a3-667b7a0638d9.jpg",
+   "thumb": "https://cdn1.bim.com.tr/uploads/afisler/k_5635c303-6036-47b3-86a3-667b7a0638d9.jpg",
+   "url": "https://www.bim.com.tr/Categories/680/afisler.aspx"
+  },
+  {
+   "market": "bim",
+   "id": "bim:1458:4",
+   "title": "BİM Aktüel · 06 Aralık Pazar",
+   "group": "Aktüel",
+   "label": "06 Aralık Pazar",
+   "image": "https://cdn1.bim.com.tr/uploads/afisler/beb1d891-8fbb-4713-9792-d5aad5fc6be6.jpg",
+   "thumb": "https://cdn1.bim.com.tr/uploads/afisler/k_beb1d891-8fbb-4713-9792-d5aad5fc6be6.jpg",
    "url": "https://www.bim.com.tr/Categories/680/afisler.aspx"
   },
   {
