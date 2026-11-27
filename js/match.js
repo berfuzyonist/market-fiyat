@@ -21,6 +21,9 @@ function parse(name){
   const sizes=[],meas=[];let count=0;
   // "1.650 Ml" binlik ayraçtır (1650 ml); "1.5 L" ondalıktır
   let s=fold(name).replace(/\s*&\s*/g,"").replace(/(\d)\.(\d{3})\s*(ml|gr|g)\b/g,"$1$2 $3").replace(/(\d)[,](\d)/g,"$1.$2").replace(/[’'`]/g,"");
+  // Yumurta sınıfı gibi tane ağırlığı aralığı "(53-62 G)", "63-73 G": toplam miktar değildir, boy etiketi olarak kalır
+  // (yoksa "6'lı (53-62 g)" yumurta 62 g sayılıp kilosu 966 ₺ çıkıyordu; doğrusu adet fiyatı)
+  s=s.replace(/\(?\s*(\d{2})\s*-\s*(\d{2})\s*\)?\s*(?:gr|g)?\b/g,(m,a,b)=>+a>=30&&+b>+a&&+b<=90?(sizes.push(a+"-"+b+"g")," "):m);
   s=s.replace(new RegExp("(\\d+)\\s*[x×*]\\s*(\\d+(?:\\.\\d+)?)\\s*"+U+"\\b","g"),(m,k,n,u)=>{const a=amount(n,u);sizes.push(k+"x"+a+UNIT[u][0]);meas.push([k*a,UNIT[u][0]]);return" "});
   s=s.replace(new RegExp("(\\d+(?:\\.\\d+)?)\\s*"+U+"\\b","g"),(m,n,u)=>{const a=amount(n,u);sizes.push(a+UNIT[u][0]);meas.push([a,UNIT[u][0]]);return" "});
   s=s.replace(/(\d+)\s*(li|lu|adet|ad|tablet|yikama|yaprak|rulo)\b/g,(m,n)=>{sizes.push(n+"ad");count=+n;return" "});
@@ -128,7 +131,7 @@ function families(rows){
 // Temel ihtiyaçlar: marka fark etmeksizin her markette birim fiyatı en düşük ürün
 const STAPLES=[
  {n:"Süt (1 L)",re:/\bsut[u]?\b/,not:/cikolata|kakao|cilek|muz|laktoz|protein|bebek|devam|kahve|badem|yulaf|hindistan|sutlu|toz|keci|kondanse|aroma|bal|milkshake|tatli|recel|soya|pirinc|findik|puding|krema|misir|gofret|biskuvi|kek|\bbar\b/,u:"ml",min:1000,max:1000},
- {n:"Yumurta",re:/yumurta/,not:/cikolata|surpriz|oyuncak|makarna|boya|eriste|sekerleme|bildircin|kalip|sampuan|kasig|aparat|dilimleyici|haslama|sepet/,u:"ad",min:10,max:30},
+ {n:"Yumurta",re:/yumurta/,not:/cikolata|surpriz|supriz|kalp|ipli|kafalar|oyuncak|makarna|boya|eriste|sekerleme|bildircin|kalip|sampuan|kasig|aparat|dilimleyici|haslama|sepet/,u:"ad",min:10,max:30},
  {n:"Ayçiçek yağı (4-5 L)",re:/aycicek/,not:/cekirde|sabun|krem/,u:"ml",min:4000,max:5000},
  {n:"Zeytinyağı (1 L)",re:/zeytinyag/,not:/sabun|sampuan|krem|losyon|ton|sardalya|dus/,u:"ml",min:1000,max:1000},
  {n:"Toz şeker",re:/toz seker/,not:/esmer|pudra|vanil|stevia|tatlandirici/,u:"g",min:1000,max:5000},
@@ -165,6 +168,7 @@ function sizeLabel(q,size){
 }
 // Ürünün kendisi değil, onunla ilgili eşya olduğunu gösteren kelimeler (sorguda yoksa elenir)
 const ACCESSORY=new Set("sise sisesi torba torbasi kova kovasi matara kap kabi sebil pompa pompasi isitici figurlu oyuncak aparat aparati dispenser aski askisi stand standi firca fircasi kapak kapagi tabanca tabancasi hazne hazneli".split(" "));
+const FLAVOR=/^(aromali|aromasi|cesnili|cesnisi|tadinda|esansli)$/,AFTER=/^(corbasi|corba|suyu|harci|bulyon|bulyonu|soslu|sosu|kokulu|kokusu)$/;
 function unitCompare(rows,query){
   const words=fold(query).replace(/[^a-z0-9 ]+/g," ").split(" ").filter(Boolean);
   if(!words.length)return null;
@@ -178,11 +182,21 @@ function unitCompare(rows,query){
     if(!words.every(w=>toks.some(t=>w.length<4?t===w:t.startsWith(w))))continue;
     if(toks.some(t=>ACCESSORY.has(t)&&!words.includes(t)))continue;
     if(staple&&staple.not.test(o._f||(o._f=fold(o.name))))continue;
+    // Ürünün kendisi değil tadı/türevi: "Tavuk Çeşnili Noodle", "Bal & Hardal Aromalı Cips", "Tavuk Çorbası"
+    if(toks.some(t=>FLAVOR.test(t)&&!words.includes(t)))continue;
+    // Kelime yalnızca markada geçiyorsa ürün o değildir: "Kahve Dünyası Sıcak Çikolata" kahve değil
+    if(o.brand){const fb=fold(o.brand),rest=(o._f||(o._f=fold(o.name))).replace(fb,"");if(words.some(w=>fb.includes(w)&&!rest.includes(w)))continue}
+    {const li=toks.findIndex(t=>t.startsWith(words[words.length-1]));if(li>=0&&AFTER.test(toks[li+1]||""))continue}
     const p=o._p;if(!p||!p.qty)continue;
     const u=unitPrice(o);if(u&&u.v>0&&isFinite(u.v))hits.push({o,u,q:p.qty,size:p.size})}
   if(hits.length<2)return null;
   const by={};hits.forEach(h=>{(by[h.q.u]=by[h.q.u]||[]).push(h)});
   const kind=Object.keys(by).sort((a,b)=>by[b].length-by[a].length)[0];
+  // Baskın bölüm (seçilen ölçü biriminin içinde): "yumurta" sonuçlarının çoğu Süt & Kahvaltı'daysa sürpriz
+  // yumurta (Atıştırmalık) ve oyuncak yumurta (Ev) boy karşılaştırmasına girmez; "zeytin" kg'da zeytinler.
+  // Bölüm, veride yazılı "dep" ya da addan hesaplanır (MF.deptOf).
+  {const hk=by[kind];hk.forEach(h=>{h.d=h.o.dep||h.o._d||(h.o._d=deptOf(h.o.name,h.o.cat))});
+   const keep=intentDepts(hk.map(h=>h.d));if(keep)by[kind]=hk.filter(h=>keep.has(h.d))}
   // Aykırı değerler (su şişesi, figürlü sıcak su torbası, ıslak tuvalet kağıdı gibi başka ürünler):
   // birim fiyatı grubun ortancasının 4 katından fazla ya da 4'te birinden az olanlar dışarıda kalır.
   const vs=by[kind].map(h=>h.u.v).sort((a,b)=>a-b),med=vs[Math.floor(vs.length/2)];
@@ -278,6 +292,28 @@ function groupFrom(rows,lists){
     if(offers.length)out.push({offers,get p(){return offers[0]._p}})}
   for(const o of rows)if(!used.has(o))out.push({offers:[o],get p(){return o._p}});
   return out}
-const api={fold,parse,group,groupFrom,confidence,similar,similarIn,typeIndex,typeOf,families,unitPrice,staples,unitCompare,sameSize,sizeLabel};
+/* Bölüm (reyon): veri yayımlanırken her ürüne bir kez yazılır (data/client katalogunda "dep").
+   Temeli marketin kendi kategorisidir; ama marketler bazı ürünleri yanlış rafa koyar (BİM Kinder'i
+   Kahvaltılık'ta, Şok yumurtayı Et & Tavuk'ta tutar). Ürün adı bunu düzeltir: sürpriz/oyuncaklı yumurta,
+   şekerleme → Atıştırmalık; kolili/boylu gerçek yumurta → Süt & Kahvaltı. Anahtarlar app.js GROUPS ile aynı. */
+const DEPT_CAT=[["meyve",/meyve|sebze/],["et",/(^|\s)et\b|tavuk|sarkuteri|balik/],["sut",/sut|kahvalti/],["temel",/temel gida|bakliyat|yemeklik|hazir yemek|meze/],
+  ["icecek",/icecek/],["atistirmalik",/atistirmalik|sekerleme/],["donuk",/dondur/],["firin",/ekmek|firin|pastane/],["temizlik",/temizlik|deterjan|kagit/],
+  ["bakim",/bakim|kozmetik/],["bebek",/bebek/],["evcil",/evcil/],["ev",/^ev\b|yasam|mutfak|elektronik|giyim|oyuncak|bahce|kitap|cicek|otomotiv|hobi/]];
+const DEPTS=DEPT_CAT.map(x=>x[0]),FOOD=new Set(["meyve","et","sut","temel","icecek","atistirmalik","donuk","firin",""]);
+const SWEET=/\b(surpriz|supriz|oyuncakli|kinder|lolipop|jelibon|draje|sekerleme)|(kalp|ipli|jumbo|cikolatali) yumurta|yumurta kafa/;
+const EGG=/\byumurta(si|lari)?\b/,EGGPACK=/\d+\s*['’]?\s*(li|lu)\b|\badet\b|\b(s|m|l|xl)\b[ -]+(orta |buyuk |kucuk )?boy|orta boy|buyuk boy|organik|gezen|kafessiz|free range|omega|bildircin|kahverengi/;
+/* Aramanın niyet ettiği bölüm(ler). Gıda sonuçları en az %20 ise (ve 2+) gıda olmayanlar düşer: "tavuk" →
+   köpek maması değil tavuk, "bal" → şampuan değil bal. Sonra kalanların yarısı tek bölümdeyse yalnız o bölüm
+   ("yumurta" → Süt & Kahvaltı, sürpriz yumurta değil). Dönen: tutulacak bölümler kümesi ya da null (ayrım yok). */
+function intentDepts(deps){const n=deps.length;if(n<2)return null;
+  const food=deps.filter(d=>FOOD.has(d)),pool=food.length>=2&&food.length>=n*0.2?food:deps;
+  const dc={};pool.forEach(d=>dc[d]=(dc[d]||0)+1);
+  const dom=Object.keys(dc).sort((a,b)=>dc[b]-dc[a])[0];
+  if(dc[dom]>=pool.length*0.5&&dc[dom]>=2)return new Set([dom]);
+  return pool===deps?null:new Set(Object.keys(dc))}
+function deptOf(name,cat){const d=(DEPT_CAT.find(x=>x[1].test(fold(cat||"")))||[""])[0];
+  if(FOOD.has(d)){const f=fold(name);if(SWEET.test(f))return"atistirmalik";if(EGG.test(f)&&EGGPACK.test(f))return"sut"}
+  return d}
+const api={fold,deptOf,intentDepts,DEPTS,parse,group,groupFrom,confidence,similar,similarIn,typeIndex,typeOf,families,unitPrice,staples,unitCompare,sameSize,sizeLabel};
 if(typeof module!=="undefined"&&module.exports)module.exports=api;else root.MF=api;
 })(typeof window!=="undefined"?window:globalThis);
