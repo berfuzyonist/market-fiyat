@@ -21,6 +21,11 @@ function parse(name){
   const sizes=[],meas=[];let count=0;
   // "1.650 Ml" binlik ayraçtır (1650 ml); "1.5 L" ondalıktır
   let s=fold(name).replace(/\s*&\s*/g,"").replace(/(\d)\.(\d{3})\s*(ml|gr|g)\b/g,"$1$2 $3").replace(/(\d)[,](\d)/g,"$1.$2").replace(/[’'`]/g,"");
+  // "4 adet x 30 gr", "10 Adet x 15 Ml": toplam = adet × miktar
+  s=s.replace(new RegExp("(\\d+)\\s*(?:adet|ad)\\s*[x×*]\\s*(\\d+(?:\\.\\d+)?)\\s*"+U+"\\b","g"),(m,k,n,u)=>{const a=amount(n,u);sizes.push(k+"x"+a+UNIT[u][0]);meas.push([k*a,UNIT[u][0]]);count=0;return" "});
+  // Aynı ürünün hediyeli boyu: "Şampuan 750 Ml + 200 Ml Avantaj Paketi", "500 Ml+250 Ml" → toplam (arada başka ürün adı yoksa)
+  s=s.replace(new RegExp("(\\d+(?:\\.\\d+)?)\\s*"+U+"\\s*\\+\\s*(\\d+(?:\\.\\d+)?)\\s*"+U+"(?=\\s*(?:avantaj|hediye|bedava|paket|$))","g"),(m,n1,u1,n2,u2)=>{
+    if(UNIT[u1][0]!==UNIT[u2][0])return m;const a=amount(n1,u1)+amount(n2,u2);sizes.push(a+UNIT[u1][0]);meas.push([a,UNIT[u1][0]]);return" "});
   // Yumurta sınıfı gibi tane ağırlığı aralığı "(53-62 G)", "63-73 G": toplam miktar değildir, boy etiketi olarak kalır
   // (yoksa "6'lı (53-62 g)" yumurta 62 g sayılıp kilosu 966 ₺ çıkıyordu; doğrusu adet fiyatı)
   s=s.replace(/\(?\s*(\d{2})\s*-\s*(\d{2})\s*\)?\s*(?:gr|g)?\b/g,(m,a,b)=>+a>=30&&+b>+a&&+b<=90?(sizes.push(a+"-"+b+"g")," "):m);
@@ -36,7 +41,8 @@ function parse(name){
   const kinds=[...new Set(meas.map(m=>m[1]))];let qty=null;
   if(kinds.length===1){const v=[...new Set(meas.map(m=>m[0]))];
     // "17.5 g 10'lu" gibi adlarda toplam miktar belirsiz: birim fiyat hesaplama
-    if(v.length===1&&!(count>1&&v[0]<50))qty={n:v[0],u:kinds[0]}}
+    // (poşet çay ve bitki çayında "20'li 35 G" toplam ağırlıktır)
+    if(v.length===1&&!(count>1&&v[0]<50&&!/\b(cay|cayi|tea|bitki)\b/.test(s)))qty={n:v[0],u:kinds[0]}}
   else if(!meas.length&&count>1)qty={n:count,u:"ad"};
   return{brand,size:[...new Set(sizes)].sort().join("+"),toks,key:toks.slice().sort().join(" "),core:coreSet.join(" "),qty};
 }
@@ -67,7 +73,13 @@ function group(rows){
   //    varsa farklı çeşittir ("seftali" / "erik"). Yalnızca iki tarafın da birbirini en iyi aday
   //    seçtiği, açık farkla önde olan ve fiyatı makul (en fazla 1,7 kat) çiftler birleşir.
   fuzzy(groups.filter(g=>!g.dead));
-  return groups.filter(g=>!g.dead);
+  // 4) Eşleşen teklifler arasında 2,5 kattan fazla fiyat farkı: ya eşleşme ya fiyatlardan biri şüpheli
+  //    (Kotex Günlük Ped 34'lü: Migros 214,95 / Şok 60). Yanlış "çok daha ucuz" göstermemek için ayrılır.
+  const out=[];
+  for(const g of groups){if(g.dead)continue;const ps=g.offers.map(o=>o.price);
+    if(g.offers.length>1&&Math.max(...ps)/Math.min(...ps)>2.5)for(const o of g.offers)out.push({offers:[o],get p(){return o._p}});
+    else out.push(g)}
+  return out;
 }
 const lev1=(a,b)=>{if(Math.abs(a.length-b.length)>1)return false;let i=0;while(i<a.length&&a[i]===b[i])i++;
   return a.slice(i+1)===b.slice(i+1)||a.slice(i)===b.slice(i+1)||a.slice(i+1)===b.slice(i)};

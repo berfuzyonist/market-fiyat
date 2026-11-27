@@ -1198,8 +1198,16 @@ function route(){
     else if(k==="afis"&&arg){if(CAMP!==arg){CAMP=arg;CV={sort:"",n:40}}go("camp")}
     else{const v=Object.keys(HV).find(x=>HV[x]===k&&x!=="search")||"home";go(v)}
   }finally{routing=false}
+  // Geri/ileri: sayfa, bırakıldığı kaydırma konumuna döner (ürüne girip çıkınca en başa atmaz).
+  const y=SCROLL[location.hash||"#"];
+  // (arama sonuçları gecikmeli çizildiği için birkaç kez denenir; kullanıcı kaydırırsa bırakılır)
+  if(y>0){let n=0,moved=false;const stop=()=>moved=true;addEventListener("touchstart",stop,{once:true,passive:true});
+    const tryY=()=>{if(moved)return;if(Math.abs(scrollY-y)>40)scrollTo(0,y);if(Math.abs(scrollY-y)>40&&++n<12)setTimeout(tryY,120)};tryY()}
 }
 addEventListener("popstate",route);
+// Her adresin son kaydırma konumu (yalnız bu oturumda, bellekte)
+const SCROLL={};if("scrollRestoration" in history)history.scrollRestoration="manual";
+addEventListener("scroll",()=>{SCROLL[location.hash||"#"]=scrollY},{passive:true});
 function go(v,keep){
   view=v;VIEWS.forEach(id=>$(id).classList.toggle("hidden",id!==v));
   document.querySelectorAll("nav [data-view]").forEach(b=>{if(b.dataset.plain)return;const on=b.dataset.view===v;

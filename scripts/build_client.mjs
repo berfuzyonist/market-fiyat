@@ -29,6 +29,23 @@ const allGroups = MF.group(allRows);
 // sonra aynı ürünün marketlerdeki teklifleri çoğunluk bölümüne çekilir (Şok yumurtayı Et'e koysa da
 // Migros'taki eşi Süt & Kahvaltı'daysa ikisi de orada görünür).
 const DEP = new Map(allRows.map((o) => [o.id, MF.deptOf(o.name, o.cat)]));
+// Kategorisi olmayan ya da "Diğer" olan ürünler (BİM aktüel, Şok giyim…): bölüm, adındaki kelimelerin
+// kategorili ürünlerde en sık görüldüğü bölümden tahmin edilir (marka hariç; en az 3 örnekli kelimeler).
+{
+  const tok = new Map();
+  const words = (o) => (o._p ? o._p.toks.slice(1) : []).filter((t) => t.length > 2 && !/^[\d.%]/.test(t));
+  for (const o of allRows) { const d = DEP.get(o.id); if (!d) continue; for (const t of new Set(words(o))) { const m = tok.get(t) || tok.set(t, {}).get(t); m[d] = (m[d] || 0) + 1; } }
+  let guessed = 0;
+  for (const o of allRows) {
+    if (DEP.get(o.id)) continue;
+    const sc = {};
+    for (const t of new Set(words(o))) { const m = tok.get(t); if (!m) continue; const n = Object.values(m).reduce((a, b) => a + b, 0); if (n < 3) continue;
+      for (const [d, c] of Object.entries(m)) sc[d] = (sc[d] || 0) + (c / n) * Math.log(1 + n); }
+    const top = Object.entries(sc).sort((a, b) => b[1] - a[1]);
+    if (top.length && top[0][1] >= 1 && (!top[1] || top[0][1] >= top[1][1] * 1.5)) { DEP.set(o.id, top[0][0]); guessed++; }
+  }
+  console.log("bölüm tahmini (kategorisiz ürün):", guessed);
+}
 for (const g of allGroups) {
   if (g.offers.length < 2) continue;
   const n = {}; for (const o of g.offers) { const d = DEP.get(o.id); if (d) n[d] = (n[d] || 0) + 1; }
@@ -36,14 +53,16 @@ for (const g of allGroups) {
   if (top.length > 1 && n[top[0]] > n[top[1]]) for (const o of g.offers) DEP.set(o.id, top[0]);
 }
 const depIx = Object.fromEntries(MF.DEPTS.map((k, i) => [k, i]));
+// İstemciye giden ürünler: C.rowsOf'un tuttukları (aynı markette birebir tekrar eden kayıtlar elenmiş)
+const KEPT = new Set(allRows.map((o) => o.id));
 for (const [m, d] of SRC) {
   const f = d.fields, at = Object.fromEntries(f.map((k, i) => [k, i]));
-  const P = [...d.products].sort((a, b) => (a[at.id] < b[at.id] ? -1 : a[at.id] > b[at.id] ? 1 : 0));
+  const P = [...d.products].filter((r) => KEPT.has(String(r[at.id]))).sort((a, b) => (a[at.id] < b[at.id] ? -1 : a[at.id] > b[at.id] ? 1 : 0));
   // Markete özgü ek alanlar (ör. Migros: brand, sold) katalogun sonuna eklenir; değerler seyrek değişir.
   // Son alan "dep": bölüm (deps listesindeki sıra; bölümsüzse null).
   const extra = f.filter((k) => !["id", "name", "price", "regular", "in_stock", "image", "url", "cat", "promo", "seen"].includes(k));
   const catBody = { market: m, prefix: d.prefix || {}, cats: d.cats || {}, deps: MF.DEPTS, fields: ["id", "name", "image", "url", "cat", ...extra, "dep"],
-    products: P.map((r) => { const dp = DEP.get(String(r[at.id])); return [r[at.id], r[at.name], r[at.image], r[at.url], r[at.cat], ...extra.map((k) => r[at[k]] ?? null), dp ? depIx[dp] : null]; }) };
+    products: P.map((r) => { const dp = DEP.get(String(r[at.id])); return [r[at.id], C.pretty(r[at.name]), r[at.image], r[at.url], r[at.cat], ...extra.map((k) => r[at[k]] ?? null), dp ? depIx[dp] : null]; }) };
   const v = createHash("sha256").update(dump(catBody)).digest("hex").slice(0, 12);
   const seens = P.map((r) => r[at.seen]).filter(Number.isInteger), base = seens.length ? Math.min(...seens) : 0;
   const prices = { market: m, updated: d.updated, catalog: v, base, fields: ["price", "regular0", "in_stock", "promo", "seenOffset"],
