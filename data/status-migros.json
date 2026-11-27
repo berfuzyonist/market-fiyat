@@ -1,22 +1,24 @@
 {
- "updated": "2026-11-27T12:38:34+00:00",
- "started_at": "2026-11-27T12:33:31+00:00",
- "finished_at": "2026-11-27T12:38:34+00:00",
- "checked_at": "2026-11-27T12:38:34+00:00",
- "data_updated": "2026-11-27T12:38:34+00:00",
- "last_successful_data_at": "2026-11-27T12:38:34+00:00",
+ "updated": "2026-11-27T12:52:57+00:00",
+ "started_at": "2026-11-27T12:13:19+00:00",
+ "finished_at": "2026-11-27T12:52:57+00:00",
+ "checked_at": "2026-11-27T12:52:57+00:00",
+ "data_updated": "2026-11-27T12:52:57+00:00",
+ "last_successful_data_at": "2026-11-27T12:52:57+00:00",
  "market": "migros",
- "mode": "deals",
- "status": "tamam",
- "complete": true,
- "partial": false,
- "found": 2654,
- "total": 19224,
- "seconds": 303,
+ "mode": "full",
+ "status": "durduruldu: 2 kategori sayfası boş döndü (kisisel-bakim-kozmetik-saglik-c-8 s.26, kitap-kirtasiye-oyuncak-c-118ec s.79); okunan ürünler kısmi olarak yayımlanır",
+ "complete": false,
+ "partial": true,
+ "found": 16631,
+ "total": 19434,
+ "seconds": 2379,
  "notes": [
-  "money-indirimli-market-urunleri-dt-5: 84/84 sayfa",
-  "coklu-indirim-kampanyalari-ve-hediyeli-urunler-dt-1: 6/6 sayfa",
-  "2654 indirimli ürün güncellendi"
+  "kisisel-bakim-kozmetik-saglik-c-8: sayfa 26 boş döndü, atlanıp devam edildi",
+  "kitap-kirtasiye-oyuncak-c-118ec: sayfa 79 boş döndü, kategorinin kalanı atlandı",
+  "kategori ağacından 25 üst kategori okundu; 19 üst kategori tarandı",
+  "yeni sonuç eksik (16631 ürün), eski veri (19224 ürün) korundu",
+  "kısmi yayım: 16631 ürünün fiyatı güncellendi, kalan 2803 ürün önceki doğrulamasıyla korundu"
  ],
  "quality": {
   "category_count": 19,
@@ -25,40 +27,42 @@
   "other_count": 0,
   "other_ratio": 0.0,
   "category_counts": {
-   "Temel Gıda": 1599,
-   "Süt, Kahvaltılık": 1491,
-   "Atıştırmalık": 1957,
-   "İçecek": 1318,
-   "Fırın, Pastane": 326,
-   "Kişisel Bakım, Kozmetik, Sağlık": 2753,
-   "Et, Tavuk, Balık": 601,
-   "Hazır Yemek, Meze": 287,
-   "Bebek": 342,
+   "Temel Gıda": 1602,
+   "Süt, Kahvaltılık": 1503,
+   "Atıştırmalık": 1991,
+   "İçecek": 1327,
+   "Fırın, Pastane": 329,
+   "Kişisel Bakım, Kozmetik, Sağlık": 2774,
+   "Et, Tavuk, Balık": 607,
+   "Hazır Yemek, Meze": 293,
+   "Bebek": 348,
    "Dondurma": 208,
    "Dondurulmuş Gıda": 213,
-   "Evcil Hayvan": 247,
-   "Meyve, Sebze": 230,
+   "Evcil Hayvan": 260,
+   "Meyve, Sebze": 233,
    "Çiçek": 53,
-   "Ev, Yaşam": 3587,
-   "Deterjan, Temizlik": 1078,
+   "Ev, Yaşam": 3659,
+   "Deterjan, Temizlik": 1085,
    "Kağıt, Islak Mendil": 144,
-   "Elektronik": 483,
-   "Kitap, Kırtasiye, Oyuncak": 2307
+   "Elektronik": 487,
+   "Kitap, Kırtasiye, Oyuncak": 2318
   }
  },
- "quality_warnings": [],
+ "quality_warnings": [
+  "Tarama başarılı değil: durduruldu: 2 kategori sayfası boş döndü (kisisel-bakim-kozmetik-saglik-c-8 s.26, kitap-kirtasiye-oyuncak-c-118ec s.79); okunan ürünler kısmi olarak yayımlanır"
+ ],
  "traffic": {
   "www.migros.com.tr": {
-   "requests": 90,
+   "requests": 667,
    "retries": 0,
-   "megabytes": 1.6,
+   "megabytes": 8.1,
    "errors": 0
   }
  },
  "errors": [],
- "run_id": "45999628437",
- "collected_products": 2654,
- "total_products": 19224,
+ "run_id": "45996807701",
+ "collected_products": 16631,
+ "total_products": 19434,
  "discounted_products": 2577,
  "invalid_products": 0,
  "data_quality": {
@@ -70,7 +74,7 @@
   "suspicious_discount": 0,
   "bad_url": 0
  },
- "duration_seconds": 303,
+ "duration_seconds": 2379,
  "last_attempt_by_mode": {
   "deals": {
    "checked_at": "2026-11-27T12:38:34+00:00",
@@ -125,19 +129,23 @@
    }
   },
   "full": {
-   "checked_at": "2026-11-27T02:10:31+00:00",
-   "status": "tamam",
-   "complete": true,
-   "found": 16457,
-   "total": 16457,
-   "seconds": 2172,
-   "data_updated": "2026-11-27T02:10:31+00:00",
+   "checked_at": "2026-11-27T12:52:57+00:00",
+   "status": "durduruldu: 2 kategori sayfası boş döndü (kisisel-bakim-kozmetik-saglik-c-8 s.26, kitap-kirtasiye-oyuncak-c-118ec s.79); okunan ürünler kısmi olarak yayımlanır",
+   "complete": false,
+   "found": 16631,
+   "total": 19434,
+   "seconds": 2379,
+   "data_updated": "2026-11-27T12:52:57+00:00",
    "errors": [],
    "notes": [
-    "kategori ağacından 25 üst kategori okundu; 19 üst kategori tarandı"
+    "kisisel-bakim-kozmetik-saglik-c-8: sayfa 26 boş döndü, atlanıp devam edildi",
+    "kitap-kirtasiye-oyuncak-c-118ec: sayfa 79 boş döndü, kategorinin kalanı atlandı",
+    "kategori ağacından 25 üst kategori okundu; 19 üst kategori tarandı",
+    "yeni sonuç eksik (16631 ürün), eski veri (19224 ürün) korundu",
+    "kısmi yayım: 16631 ürünün fiyatı güncellendi, kalan 2803 ürün önceki doğrulamasıyla korundu"
    ],
    "quality_warnings": [
-    "Ürün sayısı önceki veri setine göre belirgin düştü: 16457/20023"
+    "Tarama başarılı değil: durduruldu: 2 kategori sayfası boş döndü (kisisel-bakim-kozmetik-saglik-c-8 s.26, kitap-kirtasiye-oyuncak-c-118ec s.79); okunan ürünler kısmi olarak yayımlanır"
    ],
    "quality": {
     "category_count": 19,
@@ -146,32 +154,32 @@
     "other_count": 0,
     "other_ratio": 0.0,
     "category_counts": {
-     "Meyve, Sebze": 204,
-     "Et, Tavuk, Balık": 545,
-     "Süt, Kahvaltılık": 1300,
-     "Temel Gıda": 1430,
-     "İçecek": 1142,
+     "Temel Gıda": 1602,
+     "Süt, Kahvaltılık": 1503,
+     "Atıştırmalık": 1991,
+     "İçecek": 1327,
+     "Fırın, Pastane": 329,
+     "Kişisel Bakım, Kozmetik, Sağlık": 2774,
+     "Et, Tavuk, Balık": 607,
+     "Hazır Yemek, Meze": 293,
+     "Bebek": 348,
+     "Dondurma": 208,
+     "Dondurulmuş Gıda": 213,
+     "Evcil Hayvan": 260,
+     "Meyve, Sebze": 233,
+     "Çiçek": 53,
+     "Ev, Yaşam": 3659,
+     "Deterjan, Temizlik": 1085,
      "Kağıt, Islak Mendil": 144,
-     "Deterjan, Temizlik": 934,
-     "Kişisel Bakım, Kozmetik, Sağlık": 2208,
-     "Bebek": 322,
-     "Ev, Yaşam": 2926,
-     "Çiçek": 50,
-     "Atıştırmalık": 1641,
-     "Fırın, Pastane": 307,
-     "Dondurma": 202,
-     "Hazır Yemek, Meze": 271,
-     "Dondurulmuş Gıda": 208,
-     "Kitap, Kırtasiye, Oyuncak": 1956,
-     "Evcil Hayvan": 236,
-     "Elektronik": 431
+     "Elektronik": 487,
+     "Kitap, Kırtasiye, Oyuncak": 2318
     }
    },
    "traffic": {
     "www.migros.com.tr": {
-     "requests": 659,
+     "requests": 667,
      "retries": 0,
-     "megabytes": 8.0,
+     "megabytes": 8.1,
      "errors": 0
     }
    }
