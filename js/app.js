@@ -1182,13 +1182,20 @@ let routing=false;
 // Paylaşılabilir bağlantı: ".../market-fiyat/urun/sok/4934", ".../afis/<kampanya>", ".../ara/süt".
 // Bu adresler sitede dosya olarak yok; GitHub Pages 404.html'i açar, o da uygulamaya (#urun/sok:4934) yönlendirir.
 const BASE=location.origin+location.pathname.replace(/[^/]*$/,"");
+// Okunur adresler (urun/migros/pinar-sut-1-l, afis/migros/barlarda-…) data/client/slugs-*.json'da; ürün ya da
+// kampanya sayfası açılınca ilgili dosya önceden indirilir, Paylaş anında hazır olur. Yoksa kod adresi kullanılır.
+const SLUG={},SLUGP={};
+const slugsOf=k=>SLUGP[k]||(SLUGP[k]=get(`data/client/slugs-${k}.json`).then(d=>SLUG[k]=d||{}).catch(()=>SLUG[k]={}));
+function prefetchSlugs(){if(view==="search"&&only)slugsOf(only.split(":")[0]);else if(view==="camp")slugsOf("afis")}
 function linkOf(){
-  if(view==="search"&&only){const i=only.indexOf(":");return BASE+"urun/"+encodeURIComponent(only.slice(0,i))+"/"+encodeURIComponent(only.slice(i+1))}
-  // kampanya: ilk afiş sayfasının kimliği (paylaşım önizleme sayfası onun adıyla üretilir: scripts/build_share.mjs)
-  if(view==="camp"&&CAMP){const it=findPoster(CAMP),id=it?((it.src&&it.src[0])||it.id):CAMP;return BASE+"afis/"+String(id).replace(/[^A-Za-z0-9._-]+/g,"-").replace(/^-+|-+$/g,"").slice(0,120)}
+  if(view==="search"&&only){const m=only.split(":")[0],sl=SLUG[m]&&SLUG[m][only];
+    if(sl)return BASE+"urun/"+m+"/"+sl;
+    const i=only.indexOf(":");return BASE+"urun/"+encodeURIComponent(only.slice(0,i))+"/"+encodeURIComponent(only.slice(i+1))}
+  if(view==="camp"&&CAMP){const it=findPoster(CAMP),id=it?((it.src&&it.src[0])||it.id):CAMP,sl=SLUG.afis&&SLUG.afis[id];
+    return BASE+"afis/"+(sl||encodeURIComponent(CAMP))}
   if(view==="search"){const q=$("q").value.trim();if(q)return BASE+"ara/"+encodeURIComponent(q)}
   return location.href}
-async function shareNow(){const url=linkOf();let title="marketfiyat",text="";
+async function shareNow(){await Promise.race([new Promise(r=>setTimeout(r,800)),view==="camp"?slugsOf("afis"):view==="search"&&only?slugsOf(only.split(":")[0]):null]);const url=linkOf();let title="marketfiyat",text="";
   if(view==="search"&&only&&GI[only]){const g=GI[only],b=best(g);title=g.name;text=b?`${g.name}: en ucuz ${M[b.market].at} ${tl(b.price)}`:g.name}
   else if(view==="camp"){const it=findPoster(CAMP);if(it){title=campTitle(it);text=`${M[it.market]?M[it.market].n+": ":""}${campTitle(it)}`}}
   try{if(navigator.share){await navigator.share({title,text,url});return}}catch(e){if(e&&e.name==="AbortError")return}
@@ -1228,7 +1235,7 @@ function go(v,keep){
   document.querySelectorAll("nav [data-view]").forEach(b=>{if(b.dataset.plain)return;const on=b.dataset.view===v;
     b.className=b.dataset.top?NT+(on?"bg-emerald-600 text-white shadow":"text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800"):NB+(on?"bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400":"text-stone-500")});
   const el=$(v);el.classList.remove("enter");void el.offsetWidth;el.classList.add("enter");
-  redraw();if(!keep)scrollTo(0,0);sync()}
+  redraw();if(!keep)scrollTo(0,0);sync();prefetchSlugs()}
 const QS=[$("q"),$("qd")];const setQ=v=>QS.forEach(i=>i.value=v);
 // Panoya kopyala: önce eşzamanlı yöntem (tıklama anında, yeni sekme açılmadan), olmazsa Clipboard API
 function copyNow(text){let ok=false;
