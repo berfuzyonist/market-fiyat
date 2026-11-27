@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>marketfiyat</title>
+<style>html,body{margin:0;height:100%;background:#07070b;color:#f5f5f7;font:15px/1.5 system-ui,sans-serif}
+main{display:grid;place-items:center;height:100%;text-align:center;padding:24px}a{color:#c7a6ff}</style>
+<script>
+// Paylaşılan kısa adresleri uygulamaya çevirir (GitHub Pages bilinmeyen her adreste bu sayfayı açar):
+//   .../market-fiyat/urun/sok/4934   → .../market-fiyat/#urun/sok:4934
+//   .../market-fiyat/afis/<kampanya> → .../market-fiyat/#afis/<kampanya>
+//   .../market-fiyat/ara/süt         → .../market-fiyat/#ara/süt
+// Bunlardan biri değilse uygulamanın ana sayfasına gider.
+(function () {
+  var parts = location.pathname.split("/").filter(Boolean);
+  // uygulamanın kökü: "urun", "afis", "ara" bölümünden önceki kısım (GitHub Pages'te /market-fiyat/)
+  var at = -1;
+  for (var i = 0; i < parts.length; i++) if (/^(urun|afis|ara)$/.test(parts[i])) { at = i; break; }
+  if (at < 0) at = /\.github\.io$/.test(location.hostname) && parts.length ? 1 : 0;
+  var base = "/" + parts.slice(0, at).join("/") + (at ? "/" : "");
+  parts = parts.slice(at);
+  var seg = parts.map(function (p) { try { return decodeURIComponent(p); } catch (e) { return p; } });
+  var h = "";
+  if (seg[0] === "urun" && seg.length >= 3) h = "#urun/" + encodeURIComponent(seg[1] + ":" + seg.slice(2).join("/"));
+  else if (seg[0] === "urun" && seg[1]) h = "#urun/" + encodeURIComponent(seg[1]);
+  else if (seg[0] === "afis" && seg[1]) h = "#afis/" + encodeURIComponent(seg.slice(1).join("/"));
+  else if (seg[0] === "ara" && seg[1]) h = "#ara/" + encodeURIComponent(seg.slice(1).join(" "));
+  location.replace(base + h);
+})();
+</script>
+</head>
+<body><main><p>Açılıyor… Açılmazsa <a href="./">marketfiyat ana sayfasına</a> git.</p></main></body>
+</html>

@@ -366,7 +366,7 @@ function drawCamp(){
   ${(()=>{const pages=it.images&&it.images.length>1?it.images:null,th=it.thumbs||pages;
     if(pages)return`<div class="flex gap-2 overflow-x-auto noscroll -mx-3 px-3 pb-1">${pages.map((u,k)=>`<button data-cimg="${k}" class="relative shrink-0 rounded-xl overflow-hidden ring-1 ring-stone-200 bg-white"><img src="${esc(th[k]||u)}" alt="" loading="lazy" class="${mk==="bim"?"h-44 w-auto":"h-24 w-auto"} object-contain"><span class="absolute bottom-1 right-1 chipx bg-black/60 text-white !text-[10px]">${k+1}</span></button>`).join("")}</div>`;
     return`<button data-cimg="0" class="relative block w-full rounded-[20px] overflow-hidden bg-white ring-1 ring-stone-200 shadow-sm"><img src="${esc(it.image)}" alt="${esc(campTitle(it))}" class="w-full ${mg?"h-auto":"max-h-48 object-cover object-top"} pop-in">${mg?"":`<span class="absolute bottom-2 right-2 chipx bg-black/70 text-white"><i data-lucide="maximize-2" class="w-3.5 h-3.5"></i>Afişin tamamı</span>`}</button>`})()}
-  <div class="mt-3 flex flex-wrap items-center gap-1.5">${badge(mk,1)}${when?`<span class="chipx bg-orange-100 text-orange-800"><i data-lucide="calendar" class="w-3.5 h-3.5"></i>${esc(when)}</span>`:""}<span class="chipx bg-stone-200 text-stone-700">${num(total)} ürün</span>${it.images&&it.images.length>1?`<span class="chipx bg-stone-200 text-stone-700">${it.images.length} ${it.collage?"kampanya":"afiş sayfası"}</span>`:""}</div>
+  <div class="mt-3 flex flex-wrap items-center gap-1.5">${badge(mk,1)}${when?`<span class="chipx bg-orange-100 text-orange-800"><i data-lucide="calendar" class="w-3.5 h-3.5"></i>${esc(when)}</span>`:""}<span class="chipx bg-stone-200 text-stone-700">${num(total)} ürün</span>${it.images&&it.images.length>1?`<span class="chipx bg-stone-200 text-stone-700">${it.images.length} ${it.collage?"kampanya":"afiş sayfası"}</span>`:""}<button data-sharelink class="chipx bg-white ring-1 ring-stone-300 text-stone-800"><i data-lucide="share-2" class="w-3.5 h-3.5"></i>Paylaş</button></div>
   <h1 class="font-display font-extrabold text-2xl leading-tight tracking-tight mt-2">${esc(campTitle(it))}</h1>
   ${desc?`<details class="mt-1.5 text-sm text-stone-600 leading-relaxed group"><summary class="list-none cursor-pointer"><span class="line-clamp-2 group-open:line-clamp-none">${esc(desc)}</span>${desc.length>110?`<span class="text-xs font-bold text-emerald-700 group-open:hidden">Kampanya koşulları ›</span>`:""}</summary></details>`:""}
   ${objs.length>3?`<div class="flex gap-2 overflow-x-auto noscroll mt-3">${[["","Önerilen"],["price","En ucuz"],["disc","En çok indirim"],["unit","Birim fiyat"]].map(([k,l])=>pill("data-csort",k,l,CV.sort===k)).join("")}</div>`:""}
@@ -1005,7 +1005,8 @@ function checkAlarms(){
   badgeBell();if(view==="track")redraw()}
 function favBtns(g){const f=isFav(g),n=alarmsOf(g).length;
   return`<div class="flex gap-2 mt-3"><button data-fav="${esc(g.key)}" class="chipx !py-2 !px-3 ${f?"bg-rose-600 text-white":"bg-white ring-1 ring-stone-300 text-stone-800"}"><i data-lucide="heart" class="w-4 h-4"></i>${f?"Favorilerde":"Favorilere ekle"}</button>
-    <button data-alarmopen class="chipx !py-2 !px-3 bg-white ring-1 ring-stone-300 text-stone-800"><i data-lucide="bell-plus" class="w-4 h-4"></i>Fiyat alarmı${n?` (${n})`:""}</button></div>
+    <button data-alarmopen class="chipx !py-2 !px-3 bg-white ring-1 ring-stone-300 text-stone-800"><i data-lucide="bell-plus" class="w-4 h-4"></i>Fiyat alarmı${n?` (${n})`:""}</button>
+    <button data-sharelink class="chipx !py-2 !px-3 bg-white ring-1 ring-stone-300 text-stone-800"><i data-lucide="share-2" class="w-4 h-4"></i>Paylaş</button></div>
   <form data-alarmform="${esc(g.key)}" class="hidden mt-2 ${card} p-3 space-y-2">
     <label class="block text-xs font-bold text-stone-700">Ne zaman haber verelim?
       <select name="type" class="mt-1 w-full rounded-xl ring-1 ring-stone-300 px-3 py-2.5 bg-white text-[15px]">
@@ -1178,6 +1179,19 @@ const NT="flex items-center gap-2 px-3.5 py-1.5 rounded-full text-sm font-bold t
 // #urun/<id>, #ara/<sorgu>, #kesfet, #kampanya, #karsilastir, #listem; ana sayfa: adres eki yok
 const HV={home:"",compare:"karsilastir",promos:"kampanya",browse:"kesfet",search:"ara",list:"listem",posters:"afisler",track:"takip",analysis:"analiz",status:"veri"};
 let routing=false;
+// Paylaşılabilir bağlantı: ".../market-fiyat/urun/sok/4934", ".../afis/<kampanya>", ".../ara/süt".
+// Bu adresler sitede dosya olarak yok; GitHub Pages 404.html'i açar, o da uygulamaya (#urun/sok:4934) yönlendirir.
+const BASE=location.origin+location.pathname.replace(/[^/]*$/,"");
+function linkOf(){
+  if(view==="search"&&only){const i=only.indexOf(":");return BASE+"urun/"+encodeURIComponent(only.slice(0,i))+"/"+encodeURIComponent(only.slice(i+1))}
+  if(view==="camp"&&CAMP)return BASE+"afis/"+encodeURIComponent(CAMP);
+  if(view==="search"){const q=$("q").value.trim();if(q)return BASE+"ara/"+encodeURIComponent(q)}
+  return location.href}
+async function shareNow(){const url=linkOf();let title="marketfiyat",text="";
+  if(view==="search"&&only&&GI[only]){const g=GI[only],b=best(g);title=g.name;text=b?`${g.name}: en ucuz ${M[b.market].at} ${tl(b.price)}`:g.name}
+  else if(view==="camp"){const it=findPoster(CAMP);if(it){title=campTitle(it);text=`${M[it.market]?M[it.market].n+": ":""}${campTitle(it)}`}}
+  try{if(navigator.share){await navigator.share({title,text,url});return}}catch(e){if(e&&e.name==="AbortError")return}
+  copyNow(url);note("Bağlantı panoya kopyalandı; arkadaşına yapıştırıp gönderebilirsin.")}
 function hashOf(){
   if(view==="search"){if(only)return"#urun/"+encodeURIComponent(only);const q=$("q").value.trim();return(q?"#ara/"+encodeURIComponent(q):"#ara")+filterQS()}
   if(view==="camp")return"#afis/"+encodeURIComponent(CAMP);
@@ -1345,6 +1359,7 @@ document.addEventListener("click",e=>{const t=s=>e.target.closest(s);let el;
     note("GitHub talep sayfası açıldı. Orada “Create” düğmesine basın: GitHub Actions yalnızca bu ürünü marketin sitesinden kontrol eder ve sonucu talebe yazar (genellikle 1-2 dakika). Sonra bu sayfayı yenileyin.")}
   // Dış bağlantıda ürün adını panoya kopyala (bağlantı yine açılır). Genel "a" dalından önce olmalı;
   // yeni sekme açılınca sayfa odağı kaybettiği için kopyalama tıklama anında, eşzamanlı yapılır.
+  else if(t("[data-sharelink]"))shareNow();
   else if(el=t("[data-copyname]")){copyNow(el.dataset.copyname);note(`“${el.dataset.copyname}” panoya kopyalandı; açılan sitede arama kutusuna yapıştır.`)}
   else if(t("a")){}
   else if(el=t("[data-page]")){({C,K,B})[el.dataset.pg].page=+el.dataset.page;redraw();scrollTo(0,0)}
