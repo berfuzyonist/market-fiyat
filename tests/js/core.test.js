@@ -219,7 +219,18 @@ test("benzer ürünler: aynı tür ve yakın boy, başka market; farklı çeşit
   const n=MF.similarIn(ix,rows[0]).map(x=>x.o.id);
   assert.deepEqual(n,["migros:1"]);                       // mercimek başka tür, 5 kg boy çok farklı
   const s=MF.similarIn(ix,rows[4]).map(x=>x.o.id);
-  assert.deepEqual(s,["migros:4","migros:3"]);            // laktozsuz çeşit geride
+  assert.deepEqual(s,["migros:4"]);                       // laktozsuz başka sınıf: muadil sayılmaz
+});
+
+test("muadil: protein bar ile nugalı çikolata bar muadil değildir; asıl tür sondaki addır", () => {
+  const MF=require("../../js/match.js");
+  assert.equal(MF.headOf(MF.parse("Fellas Çikolata Kaplı Kurabiye Aromalı Highpro Protein Bar 50 G")),"bar");
+  const rows=[["migros:1","migros","Fellas Çikolata Kaplı Kurabiye Aromalı Highpro Protein Bar 50 G",132.45],
+    ["migros:2","migros","Migros Sütlü Çikolata Kaplı Karamelli Nuga Dolgulu Bar 40 G",9.9],
+    ["sok:1","sok","Fellas Highpro+ Çilekli Protein Bar 50 g",79.5],["sok:2","sok","Ülker Çikolatalı Gofret 36 g",12]]
+    .map(([id,market,name,price])=>({id,market,name,price,in_stock:1}));
+  MF.group(rows);const ix=MF.typeIndex(rows);
+  assert.deepEqual(MF.similarIn(ix,rows[0],{sameMarket:true}).map(x=>x.o.id),["sok:1"]);
 });
 
 test("bölüm: ad yanlış rafı düzeltir; yumurta aramasında sürpriz/oyuncak yumurta boy karşılaştırmasına girmez", () => {

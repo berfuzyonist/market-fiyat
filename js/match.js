@@ -260,6 +260,15 @@ const TSTEM=new Set([...TYPES].map(stem));
 function typeOf(p){if(!p)return[];const t=p.toks.slice(1).filter(x=>!/^[\d.%]/.test(x));
   const known=t.filter(x=>TYPES.has(x)||TSTEM.has(x));return known.length?known:t.slice(-1)}
 const VSET=t=>t.filter(isVariant);
+/* Asıl tür (baş ad): Türkçe ad öbeğinde asıl ad sondadır; "Çikolata Kaplı", "Kurabiye Aromalı" gibi
+   sonrasında niteleyici gelen kelime tür değildir. "Fellas Çikolata Kaplı Kurabiye Aromalı Protein Bar" → bar */
+const MODIF=/^(kapli|kaplamali|aromali|aromasi|dolgulu|soslu|sosu|tadinda|cesnili|lezzetli|parcacikli|kremali|parcali|katkili|ozlu)$/;
+function headOf(p){if(!p)return"";const t=p.toks.slice(1).filter(x=>!/^[\d.%]/.test(x));
+  for(let i=t.length-1;i>=0;i--){if(MODIF.test(t[i+1]||""))continue;if(TYPES.has(t[i])||TSTEM.has(t[i]))return t[i]}return""}
+/* Ürünü başka sınıfa koyan nitelikler: biri taşıyıp öbürü taşımıyorsa muadil sayılmaz
+   (protein bar ≠ nugalı çikolata bar; laktozsuz süt ≠ süt; şekersiz ≠ şekerli) */
+const DEFINING=/^(protein|proteinli|light|lite|diyet|sekersiz|laktozsuz|glutensiz|organik|vegan|keto|zero|yagsiz|kepekli|bebek|cocuk)$/;
+const defs=p=>new Set(p.toks.filter(t=>DEFINING.test(t)).map(t=>t.replace(/li$/,"")));
 /* o: ürün; rows: aday satırlar (bir tür indeksinden). Dönen: [{o,u,score}] benzerlik sırasıyla. */
 function similar(o,rows,opts){
   const p=o&&o._p,u=p&&unitPrice(o);if(!p||!p.qty||!u)return[];
@@ -270,11 +279,15 @@ function similar(o,rows,opts){
     if(!q||!q.qty||q.qty.u!==p.qty.u)continue;
     const r=q.qty.n/p.qty.n;if(r>max||r<1/max)continue;
     const cty=typeOf(q);if(!ty.some(t=>cty.includes(t)))continue;
+    const h1=headOf(p),h2=headOf(q);if(h1&&h2&&h1!==h2&&stem(h1)!==stem(h2))continue;            // asıl tür aynı olmalı
+    {const a=defs(p),b2=defs(q);if(a.size!==b2.size||[...a].some(x=>!b2.has(x)))continue}      // protein ≠ nugalı
     if(grp&&grp(c)!==grp(o))continue;
     const cv=VSET(q.toks);if(ov.length&&cv.length&&!ov.some(v=>cv.some(w=>tmatch(v,w))))continue; // çilekli ≠ muzlu
     const cd=distinct(q);let sh=0;for(const t of cd)if([...own].some(x=>tmatch(x,t)))sh++;
     const jac=sh/Math.max(1,own.size+cd.length-sh);
     const cu=unitPrice(c);if(!cu||!(cu.v>0))continue;
+    // Birim fiyatı yarıdan çok daha düşük/yüksek "muadil" gerçekçi değildir: başka sınıf ürünüdür
+    if(cu.v<u.v*0.4||cu.v>u.v*2.5)continue;
     const extraV=cv.filter(v=>!ov.some(w=>tmatch(v,w))).length; // adayda fazladan çeşit (laktozsuz, light…)
     out.push({o:c,u:cu,score:jac+(q.brand===p.brand?0.25:0)-Math.abs(Math.log(r))*0.5-extraV*0.3})}
   return out.sort((a,b)=>b.score-a.score||a.u.v-b.u.v)}
@@ -326,6 +339,6 @@ function intentDepts(deps){const n=deps.length;if(n<2)return null;
 function deptOf(name,cat){const d=(DEPT_CAT.find(x=>x[1].test(fold(cat||"")))||[""])[0];
   if(FOOD.has(d)){const f=fold(name);if(SWEET.test(f))return"atistirmalik";if(EGG.test(f)&&EGGPACK.test(f))return"sut"}
   return d}
-const api={fold,deptOf,intentDepts,DEPTS,parse,group,groupFrom,confidence,similar,similarIn,typeIndex,typeOf,families,unitPrice,staples,unitCompare,sameSize,sizeLabel};
+const api={fold,headOf,deptOf,intentDepts,DEPTS,parse,group,groupFrom,confidence,similar,similarIn,typeIndex,typeOf,families,unitPrice,staples,unitCompare,sameSize,sizeLabel};
 if(typeof module!=="undefined"&&module.exports)module.exports=api;else root.MF=api;
 })(typeof window!=="undefined"?window:globalThis);
