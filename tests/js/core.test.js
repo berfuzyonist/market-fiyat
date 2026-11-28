@@ -170,7 +170,9 @@ test("aynı boyda diğer markalar: tür ve boy aynı, aromalı/kakaolu çeşit v
   const rows=[mk("sok:1","Pınar Süt 1 L",60),mk("migros:2","Sek Süt 1 L",55),mk("migros:3","Mis Uht Süt Yağsız 1 L",36),
     mk("migros:4","Danone Kakaolu Süt 1 L",70),mk("migros:5","Sek Süt 500 ml",35),mk("sok:6","Pınar Yoğurt 1 kg",90)];
   MF.group(rows);
-  assert.deepEqual(MF.sameSize(rows[0],rows).map(h=>h.o.id),["migros:3","migros:2"]);
+  assert.deepEqual(MF.sameSize(rows[0],rows).map(h=>h.o.id),["migros:2"]);   // yağsız süt ayrı sınıf
+  const k=[mk("migros:7","Lor Vanilya Aromalı Kapsül Kahve 10lu 52 G",328.95),mk("migros:8","Dr.oetker Vanilya Aromalı Soğuk Kahve 50 G",55)];
+  MF.group(k);assert.deepEqual(MF.sameSize(k[0],k),[]);                          // kapsül kahve ≠ soğuk kahve tozu
   assert.equal(MF.sizeLabel(rows[0]._p.qty,rows[0]._p.size),"1 L");
 });
 

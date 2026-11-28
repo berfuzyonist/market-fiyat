@@ -234,6 +234,7 @@ function sameSize(o,rows){
     for(const c of rows){if(c===o)continue;const q=c._p;if(!q||!q.qty||q.qty.u!==p.qty.u)continue;
       if(Math.abs(q.qty.n/p.qty.n-1)>0.1)continue;
       if(!need.every(t=>q.toks.includes(t)))continue;
+      if(!sameClass(p,q))continue;   // "Vanilya Aromalı Kapsül Kahve" ≠ "Vanilya Aromalı Soğuk Kahve" tozu
       if(q.toks.slice(1).filter(t=>!own.includes(t)).length>extraMax)continue;
       if(st&&st.not.test(c._f||(c._f=fold(c.name))))continue;
       const u=unitPrice(c);if(u&&u.v>0)out.push({o:c,u})}
@@ -269,6 +270,13 @@ function headOf(p){if(!p)return"";const t=p.toks.slice(1).filter(x=>!/^[\d.%]/.t
    (protein bar ≠ nugalı çikolata bar; laktozsuz süt ≠ süt; şekersiz ≠ şekerli) */
 const DEFINING=/^(protein|proteinli|light|lite|diyet|sekersiz|laktozsuz|glutensiz|organik|vegan|keto|zero|yagsiz|kepekli|bebek|cocuk)$/;
 const defs=p=>new Set(p.toks.filter(t=>DEFINING.test(t)).map(t=>t.replace(/li$/,"")));
+// Ürünün biçimi de sınıfı belirler: kapsül kahve ≠ soğuk kahve tozu ≠ çekirdek kahve; tablet ≠ jel deterjan
+const FORMAT=/^(kapsul|granul|cekirdek|filtre|ogutulmus|soguk|turk|espresso|toz|sivi|jel|tablet|kup|poset|dokme|konsantre|hazir)$/;
+const fmts=p=>new Set(p.toks.filter(t=>FORMAT.test(t)));
+const sameSet=(a,b)=>a.size===b.size&&[...a].every(x=>b.has(x));
+/* İki ürün aynı sınıftan mı: asıl tür (baş ad), sınıf niteliği (protein, laktozsuz…) ve biçim (kapsül, toz…) aynı */
+function sameClass(p,q){const h1=headOf(p),h2=headOf(q);if(h1&&h2&&h1!==h2&&stem(h1)!==stem(h2))return false;
+  return sameSet(defs(p),defs(q))&&sameSet(fmts(p),fmts(q))}
 /* o: ürün; rows: aday satırlar (bir tür indeksinden). Dönen: [{o,u,score}] benzerlik sırasıyla. */
 function similar(o,rows,opts){
   const p=o&&o._p,u=p&&unitPrice(o);if(!p||!p.qty||!u)return[];
@@ -279,8 +287,7 @@ function similar(o,rows,opts){
     if(!q||!q.qty||q.qty.u!==p.qty.u)continue;
     const r=q.qty.n/p.qty.n;if(r>max||r<1/max)continue;
     const cty=typeOf(q);if(!ty.some(t=>cty.includes(t)))continue;
-    const h1=headOf(p),h2=headOf(q);if(h1&&h2&&h1!==h2&&stem(h1)!==stem(h2))continue;            // asıl tür aynı olmalı
-    {const a=defs(p),b2=defs(q);if(a.size!==b2.size||[...a].some(x=>!b2.has(x)))continue}      // protein ≠ nugalı
+    if(!sameClass(p,q))continue;   // asıl tür, sınıf (protein ≠ nugalı) ve biçim (kapsül ≠ toz) aynı olmalı
     if(grp&&grp(c)!==grp(o))continue;
     const cv=VSET(q.toks);if(ov.length&&cv.length&&!ov.some(v=>cv.some(w=>tmatch(v,w))))continue; // çilekli ≠ muzlu
     const cd=distinct(q);let sh=0;for(const t of cd)if([...own].some(x=>tmatch(x,t)))sh++;
@@ -339,6 +346,6 @@ function intentDepts(deps){const n=deps.length;if(n<2)return null;
 function deptOf(name,cat){const d=(DEPT_CAT.find(x=>x[1].test(fold(cat||"")))||[""])[0];
   if(FOOD.has(d)){const f=fold(name);if(SWEET.test(f))return"atistirmalik";if(EGG.test(f)&&EGGPACK.test(f))return"sut"}
   return d}
-const api={fold,headOf,deptOf,intentDepts,DEPTS,parse,group,groupFrom,confidence,similar,similarIn,typeIndex,typeOf,families,unitPrice,staples,unitCompare,sameSize,sizeLabel};
+const api={fold,headOf,sameClass,deptOf,intentDepts,DEPTS,parse,group,groupFrom,confidence,similar,similarIn,typeIndex,typeOf,families,unitPrice,staples,unitCompare,sameSize,sizeLabel};
 if(typeof module!=="undefined"&&module.exports)module.exports=api;else root.MF=api;
 })(typeof window!=="undefined"?window:globalThis);
