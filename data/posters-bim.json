@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-27T15:39:31+00:00",
+ "updated": "2026-11-28T06:39:41+00:00",
  "market": "bim",
  "items": [
   {
@@ -364,16 +364,6 @@
   },
   {
    "market": "bim",
-   "id": "bim:1716:0",
-   "title": "BİM İndirim · 21-27 Kasım",
-   "group": "İndirim",
-   "label": "21-27 Kasım",
-   "image": "https://cdn1.bim.com.tr/uploads/afisler/d9bcaf4f-766e-4615-b359-9cd32c80ebc0.jpg",
-   "thumb": "https://cdn1.bim.com.tr/uploads/afisler/k_d9bcaf4f-766e-4615-b359-9cd32c80ebc0.jpg",
-   "url": "https://www.bim.com.tr/Categories/680/afisler.aspx"
-  },
-  {
-   "market": "bim",
    "id": "bim:1722:0",
    "title": "BİM İndirim · 27-30 Kasım",
    "group": "İndirim",
@@ -420,6 +410,16 @@
    "label": "27-30 Kasım",
    "image": "https://cdn1.bim.com.tr/uploads/afisler/57e5b4f8-9877-40e4-af19-8596749ad9b3.jpg",
    "thumb": "https://cdn1.bim.com.tr/uploads/afisler/k_57e5b4f8-9877-40e4-af19-8596749ad9b3.jpg",
+   "url": "https://www.bim.com.tr/Categories/680/afisler.aspx"
+  },
+  {
+   "market": "bim",
+   "id": "bim:1721:0",
+   "title": "BİM İndirim · 28 Kasım-04 Aralık",
+   "group": "İndirim",
+   "label": "28 Kasım-04 Aralık",
+   "image": "https://cdn1.bim.com.tr/uploads/afisler/932fd7a2-ae63-4b0c-9c4a-4880e143e6f2.jpg",
+   "thumb": "https://cdn1.bim.com.tr/uploads/afisler/k_932fd7a2-ae63-4b0c-9c4a-4880e143e6f2.jpg",
    "url": "https://www.bim.com.tr/Categories/680/afisler.aspx"
   },
   {
