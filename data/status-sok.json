@@ -1,22 +1,22 @@
 {
- "updated": "2026-11-28T11:28:04+00:00",
- "started_at": "2026-11-28T11:25:53+00:00",
- "finished_at": "2026-11-28T11:28:04+00:00",
- "checked_at": "2026-11-28T11:28:04+00:00",
- "data_updated": "2026-11-28T11:28:04+00:00",
- "last_successful_data_at": "2026-11-28T11:28:04+00:00",
+ "updated": "2026-11-28T12:29:43+00:00",
+ "started_at": "2026-11-28T12:27:41+00:00",
+ "finished_at": "2026-11-28T12:29:43+00:00",
+ "checked_at": "2026-11-28T12:29:43+00:00",
+ "data_updated": "2026-11-28T12:29:43+00:00",
+ "last_successful_data_at": "2026-11-28T12:29:43+00:00",
  "market": "sok",
  "mode": "deals",
  "status": "tamam",
  "complete": true,
  "partial": false,
- "found": 499,
+ "found": 497,
  "total": 3025,
- "seconds": 131,
+ "seconds": 122,
  "notes": [
   "kampanyalar: 90 ürün",
-  "indirimli-urunler-cms-pl1: sitede 501, okunan 501, 26/26 sayfa (son sayfa)",
-  "499 indirimli ürün güncellendi"
+  "indirimli-urunler-cms-pl1: sitede 498, okunan 498, 25/25 sayfa (son sayfa)",
+  "497 indirimli ürün güncellendi"
  ],
  "quality": {
   "category_count": 21,
@@ -51,15 +51,15 @@
  "quality_warnings": [],
  "traffic": {
   "www.sokmarket.com.tr": {
-   "requests": 27,
+   "requests": 26,
    "retries": 0,
-   "megabytes": 15.3,
+   "megabytes": 14.7,
    "errors": 0
   }
  },
  "errors": [],
- "run_id": "46139843240",
- "collected_products": 499,
+ "run_id": "46144759842",
+ "collected_products": 497,
  "total_products": 3025,
  "discounted_products": 503,
  "invalid_products": 0,
@@ -72,21 +72,21 @@
   "suspicious_discount": 0,
   "bad_url": 0
  },
- "duration_seconds": 131,
+ "duration_seconds": 122,
  "last_attempt_by_mode": {
   "deals": {
-   "checked_at": "2026-11-28T11:28:04+00:00",
+   "checked_at": "2026-11-28T12:29:43+00:00",
    "status": "tamam",
    "complete": true,
-   "found": 499,
+   "found": 497,
    "total": 3025,
-   "seconds": 131,
-   "data_updated": "2026-11-28T11:28:04+00:00",
+   "seconds": 122,
+   "data_updated": "2026-11-28T12:29:43+00:00",
    "errors": [],
    "notes": [
     "kampanyalar: 90 ürün",
-    "indirimli-urunler-cms-pl1: sitede 501, okunan 501, 26/26 sayfa (son sayfa)",
-    "499 indirimli ürün güncellendi"
+    "indirimli-urunler-cms-pl1: sitede 498, okunan 498, 25/25 sayfa (son sayfa)",
+    "497 indirimli ürün güncellendi"
    ],
    "quality_warnings": [],
    "quality": {
@@ -121,9 +121,9 @@
    },
    "traffic": {
     "www.sokmarket.com.tr": {
-     "requests": 27,
+     "requests": 26,
      "retries": 0,
-     "megabytes": 15.3,
+     "megabytes": 14.7,
      "errors": 0
     }
    }
