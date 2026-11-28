@@ -1,23 +1,22 @@
 {
- "updated": "2026-11-28T02:06:43+00:00",
- "started_at": "2026-11-28T01:29:09+00:00",
- "finished_at": "2026-11-28T02:06:43+00:00",
- "checked_at": "2026-11-28T02:06:43+00:00",
- "data_updated": "2026-11-28T02:06:43+00:00",
- "last_successful_data_at": "2026-11-28T02:06:43+00:00",
+ "updated": "2026-11-28T03:34:30+00:00",
+ "started_at": "2026-11-28T03:29:57+00:00",
+ "finished_at": "2026-11-28T03:34:30+00:00",
+ "checked_at": "2026-11-28T03:34:30+00:00",
+ "data_updated": "2026-11-28T03:34:30+00:00",
+ "last_successful_data_at": "2026-11-28T03:34:30+00:00",
  "market": "migros",
- "mode": "full",
- "status": "durduruldu: 1 kategori sayfası boş döndü (atistirmalik-c-113fb s.41); okunan ürünler kısmi olarak yayımlanır",
- "complete": false,
- "partial": true,
- "found": 16452,
+ "mode": "deals",
+ "status": "tamam",
+ "complete": true,
+ "partial": false,
+ "found": 2430,
  "total": 19531,
- "seconds": 2254,
+ "seconds": 273,
  "notes": [
-  "atistirmalik-c-113fb: sayfa 41 boş döndü, atlanıp devam edildi",
-  "kategori ağacından 25 üst kategori okundu; 19 üst kategori tarandı",
-  "yeni sonuç eksik (16452 ürün), eski veri (19438 ürün) korundu",
-  "kısmi yayım: 16452 ürünün fiyatı güncellendi, kalan 3079 ürün önceki doğrulamasıyla korundu"
+  "money-indirimli-market-urunleri-dt-5: 77/77 sayfa",
+  "coklu-indirim-kampanyalari-ve-hediyeli-urunler-dt-1: 6/6 sayfa",
+  "2430 indirimli ürün güncellendi"
  ],
  "quality": {
   "category_count": 19,
@@ -47,21 +46,18 @@
    "Kitap, Kırtasiye, Oyuncak": 2321
   }
  },
- "quality_warnings": [
-  "Tarama başarılı değil: durduruldu: 1 kategori sayfası boş döndü (atistirmalik-c-113fb s.41); okunan ürünler kısmi olarak yayımlanır",
-  "Ürün sayısı önceki veri setine göre belirgin düştü: 16452/19438"
- ],
+ "quality_warnings": [],
  "traffic": {
   "www.migros.com.tr": {
-   "requests": 663,
+   "requests": 83,
    "retries": 0,
-   "megabytes": 8.1,
+   "megabytes": 1.4,
    "errors": 0
   }
  },
  "errors": [],
- "run_id": "46093321270",
- "collected_products": 16452,
+ "run_id": "46103116528",
+ "collected_products": 2430,
  "total_products": 19531,
  "discounted_products": 2441,
  "invalid_products": 0,
@@ -74,16 +70,16 @@
   "suspicious_discount": 0,
   "bad_url": 0
  },
- "duration_seconds": 2254,
+ "duration_seconds": 273,
  "last_attempt_by_mode": {
   "deals": {
-   "checked_at": "2026-11-28T01:58:27+00:00",
+   "checked_at": "2026-11-28T03:34:30+00:00",
    "status": "tamam",
    "complete": true,
    "found": 2430,
-   "total": 19438,
-   "seconds": 274,
-   "data_updated": "2026-11-28T01:58:27+00:00",
+   "total": 19531,
+   "seconds": 273,
+   "data_updated": "2026-11-28T03:34:30+00:00",
    "errors": [],
    "notes": [
     "money-indirimli-market-urunleri-dt-5: 77/77 sayfa",
@@ -98,25 +94,25 @@
     "other_count": 0,
     "other_ratio": 0.0,
     "category_counts": {
-     "Temel Gıda": 1602,
-     "Süt, Kahvaltılık": 1503,
-     "Atıştırmalık": 1991,
-     "İçecek": 1327,
-     "Fırın, Pastane": 329,
-     "Kişisel Bakım, Kozmetik, Sağlık": 2774,
-     "Et, Tavuk, Balık": 607,
-     "Hazır Yemek, Meze": 293,
+     "Temel Gıda": 1605,
+     "Süt, Kahvaltılık": 1504,
+     "Atıştırmalık": 2013,
+     "İçecek": 1335,
+     "Fırın, Pastane": 330,
+     "Kişisel Bakım, Kozmetik, Sağlık": 2794,
+     "Et, Tavuk, Balık": 611,
+     "Hazır Yemek, Meze": 294,
      "Bebek": 348,
      "Dondurma": 208,
      "Dondurulmuş Gıda": 213,
      "Evcil Hayvan": 260,
-     "Meyve, Sebze": 233,
+     "Meyve, Sebze": 235,
      "Çiçek": 53,
-     "Ev, Yaşam": 3663,
-     "Deterjan, Temizlik": 1085,
+     "Ev, Yaşam": 3690,
+     "Deterjan, Temizlik": 1086,
      "Kağıt, Islak Mendil": 144,
      "Elektronik": 487,
-     "Kitap, Kırtasiye, Oyuncak": 2318
+     "Kitap, Kırtasiye, Oyuncak": 2321
     }
    },
    "traffic": {
