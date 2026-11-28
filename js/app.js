@@ -843,14 +843,13 @@ function drawB(){
 let ALT=new Map();
 function alternatives(g,limit=3){
   if(ALT.has(g.key))return ALT.get(g.key).slice(0,limit);
-  const b=best(g),p=b&&b._p,u=b&&MF.unitPrice(b),out=[];
-  if(p&&u&&p.qty&&p.toks.length>=3){
-    const need=p.toks.slice(1,3),own=u.v;
-    for(const o of O){if(!usable(o)||GI[o.id]===g)continue;const q=o._p;if(!q||!q.qty||q.qty.u!==p.qty.u)continue;
-      const r=q.qty.n/p.qty.n;if(r<0.8||r>1.25||!need.every(t=>q.toks.includes(t)))continue;
-      const v=MF.unitPrice(o);if(!v||v.v>own*0.95)continue;
-      const og=GI[o.id];if(!og||best(og)!==o)continue;out.push({o,g:og,save:1-v.v/own})}
-    out.sort((a,b)=>b.save-a.save)}
+  // Daha ucuz muadil: aynı asıl tür ve sınıf (MF.similar: protein bar ≠ nugalı bar, laktozsuz ≠ normal),
+  // yakın boy (±%25), birim fiyatı en az %5 ucuz; en benzerden başlayarak
+  const b=best(g),u=b&&MF.unitPrice(b),out=[];
+  if(b&&u){if(!SIX)SIX=MF.typeIndex(O.filter(o=>usable(o)));
+    for(const x of MF.similarIn(SIX,b,{grp:grpOf,ratio:1.25,sameMarket:true})){const o=x.o;if(!usable(o)||GI[o.id]===g||x.score<0.15)continue;
+      if(!(x.u.v<=u.v*0.95))continue;const og=GI[o.id];if(!og||best(og)!==o)continue;out.push({o,g:og,save:1-x.u.v/u.v,score:x.score})}
+    out.sort((a,b)=>b.score-a.score||b.save-a.save)}
   const seen=new Set(),uniqOut=out.filter(x=>!seen.has(x.g.key)&&seen.add(x.g.key));
   ALT.set(g.key,uniqOut);return uniqOut.slice(0,limit)}
 
